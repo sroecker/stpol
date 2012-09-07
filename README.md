@@ -1,4 +1,7 @@
-stpol
+Single top polarization analysis
 =====
 
-Single top polarisation
+SETUP
+=====
+1. source setup.sh
+2. scram b
