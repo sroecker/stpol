@@ -3,5 +3,4 @@ Single top polarization analysis
 
 SETUP
 =====
-1. source setup.sh
-2. scram b
+1. run $ source setup.sh
