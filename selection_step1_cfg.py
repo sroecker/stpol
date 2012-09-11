@@ -165,13 +165,14 @@ process.singleTopPath_step1 = cms.Path(#process.step1_HLT #If the HLT is before 
 )
 
 
-from PhysicsTools.PatAlgos.patEventContent_cff import patEventContentNoCleaning
+#from PhysicsTools.PatAlgos.patEventContent_cff import patEventContentNoCleaning
 keepAll = False
 if keepAll:
     process.out.outputCommands = cms.untracked.vstring('keep *')
 else:
     process.out.outputCommands = cms.untracked.vstring([
           'drop *',
+          'keep edmMergeableCounter_*_*_*',
           'keep edmTriggerResults_TriggerResults__HLT',
     #      'keep patElectrons_selectedPatElectrons__PAT',
     #      'keep patMuons_selectedPatMuons__PAT',
@@ -190,4 +191,4 @@ process.GlobalTag.globaltag = cms.string('START52_V9B::All')
 
 inFileName= "file:/home/joosep/singletop/FEFF01BD-87DC-E111-BC9E-003048678F8E.root"
 process.source.fileNames = cms.untracked.vstring(inFileName)
-process.maxEvents = cms.untracked.PSet(output=cms.untracked.int32(100))
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(100))
