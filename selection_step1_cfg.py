@@ -26,6 +26,26 @@ process.pfPileUp.checkClosestZVertex = False
 
 #process.pfPileUp.Enable = True
 
+#-----------------------------------------------
+#Skim efficiency counters
+#-----------------------------------------------
+process.processedEventCounter = cms.EDProducer("EventCountProducer")
+process.passInitialSkimCounter = cms.EDProducer("EventCountProducer")
+process.passedEventCounter = cms.EDProducer("EventCountProducer")
+
+#-----------------------------------------------
+# selection step 0: initial skim filter (reco filter)
+#-----------------------------------------------
+process.initialSkimFilter = cms.EDFilter("SingleTopRecoFilter",
+  minMuons = cms.untracked.int32(1),
+  minJets = cms.untracked.int32(2),
+  minMuonPt = cms.untracked.double(25.0),
+  minJetPt = cms.untracked.double(20.0),
+  maxMuonEta = cms.untracked.double(2.1),
+  maxMuonRelIso = cms.untracked.double(10000.0),
+  maxJetEta = cms.untracked.double(5.0)
+  )
+
 #-------------------------------------------------
 # selection step 1: trigger
 # Based on
@@ -52,8 +72,6 @@ process.goodOfflinePrimaryVertices = cms.EDFilter(
                                                   , src = cms.InputTag('offlinePrimaryVertices')
 )
 
-process.processedEventCounter = cms.EDProducer("EventCountProducer")
-process.muCounter = cms.EDProducer("EventCountProducer")
 
 #-------------------------------------------------
 # Muons
@@ -105,23 +123,20 @@ process.goodMuons = process.selectedPatMuons.clone(
 #process.patElectrons.electronIDSources.mvaNonTrigV0 = cms.InputTag("mvaNonTrigV0")
 #process.patPF2PATSequence.replace(process.patElectrons, process.mvaID * process.patElectrons)
 
-signalElectronCut = "pt>30"
-signalElectronCut += "&& abs(eta)<2.5"
-signalElectronCut += "&& !(1.4442 < abs(superCluster.eta) < 1.5660)"
-signalElectronCut += "&& passConversionVeto()"
-#signalElectronCut += "&& 0.0<electronID('mvaTrigV0')<1.0"
-#signalElectronCut += "&& (chargedHadronIso+max(0.0,neutralHadronIso+photonIso-0.5*puChargedHadronIso))/pt < 0.20"
+goodElectronCut = "pt>30"
+goodElectronCut += "&& abs(eta)<2.5"
+goodElectronCut += "&& !(1.4442 < abs(superCluster.eta) < 1.5660)"
+goodElectronCut += "&& passConversionVeto()"
+#goodElectronCut += "&& 0.0<electronID('mvaTrigV0')<1.0"
+#goodElectronCut += "&& (chargedHadronIso+max(0.0,neutralHadronIso+photonIso-0.5*puChargedHadronIso))/pt < 0.20"
 
 process.goodElectrons = process.selectedPatElectrons.clone(
-  src=cms.InputTag("selectedPatElectrons"), cut=signalElectronCut
+  src=cms.InputTag("selectedPatElectrons"), cut=goodElectronCut
 )
 
-#from PhysicsTools.PatAlgos.selectionLayer1.muonCountFilter_cfi import *
-# process.step_isoMu1 = countPatMuons.clone(src = 'intermediatePatMuons',
-# minNumber = 1, maxNumber = 1)
 
 #-------------------------------------------------
-# Electrons
+# Jets
 #-------------------------------------------------
 
 jetCut = 'pt > 20.'                                                  # transverse momentum
@@ -140,7 +155,12 @@ process.pfNoTau.enable = False
 process.goodJets = process.selectedPatJets.clone(
     src='selectedPatJets' + postfix, cut= jetCut)
 
-process.step_isoMu1 = process.countPatMuons.clone(src = 'goodMuons', minNumber = 1, maxNumber = 99)
+#-------------------------------------------------
+# Object counters
+#-------------------------------------------------
+
+#from PhysicsTools.PatAlgos.selectionLayer1.muonCountFilter_cfi import *
+#process.step_isoMu1 = process.countPatMuons.clone(src = 'goodMuons', minNumber = 1, maxNumber = 99)
 # process.step_Jets = process.countPatJets.clone(src = 'goodJets', minNumber =
 # 2, maxNumber = 2)
 
@@ -151,17 +171,15 @@ process.step_isoMu1 = process.countPatMuons.clone(src = 'goodMuons', minNumber =
 #Currently, all in one path
 #TODO: split muon and electron paths according to HLT
 process.singleTopPath_step1 = cms.Path(#process.step1_HLT #If the HLT is before the PAT sequence, only the events passing the HLT will go to the (slow) PAT sequence
-                                       process.processedEventCounter
+                                       process.processedEventCounter #Count all events that are processed by this filter
+                                     * process.initialSkimFilter #Do initial skim on RECO-level objects for faster PFBRECO sequence
+                                     * process.passInitialSkimCounter #Count events passing the initial skim
                                      * process.goodOfflinePrimaryVertices
                                      * process.patPF2PATSequence
-                                     * process.goodMuons
-#                                     * process.goodSignalMuons
-#                                     * process.goodQCDMuons
-                                     * process.goodElectrons
-                                     * process.goodJets
-                                     * process.step_isoMu1
-                                     * process.muCounter
-#                                     * process.step_Jets
+                                     * process.goodMuons #Select 'good' muons
+                                     * process.goodElectrons #Select 'good' electrons
+                                     * process.goodJets #Select 'good' jets
+                                     * process.passedEventCounter #Count events passing this analysis step
 )
 
 
@@ -172,14 +190,14 @@ if keepAll:
 else:
     process.out.outputCommands = cms.untracked.vstring([
           'drop *',
-          'keep edmMergeableCounter_*_*_*',
-          'keep edmTriggerResults_TriggerResults__HLT',
+          'keep edmMergeableCounter_*_*_*', # Keepp the lumi-block counter information
+          'keep edmTriggerResults_TriggerResults__HLT', #Keep the trigger results
     #      'keep patElectrons_selectedPatElectrons__PAT',
     #      'keep patMuons_selectedPatMuons__PAT',
     #      'keep patJets_selectedPatJets__PAT',
     #      'keep patTaus_selectedPatTaus__PAT',
           'keep patJets_goodJets__PAT',
-          'keep recoGenJets_goodJets_genJets_PAT',
+          'keep recoGenJets_goodJets_genJets_PAT', #For Jet MC smearing we need to keep the genJets
     #      'keep patMuons_goodSignalMuons__PAT',
     #      'keep patMuons_goodQCDMuons__PAT',
           'keep patMuons_goodMuons__PAT',
@@ -191,4 +209,4 @@ process.GlobalTag.globaltag = cms.string('START52_V9B::All')
 
 inFileName= "file:/home/joosep/singletop/FEFF01BD-87DC-E111-BC9E-003048678F8E.root"
 process.source.fileNames = cms.untracked.vstring(inFileName)
-process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(100))
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(1000))
