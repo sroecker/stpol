@@ -209,4 +209,4 @@ process.GlobalTag.globaltag = cms.string('START52_V9B::All')
 
 inFileName= "file:/home/joosep/singletop/FEFF01BD-87DC-E111-BC9E-003048678F8E.root"
 process.source.fileNames = cms.untracked.vstring(inFileName)
-process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(1000))
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))

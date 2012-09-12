@@ -83,7 +83,7 @@ EfficiencyAnalyzer::EfficiencyAnalyzer(const edm::ParameterSet& iConfig)
 
 {
    processedEventCounter = 0;
-   //now do what ever initialization is needed
+   passedEventCounter = 0;
 
 }
 
@@ -131,8 +131,10 @@ EfficiencyAnalyzer::beginJob()
 void 
 EfficiencyAnalyzer::endJob() 
 {
-    double efficiency = passedEventCounter / processedEventCounter;
-    std::cout << "Efficiency =" << efficiency << std::endl;
+    double efficiency = (double)passedEventCounter / (double)processedEventCounter;
+    std::cout << "processedEventCounter = " << processedEventCounter << std::endl;
+    std::cout << "passedEventCounter = " << passedEventCounter << std::endl;
+    std::cout << "efficiency = " << std::scientific << efficiency << std::endl;
 }
 
 // ------------ method called when starting to processes a run  ------------
@@ -159,9 +161,9 @@ EfficiencyAnalyzer::endLuminosityBlock(const edm::LuminosityBlock& lumi, edm::Ev
 {
     edm::Handle<edm::MergeableCounter> counter;
     lumi.getByLabel("processedEventCounter", counter);
-    processedEventCounter += counter->value;
+    processedEventCounter += (unsigned long)(counter->value);
     lumi.getByLabel("passedEventCounter", counter);
-    passedEventCounter += counter->value;
+    passedEventCounter += (unsigned long)(counter->value);
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
