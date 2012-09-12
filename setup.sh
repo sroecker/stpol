@@ -1,5 +1,4 @@
 #!/bin/bash
-
 export SCRAM_ARCH=slc5_amd64_gcc462
 cmsrel CMSSW_5_3_3_patch3
 cd CMSSW_5_3_3_patch3
@@ -20,6 +19,8 @@ addpkg PhysicsTools/PatAlgos           V08-09-31
 #addpkg DataFormats/VertexReco   V02-00-04 
 
 cd $CMSSW_BASE/src
+ln -s $CMSSW_BASE/../SingleTopPolarization $CMSSW_BASE/src/SingleTopPolarization
 scram b -j 8
 cmsenv
 cd $CMSSW_BASE/../
+
