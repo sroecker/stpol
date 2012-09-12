@@ -6,6 +6,7 @@ import subprocess
 import sys
 import os
 
+stepCfgFile = "selection_step1_cfg.py"
 inputRootFile = sys.argv[1]
 inputSTDOUTFile = sys.argv[2]
 
