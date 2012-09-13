@@ -46,6 +46,8 @@ process.initialSkimFilter = cms.EDFilter("SingleTopRecoFilter",
   maxJetEta = cms.untracked.double(5.0)
   )
 
+process.load('SingleTopPolarization.step_eventSkim_cfg')
+
 #-------------------------------------------------
 # selection step 1: trigger
 # Based on
@@ -172,12 +174,12 @@ process.goodJets = process.selectedPatJets.clone(
 #TODO: split muon and electron paths according to HLT
 process.singleTopPath_step1 = cms.Path(#process.step1_HLT #If the HLT is before the PAT sequence, only the events passing the HLT will go to the (slow) PAT sequence
                                        process.processedEventCounter #Count all events that are processed by this filter
-                                     * process.initialSkimFilter #Do initial skim on RECO-level objects for faster PFBRECO sequence
+#                                     * process.initialSkimFilter #Do initial skim on RECO-level objects for faster PFBRECO sequence
                                      * process.passInitialSkimCounter #Count events passing the initial skim
                                      * process.goodOfflinePrimaryVertices
                                      * process.patPF2PATSequence
                                      * process.goodMuons #Select 'good' muons
-                                     * process.goodElectrons #Select 'good' electrons
+#                                     * process.goodElectrons #Select 'good' electrons
                                      * process.goodJets #Select 'good' jets
                                      * process.passedEventCounter #Count events passing this analysis step
 )
