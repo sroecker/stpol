@@ -5,7 +5,7 @@
 //
 /**\class SingleTopRecoFilter SingleTopRecoFilter.cc SingleTopRecoFilter/src/SingleTopRecoFilter.cc
 
- Description: [one line class summary]
+ Description: This class filters events according to their RECO-object content.
 
  Implementation:
      [Notes on implementation]
