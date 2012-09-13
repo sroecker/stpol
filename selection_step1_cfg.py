@@ -5,6 +5,8 @@ from Configuration.StandardSequences.FrontierConditions_GlobalTag_cff import *
 import FWCore.ParameterSet.Config as cms
 
 ## import skeleton process
+global process
+
 from PhysicsTools.PatAlgos.patTemplate_cfg import *
 from PhysicsTools.PatAlgos.tools.coreTools import *
 from PhysicsTools.PatAlgos.tools.pfTools import *
@@ -46,7 +48,8 @@ process.initialSkimFilter = cms.EDFilter("SingleTopRecoFilter",
   maxJetEta = cms.untracked.double(5.0)
   )
 
-process.load('SingleTopPolarization.step_eventSkim_cfg')
+import step_eventSkim_cfg
+step_eventSkim_cfg.skimFilters(process)
 
 #-------------------------------------------------
 # selection step 1: trigger
@@ -172,17 +175,27 @@ process.goodJets = process.selectedPatJets.clone(
 
 #Currently, all in one path
 #TODO: split muon and electron paths according to HLT
-process.singleTopPath_step1 = cms.Path(#process.step1_HLT #If the HLT is before the PAT sequence, only the events passing the HLT will go to the (slow) PAT sequence
+process.singleTopPath_step1_mu = cms.Path(
                                        process.processedEventCounter #Count all events that are processed by this filter
-#                                     * process.initialSkimFilter #Do initial skim on RECO-level objects for faster PFBRECO sequence
+                                     * process.skim_muon
                                      * process.passInitialSkimCounter #Count events passing the initial skim
                                      * process.goodOfflinePrimaryVertices
                                      * process.patPF2PATSequence
                                      * process.goodMuons #Select 'good' muons
-#                                     * process.goodElectrons #Select 'good' electrons
                                      * process.goodJets #Select 'good' jets
                                      * process.passedEventCounter #Count events passing this analysis step
 )
+
+#process.singleTopPath_step1_ele = cms.Path(
+#                                       process.processedEventCounter #Count all events that are processed by this filter
+#                                     * process.skim_electron
+#                                     * process.passInitialSkimCounter #Count events passing the initial skim
+#                                     * process.goodOfflinePrimaryVertices
+#                                     * process.patPF2PATSequence
+#                                     * process.goodElectrons
+#                                     * process.goodJets #Select 'good' jets
+#                                     * process.passedEventCounter #Count events passing this analysis step
+#)
 
 
 #from PhysicsTools.PatAlgos.patEventContent_cff import patEventContentNoCleaning
@@ -209,6 +222,7 @@ else:
 process.out.SelectEvents.SelectEvents = ["singleTopPath_step1"]
 process.GlobalTag.globaltag = cms.string('START52_V9B::All')
 
-inFileName= "file:/home/joosep/singletop/FEFF01BD-87DC-E111-BC9E-003048678F8E.root"
+#inFileName= "file:/home/joosep/singletop/FEFF01BD-87DC-E111-BC9E-003048678F8E.root"
+inFileName= "file:/home/joosep/work/FEFF01BD-87DC-E111-BC9E-003048678F8E.root"
 process.source.fileNames = cms.untracked.vstring(inFileName)
-process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(100))
