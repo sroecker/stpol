@@ -51,7 +51,7 @@ def skimFilters(process):
     process.passElectronSkim = cms.EDProducer("EventCountProducer")
     process.passJetSkim = cms.EDProducer("EventCountProducer")
 
-    process.skim_muon = cms.Sequence(
+    process.muonSkim = cms.Sequence(
         process.processedSkimEvents
         * process.looseMuonsSkim
         * process.muonFilterSkim
