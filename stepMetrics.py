@@ -9,7 +9,7 @@ stepCfgFile = "selection_step1_cfg.py"
 inputRootFile = sys.argv[1]
 tempROOTFile = "patTuple.root"
 tempSTDOUT = "tempOut.STDOUT"
-maxEvents = 1000
+maxEvents = 100
 
 def call(cmd, retError=False):
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
@@ -25,7 +25,9 @@ call("cmsRun %s inputFiles=%s maxEvents=%d outputFile=%s &> %s" % (stepCfgFile, 
 effCalc = "SingleTopPolarization/EfficiencyAnalyzer/efficiencyanalyzer_cfg.py"
 print "Calling cmsRun %s" % effCalc
 effOut = call("cmsRun %s" % effCalc, retError=True)
-eventsProcessed = long(effOut[0].split()[2])
+fileUtilOut = call("edmFileUtil %s" % tempROOTFile)
+
+eventsProcessed = long(fileUtilOut.split()[-4])
 eventTime = float(call("grep 'Real/event' %s" % tempSTDOUT).split()[-1])
 temp = call("edmFileUtil '%s'" % inputRootFile).split()
 fileSize = long(temp[-2])
