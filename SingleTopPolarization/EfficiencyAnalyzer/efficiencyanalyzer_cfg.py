@@ -14,8 +14,16 @@ process.source = cms.Source("PoolSource",
 )
 
 process.demo = cms.EDAnalyzer('EfficiencyAnalyzer'
-, trackedCounters = cms.untracked.vstring(["singleTopPathStep1ElePreCount", "singleTopPathStep1ElePostCount"])
+, histogrammableCounters = cms.untracked.vstring(["singleTopPathStep1Ele", "singleTopPathStep1Mu"])
+, singleTopPathStep1Ele = cms.untracked.vstring(["singleTopPathStep1ElePreCount", "singleTopPathStep1ElePostCount"])
+, singleTopPathStep1Mu = cms.untracked.vstring(["singleTopPathStep1MuPreCount", "singleTopPathStep1MuPostCount"])
 )
+
+process.TFileService = cms.Service(
+    "TFileService",
+    fileName = cms.string("histo.root"),
+)
+
 
 
 process.p = cms.Path(process.demo)
