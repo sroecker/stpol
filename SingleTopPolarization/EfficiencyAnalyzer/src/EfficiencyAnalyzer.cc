@@ -89,7 +89,7 @@ EfficiencyAnalyzer::EfficiencyAnalyzer(const edm::ParameterSet& iConfig)
 {
    processedEventCounter = 0;
    passedEventCounter = 0;
-   trackedCounters.push_back("singleTopPathStep1ElePreCount");
+   trackedCounters = iConfig.getUntrackedParameter<std::vector<std::string>>("trackedCounters");
 
    for(std::string& s : trackedCounters)
    {

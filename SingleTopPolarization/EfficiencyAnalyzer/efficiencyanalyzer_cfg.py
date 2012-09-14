@@ -14,6 +14,7 @@ process.source = cms.Source("PoolSource",
 )
 
 process.demo = cms.EDAnalyzer('EfficiencyAnalyzer'
+, trackedCounters = cms.untracked.vstring(["singleTopPathStep1ElePreCount", "singleTopPathStep1ElePostCount"])
 )
 
 
