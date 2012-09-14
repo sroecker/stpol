@@ -186,34 +186,38 @@ process.goodJets = process.selectedPatJets.clone(
 # process.step_Jets = process.countPatJets.clone(src = 'goodJets', minNumber =
 # 2, maxNumber = 2)
 
+def countPath(process, path):
+  pathName = path.label()
+  preCountName = pathName + "PreCount"
+  postCountName = pathName + "PostCount"
+  setattr(process, preCountName, cms.EDProducer("EventCountProducer"))
+  setattr(process, postCountName, cms.EDProducer("EventCountProducer"))
+
+  path.insert(0, getattr(process, preCountName))
+  path.insert(-1, getattr(process, postCountName))
+
+
 #-------------------------------------------------
 # Paths
 #-------------------------------------------------
 
-#Currently, all in one path
-#TODO: split muon and electron paths according to HLT
-process.singleTopPath_step1_mu = cms.Path(
-  process.processedEventCounter #Count all events that are processed by this filter
-  * process.muonSkim
-  * process.passInitialSkimCounter #Count events passing the initial skim
+process.singleTopPathStep1Mu = cms.Path(
+    process.muonSkim
   * process.goodOfflinePrimaryVertices
   * process.patPF2PATSequence
   * process.goodMuons #Select 'good' muons
   * process.goodJets #Select 'good' jets
-  * process.passedEventCounter #Count events passing this analysis step
 )
 
-process.singleTopPath_step1_ele = cms.Path(
-  process.processedEventCounter #Count all events that are processed by this filter
-  * process.electronSkim
-  * process.passInitialSkimCounter #Count events passing the initial skim
+process.singleTopPathStep1Ele = cms.Path(
+    process.electronSkim
   * process.goodOfflinePrimaryVertices
   * process.patPF2PATSequence
   * process.goodElectrons
   * process.goodJets #Select 'good' jets
-  * process.passedEventCounter #Count events passing this analysis step
 )
-
+countPath(process, process.singleTopPathStep1Mu)
+countPath(process, process.singleTopPathStep1Ele)
 
 #from PhysicsTools.PatAlgos.patEventContent_cff import patEventContentNoCleaning
 if keepAll:
@@ -221,7 +225,7 @@ if keepAll:
 else:
     process.out.outputCommands = cms.untracked.vstring([
         'drop *',
-        'keep edmMergeableCounter_*_*_*', # Keepp the lumi-block counter information
+        'keep edmMergeableCounter_*_*_*', # Keep the lumi-block counter information
         'keep edmTriggerResults_TriggerResults__HLT', #Keep the trigger results
     #      'keep patElectrons_selectedPatElectrons__PAT',
     #      'keep patMuons_selectedPatMuons__PAT',
@@ -238,7 +242,7 @@ else:
 #Keep events that pass either the muon OR the electron path
 process.out.SelectEvents = cms.untracked.PSet(
   SelectEvents = cms.vstring(
-    ["singleTopPath_step1_mu", "singleTopPath_step1_ele"]
+    ["singleTopPathStep1Mu", "singleTopPathStep1Ele"]
   )
 )
 process.GlobalTag.globaltag = cms.string('START52_V9B::All')
