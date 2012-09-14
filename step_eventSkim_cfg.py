@@ -36,9 +36,10 @@ def skimFilters(process):
     etaMax = cms.double(max(electronEtaRange))
     )
 
-    process.muonFilterSkim = cms.EDFilter("CandViewCountFilter",
+    process.muonFilterSkim = cms.EDFilter("PATCandViewCountFilter",
       src = cms.InputTag("looseMuonsSkim"),
       minNumber = cms.uint32(1),
+      maxNumber = cms.uint32(9),
     )
 
     process.jetFilterSkim = cms.EDFilter("CandViewCountFilter",
@@ -46,23 +47,40 @@ def skimFilters(process):
       minNumber = cms.uint32(2),
     )
 
-    process.electronFilterSkim = cms.EDFilter("CandViewCountFilter",
+    process.electronFilterSkim = cms.EDFilter("PATCandViewCountFilter",
       src = cms.InputTag("looseElectronsSkim"),
       minNumber = cms.uint32(1),
+      maxNumber = cms.uint32(9),
+    )
+
+    process.electronVetoFilterSkim = cms.EDFilter("PATCandViewCountFilter",
+      src = cms.InputTag("looseElectronsSkim"),
+      minNumber = cms.uint32(0),
+      maxNumber = cms.uint32(0),
+    )
+
+    process.muonVetoFilterSkim = cms.EDFilter("PATCandViewCountFilter",
+      src = cms.InputTag("looseMuonsSkim"),
+      minNumber = cms.uint32(0),
+      maxNumber = cms.uint32(0),
     )
 
     process.muonSkim = cms.Sequence(
           process.looseMuonsSkim
         * process.muonFilterSkim
+        * process.looseElectronsSkim
+        * process.electronVetoFilterSkim
         * process.looseJetsSkim
         * process.jetFilterSkim
     )
     process.electronSkim = cms.Sequence(
           process.looseElectronsSkim
         * process.electronFilterSkim
+        * process.looseMuonsSkim
+        * process.muonVetoFilterSkim
         * process.looseJetsSkim
         * process.jetFilterSkim
     )
-    
+
     countInSequence(process, process.muonSkim)
     countInSequence(process, process.electronSkim)
