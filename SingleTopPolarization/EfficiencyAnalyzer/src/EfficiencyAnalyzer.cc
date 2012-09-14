@@ -142,9 +142,9 @@ EfficiencyAnalyzer::beginJob()
 void 
 EfficiencyAnalyzer::endJob() 
 {
-    for(std::String& s : trackedCounters)
+    for(std::string& s : trackedCounters)
     {
-        cout << s << " = " << countMap[s] << endl;
+        std::cout << s << " = " << countMap[s] << std::endl;
     }
 }
 
