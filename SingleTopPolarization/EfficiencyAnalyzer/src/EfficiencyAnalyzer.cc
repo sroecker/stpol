@@ -71,6 +71,10 @@ class EfficiencyAnalyzer : public edm::EDAnalyzer {
       str_ulong_map countMap;
       std::vector<std::string> trackedCounters;
 
+      std::map<std::string, std::vector<std::string>> histogrammableCounters;
+
+      std::map<std::string, *TH1I> histograms;
+
 };
 
 //
@@ -87,14 +91,22 @@ class EfficiencyAnalyzer : public edm::EDAnalyzer {
 EfficiencyAnalyzer::EfficiencyAnalyzer(const edm::ParameterSet& iConfig)
 
 {
-   processedEventCounter = 0;
-   passedEventCounter = 0;
-   trackedCounters = iConfig.getUntrackedParameter<std::vector<std::string>>("trackedCounters");
+    processedEventCounter = 0;
+    passedEventCounter = 0;
+    trackedCounters = iConfig.getUntrackedParameter<std::vector<std::string>>("trackedCounters");
+    histogrammableCounterNames = iConfig.getUntrackedParameter<std::vector<std::string>>("histogrammableCounters");
 
-   for(std::string& s : trackedCounters)
-   {
-      countMap[s] = (unsigned long)0;
-   }
+    for(std::string& s : trackedCounters)
+    {
+        countMap[s] = (unsigned long)0;
+    }
+
+    for(std::string& s : histogrammableCounterNames)
+    {
+        histogrammableCounters[s] = iConfig.getUntrackedParameter<std::vector<std::string>>(s);
+        histograms[s] = fs->make<TH1I>(s, s, histogrammableCounters[s].size(), 0, histogrammableCounters[s].size() - 1);
+    }
+
 
 }
 
@@ -145,6 +157,19 @@ EfficiencyAnalyzer::endJob()
     for(std::string& s : trackedCounters)
     {
         std::cout << s << " = " << countMap[s] << std::endl;
+    }
+
+    for(auto i = histogrammableCounters.begin(); i! = histogrammableCounters.end(); ++i) {
+        THII *hist = histograms[i->first];
+        
+        std::vector<std::string> *histBins = &(histograms[i->first]);
+        int i = 0;
+        for(std::string& s : *(histBins))
+        {
+            hist->AddBinContent(i, countMap[s]);
+            i++;
+        }
+
     }
 }
 
