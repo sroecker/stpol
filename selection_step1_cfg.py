@@ -9,6 +9,8 @@ from PhysicsTools.PatAlgos.patTemplate_cfg import *
 from PhysicsTools.PatAlgos.tools.coreTools import *
 from PhysicsTools.PatAlgos.tools.pfTools import *
 
+from eventCounting import countInSequence
+
 #VarParsing
 from FWCore.ParameterSet.VarParsing import VarParsing
 options = VarParsing('analysis')
@@ -186,17 +188,6 @@ process.goodJets = process.selectedPatJets.clone(
 # process.step_Jets = process.countPatJets.clone(src = 'goodJets', minNumber =
 # 2, maxNumber = 2)
 
-def countPath(process, path):
-  pathName = path.label()
-  preCountName = pathName + "PreCount"
-  postCountName = pathName + "PostCount"
-  setattr(process, preCountName, cms.EDProducer("EventCountProducer"))
-  setattr(process, postCountName, cms.EDProducer("EventCountProducer"))
-
-  path.insert(0, getattr(process, preCountName))
-  path.insert(-1, getattr(process, postCountName))
-
-
 #-------------------------------------------------
 # Paths
 #-------------------------------------------------
@@ -216,8 +207,8 @@ process.singleTopPathStep1Ele = cms.Path(
   * process.goodElectrons
   * process.goodJets #Select 'good' jets
 )
-countPath(process, process.singleTopPathStep1Mu)
-countPath(process, process.singleTopPathStep1Ele)
+countInSequence(process, process.singleTopPathStep1Mu)
+countInSequence(process, process.singleTopPathStep1Ele)
 
 #from PhysicsTools.PatAlgos.patEventContent_cff import patEventContentNoCleaning
 if keepAll:

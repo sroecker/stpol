@@ -3,6 +3,7 @@
 # mu: looseMuonsSkim -> muonFilterSkim -> looseJetsSkim -> jetFilterSkim
 # ele: looseElectronsSkim -> electronFilterSkim -> looseJetsSkim -> jetFilterSkim
 import FWCore.ParameterSet.Config as cms
+from eventCounting import countInSequence
 
 def skimFilters(process):
     muonMinPt = 20
@@ -50,26 +51,18 @@ def skimFilters(process):
       minNumber = cms.uint32(1),
     )
 
-    process.processedSkimEvents = cms.EDProducer("EventCountProducer")
-    process.passMuonSkim = cms.EDProducer("EventCountProducer")
-    process.passElectronSkim = cms.EDProducer("EventCountProducer")
-    process.passJetSkim = cms.EDProducer("EventCountProducer")
-
     process.muonSkim = cms.Sequence(
-        process.processedSkimEvents
-        * process.looseMuonsSkim
+          process.looseMuonsSkim
         * process.muonFilterSkim
-        * process.passMuonSkim
         * process.looseJetsSkim
         * process.jetFilterSkim
-        * process.passJetSkim
     )
     process.electronSkim = cms.Sequence(
-        process.processedSkimEvents
-        * process.looseElectronsSkim
+          process.looseElectronsSkim
         * process.electronFilterSkim
-        * process.passElectronSkim
         * process.looseJetsSkim
         * process.jetFilterSkim
-        * process.passJetSkim
     )
+    
+    countInSequence(process, process.muonSkim)
+    countInSequence(process, process.electronSkim)
