@@ -16,7 +16,6 @@ process.source.fileNames = cms.untracked.vstring(options.inputFiles)
 process.maxEvents = cms.untracked.PSet(
   input = cms.untracked.int32 (options.maxEvents)
 )
-process.out.fileName = options.outputFile
 
 postfix = ""
 
@@ -224,5 +223,5 @@ else:
           'keep patElectrons_goodElectrons__PAT',
           ])  # + patEventContentNoCleaning)
 
-process.out.SelectEvents.SelectEvents = ["singleTopPath_step1_mu", "singleTopPath_step1_ele"]
+process.out.SelectEvents.SelectEvents = ["singleTopPath_step1"]
 process.GlobalTag.globaltag = cms.string('START52_V9B::All')
