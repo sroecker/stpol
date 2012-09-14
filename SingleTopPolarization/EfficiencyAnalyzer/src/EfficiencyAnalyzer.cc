@@ -38,6 +38,9 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 
+
+typedef std::map<std::string, unsigned long> str_ulong_map;
+
 //
 // class declaration
 //
@@ -65,6 +68,8 @@ class EfficiencyAnalyzer : public edm::EDAnalyzer {
 
       unsigned long processedEventCounter;
       unsigned long passedEventCounter;
+      str_ulong_map countMap;
+      std::vector<std::string> trackedCounters;
 
 };
 
@@ -84,6 +89,12 @@ EfficiencyAnalyzer::EfficiencyAnalyzer(const edm::ParameterSet& iConfig)
 {
    processedEventCounter = 0;
    passedEventCounter = 0;
+   trackedCounters.push_back("singleTopPathStep1ElePreCount");
+
+   for(std::string& s : trackedCounters)
+   {
+      countMap[s] = (unsigned long)0;
+   }
 
 }
 
@@ -131,10 +142,10 @@ EfficiencyAnalyzer::beginJob()
 void 
 EfficiencyAnalyzer::endJob() 
 {
-    double efficiency = (double)passedEventCounter / (double)processedEventCounter;
-    std::cout << "processedEventCounter = " << processedEventCounter << std::endl;
-    std::cout << "passedEventCounter = " << passedEventCounter << std::endl;
-    std::cout << "efficiency = " << std::scientific << efficiency << std::endl;
+    for(std::String& s : trackedCounters)
+    {
+        cout << s << " = " << countMap[s] << endl;
+    }
 }
 
 // ------------ method called when starting to processes a run  ------------
@@ -160,10 +171,12 @@ void
 EfficiencyAnalyzer::endLuminosityBlock(const edm::LuminosityBlock& lumi, edm::EventSetup const&)
 {
     edm::Handle<edm::MergeableCounter> counter;
-    lumi.getByLabel("processedEventCounter", counter);
-    processedEventCounter += (unsigned long)(counter->value);
-    lumi.getByLabel("passedEventCounter", counter);
-    passedEventCounter += (unsigned long)(counter->value);
+
+    for(std::string& s : trackedCounters)
+    {
+        lumi.getByLabel(s, counter);
+        countMap[s] += (unsigned long)(counter->value);
+    }
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
