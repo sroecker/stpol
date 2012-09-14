@@ -224,5 +224,5 @@ else:
           'keep patElectrons_goodElectrons__PAT',
           ])  # + patEventContentNoCleaning)
 
-process.out.SelectEvents.SelectEvents = ["singleTopPath_step1_mu", "singleTopPath_step1_ele"]
+process.out.SelectEvents = ["singleTopPath_step1_mu", "singleTopPath_step1_ele"]
 process.GlobalTag.globaltag = cms.string('START52_V9B::All')
