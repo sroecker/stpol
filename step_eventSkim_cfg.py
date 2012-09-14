@@ -1,3 +1,7 @@
+# This module provides a skim filter based on CMSSW modules.
+# Two skimming sequences are provided: electrons and muons.
+# mu: looseMuonsSkim -> muonFilterSkim -> looseJetsSkim -> jetFilterSkim
+# ele: looseElectronsSkim -> electronFilterSkim -> looseJetsSkim -> jetFilterSkim
 import FWCore.ParameterSet.Config as cms
 
 def skimFilters(process):
