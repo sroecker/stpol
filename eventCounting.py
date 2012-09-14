@@ -1,5 +1,7 @@
+
 import FWCore.ParameterSet.Config as cms
 
+#This method inserts an EventCountProducer before and after the given Sequence, thus counting the efficiency of event selection in this sequence
 def countInSequence(process, path):
   pathName = path.label()
   preCountName = pathName + "PreCount"
