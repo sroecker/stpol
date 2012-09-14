@@ -5,19 +5,24 @@ from Configuration.StandardSequences.FrontierConditions_GlobalTag_cff import *
 import FWCore.ParameterSet.Config as cms
 
 ## import skeleton process
-global process
-
 from PhysicsTools.PatAlgos.patTemplate_cfg import *
 from PhysicsTools.PatAlgos.tools.coreTools import *
 from PhysicsTools.PatAlgos.tools.pfTools import *
 
+#VarParsing
+from FWCore.ParameterSet.VarParsing import VarParsing
+options = VarParsing ('analysis')
+process.source.fileNames = cms.untracked.vstring(options.inputFiles)
+process.maxEvents = cms.untracked.PSet(
+  input = cms.untracked.int32 (options.maxEvents)
+)
+
 postfix = ""
 
-usePF2PAT(process, runPF2PAT=True, jetAlgo='AK5', runOnMC=True,
-          postfix=postfix,
-          jetCorrections=(
-              'AK5PFchs', ['L1FastJet', 'L2Relative', 'L3Absolute']),
-          pvCollection=cms.InputTag('goodOfflinePrimaryVertices'))
+usePF2PAT(process, runPF2PAT=True, jetAlgo='AK5', runOnMC=True, postfix=postfix,
+  jetCorrections=('AK5PFchs', ['L1FastJet', 'L2Relative', 'L3Absolute']),
+  pvCollection=cms.InputTag('goodOfflinePrimaryVertices')
+)
 
 
 getattr(process, "pfPileUp" + postfix).checkClosestZVertex = False
@@ -60,21 +65,20 @@ step_eventSkim_cfg.skimFilters(process)
 
 from HLTrigger.HLTfilters.hltHighLevel_cfi import *
 
-process.step1_HLT = hltHighLevel.clone(TriggerResultsTag="TriggerResults::HLT", HLTPaths=["HLT_IsoMu17_eta2p1_TriCentralPFJet30_v2", "HLT_IsoMu20_eta2p1_TriCentralPFNoPUJet30_v2"], andOr=True)
+process.step1_HLT = hltHighLevel.clone(TriggerResultsTag="TriggerResults::HLT",
+  HLTPaths=["HLT_IsoMu17_eta2p1_TriCentralPFJet30_v2",
+  "HLT_IsoMu20_eta2p1_TriCentralPFNoPUJet30_v2"], andOr=True
+)
 
 #-------------------------------------------------
 # selection step 2: vertex filter
 #-------------------------------------------------
 
-process.goodOfflinePrimaryVertices = cms.EDFilter(
-                                                  "PrimaryVertexObjectFilter"
-                                                  , filterParams = cms.PSet(
-                                                                            minNdof = cms.double(4.0)
-                                                                            , maxZ = cms.double(24.0)
-                                                                            , maxRho = cms.double(2.0)
-                                                  )
-                                                  , filter = cms.bool(True)
-                                                  , src = cms.InputTag('offlinePrimaryVertices')
+process.goodOfflinePrimaryVertices = cms.EDFilter("PrimaryVertexObjectFilter"
+, filterParams = cms.PSet(minNdof = cms.double(4.0), maxZ = cms.double(24.0)
+, maxRho = cms.double(2.0))
+, filter = cms.bool(True)
+, src = cms.InputTag('offlinePrimaryVertices')
 )
 
 
@@ -177,7 +181,7 @@ process.goodJets = process.selectedPatJets.clone(
 #TODO: split muon and electron paths according to HLT
 process.singleTopPath_step1_mu = cms.Path(
                                        process.processedEventCounter #Count all events that are processed by this filter
-                                     * process.skim_muon
+                                     * process.muonSkim
                                      * process.passInitialSkimCounter #Count events passing the initial skim
                                      * process.goodOfflinePrimaryVertices
                                      * process.patPF2PATSequence
@@ -186,16 +190,16 @@ process.singleTopPath_step1_mu = cms.Path(
                                      * process.passedEventCounter #Count events passing this analysis step
 )
 
-#process.singleTopPath_step1_ele = cms.Path(
-#                                       process.processedEventCounter #Count all events that are processed by this filter
-#                                     * process.skim_electron
-#                                     * process.passInitialSkimCounter #Count events passing the initial skim
-#                                     * process.goodOfflinePrimaryVertices
-#                                     * process.patPF2PATSequence
-#                                     * process.goodElectrons
-#                                     * process.goodJets #Select 'good' jets
-#                                     * process.passedEventCounter #Count events passing this analysis step
-#)
+process.singleTopPath_step1_ele = cms.Path(
+                                      process.processedEventCounter #Count all events that are processed by this filter
+                                    * process.electronSkim
+                                    * process.passInitialSkimCounter #Count events passing the initial skim
+                                    * process.goodOfflinePrimaryVertices
+                                    * process.patPF2PATSequence
+                                    * process.goodElectrons
+                                    * process.goodJets #Select 'good' jets
+                                    * process.passedEventCounter #Count events passing this analysis step
+)
 
 
 #from PhysicsTools.PatAlgos.patEventContent_cff import patEventContentNoCleaning
@@ -221,8 +225,3 @@ else:
 
 process.out.SelectEvents.SelectEvents = ["singleTopPath_step1"]
 process.GlobalTag.globaltag = cms.string('START52_V9B::All')
-
-#inFileName= "file:/home/joosep/singletop/FEFF01BD-87DC-E111-BC9E-003048678F8E.root"
-inFileName= "file:/home/joosep/work/FEFF01BD-87DC-E111-BC9E-003048678F8E.root"
-process.source.fileNames = cms.untracked.vstring(inFileName)
-process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(100))
