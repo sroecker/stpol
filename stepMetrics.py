@@ -28,14 +28,16 @@ effOut = call("cmsRun %s" % effCalc, retError=True)
 fileUtilOut = call("edmFileUtil %s" % tempROOTFile)
 
 eventsProcessed = long(fileUtilOut.split()[-4])
+print eventsProcessed
 eventTime = float(call("grep 'Real/event' %s" % tempSTDOUT).split()[-1])
 temp = call("edmFileUtil '%s'" % inputRootFile).split()
 fileSize = long(temp[-2])
 eventsInFile = long(temp[-4])
+print eventsInFile
 
 eventSize = float(fileSize)/float(eventsInFile)
 print "Event size after slimming: %d b/event" % eventSize
-efficiency = 100.0*float(eventsInFile)/float(eventsProcessed)
+efficiency = float(eventsOut) / float(eventsProcessed)
 print "Process efficiency: %.2f%% pass this step" % efficiency
 eventsPerHour = 3600.0/eventTime
 print "This step processes %d events/hour" % eventsPerHour
