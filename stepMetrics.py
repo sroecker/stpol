@@ -4,40 +4,63 @@
 
 import subprocess
 import sys
+import ROOT
+ROOT.gROOT.SetBatch(True)
 
 stepCfgFile = "selection_step1_cfg.py"
+effCalc = "efficiency_step1_cfg.py"
 inputRootFile = sys.argv[1]
-tempROOTFile = "patTuple.root"
+stepROOTFile = "patTuple.root"
 tempSTDOUT = "tempOut.STDOUT"
-maxEvents = 100
+effROOTFile = "histo.root"
+effProcessName = "efficiencyStep1Analyzer"
+maxEvents = 1000
 
 def call(cmd, retError=False):
+    print "Calling external command %s" % cmd)
+    time0 = time.time()
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    retcode = p.wait()
     output, errors = p.communicate()
+    if retcode != 0:
+        raise Exception("External command '%s' didn't exit successfully: \nSTDOUT\n%s\nSTDERR\n%s" % (cmd, output, errors))
+    time1 = time.time()
+    elapsedTime = time1-time0
+    print "Done in %d seconds" % elapsedTime
     if retError:
         return output, errors
     else:
         return output
 
-print "Calling cmsRun %s" % stepCfgFile
-call("cmsRun %s inputFiles=%s maxEvents=%d outputFile=%s &> %s" % (stepCfgFile, inputRootFile, maxEvents, tempROOTFile, tempSTDOUT))
+def getEventsInPatTuple(fn):
+    fileUtilOut = call("edmFileUtil %s" % fn)
+    eventsProcessed = long(fileUtilOut.split()[-4])
+    fileSize = long(fileUtilOut.split()[-2])
+    return eventsProcessed, fileSize
 
-effCalc = "SingleTopPolarization/EfficiencyAnalyzer/efficiencyanalyzer_cfg.py"
-print "Calling cmsRun %s" % effCalc
-effOut = call("cmsRun %s" % effCalc, retError=True)
-fileUtilOut = call("edmFileUtil %s" % tempROOTFile)
+# Calling step
+call("cmsRun %s inputFiles=%s maxEvents=%d outputFile=%s &> %s" % (stepCfgFile, inputRootFile, maxEvents, stepROOTFile, tempSTDOUT))
+eventsOut, fileSize = getEventsInPatTuple(stepROOTFile)
 
-eventsProcessed = long(fileUtilOut.split()[-4])
-print eventsProcessed
+# Efficiency analyzer
+effOut, effError = call("cmsRun %s inputFiles=file:%s outputFile=%s" % (effCalc, stepROOTFile, effROOTFile), retError=True)
+f = ROOT.TFile(effROOTFile)
 eventTime = float(call("grep 'Real/event' %s" % tempSTDOUT).split()[-1])
-temp = call("edmFileUtil '%s'" % inputRootFile).split()
-fileSize = long(temp[-2])
-eventsInFile = long(temp[-4])
-print eventsInFile
+eventsProcessed = f.Get(effProcessName).Get("totalEventCount").GetBinContent(1)
+countHistoNames = [k.GetName() for k in f.Get(effProcessName).GetListOfKeys()]
+counts = dict()
+for hn in countHistoNames:
+    histo = f.Get(effProcessName).Get(hn)
+    NBins = histo.GetNbinsX()
+    bins = [int(histo.GetBinContent(i)) for i in range(1,NBins+1)]
+    counts[hn] = bins
+    print "count histogram %s: %s" % (hn, bins)
 
-eventSize = float(fileSize)/float(eventsInFile)
+# Output
+print "Output file %s has %d events" % (stepROOTFile, eventsOut)
+eventSize = float(fileSize)/float(eventsOut)
 print "Event size after slimming: %d b/event" % eventSize
-efficiency = float(eventsOut) / float(eventsProcessed)
+efficiency = 100.0*float(eventsOut) / float(eventsProcessed)
 print "Process efficiency: %.2f%% pass this step" % efficiency
 eventsPerHour = 3600.0/eventTime
 print "This step processes %d events/hour" % eventsPerHour
