@@ -39,7 +39,7 @@ def skimFilters(process):
     process.muonFilterSkim = cms.EDFilter("PATCandViewCountFilter",
       src = cms.InputTag("looseMuonsSkim"),
       minNumber = cms.uint32(1),
-      maxNumber = cms.uint32(9),
+      maxNumber = cms.uint32(9), #Somehow maxNumber works in PATCandViewCountFilter but not in CandViewCountFilter
     )
 
     process.jetFilterSkim = cms.EDFilter("CandViewCountFilter",

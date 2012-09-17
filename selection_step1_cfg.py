@@ -19,6 +19,8 @@ process.source.fileNames = cms.untracked.vstring(options.inputFiles)
 process.maxEvents = cms.untracked.PSet(
   input = cms.untracked.int32(options.maxEvents)
 )
+
+#Should slim the output?
 keepAll = False
 
 postfix = ""
