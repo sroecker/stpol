@@ -14,10 +14,10 @@ stepROOTFile = "patTuple.root"
 tempSTDOUT = "tempOut.STDOUT"
 effROOTFile = "histo.root"
 effProcessName = "efficiencyStep1Analyzer"
-maxEvents = 1000
+maxEvents = -1
 
 def call(cmd, retError=False):
-    print "Calling external command %s" % cmd)
+    print "Calling external command %s" % cmd
     time0 = time.time()
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
     retcode = p.wait()
