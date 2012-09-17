@@ -21,8 +21,8 @@ def call(cmd, retError=False):
     print "Calling external command %s" % cmd
     time0 = time.time()
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-    retcode = p.wait()
     output, errors = p.communicate()
+    retcode = p.returncode
     if retcode != 0:
         raise Exception("External command '%s' didn't exit successfully: \nSTDOUT\n%s\nSTDERR\n%s" % (cmd, output, errors))
     time1 = time.time()
@@ -40,11 +40,11 @@ def getEventsInPatTuple(fn):
     return eventsProcessed, fileSize
 
 # Calling step
-call("cmsRun %s inputFiles=%s maxEvents=%d outputFile=%s &> %s" % (stepCfgFile, inputRootFile, maxEvents, stepROOTFile, tempSTDOUT))
+#call("cmsRun %s inputFiles=%s maxEvents=%d outputFile=%s &> %s" % (stepCfgFile, inputRootFile, maxEvents, stepROOTFile, tempSTDOUT))
 eventsOut, fileSize = getEventsInPatTuple(stepROOTFile)
 
 # Efficiency analyzer
-effOut, effError = call("cmsRun %s inputFiles=file:%s outputFile=%s" % (effCalc, stepROOTFile, effROOTFile), retError=True)
+call("cmsRun %s inputFiles=file:%s outputFile=%s > tempEff" % (effCalc, stepROOTFile, effROOTFile))
 f = ROOT.TFile(effROOTFile)
 eventTime = float(call("grep 'Real/event' %s" % tempSTDOUT).split()[-1])
 eventsProcessed = f.Get(effProcessName).Get("totalEventCount").GetBinContent(1)
