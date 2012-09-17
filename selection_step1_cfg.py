@@ -210,6 +210,9 @@ process.singleTopPathStep1Ele = cms.Path(
 countInSequence(process, process.singleTopPathStep1Mu)
 countInSequence(process, process.singleTopPathStep1Ele)
 
+process.totalProcessedEventCount = cms.EDProducer("EventCountProducer")
+process.eventCountPath = cms.Path(process.totalProcessedEventCount)
+
 #from PhysicsTools.PatAlgos.patEventContent_cff import patEventContentNoCleaning
 if keepAll:
     process.out.outputCommands = cms.untracked.vstring('keep *')
