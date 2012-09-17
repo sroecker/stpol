@@ -40,7 +40,7 @@ def getEventsInPatTuple(fn):
     return eventsProcessed, fileSize
 
 # Calling step
-#call("cmsRun %s inputFiles=%s maxEvents=%d outputFile=%s &> %s" % (stepCfgFile, inputRootFile, maxEvents, stepROOTFile, tempSTDOUT))
+call("cmsRun %s inputFiles=%s maxEvents=%d outputFile=%s &> %s" % (stepCfgFile, inputRootFile, maxEvents, stepROOTFile, tempSTDOUT))
 eventsOut, fileSize = getEventsInPatTuple(stepROOTFile)
 
 # Efficiency analyzer
