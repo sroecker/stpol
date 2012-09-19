@@ -19,12 +19,13 @@ process.source.fileNames = cms.untracked.vstring(options.inputFiles)
 process.maxEvents = cms.untracked.PSet(
   input = cms.untracked.int32(options.maxEvents)
 )
-
-#Should slim (drop the unnecessary collections) the output?
-doSlimming = True
+process.out.fileName = cms.untracked.string(options.outputFile)
 
 #Should do pre-PFBRECO-skimming (discard uninteresting events)
 doSkimming = True
+
+#Should slim (drop the unnecessary collections) the output?
+doSlimming = True
 
 postfix = ""
 
@@ -199,15 +200,17 @@ process.goodJets = process.selectedPatJets.clone(
 process.singleTopPathStep1Mu = cms.Path(
   process.goodOfflinePrimaryVertices
   * process.patPF2PATSequence
-  * process.goodMuons #Select 'good' muons
-  * process.goodJets #Select 'good' jets
+  * process.goodMuons
+  * process.goodElectrons
+  * process.goodJets
 )
 
 process.singleTopPathStep1Ele = cms.Path(
   process.goodOfflinePrimaryVertices
   * process.patPF2PATSequence
+  * process.goodMuons
   * process.goodElectrons
-  * process.goodJets #Select 'good' jets
+  * process.goodJets
 )
 countInSequence(process, process.singleTopPathStep1Mu)
 countInSequence(process, process.singleTopPathStep1Ele)
@@ -238,6 +241,7 @@ else:
     #      'keep patMuons_goodQCDMuons__PAT',
         'keep patMuons_goodMuons__PAT',
         'keep patElectrons_goodElectrons__PAT',
+        'keep patMETs_patMETs__PAT'
     ])  # + patEventContentNoCleaning)
 
 #Keep events that pass either the muon OR the electron path
