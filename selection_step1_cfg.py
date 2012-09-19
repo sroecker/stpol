@@ -20,8 +20,11 @@ process.maxEvents = cms.untracked.PSet(
   input = cms.untracked.int32(options.maxEvents)
 )
 
-#Should slim the output?
-keepAll = False
+#Should slim (drop the unnecessary collections) the output?
+doSlimming = True
+
+#Should do pre-PFBRECO-skimming (discard uninteresting events)
+doSkimming = True
 
 postfix = ""
 
@@ -61,8 +64,6 @@ process.passedEventCounter = cms.EDProducer("EventCountProducer")
 #   maxJetEta = cms.untracked.double(5.0)
 #   )
 
-import step_eventSkim_cfg
-step_eventSkim_cfg.skimFilters(process)
 
 #-------------------------------------------------
 # selection step 1: trigger
@@ -139,14 +140,15 @@ process.goodMuons = process.selectedPatMuons.clone(
 
 #-------------------------------------------------
 # Electrons
+# Implemented as in https://indico.cern.ch/getFile.py/access?contribId=1&resId=0&materialId=slides&confId=208765
 #-------------------------------------------------
 
-#useGsfElectrons(process, postfix=postfix)  # , dR="03")
-#process.load('EGamma.EGammaAnalysisTools.electronIdMVAProducer_cfi')
-#process.mvaID = cms.Sequence(process.mvaTrigV0 + process.mvaNonTrigV0)
-#process.patElectrons.electronIDSources.mvaTrigV0 = cms.InputTag("mvaTrigV0")
-#process.patElectrons.electronIDSources.mvaNonTrigV0 = cms.InputTag("mvaNonTrigV0")
-#process.patPF2PATSequence.replace(process.patElectrons, process.mvaID * process.patElectrons)
+useGsfElectrons(process, postfix=postfix)
+process.load('EGamma.EGammaAnalysisTools.electronIdMVAProducer_cfi')
+process.mvaID = cms.Sequence(process.mvaTrigV0 + process.mvaNonTrigV0)
+process.patElectrons.electronIDSources.mvaTrigV0 = cms.InputTag("mvaTrigV0")
+process.patElectrons.electronIDSources.mvaNonTrigV0 = cms.InputTag("mvaNonTrigV0")
+process.patPF2PATSequence.replace(process.patElectrons, process.mvaID * process.patElectrons)
 
 goodElectronCut = "pt>30"
 goodElectronCut += "&& abs(eta)<2.5"
@@ -195,28 +197,31 @@ process.goodJets = process.selectedPatJets.clone(
 #-------------------------------------------------
 
 process.singleTopPathStep1Mu = cms.Path(
-    process.muonSkim
-  * process.goodOfflinePrimaryVertices
+  process.goodOfflinePrimaryVertices
   * process.patPF2PATSequence
   * process.goodMuons #Select 'good' muons
   * process.goodJets #Select 'good' jets
 )
 
 process.singleTopPathStep1Ele = cms.Path(
-    process.electronSkim
-  * process.goodOfflinePrimaryVertices
+  process.goodOfflinePrimaryVertices
   * process.patPF2PATSequence
   * process.goodElectrons
   * process.goodJets #Select 'good' jets
 )
 countInSequence(process, process.singleTopPathStep1Mu)
 countInSequence(process, process.singleTopPathStep1Ele)
+if doSkimming:
+    import step_eventSkim_cfg
+    step_eventSkim_cfg.skimFilters(process)
+    process.singleTopPathStep1Mu.insert(0, process.muonSkim)
+    process.singleTopPathStep1Ele.insert(0, process.electronSkim)
 
 process.totalProcessedEventCount = cms.EDProducer("EventCountProducer")
 process.eventCountPath = cms.Path(process.totalProcessedEventCount)
 
 #from PhysicsTools.PatAlgos.patEventContent_cff import patEventContentNoCleaning
-if keepAll:
+if not doSlimming:
     process.out.outputCommands = cms.untracked.vstring('keep *')
 else:
     process.out.outputCommands = cms.untracked.vstring([
