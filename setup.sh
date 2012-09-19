@@ -17,8 +17,9 @@ addpkg CommonTools/RecoAlgos           V00-03-23
 addpkg DataFormats/ParticleFlowCandidate   V15-03-02      
 addpkg DataFormats/TrackReco   V10-02-02      
 addpkg DataFormats/VertexReco   V02-00-04
+addpkg RecoParticleFlow/PFProducer V15-01-11 #in order not to have missing isolation errors
 
-cvs co -r V00-00-13 -d EGamma/EGammaAnalysisTools UserCode/EGamma/EGammaAnalysisTools
+cvs co -d EGamma/EGammaAnalysisTools UserCode/EGamma/EGammaAnalysisTools
 cd EGamma/EGammaAnalysisTools/data
 cat download.url | xargs wget
 
