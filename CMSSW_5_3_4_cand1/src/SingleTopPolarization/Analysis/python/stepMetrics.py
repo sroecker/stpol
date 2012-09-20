@@ -8,8 +8,8 @@ import ROOT
 import time
 ROOT.gROOT.SetBatch(True)
 
-stepCfgFile = "selection_step1_cfg.py"
-effCalc = "efficiency_step1_cfg.py"
+stepCfgFile = "$CMSSW_BASE/src/SingleTopPolarization/Analysis/python/selection_step1_cfg.py"
+effCalc = "$CMSSW_BASE/src/SingleTopPolarization/Analysis/python/efficiency_step1_cfg.py"
 inputRootFile = sys.argv[1]
 stepROOTFile = "patTuple.root"
 tempSTDOUT = "tempOut.STDOUT"
