@@ -9,7 +9,7 @@ from PhysicsTools.PatAlgos.patTemplate_cfg import *
 from PhysicsTools.PatAlgos.tools.coreTools import *
 from PhysicsTools.PatAlgos.tools.pfTools import *
 
-from eventCounting import countInSequence
+from SingleTopPolarization.Analysis.eventCounting import countInSequence
 
 #VarParsing
 from FWCore.ParameterSet.VarParsing import VarParsing
