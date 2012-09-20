@@ -1,5 +1,6 @@
 #!/bin/bash
 #mv CMSSW_5_3_4_cand1/SingleTopPolarization ./
+git stash
 rm -Rf CMSSW_5_3_4_cand1
 export SCRAM_ARCH=slc5_amd64_gcc462
 cmsrel CMSSW_5_3_4_cand1
@@ -26,15 +27,6 @@ cvs co -d EGamma/EGammaAnalysisTools UserCode/EGamma/EGammaAnalysisTools
 cd EGamma/EGammaAnalysisTools/data
 cat download.url | xargs wget
 
-#cvs up -r V08-09-07-05 PhysicsTools/PatAlgos/python/patTemplate_cfg.py
-#addpkg PhysicsTools/PatUtils           V03-09-26
-#addpkg CommonTools/ParticleFlow        V00-03-16
-#addpkg CommonTools/RecoUtils           V00-00-12
-#addpkg CommonTools/RecoAlgos           V00-03-23
-#addpkg DataFormats/ParticleFlowCandidate   V15-03-02      
-#addpkg DataFormats/TrackReco   V10-02-02      
-#addpkg DataFormats/VertexReco   V02-00-04 
-mv SingleTopPolarization CMSSW_5_3_4_cand1/src/
 scram b -j 8
 cmsenv
 cd $CMSSW_BASE/../
