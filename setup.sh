@@ -1,8 +1,9 @@
 #!/bin/bash
-mv CMSSW_5_3_4_cand1/SingleTopPolarization ./
+#mv CMSSW_5_3_4_cand1/SingleTopPolarization ./
 rm -Rf CMSSW_5_3_4_cand1
 export SCRAM_ARCH=slc5_amd64_gcc462
 cmsrel CMSSW_5_3_4_cand1
+git reset --hard
 cd CMSSW_5_3_4_cand1
 
 cmsenv
