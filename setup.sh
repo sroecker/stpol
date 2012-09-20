@@ -1,4 +1,6 @@
 #!/bin/bash
+mv CMSSW_5_3_4_cand1/SingleTopPolarization ./
+rm -Rf CMSSW_5_3_4_cand1
 export SCRAM_ARCH=slc5_amd64_gcc462
 cmsrel CMSSW_5_3_4_cand1
 cd CMSSW_5_3_4_cand1
@@ -31,9 +33,7 @@ cat download.url | xargs wget
 #addpkg DataFormats/ParticleFlowCandidate   V15-03-02      
 #addpkg DataFormats/TrackReco   V10-02-02      
 #addpkg DataFormats/VertexReco   V02-00-04 
-
-cd $CMSSW_BASE/src
-ln -s $CMSSW_BASE/../SingleTopPolarization $CMSSW_BASE/src/SingleTopPolarization
+mv SingleTopPolarization CMSSW_5_3_4_cand1/src/
 scram b -j 8
 cmsenv
 cd $CMSSW_BASE/../
