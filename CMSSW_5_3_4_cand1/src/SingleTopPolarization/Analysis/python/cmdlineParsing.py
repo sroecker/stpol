@@ -1,6 +1,7 @@
 from FWCore.ParameterSet.VarParsing import VarParsing
+import FWCore.ParameterSet.Config as cms
 
-def enableCommanddLineArguments(process):
+def enableCommandLineArguments(process):
     options = VarParsing('analysis')
     options.parseArguments()
     process.source.fileNames = cms.untracked.vstring(options.inputFiles)

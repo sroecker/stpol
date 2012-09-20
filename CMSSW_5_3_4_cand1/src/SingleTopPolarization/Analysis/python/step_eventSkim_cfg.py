@@ -3,7 +3,7 @@
 # mu: looseMuonsSkim -> muonFilterSkim -> looseJetsSkim -> jetFilterSkim
 # ele: looseElectronsSkim -> electronFilterSkim -> looseJetsSkim -> jetFilterSkim
 import FWCore.ParameterSet.Config as cms
-from eventCounting import countInSequence
+from SingleTopPolarization.Analysis.eventCounting import countInSequence
 
 def skimFilters(process):
     muonMinPt = 20

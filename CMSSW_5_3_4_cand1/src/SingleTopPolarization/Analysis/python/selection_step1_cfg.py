@@ -12,14 +12,8 @@ from PhysicsTools.PatAlgos.tools.pfTools import *
 from SingleTopPolarization.Analysis.eventCounting import countInSequence
 
 #VarParsing
-from FWCore.ParameterSet.VarParsing import VarParsing
-options = VarParsing('analysis')
-options.parseArguments()
-process.source.fileNames = cms.untracked.vstring(options.inputFiles)
-process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(options.maxEvents)
-)
-process.out.fileName = cms.untracked.string(options.outputFile)
+from SingleTopPolarization.Analysis.cmdlineParsing import enableCommandLineArguments
+enableCommandLineArguments(process)
 
 #Should do pre-PFBRECO-skimming (discard uninteresting events)
 doSkimming = True
