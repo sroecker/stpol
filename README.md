@@ -10,4 +10,4 @@ SETUP
 
 2. a simple test of the module can be used by running 
 
->python $CMSSW_BASE/src/SingleTopPolarization/Analysis/python/stepMetrics.py file:/path/to/input.root where input.root is an AODSIM-level input file
+>python $CMSSW_BASE/src/SingleTopPolarization/Analysis/python/stepMetrics.py file:/path/to/input.root
