@@ -5,10 +5,12 @@
 // 
 /**\class CandViewTreemakerAnalyzer CandViewTreemakerAnalyzer.cc SingleTopPolarization/CandViewTreemakerAnalyzer/src/CandViewTreemakerAnalyzer.cc
 
- Description: [one line class summary]
+ Description: This class produces a TTree, the branches of which are the specified components of a reco::Candidate collection
 
  Implementation:
-     [Notes on implementation]
+     This class is implemented using the StringObjectFunction to allow generic
+     object properties to be outputted to the TTree. All configuration is done
+     via the python interface.
 */
 //
 // Original Author:  
@@ -80,13 +82,15 @@ class CandViewTreemakerAnalyzer : public edm::EDAnalyzer {
       */
       std::map<std::string, std::map<std::string, StringObjectFunction<reco::Candidate>*>> quantities;
 
+      //All the branch variables
       std::map<std::string, std::map<std::string, std::vector<double*>>> treeValues;
+
+      //Maximum number of elements per collection
       std::map<std::string, int> maxElems;
 
       edm::Service<TFileService> fs;
 
       TTree* outTree;
-      // ----------member data ---------------------------
 };
 
 //
@@ -107,12 +111,24 @@ CandViewTreemakerAnalyzer::CandViewTreemakerAnalyzer(const edm::ParameterSet& iC
 
   auto collectionsPSets = iConfig.getUntrackedParameter<std::vector<edm::ParameterSet>>("collections");
   for (auto& colPSet : collectionsPSets) {
+
+    //The name of the collection to analyze
     const auto& collection = colPSet.getUntrackedParameter<std::string>("collection");
+
+    //The maximum number of elements from a collection to write down
     maxElems[collection] = colPSet.getUntrackedParameter<int>("maxElems");
+
+    //The vector of variables to get from the collections
     const auto& varPSets = colPSet.getUntrackedParameter<std::vector<edm::ParameterSet>>("variables");
+
     for (auto& varPSet : varPSets) {
+
+      //The name of the variable in the output TTree
       const auto& tag = varPSet.getUntrackedParameter<std::string>("tag");
+
+      //The expression to evaluate on an element of the collection
       const auto& expr = varPSet.getUntrackedParameter<std::string>("expr");
+
       quantities[collection][tag] = new StringObjectFunction<reco::Candidate>(expr, false);
       for(int i=0;i<maxElems[collection];i++) {
         double* d = new double(D_NAN);
