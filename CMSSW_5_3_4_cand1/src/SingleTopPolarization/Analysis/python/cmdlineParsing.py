@@ -8,4 +8,5 @@ def enableCommandLineArguments(process):
     process.maxEvents = cms.untracked.PSet(
       input = cms.untracked.int32(options.maxEvents)
     )
-    process.out.fileName = cms.untracked.string(options.outputFile)
+    if hasattr(process, "out"):
+    	process.out.fileName = cms.untracked.string(options.outputFile)
