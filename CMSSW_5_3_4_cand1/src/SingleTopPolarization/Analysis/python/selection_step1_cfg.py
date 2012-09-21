@@ -208,9 +208,10 @@ process.singleTopPathStep1Ele = cms.Path(
 )
 countInSequence(process, process.singleTopPathStep1Mu)
 countInSequence(process, process.singleTopPathStep1Ele)
+
 if doSkimming:
-    import step_eventSkim_cfg
-    step_eventSkim_cfg.skimFilters(process)
+    from SingleTopPolarization.Analysis.step_eventSkim_cfg import skimFilters
+    skimFilters(process)
     process.singleTopPathStep1Mu.insert(0, process.muonSkim)
     process.singleTopPathStep1Ele.insert(0, process.electronSkim)
 
