@@ -5,7 +5,7 @@
 // 
 /**\class SimpleEventAnalyzer SimpleEventAnalyzer.cc PhysicsTools/SimpleEventAnalyzer/src/SimpleEventAnalyzer.cc
 
- Description: [one line class summary]
+ Description: The simplest example of an EDAnalyzer that gets a collection from the file and processes it in some fashion
 
  Implementation:
      [Notes on implementation]
@@ -30,9 +30,11 @@
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
-#include <DataFormats/PatCandidates/interface/Muon.h>
+//#include <DataFormats/PatCandidates/interface/Muon.h> //Requred for pat::Muon
 
-#include <FWCore/Utilities/interface/InputTag.h>
+#include <DataFormats/Candidate/interface/Candidate.h> //Required for reco::Candidate
+
+#include <FWCore/Utilities/interface/InputTag.h> //Required for edm::InputTag
 
 //
 // class declaration
@@ -56,6 +58,8 @@ class SimpleEventAnalyzer : public edm::EDAnalyzer {
       virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
       virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
 
+      std::string objectOfInterest;
+
       // ----------member data ---------------------------
 };
 
@@ -73,8 +77,7 @@ class SimpleEventAnalyzer : public edm::EDAnalyzer {
 SimpleEventAnalyzer::SimpleEventAnalyzer(const edm::ParameterSet& iConfig)
 
 {
-   //now do what ever initialization is needed
-
+  objectOfInterest = iConfig.getUntrackedParameter<std::string>("interestingCollection");
 }
 
 
@@ -95,11 +98,12 @@ SimpleEventAnalyzer::~SimpleEventAnalyzer()
 void
 SimpleEventAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-//   edm::Handle<edm::View<pat::Muon>> objects;
-   edm::Handle<std::vector<pat::Muon>> objects;
-   iEvent.getByLabel("goodMuons", objects);
-   for (std::vector<pat::Muon>::const_iterator obj = objects->begin(); obj != objects->end(); obj++) {
-       std::cout << "object Pt: " << (*obj).pt() << std::endl;
+   edm::Handle<edm::View<reco::Candidate>> objects;
+   iEvent.getByLabel(objectOfInterest, objects);
+   //for (edm::View<reco::Candidate>::const_iterator obj = objects->begin(); obj != objects->end(); obj++) {
+   for (auto& obj : *objects) {
+       //std::cout << "pt: " << (*obj).pt() << std::endl;
+    std::cout << "pt: " << obj.pt() << " eta: " << obj.eta() << " phi: " << obj.phi() << std::endl;
    }
    
 }
