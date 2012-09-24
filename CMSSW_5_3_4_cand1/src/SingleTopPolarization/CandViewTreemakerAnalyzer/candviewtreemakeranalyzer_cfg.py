@@ -16,7 +16,9 @@ process.source = cms.Source("PoolSource",
 from SingleTopPolarization.Analysis.cmdlineParsing import enableCommandLineArguments
 enableCommandLineArguments(process)
 
-process.demo = cms.EDAnalyzer('CandViewTreemakerAnalyzer',
+process.trees1 = cms.EDAnalyzer('CandViewTreemakerAnalyzer',
+	makeTree = cms.untracked.bool(True),
+	treeName = cms.untracked.string("eventTree"),
 	collections = cms.untracked.VPSet(
 		cms.untracked.PSet(
 			collection = cms.untracked.string("goodMuons"),
@@ -56,10 +58,38 @@ process.demo = cms.EDAnalyzer('CandViewTreemakerAnalyzer',
 		),
 	)
 )
+process.trees2 = cms.EDAnalyzer('JetViewTreemakerAnalyzer',
+	makeTree = cms.untracked.bool(True),
+	treeName = cms.untracked.string("eventTree"),
+	collections = cms.untracked.VPSet(
+		cms.untracked.PSet(
+			collection = cms.untracked.string("bTagsTCHPT"),
+			maxElems = cms.untracked.int32(2),
+			variables = cms.untracked.VPSet(
+				cms.untracked.PSet(
+					tag = cms.untracked.string("Pt"),
+					expr = cms.untracked.string("pt")
+				), 
+				cms.untracked.PSet(
+					tag = cms.untracked.string("Eta"),
+					expr = cms.untracked.string("eta")
+				),
+				cms.untracked.PSet(
+					tag = cms.untracked.string("Phi"),
+					expr = cms.untracked.string("phi")
+				),
+				cms.untracked.PSet(
+					tag = cms.untracked.string("bTag"),
+					expr = cms.untracked.string("bDiscriminator('default')")
+				),
+			)
+		),
+	)
+)
 
 process.TFileService = cms.Service(
     "TFileService",
     fileName = cms.string("trees.root"),
 )
 
-process.p = cms.Path(process.demo)
+process.p = cms.Path(process.trees1*process.trees2)
