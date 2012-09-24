@@ -13,6 +13,7 @@ process.source = cms.Source("PoolSource",
     )
 )
 
+#Command-line arguments
 from SingleTopPolarization.Analysis.cmdlineParsing import enableCommandLineArguments
 enableCommandLineArguments(process)
 
