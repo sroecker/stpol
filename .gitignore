@@ -1,7 +1,12 @@
+#CVS crud
+*CVS*
+
 # Compiled Object files
 *.slo
 *.lo
 *.o
+*.pyc
+*__init__.py
 
 # Compiled Dynamic libraries
 *.so
