@@ -138,6 +138,10 @@ process.out = cms.OutputModule("PoolOutputModule",
      SelectEvents = cms.untracked.PSet(
          SelectEvents = cms.vstring(['muPath', 'elePath'])
      ),
-    outputCommands = cms.untracked.vstring('keep *')
+    outputCommands = cms.untracked.vstring(
+        'keep *',
+        'drop patElectrons_looseVetoElectrons__PAT',
+        'drop patMuons_looseVetoMuons__PAT',
+    )
 )
 process.outpath = cms.EndPath(process.out)
