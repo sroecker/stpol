@@ -6,7 +6,7 @@ import FWCore.ParameterSet.Config as cms
 from SingleTopPolarization.Analysis.eventCounting import countInSequence
 
 def skimFilters(process):
-    muonMinPt = 20
+    muonMinPt = 10
     muonEtaRange = [-4.5, 4.5]
     muonSource = "muons"
     process.looseMuonsSkim = cms.EDFilter("EtaPtMinCandViewSelector",
@@ -16,7 +16,7 @@ def skimFilters(process):
     etaMax = cms.double(max(muonEtaRange))
     )
 
-    jetMinPt = 40
+    jetMinPt = 30
     jetEtaRange = [-4.5, 4.5]
     jetSource = "ak5PFJets"
     process.looseJetsSkim = cms.EDFilter("EtaPtMinCandViewSelector",
@@ -26,7 +26,7 @@ def skimFilters(process):
     etaMax = cms.double(max(jetEtaRange))
     )
 
-    electronMinPt = 20
+    electronMinPt = 10
     electronEtaRange = [-4.5, 4.5]
     electronSource = "gsfElectrons"
     process.looseElectronsSkim = cms.EDFilter("EtaPtMinCandViewSelector",
