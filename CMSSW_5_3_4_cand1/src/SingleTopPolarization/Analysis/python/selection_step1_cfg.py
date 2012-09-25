@@ -175,7 +175,6 @@ goodSignalElectronCut = goodElectronCut
 goodSignalElectronCut += '&& userFloat("rhoCorrRelIso") < 0.1'
 
 goodQCDElectronCut = goodElectronCut
-goodQCDElectronCut += '&& userFloat("rhoCorrRelIso") < 0.1'
 goodQCDElectronCut += '&& userFloat("rhoCorrRelIso") > 0.2'
 goodQCDElectronCut += '&& userFloat("rhoCorrRelIso") < 0.5'
 
