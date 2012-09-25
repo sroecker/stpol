@@ -115,9 +115,9 @@ EfficiencyAnalyzer::EfficiencyAnalyzer(const edm::ParameterSet& iConfig)
 
 EfficiencyAnalyzer::~EfficiencyAnalyzer()
 {
-  for (auto& elem : histograms) {
+  /*for (auto& elem : histograms) {
     delete elem.second;
-  }
+  }*/
    // do anything here that needs to be done at desctruction time
    // (e.g. close files, deallocate resources etc.)
 
