@@ -1,9 +1,9 @@
 // -*- C++ -*-
 //
-// Package:    LeptonIsolationProducer
-// Class:      LeptonIsolationProducer
+// Package:    LeptonIsolationProducer<T>
+// Class:      LeptonIsolationProducer<T>
 // 
-/**\class LeptonIsolationProducer LeptonIsolationProducer.cc SingleTopPolarization/LeptonIsolationProducer/src/LeptonIsolationProducer.cc
+/**\class LeptonIsolationProducer<T> LeptonIsolationProducer<T>.cc SingleTopPolarization/LeptonIsolationProducer<T>/src/LeptonIsolationProducer<T>.cc
 
  Description: [one line class summary]
 
@@ -30,11 +30,17 @@
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
+#include "FWCore/Utilities/interface/InputTag.h"
+
+//PAT
+#include <DataFormats/PatCandidates/interface/Muon.h>
+
+
 
 //
 // class declaration
 //
-
+template <typename T>
 class LeptonIsolationProducer : public edm::EDProducer {
    public:
       explicit LeptonIsolationProducer(const edm::ParameterSet&);
@@ -52,9 +58,14 @@ class LeptonIsolationProducer : public edm::EDProducer {
       virtual void beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
       virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
 
+      edm::InputTag leptonSource;
+      edm::InputTag rhoSource;
+
+      float dR;
+
+
       // ----------member data ---------------------------
 };
-
 //
 // constants, enums and typedefs
 //
@@ -67,7 +78,8 @@ class LeptonIsolationProducer : public edm::EDProducer {
 //
 // constructors and destructor
 //
-LeptonIsolationProducer::LeptonIsolationProducer(const edm::ParameterSet& iConfig)
+template <typename T>
+LeptonIsolationProducer<T>::LeptonIsolationProducer(const edm::ParameterSet& iConfig)
 {
    //register your products
 /* Examples
@@ -79,12 +91,18 @@ LeptonIsolationProducer::LeptonIsolationProducer(const edm::ParameterSet& iConfi
    //if you want to put into the Run
    produces<ExampleData2,InRun>();
 */
+   produces<std::vector<T> >();
+
+   leptonSource = iConfig.getParameter<edm::InputTag>("leptonSrc");
+   rhoSource = iConfig.getParameter<edm::InputTag>("rhoSrc");
+   dR = iConfig.getUntrackedParameter<double>("dR", 0.4);
    //now do what ever other initialization is needed
   
 }
 
 
-LeptonIsolationProducer::~LeptonIsolationProducer()
+template <typename T>
+LeptonIsolationProducer<T>::~LeptonIsolationProducer()
 {
  
    // do anything here that needs to be done at desctruction time
@@ -98,10 +116,29 @@ LeptonIsolationProducer::~LeptonIsolationProducer()
 //
 
 // ------------ method called to produce the data  ------------
+template <typename T>
 void
-LeptonIsolationProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
+LeptonIsolationProducer<T>::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-   using namespace edm;
+  using namespace edm;
+
+  Handle<std::vector<T> > leptons;
+  Handle<double> rho;
+
+  iEvent.getByLabel(leptonSource,leptons);
+  iEvent.getByLabel(rhoSource,rho);
+
+  std::auto_ptr<std::vector<T> > outLeptons(new std::vector<T>(*leptons));
+
+  for (auto& lepton : *outLeptons) {
+    float dbc_iso = (lepton.chargedHadronIso() + std::max(0., lepton.neutralHadronIso() + lepton.photonIso() - 0.5*lepton.puChargedHadronIso()))/lepton.et();
+    double e = TMath::Pi() * dR * dR * (*rho);
+    float rc_iso = (lepton.chargedHadronIso() + std::max(0., lepton.neutralHadronIso() + lepton.photonIso() - e))/lepton.et();
+    lepton.addUserFloat("deltaBetaCorrRelIso", dbc_iso);
+    lepton.addUserFloat("rhoCorrRelIso", rc_iso);
+  }
+  iEvent.put(outLeptons);
+
 /* This is an event example
    //Read 'ExampleData' from the Event
    Handle<ExampleData> pIn;
@@ -122,43 +159,50 @@ LeptonIsolationProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSet
 }
 
 // ------------ method called once each job just before starting event loop  ------------
+template <typename T>
 void 
-LeptonIsolationProducer::beginJob()
+LeptonIsolationProducer<T>::beginJob()
 {
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
+template <typename T>
 void 
-LeptonIsolationProducer::endJob() {
+LeptonIsolationProducer<T>::endJob() {
 }
 
 // ------------ method called when starting to processes a run  ------------
+template <typename T>
 void 
-LeptonIsolationProducer::beginRun(edm::Run&, edm::EventSetup const&)
+LeptonIsolationProducer<T>::beginRun(edm::Run&, edm::EventSetup const&)
 {
 }
 
 // ------------ method called when ending the processing of a run  ------------
+template <typename T>
 void 
-LeptonIsolationProducer::endRun(edm::Run&, edm::EventSetup const&)
+LeptonIsolationProducer<T>::endRun(edm::Run&, edm::EventSetup const&)
 {
 }
 
 // ------------ method called when starting to processes a luminosity block  ------------
+template <typename T>
 void 
-LeptonIsolationProducer::beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&)
+LeptonIsolationProducer<T>::beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&)
 {
 }
 
 // ------------ method called when ending the processing of a luminosity block  ------------
+template <typename T>
 void 
-LeptonIsolationProducer::endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&)
+LeptonIsolationProducer<T>::endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&)
 {
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
+template <typename T>
 void
-LeptonIsolationProducer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
+LeptonIsolationProducer<T>::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
   //The following says we do not know what parameters are allowed so do no validation
   // Please change this to state exactly what you do use, even if it is no parameters
   edm::ParameterSetDescription desc;
@@ -167,4 +211,5 @@ LeptonIsolationProducer::fillDescriptions(edm::ConfigurationDescriptions& descri
 }
 
 //define this as a plug-in
-DEFINE_FWK_MODULE(LeptonIsolationProducer);
+typedef LeptonIsolationProducer<pat::Muon> MuonIsolationProducer;
+DEFINE_FWK_MODULE(MuonIsolationProducer);
