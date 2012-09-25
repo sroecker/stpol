@@ -34,6 +34,7 @@
 
 //PAT
 #include <DataFormats/PatCandidates/interface/Muon.h>
+#include <DataFormats/PatCandidates/interface/Electron.h>
 
 
 
@@ -212,4 +213,6 @@ LeptonIsolationProducer<T>::fillDescriptions(edm::ConfigurationDescriptions& des
 
 //define this as a plug-in
 typedef LeptonIsolationProducer<pat::Muon> MuonIsolationProducer;
+typedef LeptonIsolationProducer<pat::Electron> ElectronIsolationProducer;
 DEFINE_FWK_MODULE(MuonIsolationProducer);
+DEFINE_FWK_MODULE(ElectronIsolationProducer);
