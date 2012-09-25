@@ -9,14 +9,12 @@ from PhysicsTools.PatAlgos.patTemplate_cfg import *
 from PhysicsTools.PatAlgos.tools.coreTools import *
 from PhysicsTools.PatAlgos.tools.pfTools import *
 
-from SingleTopPolarization.Analysis.eventCounting import countInSequence
-
 #VarParsing
 from SingleTopPolarization.Analysis.cmdlineParsing import enableCommandLineArguments
 enableCommandLineArguments(process)
 
 #Should do pre-PFBRECO-skimming (discard uninteresting events)
-doSkimming = True
+doSkimming = False
 
 #Should slim (drop the unnecessary collections) the output?
 doSlimming = True
@@ -36,13 +34,6 @@ process.pfPileUp.Enable = True
 process.pfPileUp.checkClosestZVertex = False
 
 #process.pfPileUp.Enable = True
-
-#-----------------------------------------------
-#Skim efficiency counters
-#-----------------------------------------------
-process.processedEventCounter = cms.EDProducer("EventCountProducer")
-process.passInitialSkimCounter = cms.EDProducer("EventCountProducer")
-process.passedEventCounter = cms.EDProducer("EventCountProducer")
 
 #-----------------------------------------------
 # selection step 0: initial skim filter (reco filter)
@@ -194,7 +185,7 @@ looseVetoElectronCut += "&& (0.0 < electronID('mvaTrigV0') < 1.0)"
 looseVetoElectronCut += '&& userFloat("rhoCorrRelIso") < 0.15'
 
 process.elesWithIso = cms.EDProducer(
-  'MuonIsolationProducer',
+  'ElectronIsolationProducer',
   leptonSrc = cms.InputTag("selectedPatElectrons" + postfix),
   rhoSrc = cms.InputTag("kt6PFJets", "rho")
 )
@@ -251,8 +242,8 @@ process.goodJets = process.selectedPatJets.clone(
 # Paths
 #-------------------------------------------------
 
-process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatElectrons), process.elesWithIso)
-process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatMuons), process.muonsWithIso)
+process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatElectrons) + 1, process.elesWithIso)
+process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatMuons) + 1, process.muonsWithIso)
 
 process.singleTopPathStep1Mu = cms.Path(
   process.goodOfflinePrimaryVertices
@@ -269,19 +260,35 @@ process.singleTopPathStep1Ele = cms.Path(
   * process.muSequence
   * process.goodJets
 )
+
+#-----------------------------------------------
+# Skim efficiency counters
+#-----------------------------------------------
+
+from SingleTopPolarization.Analysis.eventCounting import *
+
+#count all processed events
+countProcessed(process) 
+
+#count events passing mu and ele paths
 countInSequence(process, process.singleTopPathStep1Mu)
 countInSequence(process, process.singleTopPathStep1Ele)
 
+#-----------------------------------------------
+# Skimming
+#-----------------------------------------------
+
+#Throw away events before particle flow?
 if doSkimming:
     from SingleTopPolarization.Analysis.step_eventSkim_cfg import skimFilters
     skimFilters(process)
     process.singleTopPathStep1Mu.insert(0, process.muonSkim)
     process.singleTopPathStep1Ele.insert(0, process.electronSkim)
 
-process.totalProcessedEventCount = cms.EDProducer("EventCountProducer")
-process.eventCountPath = cms.Path(process.totalProcessedEventCount)
+#-----------------------------------------------
+# Slimming
+#-----------------------------------------------
 
-#from PhysicsTools.PatAlgos.patEventContent_cff import patEventContentNoCleaning
 if not doSlimming:
     process.out.outputCommands = cms.untracked.vstring('keep *')
 else:
@@ -317,4 +324,5 @@ process.out.SelectEvents = cms.untracked.PSet(
     ["singleTopPathStep1Mu", "singleTopPathStep1Ele"]
   )
 )
+
 process.GlobalTag.globaltag = cms.string('START52_V9B::All')
