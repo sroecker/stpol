@@ -330,6 +330,7 @@ typedef GenericViewTreemakerAnalyzer<edm::View<reco::Candidate>, reco::Candidate
 typedef GenericViewTreemakerAnalyzer<edm::View<reco::Candidate>, pat::Jet> JetViewTreemakerAnalyzer;
 typedef GenericViewTreemakerAnalyzer<reco::CandidateCollection, pat::Jet> JetCandOwnVectorTreemakerAnalyzer;
 typedef GenericViewTreemakerAnalyzer<reco::CandidateCollection, pat::Muon> MuonCandOwnVectorTreemakerAnalyzer;
+typedef GenericViewTreemakerAnalyzer<edm::View<reco::Candidate>, pat::Muon> MuonCandViewTreemakerAnalyzer;
 //typedef GenericViewTreemakerAnalyzer<edm::OwnVector<pat::Jet, edm::ClonePolicy<pat::Jet>>> JetVectorTreemakerAnalyzer;
 
 //define this as a plug-in
@@ -337,6 +338,7 @@ DEFINE_FWK_MODULE(CandViewTreemakerAnalyzer);
 DEFINE_FWK_MODULE(JetViewTreemakerAnalyzer);
 DEFINE_FWK_MODULE(JetCandOwnVectorTreemakerAnalyzer);
 DEFINE_FWK_MODULE(MuonCandOwnVectorTreemakerAnalyzer);
+DEFINE_FWK_MODULE(MuonCandViewTreemakerAnalyzer);
 //DEFINE_FWK_MODULE(JetVectorTreemakerAnalyzer);
 //DEFINE_FWK_MODULE(JetViewSelector);
 
