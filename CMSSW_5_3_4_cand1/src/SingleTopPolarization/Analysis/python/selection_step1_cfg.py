@@ -108,19 +108,37 @@ goodMuonCut += ' && globalTrack.hitPattern.numberOfValidMuonHits > 0'           
 goodMuonCut += ' && abs(dB) < 0.2'                                                                  # 2-dim impact parameter with respect to beam spot (s. "PAT muon configuration" above)
 goodMuonCut += ' && innerTrack.hitPattern.numberOfValidPixelHits > 0'                               # tracker reconstruction
 goodMuonCut += ' && numberOfMatchedStations > 1'                                                    # muon chamber reconstruction
-#signalMuonCut += ' && (chargedHadronIso+max(0.0,neutralHadronIso+photonIso-0.5*puChargedHadronIso))/pt < 0.12' # Delta beta corrections (factor 0.5)
 
-#goodSignalMuonCut = goodMuonCut + ' && (chargedHadronIso+max(0.0,neutralHadronIso+photonIso-0.5*puChargedHadronIso))/pt < 0.12'
-#goodQCDMuonCut = goodMuonCut + '&& (chargedHadronIso+max(0.0,neutralHadronIso+photonIso-0.5*puChargedHadronIso))/pt < 0.5\
-#                                  && (chargedHadronIso+max(0.0,neutralHadronIso+photonIso-0.5*puChargedHadronIso))/pt > 0.3'
+looseVetoMuonCut = "isPFMuon"
+looseVetoMuonCut += "&& (isGlobalMuon | isTrackerMuon)"
+looseVetoMuonCut += "&& pt > 10"
+looseVetoMuonCut += "&& abs(eta)<2.5"
+looseVetoMuonCut += ' && (chargedHadronIso+max(0.0,neutralHadronIso+photonIso-0.5*puChargedHadronIso))/pt < 0.2' # Delta beta corrections (factor 0.5)
 
+#isolated region
+goodSignalMuonCut = goodMuonCut
+goodSignalMuonCut += ' && (chargedHadronIso+max(0.0,neutralHadronIso+photonIso-0.5*puChargedHadronIso))/pt < 0.12'
+
+#anti-isolated region
+goodQCDMuonCut = goodMuonCut
+goodQCDMuonCut += '&& (chargedHadronIso+max(0.0,neutralHadronIso+photonIso-0.5*puChargedHadronIso))/pt < 0.5'
+goodQCDMuonCut += '&& (chargedHadronIso+max(0.0,neutralHadronIso+photonIso-0.5*puChargedHadronIso))/pt > 0.3'
 
 process.pfIsolatedMuons.doDeltaBetaCorrection = False
 process.pfIsolatedMuons.isolationCut = 1.0  # Deliberately put a large isolation cut
 
-process.goodMuons = process.selectedPatMuons.clone(
-  src = cms.InputTag("selectedPatMuons" + postfix), cut = goodMuonCut
+process.goodSignalMuons = process.selectedPatMuons.clone(
+  src = cms.InputTag("selectedPatMuons" + postfix), cut = goodSignalMuonCut
 )
+
+process.goodQCDMuons = process.selectedPatMuons.clone(
+  src = cms.InputTag("selectedPatMuons" + postfix), cut = goodQCDMuonCut
+)
+
+process.looseVetoMuons = process.selectedPatMuons.clone(
+  src = cms.InputTag("selectedPatMuons" + postfix), cut = looseVetoMuonCut
+)
+
 
 #process.patMuons.userData.userFunctions = cms.vstring('((chargedHadronIso()+max(0.0,neutralHadronIso()+photonIso()-0.5*puChargedHadronIso()))/pt())')
 #process.patMuons.userData.userFunctionLabels = cms.vstring('pfRelIso04')
@@ -194,7 +212,9 @@ process.goodJets = process.selectedPatJets.clone(
 process.singleTopPathStep1Mu = cms.Path(
   process.goodOfflinePrimaryVertices
   * process.patPF2PATSequence
-  * process.goodMuons
+  * process.goodSignalMuons
+  * process.goodQCDMuons
+  * process.looseVetoMuons
   * process.goodElectrons
   * process.goodJets
 )
@@ -202,7 +222,7 @@ process.singleTopPathStep1Mu = cms.Path(
 process.singleTopPathStep1Ele = cms.Path(
   process.goodOfflinePrimaryVertices
   * process.patPF2PATSequence
-  * process.goodMuons
+#  * process.goodMuons
   * process.goodElectrons
   * process.goodJets
 )
@@ -234,7 +254,9 @@ else:
         'keep recoGenJets_goodJets_genJets_PAT', #For Jet MC smearing we need to keep the genJets
     #      'keep patMuons_goodSignalMuons__PAT',
     #      'keep patMuons_goodQCDMuons__PAT',
-        'keep patMuons_goodMuons__PAT',
+        'keep patMuons_goodSignalMuons__PAT',
+        'keep patMuons_goodQCDMuons__PAT',
+        'keep patMuons_looseVetoMuons__PAT',
         'keep patElectrons_goodElectrons__PAT',
         'keep patMETs_patMETs__PAT'
     ])  # + patEventContentNoCleaning)
