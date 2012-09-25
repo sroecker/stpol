@@ -25,12 +25,58 @@ process.outpath = cms.EndPath(process.out)
 from SingleTopPolarization.Analysis.cmdlineParsing import enableCommandLineArguments
 enableCommandLineArguments(process)
 
-process.bTagsTCHPT = cms.EDFilter(
+process.bTagsTCHPtight = cms.EDFilter(
 	"CandViewSelector",
 	src = cms.InputTag("goodJets"),
-	#cut = cms.string("pt > 20")
-	cut = cms.string('bDiscriminator("default") > 0.9')
-	#ptMin = cms.double(20)
+	cut = cms.string('bDiscriminator("trackCountingHighPurBJetTags") > 3.41')
 )
 
-process.p = cms.Path(process.bTagsTCHPT)
+process.bTagsCSVmedium = cms.EDFilter(
+    "CandViewSelector",
+    src = cms.InputTag("goodJets"),
+    cut = cms.string('bDiscriminator("combinedSecondaryVertexBJetTags") > 0.679')
+)
+
+process.bTagsCSVtight = cms.EDFilter(
+    "CandViewSelector",
+    src = cms.InputTag("bTagsCSVmedium"),
+    cut = cms.string('bDiscriminator("combinedSecondaryVertexBJetTags") > 0.898')
+)
+
+process.oneIsoMu = cms.EDFilter(
+    "PATCandViewCountFilter",
+    src = cms.InputTag("goodSignalMuons"),
+    minNumber = cms.uint32(1),
+    maxNumber = cms.uint32(1),
+)
+
+process.looseMuVeto = cms.EDFilter(
+    "PATCandViewCountFilter",
+    src = cms.InputTag("looseVetoMuons"),
+    minNumber = cms.uint32(2),
+    maxNumber = cms.uint32(2),
+)
+
+process.nJets = cms.EDFilter(
+    "PATCandViewCountFilter",
+    src = cms.InputTag("goodJets"),
+    minNumber = cms.uint32(2),
+    maxNumber = cms.uint32(2),
+)
+
+process.mBTags = cms.EDFilter(
+    "PATCandViewCountFilter",
+    src = cms.InputTag("bTagsTCHPtight"),
+    minNumber = cms.uint32(1),
+    maxNumber = cms.uint32(1),
+)
+
+process.p = cms.Path(
+    process.oneIsoMu * 
+    process.looseMuVeto * 
+    process.nJets *
+    process.bTagsCSVmedium *
+    process.bTagsCSVtight *
+    process.bTagsTCHPtight *
+    process.mBTags
+)
