@@ -48,9 +48,10 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 
-//pat::Jet
+//PAT
 #include <DataFormats/PatCandidates/interface/Jet.h>
 #include <DataFormats/PatCandidates/interface/Muon.h>
+#include <DataFormats/PatCandidates/interface/Electron.h>
 
 //OwnVector
 #include <DataFormats/Common/interface/OwnVector.h>
@@ -327,18 +328,20 @@ GenericViewTreemakerAnalyzer<T, C>::fillDescriptions(edm::ConfigurationDescripti
 //typedef SingleObjectSelector< edm::View<pat::Jet>, StringCutObjectSelector<pat::Jet, true>, edm::OwnVector<pat::Jet, edm::ClonePolicy<pat::Jet>> > JetViewSelector;
 
 typedef GenericViewTreemakerAnalyzer<edm::View<reco::Candidate>, reco::Candidate> CandViewTreemakerAnalyzer;
-typedef GenericViewTreemakerAnalyzer<edm::View<reco::Candidate>, pat::Jet> JetViewTreemakerAnalyzer;
+typedef GenericViewTreemakerAnalyzer<edm::View<reco::Candidate>, pat::Jet> JetCandViewTreemakerAnalyzer;
 typedef GenericViewTreemakerAnalyzer<reco::CandidateCollection, pat::Jet> JetCandOwnVectorTreemakerAnalyzer;
 typedef GenericViewTreemakerAnalyzer<reco::CandidateCollection, pat::Muon> MuonCandOwnVectorTreemakerAnalyzer;
 typedef GenericViewTreemakerAnalyzer<edm::View<reco::Candidate>, pat::Muon> MuonCandViewTreemakerAnalyzer;
+typedef GenericViewTreemakerAnalyzer<edm::View<reco::Candidate>, pat::Electron> ElectronCandViewTreemakerAnalyzer;
 //typedef GenericViewTreemakerAnalyzer<edm::OwnVector<pat::Jet, edm::ClonePolicy<pat::Jet>>> JetVectorTreemakerAnalyzer;
 
 //define this as a plug-in
 DEFINE_FWK_MODULE(CandViewTreemakerAnalyzer);
-DEFINE_FWK_MODULE(JetViewTreemakerAnalyzer);
+DEFINE_FWK_MODULE(JetCandViewTreemakerAnalyzer);
 DEFINE_FWK_MODULE(JetCandOwnVectorTreemakerAnalyzer);
 DEFINE_FWK_MODULE(MuonCandOwnVectorTreemakerAnalyzer);
 DEFINE_FWK_MODULE(MuonCandViewTreemakerAnalyzer);
+DEFINE_FWK_MODULE(ElectronCandViewTreemakerAnalyzer);
 //DEFINE_FWK_MODULE(JetVectorTreemakerAnalyzer);
 //DEFINE_FWK_MODULE(JetViewSelector);
 
