@@ -11,9 +11,13 @@ SETUP
 2. a simple test of the code can be run by using 
 
 >cd $CMSSW_BASE/
+
 >cmsenv
+
 >cd ..
+
 >cmsRun $CMSSW_BASE/src/SingleTopPolarization/Analysis/python/selection_step1_cfg.py inputFile=file:/path/to/input/file.root outputFile=out_step1.root maxEvents=100
+
 >. .\test.sh out_step1.root
 
 ANALYSIS PATHWAY
