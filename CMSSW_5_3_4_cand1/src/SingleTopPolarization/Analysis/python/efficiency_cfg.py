@@ -18,7 +18,7 @@ process.efficiencyAnalyzer = cms.EDAnalyzer('EfficiencyAnalyzer'
 , histogrammableCounters = cms.untracked.vstring(["muPath", "elePath", "TotalEventsProcessed"])
 , muPath = cms.untracked.vstring(["muPathOneIsoMuPostCount", "muPathLooseMuVetoMuPostCount", "muPathLooseEleVetoMuPostCount", "muPathNJetsPostCount", "muPathMBTagsPostCount"])
 , elePath = cms.untracked.vstring(["elePathOneIsoElePostCount", "elePathLooseEleVetoElePostCount", "elePathLooseMuVetoElePostCount", "muPathNJetsPostCount", "elePathMBTagsPostCount"])
-, TotalEventsProcessed = cms.untracked.vstring(["totalProcessedEventCount", "STPOLSEL2TotalEventsProcessedCount"])
+, TotalEventsProcessed = cms.untracked.vstring(["PATTotalEventsProcessedCount", "STPOLSEL2TotalEventsProcessedCount"])
 )
 
 process.TFileService = cms.Service(
