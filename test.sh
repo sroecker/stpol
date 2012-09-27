@@ -1,6 +1,6 @@
 #!/bin/bash
 
-STEP1OF='out_step1_noSkim.root'
+STEP1OF=$1
 STEP2OF='out_step2.root'
 ANCODE=$CMSSW_BASE'/src/SingleTopPolarization/Analysis/python'
 
