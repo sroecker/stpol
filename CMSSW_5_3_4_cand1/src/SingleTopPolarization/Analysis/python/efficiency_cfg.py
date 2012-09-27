@@ -17,7 +17,7 @@ enableCommandLineArguments(process)
 process.efficiencyAnalyzer = cms.EDAnalyzer('EfficiencyAnalyzer'
 , histogrammableCounters = cms.untracked.vstring(["muPath", "elePath", "TotalEventsProcessed"])
 , muPath = cms.untracked.vstring(["muPathOneIsoMuPostCount", "muPathLooseMuVetoMuPostCount", "muPathLooseEleVetoMuPostCount", "muPathNJetsPostCount", "muPathMBTagsPostCount"])
-, elePath = cms.untracked.vstring(["elePathOneIsoElePostCount", "elePathLooseEleVetoElePostCount", "elePathLooseMuVetoElePostCount", "muPathNJetsPostCount", "elePathMBTagsPostCount"])
+, elePath = cms.untracked.vstring(["elePathOneIsoElePostCount", "elePathLooseEleVetoElePostCount", "elePathLooseMuVetoElePostCount", "elePathNJetsPostCount", "elePathMBTagsPostCount"])
 , TotalEventsProcessed = cms.untracked.vstring(["PATTotalEventsProcessedCount", "STPOLSEL2TotalEventsProcessedCount"])
 )
 
