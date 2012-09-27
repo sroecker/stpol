@@ -89,32 +89,6 @@ process.goodOfflinePrimaryVertices = cms.EDFilter(
 # Muons
 #-------------------------------------------------
 
-goodMuonCut = 'isPFMuon'                                                                           # general reconstruction property
-goodMuonCut += ' && isGlobalMuon'                                                                   # general reconstruction property
-goodMuonCut += ' && pt > 26.'                                                                       # transverse momentum
-goodMuonCut += ' && abs(eta) < 2.1'                                                                 # pseudo-rapisity range
-goodMuonCut += ' && globalTrack.normalizedChi2 < 10.'                                               # muon ID: 'isGlobalMuonPromptTight'
-goodMuonCut += ' && track.hitPattern.trackerLayersWithMeasurement > 5'                              # muon ID: 'isGlobalMuonPromptTight'
-goodMuonCut += ' && globalTrack.hitPattern.numberOfValidMuonHits > 0'                               # muon ID: 'isGlobalMuonPromptTight'
-goodMuonCut += ' && abs(dB) < 0.2'                                                                  # 2-dim impact parameter with respect to beam spot (s. "PAT muon configuration" above)
-goodMuonCut += ' && innerTrack.hitPattern.numberOfValidPixelHits > 0'                               # tracker reconstruction
-goodMuonCut += ' && numberOfMatchedStations > 1'                                                    # muon chamber reconstruction
-
-looseVetoMuonCut = "isPFMuon"
-looseVetoMuonCut += "&& (isGlobalMuon | isTrackerMuon)"
-looseVetoMuonCut += "&& pt > 10"
-looseVetoMuonCut += "&& abs(eta)<2.5"
-looseVetoMuonCut += ' && userFloat("deltaBetaCorrRelIso") < 0.2' # Delta beta corrections (factor 0.5)
-
-#isolated region
-goodSignalMuonCut = goodMuonCut
-goodSignalMuonCut += ' && userFloat("deltaBetaCorrRelIso") < 0.12'
-
-#anti-isolated region
-goodQCDMuonCut = goodMuonCut
-goodQCDMuonCut += '&& userFloat("deltaBetaCorrRelIso") < 0.5'
-goodQCDMuonCut += '&& userFloat("deltaBetaCorrRelIso") > 0.3'
-
 process.pfIsolatedMuons.doDeltaBetaCorrection = False
 process.pfIsolatedMuons.isolationCut = 100.0  # Deliberately put a large isolation cut
 
@@ -124,23 +98,17 @@ process.muonsWithIso = cms.EDProducer(
   rhoSrc = cms.InputTag("kt6PFJets", "rho")
 )
 
-process.goodSignalMuons = process.selectedPatMuons.clone(
-  src = cms.InputTag("muonsWithIso"), cut = goodSignalMuonCut
+process.muonsWithID = cms.EDProducer(
+  'MuonIDProducer',
+  muonSrc = cms.InputTag("muonsWithIso"),
+  primaryVertexSource = cms.InputTag("offlinePrimaryVertices")
 )
 
-process.goodQCDMuons = process.selectedPatMuons.clone(
-  src = cms.InputTag("muonsWithIso"), cut = goodQCDMuonCut
-)
-
-process.looseVetoMuons = process.selectedPatMuons.clone(
-  src = cms.InputTag("muonsWithIso"), cut = looseVetoMuonCut
-)
-
-process.muSequence = cms.Sequence(
-  process.goodSignalMuons
-  * process.goodQCDMuons
-  * process.looseVetoMuons
-)
+# process.muSequence = cms.Sequence(
+#   process.goodSignalMuons
+#   * process.goodQCDMuons
+#   * process.looseVetoMuons
+# )
 
 #process.patMuons.userData.userFunctions = cms.vstring('((chargedHadronIso()+max(0.0,neutralHadronIso()+photonIso()-0.5*puChargedHadronIso()))/pt())')
 #process.patMuons.userData.userFunctionLabels = cms.vstring('pfRelIso04')
@@ -165,68 +133,18 @@ process.patElectrons.electronIDSources.mvaTrigV0 = cms.InputTag("mvaTrigV0")
 process.patElectrons.electronIDSources.mvaNonTrigV0 = cms.InputTag("mvaNonTrigV0")
 process.patPF2PATSequence.replace(process.patElectrons, process.mvaID * process.patElectrons)
 
-goodElectronCut = "pt>30"
-goodElectronCut += "&& abs(eta)<2.5"
-goodElectronCut += "&& !(1.4442 < abs(superCluster.eta) < 1.5660)"
-goodElectronCut += "&& passConversionVeto()"
-goodElectronCut += "&& (0.0 < electronID('mvaTrigV0') < 1.0)"
-
-goodSignalElectronCut = goodElectronCut
-goodSignalElectronCut += '&& userFloat("rhoCorrRelIso") < 0.1'
-
-goodQCDElectronCut = goodElectronCut
-goodQCDElectronCut += '&& userFloat("rhoCorrRelIso") > 0.2'
-goodQCDElectronCut += '&& userFloat("rhoCorrRelIso") < 0.5'
-
-looseVetoElectronCut = "pt > 20"
-looseVetoElectronCut += "&& abs(eta) < 2.5"
-looseVetoElectronCut += "&& (0.0 < electronID('mvaTrigV0') < 1.0)"
-looseVetoElectronCut += '&& userFloat("rhoCorrRelIso") < 0.15'
-
 process.elesWithIso = cms.EDProducer(
   'ElectronIsolationProducer',
   leptonSrc = cms.InputTag("selectedPatElectrons" + postfix),
   rhoSrc = cms.InputTag("kt6PFJets", "rho")
 )
 
-process.goodSignalElectrons = process.selectedPatElectrons.clone(
-  src = cms.InputTag("elesWithIso"), cut = goodSignalElectronCut
-)
-
-process.goodQCDElectrons = process.selectedPatElectrons.clone(
-  src = cms.InputTag("elesWithIso"), cut = goodQCDElectronCut
-)
-
-process.looseVetoElectrons = process.selectedPatElectrons.clone(
-  src = cms.InputTag("elesWithIso"), cut = looseVetoElectronCut
-)
-
-process.eleSequence = cms.Sequence(
-  process.goodSignalElectrons
-  * process.goodQCDElectrons
-  * process.looseVetoElectrons
-)
-
 #-------------------------------------------------
 # Jets
 #-------------------------------------------------
 
-jetCut = 'pt > 20.'                                                   # transverse momentum
-jetCut += ' && abs(eta) < 5.0'                                        # pseudo-rapidity range
-jetCut += ' && numberOfDaughters > 1'                                 # PF jet ID:
-jetCut += ' && neutralHadronEnergyFraction < 0.99'                    # PF jet ID:
-jetCut += ' && neutralEmEnergyFraction < 0.99'                        # PF jet ID:
-jetCut += ' && (chargedEmEnergyFraction < 0.99 || abs(eta) >= 2.4)'   # PF jet ID:
-jetCut += ' && (chargedHadronEnergyFraction > 0. || abs(eta) >= 2.4)' # PF jet ID:
-jetCut += ' && (chargedMultiplicity > 0 || abs(eta) >= 2.4)'          # PF jet ID:
-
 from PhysicsTools.PatAlgos.selectionLayer1.jetSelector_cfi import *
-
 process.pfNoTau.enable = False
-
-process.goodJets = process.selectedPatJets.clone(
-    src = 'selectedPatJets' + postfix, cut = jetCut
-)
 
 #-------------------------------------------------
 # Object counters
@@ -242,22 +160,17 @@ process.goodJets = process.selectedPatJets.clone(
 #-------------------------------------------------
 
 process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatElectrons) + 1, process.elesWithIso)
-process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatMuons) + 1, process.muonsWithIso)
+process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatMuons) + 1, process.muonsWithIso*process.muonsWithID)
 
+#Need separate paths because of skimming
 process.singleTopPathStep1Mu = cms.Path(
   process.goodOfflinePrimaryVertices
   * process.patPF2PATSequence
-  * process.eleSequence
-  * process.muSequence
-  * process.goodJets
 )
 
 process.singleTopPathStep1Ele = cms.Path(
   process.goodOfflinePrimaryVertices
   * process.patPF2PATSequence
-  * process.eleSequence
-  * process.muSequence
-  * process.goodJets
 )
 
 #-----------------------------------------------
@@ -296,6 +209,8 @@ else:
 
         'keep edmMergeableCounter_*_*_*', # Keep the lumi-block counter information
         'keep edmTriggerResults_TriggerResults__HLT', #Keep the trigger results
+        'keep recoGenParticles_genParticles__SIM', #keep all the genParticles
+        'keep recoVertexs_offlinePrimaryVertices__RECO', #keep the offline PV-s
 
     #      'keep patElectrons_selectedPatElectrons__PAT',
     #      'keep patMuons_selectedPatMuons__PAT',
@@ -303,25 +218,18 @@ else:
     #      'keep patTaus_selectedPatTaus__PAT',
 
         # Jets
-        'keep patJets_goodJets__PAT',
+        'keep patJets_selectedPatJets__PAT',
         'keep double_*_rho_RECO', #For rho-corr rel iso
-        'keep recoGenJets_goodJets_genJets_PAT', #For Jet MC smearing we need to keep the genJets
+        'keep recoGenJets_selectedPatJets_genJets_PAT', #For Jet MC smearing we need to keep the genJets
 
         # Muons
-        'keep patMuons_goodSignalMuons__PAT',
-        'keep patMuons_goodQCDMuons__PAT',
-        'keep patMuons_looseVetoMuons__PAT',
-
-        'keep recoGenParticles_genParticles__SIM', #keep all the genParticles
-        'recoVertexs_offlinePrimaryVertices__RECO', #keep the offline PV-s
+        'keep patMuons_muonsWithID__PAT',
 
         # Electrons
-        'keep patElectrons_goodSignalElectrons__PAT',
-        'keep patElectrons_goodQCDElectrons__PAT',
-        'keep patElectrons_looseVetoElectrons__PAT',
+        'keep patElectrons_elesWithIso__PAT',
 
         'keep patMETs_patMETs__PAT'
-    ])  # + patEventContentNoCleaning)
+    ])
 
 #Keep events that pass either the muon OR the electron path
 process.out.SelectEvents = cms.untracked.PSet(
