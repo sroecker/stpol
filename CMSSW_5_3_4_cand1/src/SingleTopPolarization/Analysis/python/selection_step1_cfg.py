@@ -301,15 +301,21 @@ else:
     #      'keep patMuons_selectedPatMuons__PAT',
     #      'keep patJets_selectedPatJets__PAT',
     #      'keep patTaus_selectedPatTaus__PAT',
-        'keep patJets_goodJets__PAT',
 
-        'keep double_kt6PFJets_rho_RECO', #For rho-corr rel iso
+        # Jets
+        'keep patJets_goodJets__PAT',
+        'keep double_*_rho_RECO', #For rho-corr rel iso
         'keep recoGenJets_goodJets_genJets_PAT', #For Jet MC smearing we need to keep the genJets
 
+        # Muons
         'keep patMuons_goodSignalMuons__PAT',
         'keep patMuons_goodQCDMuons__PAT',
         'keep patMuons_looseVetoMuons__PAT',
 
+        'keep recoGenParticles_genParticles__SIM', #keep all the genParticles
+        'recoVertexs_offlinePrimaryVertices__RECO', #keep the offline PV-s
+
+        # Electrons
         'keep patElectrons_goodSignalElectrons__PAT',
         'keep patElectrons_goodQCDElectrons__PAT',
         'keep patElectrons_looseVetoElectrons__PAT',
