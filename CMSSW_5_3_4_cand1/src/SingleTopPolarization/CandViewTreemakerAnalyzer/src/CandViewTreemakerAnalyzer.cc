@@ -224,14 +224,14 @@ GenericViewTreemakerAnalyzer<T, C>::analyze(const edm::Event& iEvent, const edm:
 
     auto& varMap = collection.second;
 
-    std::cout << "col " << collectionName << " " << objects->size() << std::endl;
+    //std::cout << "col " << collectionName << " " << objects->size() << std::endl;
 
     int i = 0; //count the objects of the collection of interest
     for (auto& obj : *objects) {
-      std::cout << "obj ";
+      //std::cout << "obj ";
       for (auto& var : varMap) {
         auto& tag = var.first;
-        std::cout << "var(" << tag << ") ";
+        //std::cout << "var(" << tag << ") ";
         auto& varParser = *(var.second);
         //const double value = varParser((pat::Jet)(obj));
         const C* pObj = static_cast<const C*>(&obj);
@@ -245,7 +245,7 @@ GenericViewTreemakerAnalyzer<T, C>::analyze(const edm::Event& iEvent, const edm:
           *(treeValues[collectionName][tag][i]) = value;
         }
       }
-      std::cout << std::endl;
+      //std::cout << std::endl;
       i++;
     }
   }
