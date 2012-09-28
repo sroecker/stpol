@@ -42,3 +42,7 @@ t-channel (/T_t-channel_TuneZ2star_8TeV-powheg-tauola/Summer12_DR53X-PU_S10_STAR
 
 >/hdfs/local/stpol/sync2012/FEFF01BD-87DC-E111-BC9E-003048678F8E.root (1 runs, 40 lumis, 11789 events, 4271759218 bytes)
 
+DEBUGGING
+=====
+scram b USER_CXXFLAGS=-g
+scram b -j8 USER_CXXFLAGS="-DEDM_ML_DEBUG"
