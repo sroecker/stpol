@@ -79,11 +79,11 @@ goodMuonCut += ' && pt > 26.'                                                   
 goodMuonCut += ' && abs(eta) < 2.1'                                                                 # pseudo-rapisity range
 goodMuonCut += ' && normChi2 < 10.'                                                                  # muon ID: 'isGlobalMuonPromptTight'
 goodMuonCut += ' && userFloat("track_hitPattern_trackerLayersWithMeasurement") > 5'                              # muon ID: 'isGlobalMuonPromptTight'
-goodMuonCut += ' && userFloat("globalTrack_hitPattern.numberOfValidMuonHits") > 0'                               # muon ID: 'isGlobalMuonPromptTight'
+goodMuonCut += ' && userFloat("globalTrack_hitPattern_numberOfValidMuonHits") > 0'                               # muon ID: 'isGlobalMuonPromptTight'
 goodMuonCut += ' && abs(dB) < 0.2'                                                                  # 2-dim impact parameter with respect to beam spot (s. "PAT muon configuration" above)
 goodMuonCut += ' && userFloat("innerTrack_hitPattern_numberOfValidPixelHits") > 0'                               # tracker reconstruction
 goodMuonCut += ' && numberOfMatchedStations > 1'                                                    # muon chamber reconstruction
-goodMuonCut += ' && userFloat("dz") < 0.5'
+goodMuonCut += ' && abs(userFloat("dz")) < 0.5'
 
 looseVetoMuonCut = "isPFMuon"
 looseVetoMuonCut += "&& (isGlobalMuon | isTrackerMuon)"
@@ -134,23 +134,6 @@ process.looseEleVetoMu = cms.EDFilter(
     minNumber = cms.uint32(0),
     maxNumber = cms.uint32(0),
 )
-
-process.muonPathPreCount = cms.EDProducer("EventCountProducer")
-process.muPath = cms.Path(
-    process.muonPathPreCount *
-    process.goodSignalMuons * 
-    process.goodQCDMuons * 
-    process.looseVetoMuons *
-    process.oneIsoMu *
-    process.looseMuVetoMu * 
-    process.looseEleVetoMu *
-    process.nJets *
-    process.bTagsCSVmedium *
-    process.bTagsCSVtight *
-    process.bTagsTCHPtight *
-    process.mBTags
-)
-countAfter(process, process.muPath, ["oneIsoMu", "looseMuVetoMu", "looseEleVetoMu", "nJets", "mBTags"])
 
 #-------------------------------------------------
 # Electrons
@@ -209,6 +192,29 @@ process.looseMuVetoEle = cms.EDFilter(
     maxNumber = cms.uint32(0),
 )
 
+#-----------------------------------------------
+# Paths
+#-----------------------------------------------
+
+process.muPathPreCount = cms.EDProducer("EventCountProducer")
+process.muPath = cms.Path(
+    process.muPathPreCount *
+    process.goodSignalMuons * 
+    process.goodQCDMuons * 
+    process.looseVetoMuons *
+    process.oneIsoMu *
+    process.looseMuVetoMu *
+    process.looseVetoElectrons *
+    process.looseEleVetoMu *
+    process.goodJets *
+    process.nJets *
+    process.bTagsCSVmedium *
+    process.bTagsCSVtight *
+    process.bTagsTCHPtight *
+    process.mBTags
+)
+countAfter(process, process.muPath, ["oneIsoMu", "looseMuVetoMu", "looseEleVetoMu", "nJets", "mBTags"])
+
 process.elePathPreCount = cms.EDProducer("EventCountProducer")
 process.elePath = cms.Path(
     process.elePathPreCount *
@@ -216,8 +222,10 @@ process.elePath = cms.Path(
     process.goodQCDElectrons * 
     process.looseVetoElectrons *
     process.oneIsoEle * 
-    process.looseEleVetoEle * 
-    process.looseMuVetoEle * 
+    process.looseEleVetoEle *
+    process.looseVetoMuons *
+    process.looseMuVetoEle *
+    process.goodJets *
     process.nJets *
     process.bTagsCSVmedium *
     process.bTagsCSVtight *
