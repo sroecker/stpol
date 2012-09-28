@@ -9,6 +9,21 @@ from PhysicsTools.PatAlgos.patTemplate_cfg import *
 from PhysicsTools.PatAlgos.tools.coreTools import *
 from PhysicsTools.PatAlgos.tools.pfTools import *
 
+process.load("FWCore.MessageLogger.MessageLogger_cfi")
+process.MessageLogger = cms.Service("MessageLogger",
+       destinations   = cms.untracked.vstring(
+                                              'cout',
+                                             'debug'
+                    ),
+       debugModules   = cms.untracked.vstring('muonsWithID'),
+       debug       = cms.untracked.PSet(
+                       threshold = cms.untracked.string('DEBUG') 
+        ),
+       cout       = cms.untracked.PSet(
+                       threshold = cms.untracked.string('ERROR') 
+        ),
+)
+
 #VarParsing
 from SingleTopPolarization.Analysis.cmdlineParsing import enableCommandLineArguments
 enableCommandLineArguments(process)
