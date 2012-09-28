@@ -1,8 +1,8 @@
-import ROOT
 import sys
-
+import ROOT
 if "-b" in sys.argv:
 	ROOT.gROOT.SetBatch(True)
+
 
 def tb(batch, canv=None):
 	if canv==None:
