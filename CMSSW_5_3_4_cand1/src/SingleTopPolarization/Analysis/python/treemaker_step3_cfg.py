@@ -97,6 +97,22 @@ process.treesMu = cms.EDAnalyzer('MuonCandViewTreemakerAnalyzer',
 					tag = cms.untracked.string("deltaBetaCorrRelIso"),
 					expr = cms.untracked.string("userFloat('deltaBetaCorrRelIso')")
 				),
+				cms.untracked.PSet(
+					tag = cms.untracked.string("dz"),
+					expr = cms.untracked.string("userFloat('dz')")
+				),
+				cms.untracked.PSet(
+					tag = cms.untracked.string("track_hitPattern_trackerLayersWithMeasurement"),
+					expr = cms.untracked.string("userFloat('track_hitPattern_trackerLayersWithMeasurement')")
+				),
+				cms.untracked.PSet(
+					tag = cms.untracked.string("globalTrack_hitPattern_numberOfValidMuonHits"),
+					expr = cms.untracked.string("userFloat('globalTrack_hitPattern_numberOfValidMuonHits')")
+				),
+				cms.untracked.PSet(
+					tag = cms.untracked.string("innerTrack_hitPattern_numberOfValidPixelHits"),
+					expr = cms.untracked.string("userFloat('innerTrack_hitPattern_numberOfValidPixelHits')")
+				),
 			)
 		),
 		cms.untracked.PSet(
