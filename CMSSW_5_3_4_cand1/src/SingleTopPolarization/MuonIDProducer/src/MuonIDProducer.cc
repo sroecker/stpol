@@ -139,9 +139,36 @@ MuonIDProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    }
 
    for (auto & muon : (*outMuons)) {
-    muon.addUserFloat("track_hitPattern_trackerLayersWithMeasurement", muon.track()->hitPattern().trackerLayersWithMeasurement());
-    muon.addUserFloat("globalTrack_hitPattern_numberOfValidMuonHits", muon.globalTrack()->hitPattern().trackerLayersWithMeasurement());
-    muon.addUserFloat("innerTrack_hitPattern_numberOfValidPixelHits", muon.innerTrack()->hitPattern().numberOfValidPixelHits());
+
+    float x = TMath::QuietNaN();
+    if(muon.track().isAvailable()) {
+      x = muon.track()->hitPattern().trackerLayersWithMeasurement();
+    }
+    else {
+      edm::LogError("muon track") << "muon does not have track()";
+    }
+    muon.addUserFloat("track_hitPattern_trackerLayersWithMeasurement", x);
+    LogDebug("muon track") << "track_hitPattern_trackerLayersWithMeasurement " << x;
+
+    x = TMath::QuietNaN();
+    if(muon.globalTrack().isAvailable()) {
+       x = muon.globalTrack()->hitPattern().trackerLayersWithMeasurement();
+    }
+    else {
+      edm::LogError("muon track") << "muon does not have globalTrack()";
+    }
+    muon.addUserFloat("globalTrack_hitPattern_numberOfValidMuonHits", x);
+    LogDebug("muon track") << "globalTrack_hitPattern_numberOfValidMuonHits " << x;
+
+    x = TMath::QuietNaN();
+    if (muon.innerTrack().isAvailable()) {
+      x = muon.innerTrack()->hitPattern().numberOfValidPixelHits();
+    }
+    else {
+      edm::LogError("muon track") << "muon does not have innerTrack()";
+    }
+    muon.addUserFloat("innerTrack_hitPattern_numberOfValidPixelHits", x);
+    LogDebug("muon track") << "innerTrack_hitPattern_numberOfValidPixelHits " << x;
 
     if (pvPoint) {
       dz = muon.innerTrack()->dz(*pvPoint);
@@ -152,7 +179,10 @@ MuonIDProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       dxy = TMath::QuietNaN();
     }
     muon.addUserFloat("dz", dz);
+    LogDebug("muon track") << "dz " << dz;
     muon.addUserFloat("dxy", dxy);
+    LogDebug("muon track") << "dxy " << dxy;
+
    }
    iEvent.put(outMuons);
 }
