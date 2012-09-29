@@ -29,7 +29,7 @@ from SingleTopPolarization.Analysis.cmdlineParsing import enableCommandLineArgum
 enableCommandLineArguments(process)
 
 #Should do pre-PFBRECO-skimming (discard uninteresting events)
-doSkimming = False
+doSkimming = True
 
 #Should slim (drop the unnecessary collections) the output?
 doSlimming = True
@@ -189,6 +189,17 @@ process.singleTopPathStep1Ele = cms.Path(
 )
 
 #-----------------------------------------------
+# Skimming
+#-----------------------------------------------
+
+#Throw away events before particle flow?
+if doSkimming:
+    from SingleTopPolarization.Analysis.step_eventSkim_cfg import skimFilters
+    skimFilters(process)
+    process.singleTopPathStep1Mu.insert(0, process.muonSkim)
+    process.singleTopPathStep1Ele.insert(0, process.electronSkim)
+
+#-----------------------------------------------
 # Skim efficiency counters
 #-----------------------------------------------
 
@@ -200,17 +211,6 @@ countProcessed(process)
 #count events passing mu and ele paths
 countInSequence(process, process.singleTopPathStep1Mu)
 countInSequence(process, process.singleTopPathStep1Ele)
-
-#-----------------------------------------------
-# Skimming
-#-----------------------------------------------
-
-#Throw away events before particle flow?
-if doSkimming:
-    from SingleTopPolarization.Analysis.step_eventSkim_cfg import skimFilters
-    skimFilters(process)
-    process.singleTopPathStep1Mu.insert(0, process.muonSkim)
-    process.singleTopPathStep1Ele.insert(0, process.electronSkim)
 
 #-----------------------------------------------
 # Slimming
