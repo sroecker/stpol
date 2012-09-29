@@ -19,7 +19,7 @@ SETUP
 
 >cd ..
 
->cmsRun $CMSSW_BASE/src/SingleTopPolarization/Analysis/python/selection_step1_cfg.py inputFile=file:/path/to/input/file.root outputFile=out_step1.root maxEvents=100
+>cmsRun $CMSSW_BASE/src/SingleTopPolarization/Analysis/python/selection_step1_cfg.py inputFiles=file:/path/to/input/file.root outputFile=out_step1.root maxEvents=100
 
 >. .\test.sh out_step1.root
 
