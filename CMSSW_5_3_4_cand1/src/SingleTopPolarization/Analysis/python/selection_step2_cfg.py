@@ -192,6 +192,25 @@ process.looseMuVetoEle = cms.EDFilter(
     maxNumber = cms.uint32(0),
 )
 
+process.goodMETs = cms.EDFilter("CandViewSelector",
+  src = cms.InputTag("patMETs"),
+  cut = cms.string("pt>35")
+)
+
+process.hasMET = cms.EDFilter(
+    "PATCandViewCountFilter",
+    src = cms.InputTag("goodMETs"),
+    minNumber = cms.uint32(1),
+    maxNumber = cms.uint32(1),
+)
+
+process.recoNuProducerEle = cms.EDProducer('ReconstructedNeutrinoProducer',
+    leptonSrc = cms.InputTag("goodSignalElectrons"),
+    bjetSrc = cms.InputTag("bTagsTCHPtight"),
+    metSrc = cms.InputTag("goodMETs"),
+
+)
+
 #-----------------------------------------------
 # Paths
 #-----------------------------------------------
@@ -227,12 +246,15 @@ process.elePath = cms.Path(
     process.looseMuVetoEle *
     process.goodJets *
     process.nJets *
+    process.recoNuProducerEle *
+    process.goodMETs *
+    process.hasMET *
     process.bTagsCSVmedium *
     process.bTagsCSVtight *
     process.bTagsTCHPtight *
     process.mBTags
 )
-countAfter(process, process.elePath, ["oneIsoEle", "looseEleVetoEle", "looseMuVetoEle", "nJets", "mBTags"])
+countAfter(process, process.elePath, ["oneIsoEle", "looseEleVetoEle", "looseMuVetoEle", "hasMET", "nJets", "mBTags"])
 
 
 #-----------------------------------------------
