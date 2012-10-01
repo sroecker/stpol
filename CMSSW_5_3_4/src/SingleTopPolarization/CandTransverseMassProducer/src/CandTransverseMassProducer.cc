@@ -29,6 +29,7 @@
 #include "FWCore/Framework/interface/MakerMacros.h"
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
+#include <DataFormats/RecoCandidate/interface/RecoCandidate.h>
 
 
 //
@@ -95,13 +96,13 @@ CandTransverseMassProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
 {
    using namespace edm;
    Handle<reco::Candidate> cands1;
-   iEvent.getByLabel(candSrc, pIn);
+   //iEvent.getByLabel(candSrc, pIn);
 
-   std::vector<reco::Candidate::LorentzVector*> vecs;
+   // std::vector<reco::Candidate::LorentzVector*> vecs;
 
-   for(auto& c : *cands1) {
-    vecs->push_back(*(c.p4()));
-   }
+   // for(auto& c : *cands1) {
+   //  vecs->push_back(*(c.p4()));
+   // }
 
 
 /* This is an event example
