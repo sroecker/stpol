@@ -59,6 +59,8 @@ class ReconstructedNeutrinoProducer : public edm::EDProducer {
       virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
 
 
+
+
       edm::InputTag leptonSrc;
       edm::InputTag bjetSrc;
       edm::InputTag metSrc;
@@ -86,6 +88,7 @@ ReconstructedNeutrinoProducer::ReconstructedNeutrinoProducer(const edm::Paramete
   metSrc = iConfig.getParameter<edm::InputTag>("metSrc");
 
   produces<std::vector<reco::CompositeCandidate> >();
+  produces<double>();
    //register your products
 /* Examples
    produces<ExampleData2>();
@@ -128,16 +131,62 @@ ReconstructedNeutrinoProducer::produce(edm::Event& iEvent, const edm::EventSetup
    iEvent.getByLabel(bjetSrc, bjets);
    iEvent.getByLabel(metSrc, mets);
 
+
+   std::auto_ptr<double> mtW(new double(0));
+
    std::auto_ptr<std::vector<reco::CompositeCandidate> > outNeutrinoColl(new std::vector<reco::CompositeCandidate>);
    reco::CompositeCandidate *nu = new reco::CompositeCandidate();
+   std::unique_ptr<reco::CompositeCandidate::LorentzVector> nuVec(new reco::CompositeCandidate::LorentzVector(TMath::QuietNaN(), TMath::QuietNaN(),TMath::QuietNaN(),TMath::QuietNaN()));
 
-   reco::CompositeCandidate::LorentzVector *nuVec = new reco::CompositeCandidate::LorentzVector(TMath::QuietNaN(), TMath::QuietNaN(),TMath::QuietNaN(),TMath::QuietNaN());
+   if(leptons->size()!=1 || mets->size()!=1) { //Need exactly 1 lepton and 1 MET
+    edm::LogError("produce()") << "Event does not have correct final state for neutrino: nLeptons " << leptons->size() << " nMETs " << mets->size();
+   }
+   else {
+    LogDebug("produce()") << "Event has correct final state for neutrino";
+
+    const reco::Candidate& lepton(leptons->at(0));
+    const reco::Candidate& MET(mets->at(0));
+
+    *mtW = TMath::Sqrt(TMath::Power(lepton.p4().pt() + MET.p4().Pt(), 2) - TMath::Power(lepton.p4().px() + MET.p4().Px(), 2) - TMath::Power(lepton.p4().py() + MET.p4().Py(), 2));
+    LogDebug("produce()") << "mtW: " << *mtW;
+
+    float Lambda = TMath::Power(ReconstructedNeutrinoProducer::mW, 2) / 2 + lepton.p4().px()*MET.p4().px() + lepton.p4().py()*MET.p4().py();
+    LogDebug("produce()") << "MET: px " << MET.p4().Px() << " py " << MET.p4().Py() << " pt " << MET.p4().Pt();
+    float Delta = TMath::Power(lepton.p4().E(), 2) * (TMath::Power(Lambda, 2) - TMath::Power(lepton.p4().Pt()*MET.p4().Pt(), 2) );
+    float p_nu_z = TMath::QuietNaN();
+
+    if(Delta>0.0) { //Real roots
+      float r = TMath::Sqrt(Delta);
+      float A = (Lambda*lepton.p4().Pz() + r)/ TMath::Power(lepton.p4().Pt(), 2);
+      float B = (Lambda*lepton.p4().Pz() + r)/ TMath::Power(lepton.p4().Pt(), 2);
+      p_nu_z = std::min(abs(A), abs(B)); //Choose root with minimal absolute value
+    }
+    else { //Negative discriminant, complex roots (MET resolution effect)
+      LogDebug("produce()") << "Delta is negative, complex roots";
+      float sk1 = lepton.p4().Pt()*MET.p4().Pt();
+      float sk2 = MET.p4().Px()*lepton.p4().Px() + MET.p4().Py()*lepton.p4().Py();
+      float mW_new = TMath::Sqrt(2*(sk1-sk2));
+      LogDebug("produce()") << "Choosing new mW value to make Delta==0: mW_new=" << mW_new;
+      float Lambda_new = TMath::Power(mW_new, 2) / 2.0 + sk2;
+      //float Delta_new = (TMath::Power(Lambda_new, 2) - TMath::Power(sk1, 2))*TMath::Power(lepton.p4().E(), 2);
+      p_nu_z = (Lambda_new*lepton.p4().Pz())/TMath::Power(lepton.p4().Pt(), 2);
+    }
+    float E_nu = TMath::Sqrt(TMath::Power(MET.p4().Pt(), 2) + TMath::Power(p_nu_z, 2));
+    nuVec->SetPx(MET.p4().Px());
+    nuVec->SetPy(MET.p4().Py());
+    nuVec->SetPz(p_nu_z);
+    nuVec->SetE(E_nu);
+   }
+
+
+
 
    nu->setP4(*nuVec);
    outNeutrinoColl->push_back(*nu);
 
-   LogDebug("produced neutrino") << "pt " << nu->pt() << " eta " << nu->eta() << " phi " << nu->phi();
+   LogDebug("produce()") << "neutrino: pt(" << nu->pt() << ") eta (" << nu->eta() << ") phi (" << nu->phi() << ") et (" << nu->et() << ")";
    iEvent.put(outNeutrinoColl);
+   iEvent.put(mtW);
 
 
 /* This is an event example

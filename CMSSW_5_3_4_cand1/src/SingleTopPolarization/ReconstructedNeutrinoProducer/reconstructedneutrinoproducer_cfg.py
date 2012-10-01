@@ -2,7 +2,21 @@ import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("OWNPARTICLES")
 
-process.load("FWCore.MessageService.MessageLogger_cfi")
+#process.load("FWCore.MessageService.MessageLogger_cfi")
+process.load("FWCore.MessageLogger.MessageLogger_cfi")
+process.MessageLogger = cms.Service("MessageLogger",
+       destinations   = cms.untracked.vstring(
+                                              'cout',
+                                             'debug'
+                    ),
+       debugModules   = cms.untracked.vstring('recoNuProducer'),
+       debug       = cms.untracked.PSet(
+                       threshold = cms.untracked.string('DEBUG') 
+        ),
+       cout       = cms.untracked.PSet(
+                       threshold = cms.untracked.string('ERROR') 
+        ),
+)
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
@@ -13,9 +27,9 @@ process.source = cms.Source("PoolSource",
     )
 )
 
-process.myProducerLabel = cms.EDProducer('ReconstructedNeutrinoProducer',
-	leptonSrc = cms.InputTag("goodMuons"),
-	bjetSrc = cms.InputTag("bTagsTCHPT"),
+process.recoNuProducer = cms.EDProducer('ReconstructedNeutrinoProducer',
+	leptonSrc = cms.InputTag("goodSignalMuons"),
+	bjetSrc = cms.InputTag("bTagsTCHPtight"),
 	metSrc = cms.InputTag("patMETs"),
 
 )
@@ -25,7 +39,7 @@ process.out = cms.OutputModule("PoolOutputModule",
 )
 
   
-process.p = cms.Path(process.myProducerLabel)
+process.p = cms.Path(process.recoNuProducer)
 
 process.e = cms.EndPath(process.out)
 
