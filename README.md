@@ -44,5 +44,6 @@ t-channel (/T_t-channel_TuneZ2star_8TeV-powheg-tauola/Summer12_DR53X-PU_S10_STAR
 
 DEBUGGING
 =====
-scram b USER_CXXFLAGS=-g
-scram b -j8 USER_CXXFLAGS="-DEDM_ML_DEBUG"
+>scram b USER_CXXFLAGS=-g
+
+>scram b -j8 USER_CXXFLAGS="-DEDM_ML_DEBUG"
