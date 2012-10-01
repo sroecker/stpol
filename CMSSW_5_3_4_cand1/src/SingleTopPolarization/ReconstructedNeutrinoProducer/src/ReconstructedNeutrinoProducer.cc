@@ -39,6 +39,8 @@
 
 #include "FWCore/Utilities/interface/InputTag.h"
 
+#include "CommonTools/UtilAlgos/interface/StringCutEventSelector.h"
+
 class ReconstructedNeutrinoProducer : public edm::EDProducer {
    public:
       explicit ReconstructedNeutrinoProducer(const edm::ParameterSet&);

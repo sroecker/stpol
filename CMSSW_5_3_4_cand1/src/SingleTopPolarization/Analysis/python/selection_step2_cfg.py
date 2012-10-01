@@ -135,6 +135,15 @@ process.looseEleVetoMu = cms.EDFilter(
     maxNumber = cms.uint32(0),
 )
 
+process.recoNuProducerMu = cms.EDProducer('ReconstructedNeutrinoProducer',
+    leptonSrc = cms.InputTag("goodSignalMuons"),
+    bjetSrc = cms.InputTag("bTagsTCHPtight"),
+    metSrc = cms.InputTag("patMETs"),
+
+)
+
+#process.hasMtW = 
+
 #-------------------------------------------------
 # Electrons
 #-------------------------------------------------
@@ -227,6 +236,7 @@ process.muPath = cms.Path(
     process.looseEleVetoMu *
     process.goodJets *
     process.nJets *
+    process.recoNuProducerMu *
     process.bTagsCSVmedium *
     process.bTagsCSVtight *
     process.bTagsTCHPtight *
@@ -246,15 +256,24 @@ process.elePath = cms.Path(
     process.looseMuVetoEle *
     process.goodJets *
     process.nJets *
-    process.recoNuProducerEle *
     process.goodMETs *
+    process.recoNuProducerEle *
     process.hasMET *
     process.bTagsCSVmedium *
     process.bTagsCSVtight *
     process.bTagsTCHPtight *
     process.mBTags
 )
-countAfter(process, process.elePath, ["oneIsoEle", "looseEleVetoEle", "looseMuVetoEle", "hasMET", "nJets", "mBTags"])
+countAfter(process, process.elePath,
+    [
+    "oneIsoEle", 
+    "looseEleVetoEle", 
+    "looseMuVetoEle", 
+    "hasMET", 
+    "nJets", 
+    "mBTags"
+    ]
+)
 
 
 #-----------------------------------------------
