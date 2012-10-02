@@ -9,27 +9,27 @@ from PhysicsTools.PatAlgos.patTemplate_cfg import *
 from PhysicsTools.PatAlgos.tools.coreTools import *
 from PhysicsTools.PatAlgos.tools.pfTools import *
 
-process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger = cms.Service("MessageLogger",
-       destinations   = cms.untracked.vstring(
-                                              'cout',
-                                             'debug'
-                    ),
-       debugModules   = cms.untracked.vstring('muonsWithID'),
-       debug       = cms.untracked.PSet(
-                       threshold = cms.untracked.string('DEBUG') 
-        ),
-       cout       = cms.untracked.PSet(
-                       threshold = cms.untracked.string('ERROR') 
-        ),
-)
-
-#VarParsing
-from SingleTopPolarization.Analysis.cmdlineParsing import enableCommandLineArguments
-enableCommandLineArguments(process)
+doDebug = False
+if doDebug:
+    process.load("FWCore.MessageLogger.MessageLogger_cfi")
+    process.MessageLogger = cms.Service("MessageLogger",
+           destinations=cms.untracked.vstring(
+                                                  'cout',
+                                                  'debug'
+                        ),
+           debugModules=cms.untracked.vstring('*'),
+           cout=cms.untracked.PSet(
+            threshold=cms.untracked.string('INFO')
+            ),
+           debug=cms.untracked.PSet(
+            threshold=cms.untracked.string('DEBUG')
+            ),
+    )
+else:
+    process.load("FWCore.MessageService.MessageLogger_cfi")
 
 #Should do pre-PFBRECO-skimming (discard uninteresting events)
-doSkimming = True
+doSkimming = False
 
 #Should slim (drop the unnecessary collections) the output?
 doSlimming = True
@@ -254,3 +254,7 @@ process.out.SelectEvents = cms.untracked.PSet(
 )
 
 process.GlobalTag.globaltag = cms.string('START52_V9B::All')
+
+#VarParsing
+from SingleTopPolarization.Analysis.cmdlineParsing import enableCommandLineArguments
+enableCommandLineArguments(process)
