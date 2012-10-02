@@ -102,10 +102,20 @@ EventDoubleFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
    Handle<double> pIn;
    iEvent.getByLabel(src,pIn);
 
-   if ((*pIn) > val_min && (*pIn) < val_max) {
+   if ((*pIn) < val_min) {
+    LogDebug("filter()") << src.label() << " < " << val_min << ", vetoing";
+    return false;
+   }
+   else if ((*pIn) > val_max) {
+    LogDebug("filter()") << src.label() << " > " << val_max << ", vetoing";
+    return false;
+   }
+   else {
+    LogDebug("filter()") << src.label() << " > " << val_min << " && " << src.label() << " < " << val_max << ", allowing";
     return true;
    }
-   return false;
+
+   return true;
 }
 
 // ------------ method called once each job just before starting event loop  ------------
