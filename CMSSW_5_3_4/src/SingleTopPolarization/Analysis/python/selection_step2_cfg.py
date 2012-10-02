@@ -4,7 +4,24 @@ from SingleTopPolarization.Analysis.eventCounting import *
 process = cms.Process("STPOLSEL2")
 countProcessed(process)
 
+doDebug = False
+
 process.load("FWCore.MessageService.MessageLogger_cfi")
+if doDebug:
+    process.load("FWCore.MessageLogger.MessageLogger_cfi")
+    process.MessageLogger = cms.Service("MessageLogger",
+           destinations   = cms.untracked.vstring(
+                                                  'cout',
+                                                  'debug'
+                        ),
+           debugModules   = cms.untracked.vstring('*'),
+           cout       = cms.untracked.PSet(
+                           threshold = cms.untracked.string('INFO') 
+            ),
+           debug       = cms.untracked.PSet(
+                           threshold = cms.untracked.string('DEBUG') 
+            ),
+    )
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
@@ -135,11 +152,20 @@ process.looseEleVetoMu = cms.EDFilter(
     maxNumber = cms.uint32(0),
 )
 
+process.muAndMETMT = cms.EDProducer('CandTransverseMassProducer',
+    collections = cms.untracked.vstring(["patMETs", "goodSignalMuons"])
+)
+
+process.hasMuMETMT = cms.EDFilter('EventDoubleFilter',
+    src = cms.InputTag("muAndMETMT"),
+    min = cms.double(40),
+    max = cms.double(9999)
+)
+
 process.recoNuProducerMu = cms.EDProducer('ReconstructedNeutrinoProducer',
     leptonSrc = cms.InputTag("goodSignalMuons"),
     bjetSrc = cms.InputTag("bTagsTCHPtight"),
     metSrc = cms.InputTag("patMETs"),
-
 )
 
 #process.hasMtW = 
@@ -213,11 +239,12 @@ process.hasMET = cms.EDFilter(
     maxNumber = cms.uint32(1),
 )
 
+
+
 process.recoNuProducerEle = cms.EDProducer('ReconstructedNeutrinoProducer',
     leptonSrc = cms.InputTag("goodSignalElectrons"),
     bjetSrc = cms.InputTag("bTagsTCHPtight"),
     metSrc = cms.InputTag("goodMETs"),
-
 )
 
 #-----------------------------------------------
@@ -236,13 +263,24 @@ process.muPath = cms.Path(
     process.looseEleVetoMu *
     process.goodJets *
     process.nJets *
+    process.muAndMETMT *
+    process.hasMuMETMT *
     process.recoNuProducerMu *
     process.bTagsCSVmedium *
     process.bTagsCSVtight *
     process.bTagsTCHPtight *
     process.mBTags
 )
-countAfter(process, process.muPath, ["oneIsoMu", "looseMuVetoMu", "looseEleVetoMu", "nJets", "mBTags"])
+countAfter(process, process.muPath, 
+    [
+    "oneIsoMu", 
+    "looseMuVetoMu", 
+    "looseEleVetoMu",
+    "hasMuMETMT", 
+    "nJets", 
+    "mBTags"
+    ]
+)
 
 process.elePathPreCount = cms.EDProducer("EventCountProducer")
 process.elePath = cms.Path(
@@ -257,8 +295,8 @@ process.elePath = cms.Path(
     process.goodJets *
     process.nJets *
     process.goodMETs *
-    process.recoNuProducerEle *
     process.hasMET *
+    process.recoNuProducerEle *
     process.bTagsCSVmedium *
     process.bTagsCSVtight *
     process.bTagsTCHPtight *
