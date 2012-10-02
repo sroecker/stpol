@@ -16,8 +16,30 @@ enableCommandLineArguments(process)
 
 process.efficiencyAnalyzer = cms.EDAnalyzer('EfficiencyAnalyzer'
 , histogrammableCounters = cms.untracked.vstring(["muPath", "elePath", "TotalEventsProcessed"])
-, muPath = cms.untracked.vstring(["singleTopPathStep1MuPreCount", "singleTopPathStep1MuPostCount", "muPathPreCount", "muPathOneIsoMuPostCount", "muPathLooseMuVetoMuPostCount", "muPathLooseEleVetoMuPostCount", "muPathNJetsPostCount", "muPathMBTagsPostCount"])
-, elePath = cms.untracked.vstring(["singleTopPathStep1MuPreCount", "singleTopPathStep1ElePostCount", "elePathPreCount", "elePathOneIsoElePostCount", "elePathLooseEleVetoElePostCount", "elePathLooseMuVetoElePostCount", "elePathNJetsPostCount", "elePathMBTagsPostCount"])
+, muPath = cms.untracked.vstring([
+	"singleTopPathStep1MuPreCount", 
+	"singleTopPathStep1MuPostCount", 
+	"muPathPreCount", 
+	"muPathOneIsoMuPostCount", 
+	"muPathLooseMuVetoMuPostCount", 
+	"muPathLooseEleVetoMuPostCount",
+	"muPathNJetsPostCount",
+	"muPathHasMuMETMTPostCount",
+	"muPathMBTagsPostCount"
+	]
+)
+, elePath = cms.untracked.vstring([
+	"singleTopPathStep1MuPreCount", 
+	"singleTopPathStep1ElePostCount", 
+	"elePathPreCount", 
+	"elePathOneIsoElePostCount", 
+	"elePathLooseEleVetoElePostCount", 
+	"elePathLooseMuVetoElePostCount",
+	"elePathNJetsPostCount",
+	"elePathHasMETPostCount",
+	"elePathMBTagsPostCount"
+	]
+)
 , TotalEventsProcessed = cms.untracked.vstring(["PATTotalEventsProcessedCount", "STPOLSEL2TotalEventsProcessedCount"])
 )
 
