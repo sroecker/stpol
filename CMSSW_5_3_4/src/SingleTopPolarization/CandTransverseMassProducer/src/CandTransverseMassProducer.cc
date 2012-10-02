@@ -29,8 +29,11 @@
 #include "FWCore/Framework/interface/MakerMacros.h"
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
-#include <DataFormats/RecoCandidate/interface/RecoCandidate.h>
+#include "DataFormats/RecoCandidate/interface/RecoCandidate.h"
+#include "FWCore/Utilities/interface/InputTag.h"
 
+#include <TMath.h>
+#include "FWCore/ParameterSet/interface/ParameterSet.h"
 
 //
 // class declaration
@@ -53,6 +56,9 @@ class CandTransverseMassProducer : public edm::EDProducer {
       virtual void beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
       virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
 
+      const std::vector<std::string> collections;
+
+
       // ----------member data ---------------------------
 };
 
@@ -69,9 +75,12 @@ class CandTransverseMassProducer : public edm::EDProducer {
 // constructors and destructor
 //
 CandTransverseMassProducer::CandTransverseMassProducer(const edm::ParameterSet& iConfig)
+: collections(iConfig.getUntrackedParameter<std::vector<std::string> >("collections"))
 {
    //register your products
    produces<double>();
+   LogDebug("constructor") << "Using " << collections.size() << " collections";
+
    //now do what ever other initialization is needed
   
 }
@@ -95,14 +104,32 @@ void
 CandTransverseMassProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
    using namespace edm;
-   Handle<reco::Candidate> cands1;
-   //iEvent.getByLabel(candSrc, pIn);
 
-   // std::vector<reco::Candidate::LorentzVector*> vecs;
+   double sumPx = 0;
+   double sumPy = 0;
+   double sumPt = 0;
 
-   // for(auto& c : *cands1) {
-   //  vecs->push_back(*(c.p4()));
-   // }
+   for (auto& coll : collections) {
+    Handle<View<reco::Candidate> > cands;
+    iEvent.getByLabel(coll, cands);
+    LogDebug("produce()") << "collection " << coll << "(" << cands->size() << ")";
+
+
+    for(auto& c : *cands) {
+      LogDebug("produce()") << "Adding vector: pt " << c.p4().Pt() << " eta " << c.p4().Eta() << " phi " << c.p4().Phi();
+      sumPx += c.p4().Px();
+      sumPy += c.p4().Py();
+      sumPt += c.p4().Pt();
+    }
+   }
+
+   double mt2 = (double)TMath::Power(sumPt, 2) - (double)TMath::Power(sumPx, 2) - (double)TMath::Power(sumPy, 2);
+   if (mt2<0.0) {
+    LogError("produce()") << "Transverse mass squared is negative, mt will be nan! Probably you only used 1 vector.";
+   }
+   std::auto_ptr<double> mt( new double(TMath::Sqrt(mt2)) );
+   LogDebug("produce()") << "Calculated mt2: " << mt2;
+   iEvent.put(mt);
 
 
 /* This is an event example
