@@ -64,8 +64,8 @@ class ReconstructedNeutrinoProducer : public edm::EDProducer {
 
 
       edm::InputTag leptonSrc;
-      edm::InputTag bjetSrc;
       edm::InputTag metSrc;
+      const std::string outName;
 
       // ----------member data ---------------------------
 };
@@ -84,13 +84,12 @@ const float ReconstructedNeutrinoProducer::mW = 80.399;
 // constructors and destructor
 //
 ReconstructedNeutrinoProducer::ReconstructedNeutrinoProducer(const edm::ParameterSet& iConfig)
+: outName("")
 {
   leptonSrc = iConfig.getParameter<edm::InputTag>("leptonSrc");
-  bjetSrc = iConfig.getParameter<edm::InputTag>("bjetSrc");
   metSrc = iConfig.getParameter<edm::InputTag>("metSrc");
 
-  produces<std::vector<reco::CompositeCandidate> >();
-  produces<double>();
+  produces<std::vector<reco::CompositeCandidate> >(outName);
    //register your products
 /* Examples
    produces<ExampleData2>();
@@ -126,11 +125,9 @@ ReconstructedNeutrinoProducer::produce(edm::Event& iEvent, const edm::EventSetup
    using namespace edm;
 
    Handle<View<reco::Candidate> > leptons;
-   Handle<View<reco::Candidate> > bjets;
    Handle<View<reco::Candidate> > mets;
 
    iEvent.getByLabel(leptonSrc, leptons);
-   iEvent.getByLabel(bjetSrc, bjets);
    iEvent.getByLabel(metSrc, mets);
 
 
@@ -149,11 +146,8 @@ ReconstructedNeutrinoProducer::produce(edm::Event& iEvent, const edm::EventSetup
     const reco::Candidate& lepton(leptons->at(0));
     const reco::Candidate& MET(mets->at(0));
 
-    *mtW = TMath::Sqrt(TMath::Power(lepton.p4().pt() + MET.p4().Pt(), 2) - TMath::Power(lepton.p4().px() + MET.p4().Px(), 2) - TMath::Power(lepton.p4().py() + MET.p4().Py(), 2));
-    LogDebug("produce()") << "mtW: " << *mtW;
-
     float Lambda = TMath::Power(ReconstructedNeutrinoProducer::mW, 2) / 2 + lepton.p4().px()*MET.p4().px() + lepton.p4().py()*MET.p4().py();
-    LogDebug("produce()") << "MET: px " << MET.p4().Px() << " py " << MET.p4().Py() << " pt " << MET.p4().Pt();
+    LogDebug("produce()") << "MET: px (" << MET.p4().Px() << ") py (" << MET.p4().Py() << ") pt (" << MET.p4().Pt() << ")";
     float Delta = TMath::Power(lepton.p4().E(), 2) * (TMath::Power(Lambda, 2) - TMath::Power(lepton.p4().Pt()*MET.p4().Pt(), 2) );
     float p_nu_z = TMath::QuietNaN();
 
@@ -186,10 +180,8 @@ ReconstructedNeutrinoProducer::produce(edm::Event& iEvent, const edm::EventSetup
    nu->setP4(*nuVec);
    outNeutrinoColl->push_back(*nu);
 
-   LogDebug("produce()") << "neutrino: pt(" << nu->pt() << ") eta (" << nu->eta() << ") phi (" << nu->phi() << ") et (" << nu->et() << ")";
-   iEvent.put(outNeutrinoColl);
-   iEvent.put(mtW);
-
+   LogDebug("produce()") << "neutrino: pt (" << nu->pt() << ") eta (" << nu->eta() << ") phi (" << nu->phi() << ") et (" << nu->et() << ")";
+   iEvent.put(outNeutrinoColl, outName);
 
 /* This is an event example
    //Read 'ExampleData' from the Event

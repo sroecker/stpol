@@ -7,14 +7,10 @@ process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.MessageLogger = cms.Service("MessageLogger",
        destinations   = cms.untracked.vstring(
                                               'cout',
-                                             'debug'
                     ),
        debugModules   = cms.untracked.vstring('recoNuProducer'),
-       debug       = cms.untracked.PSet(
-                       threshold = cms.untracked.string('DEBUG') 
-        ),
        cout       = cms.untracked.PSet(
-                       threshold = cms.untracked.string('ERROR') 
+                       threshold = cms.untracked.string('DEBUG') 
         ),
 )
 
