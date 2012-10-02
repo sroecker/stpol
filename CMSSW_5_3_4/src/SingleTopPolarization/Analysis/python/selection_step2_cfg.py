@@ -4,9 +4,8 @@ from SingleTopPolarization.Analysis.eventCounting import *
 process = cms.Process("STPOLSEL2")
 countProcessed(process)
 
-doDebug = False
+doDebug = True
 
-process.load("FWCore.MessageService.MessageLogger_cfi")
 if doDebug:
     process.load("FWCore.MessageLogger.MessageLogger_cfi")
     process.MessageLogger = cms.Service("MessageLogger",
@@ -22,6 +21,8 @@ if doDebug:
             threshold=cms.untracked.string('DEBUG')
             ),
     )
+else:
+    process.load("FWCore.MessageService.MessageLogger_cfi")
 
 process.maxEvents = cms.untracked.PSet(input=cms.untracked.int32(-1))
 
@@ -168,6 +169,10 @@ process.recoNuProducerMu = cms.EDProducer('ReconstructedNeutrinoProducer',
     metSrc=cms.InputTag("patMETs"),
 )
 
+process.topsFromMu = cms.EDProducer('SimpleCompositeCandProducer',
+    sources=cms.VInputTag(["recoNu", "bTagsTCHPtight", "goodSignalMuons"])
+)
+
 #-------------------------------------------------
 # Electrons
 #-------------------------------------------------
@@ -243,6 +248,10 @@ process.recoNuProducerEle = cms.EDProducer('ReconstructedNeutrinoProducer',
     metSrc=cms.InputTag("goodMETs"),
 )
 
+process.topsFromEle = cms.EDProducer('SimpleCompositeCandProducer',
+    sources=cms.VInputTag(["recoNu", "bTagsTCHPtight", "goodSignalElectrons"])
+)
+
 #-----------------------------------------------
 # Paths
 #-----------------------------------------------
@@ -254,10 +263,17 @@ process.recoNu = cms.EDProducer(
     maxOut=cms.untracked.uint32(1),
 )
 
-process.nuAnalyzer = cms.EDAnalyzer(
-  'SimpleEventAnalyzer',
-  interestingCollection=cms.untracked.string("recoNu")
+process.recoTop = cms.EDProducer(
+    'CompositeCandCollectionCombiner',
+    sources=cms.untracked.vstring(["topsFromMu", "topsFromEle"]),
+    minOut=cms.untracked.uint32(1),
+    maxOut=cms.untracked.uint32(1),
 )
+
+# process.nuAnalyzer = cms.EDAnalyzer(
+#   'SimpleEventAnalyzer',
+#   interestingCollection=cms.untracked.string("recoNu")
+# )
 
 process.muPathPreCount = cms.EDProducer("EventCountProducer")
 process.muPath = cms.Path(
@@ -279,7 +295,9 @@ process.muPath = cms.Path(
     process.bTagsCSVtight *
     process.bTagsTCHPtight *
     process.mBTags *
-    process.nuAnalyzer
+    process.topsFromMu *
+    process.recoTop
+    #process.nuAnalyzer
 )
 countAfter(process, process.muPath,
     [
@@ -312,7 +330,9 @@ process.elePath = cms.Path(
     process.bTagsCSVtight *
     process.bTagsTCHPtight *
     process.mBTags *
-    process.nuAnalyzer
+    process.topsFromEle *
+    process.recoTop
+    #process.nuAnalyzer
 )
 countAfter(process, process.elePath,
     [
@@ -341,6 +361,8 @@ process.out = cms.OutputModule("PoolOutputModule",
         'drop patMuons_looseVetoMuons__PAT',
         'drop *_recoNuProducerEle_*_*',
         'drop *_recoNuProducerMu_*_*',
+        'drop *_topsFromMu_*_*',
+        'drop *_topsFromEle_*_*',
     )
 )
 process.outpath = cms.EndPath(process.out)
