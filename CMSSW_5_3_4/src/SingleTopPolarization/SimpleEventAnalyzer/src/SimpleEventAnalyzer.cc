@@ -105,7 +105,6 @@ SimpleEventAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
    //for (edm::View<reco::Candidate>::const_iterator obj = objects->begin(); obj != objects->end(); obj++) {
    int i = 0;
    for (auto& obj : *objects) {
-       //std::cout << "pt: " << (*obj).pt() << std::endl;
     edm::LogInfo("analyze()") << objectOfInterest << "(" << i << "): pt: " << obj.pt() << " eta: " << obj.eta() << " phi: " << obj.phi() << " et: " << obj.et() << std::endl;
     i++;
    }
