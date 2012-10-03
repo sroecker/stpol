@@ -4,7 +4,7 @@ from SingleTopPolarization.Analysis.eventCounting import *
 process = cms.Process("STPOLSEL2")
 countProcessed(process)
 
-doDebug = True
+doDebug = False
 
 if doDebug:
     process.load("FWCore.MessageLogger.MessageLogger_cfi")
@@ -38,7 +38,7 @@ process.source = cms.Source("PoolSource",
 # Jets
 #-------------------------------------------------
 
-jetCut = 'pt > 20.'                                                   # transverse momentum
+jetCut = 'pt > 40.'                                                   # transverse momentum
 jetCut += ' && abs(eta) < 5.0'                                        # pseudo-rapidity range
 jetCut += ' && numberOfDaughters > 1'                                 # PF jet ID:
 jetCut += ' && neutralHadronEnergyFraction < 0.99'                    # PF jet ID:
@@ -164,14 +164,14 @@ process.hasMuMETMT = cms.EDFilter('EventDoubleFilter',
 )
 
 process.recoNuProducerMu = cms.EDProducer('ReconstructedNeutrinoProducer',
-    leptonSrc=cms.InputTag("goodSignalMuons"),
+    leptonSrc=cms.InputTag("goodSignalLeptons"),
     bjetSrc=cms.InputTag("bTagsTCHPtight"),
     metSrc=cms.InputTag("patMETs"),
 )
 
-process.topsFromMu = cms.EDProducer('SimpleCompositeCandProducer',
-    sources=cms.VInputTag(["recoNu", "bTagsTCHPtight", "goodSignalMuons"])
-)
+# process.topsFromMu = cms.EDProducer('SimpleCompositeCandProducer',
+#     sources=cms.VInputTag(["recoNu", "bTagsTCHPtight", "goodSignalMuons"])
+# )
 
 #-------------------------------------------------
 # Electrons
@@ -243,32 +243,46 @@ process.hasMET = cms.EDFilter(
 )
 
 process.recoNuProducerEle = cms.EDProducer('ReconstructedNeutrinoProducer',
-    leptonSrc=cms.InputTag("goodSignalElectrons"),
+    leptonSrc=cms.InputTag("goodSignalLeptons"),
     bjetSrc=cms.InputTag("bTagsTCHPtight"),
     metSrc=cms.InputTag("goodMETs"),
-)
-
-process.topsFromEle = cms.EDProducer('SimpleCompositeCandProducer',
-    sources=cms.VInputTag(["recoNu", "bTagsTCHPtight", "goodSignalElectrons"])
 )
 
 #-----------------------------------------------
 # Paths
 #-----------------------------------------------
 
+process.goodSignalLeptons = cms.EDProducer(
+    'CandRefCombiner',
+    sources=cms.untracked.vstring(["goodSignalMuons", "goodSignalElectrons"]),
+    minOut=cms.untracked.uint32(1),
+    maxOut=cms.untracked.uint32(1),
+)
+
 process.recoNu = cms.EDProducer(
-    'CompositeCandCollectionCombiner',
+    #'CompositeCandCollectionCombiner',
+    'CandRefCombiner',
     sources=cms.untracked.vstring(["recoNuProducerEle", "recoNuProducerMu"]),
     minOut=cms.untracked.uint32(1),
     maxOut=cms.untracked.uint32(1),
 )
 
-process.recoTop = cms.EDProducer(
-    'CompositeCandCollectionCombiner',
-    sources=cms.untracked.vstring(["topsFromMu", "topsFromEle"]),
-    minOut=cms.untracked.uint32(1),
-    maxOut=cms.untracked.uint32(1),
+process.recoTop = cms.EDProducer('SimpleCompositeCandProducer',
+    sources=cms.VInputTag(["recoNu", "bTagsTCHPtight", "goodSignalLeptons"])
 )
+
+process.cosThetaProducer = cms.EDProducer('CosThetaProducer',
+    topSrc=cms.InputTag("recoTop"),
+    jetSrc=cms.InputTag("bTagsTCHPtight"),
+    leptonSrc=cms.InputTag("goodSignalLeptons")
+)
+
+# process.recoTop = cms.EDProducer(
+#     'CompositeCandCollectionCombiner',
+#     sources=cms.untracked.vstring(["topsFromMu", "topsFromEle"]),
+#     minOut=cms.untracked.uint32(1),
+#     maxOut=cms.untracked.uint32(1),
+# )
 
 # process.nuAnalyzer = cms.EDAnalyzer(
 #   'SimpleEventAnalyzer',
@@ -289,14 +303,16 @@ process.muPath = cms.Path(
     process.nJets *
     process.muAndMETMT *
     process.hasMuMETMT *
+    process.goodSignalLeptons *
     process.recoNuProducerMu *
     process.recoNu *
     process.bTagsCSVmedium *
     process.bTagsCSVtight *
     process.bTagsTCHPtight *
     process.mBTags *
-    process.topsFromMu *
-    process.recoTop
+    #process.topsFromMu *
+    process.recoTop *
+    process.cosThetaProducer
     #process.nuAnalyzer
 )
 countAfter(process, process.muPath,
@@ -324,14 +340,16 @@ process.elePath = cms.Path(
     process.nJets *
     process.goodMETs *
     process.hasMET *
+    process.goodSignalLeptons *
     process.recoNuProducerEle *
     process.recoNu *
     process.bTagsCSVmedium *
     process.bTagsCSVtight *
     process.bTagsTCHPtight *
     process.mBTags *
-    process.topsFromEle *
-    process.recoTop
+    #process.topsFromEle *
+    process.recoTop *
+    process.cosThetaProducer
     #process.nuAnalyzer
 )
 countAfter(process, process.elePath,
@@ -361,8 +379,8 @@ process.out = cms.OutputModule("PoolOutputModule",
         'drop patMuons_looseVetoMuons__PAT',
         'drop *_recoNuProducerEle_*_*',
         'drop *_recoNuProducerMu_*_*',
-        'drop *_topsFromMu_*_*',
-        'drop *_topsFromEle_*_*',
+        #'drop *_topsFromMu_*_*',
+        #'drop *_topsFromEle_*_*',
     )
 )
 process.outpath = cms.EndPath(process.out)
