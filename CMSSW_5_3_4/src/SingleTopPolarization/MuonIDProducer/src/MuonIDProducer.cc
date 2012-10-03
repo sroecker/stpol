@@ -130,7 +130,7 @@ MuonIDProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    float dxy;
 
    const reco::Vertex::Point* pvPoint;
-   if (primaryVertices->size()==0) {
+   if (!(primaryVertices.isAvailable()) || primaryVertices->size()==0) {
     edm::LogError("muon <-> primary vertex dz calculation") << "No primary vertices";
     pvPoint = 0;
    }
@@ -163,6 +163,16 @@ MuonIDProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     x = TMath::QuietNaN();
     if (muon.innerTrack().isAvailable()) {
       x = muon.innerTrack()->hitPattern().numberOfValidPixelHits();
+
+      if (pvPoint) {
+        dz = muon.innerTrack()->dz(*pvPoint);
+        dxy = muon.innerTrack()->dxy(*pvPoint);
+      }
+      else {
+        dz = TMath::QuietNaN();
+        dxy = TMath::QuietNaN();
+        LogDebug("produce()") << "Could not use primary vertex";
+      }
     }
     else {
       edm::LogError("muon track") << "muon does not have innerTrack()";
@@ -170,14 +180,6 @@ MuonIDProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     muon.addUserFloat("innerTrack_hitPattern_numberOfValidPixelHits", x);
     LogDebug("muon track") << "innerTrack_hitPattern_numberOfValidPixelHits " << x;
 
-    if (pvPoint) {
-      dz = muon.innerTrack()->dz(*pvPoint);
-      dxy = muon.innerTrack()->dxy(*pvPoint);
-    }
-    else {
-      dz = TMath::QuietNaN();
-      dxy = TMath::QuietNaN();
-    }
     muon.addUserFloat("dz", dz);
     LogDebug("muon track") << "dz " << dz;
     muon.addUserFloat("dxy", dxy);
