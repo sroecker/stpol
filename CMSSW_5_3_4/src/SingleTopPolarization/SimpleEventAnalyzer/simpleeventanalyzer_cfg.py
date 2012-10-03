@@ -3,7 +3,14 @@ import FWCore.ParameterSet.Config as cms
 process = cms.Process("Demo")
 
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
-
+process.MessageLogger = cms.Service("MessageLogger",
+       destinations=cms.untracked.vstring(
+                                              'cout',
+                    ),
+       cout=cms.untracked.PSet(
+        threshold=cms.untracked.string('DEBUG')
+        ),
+)
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 process.source = cms.Source("PoolSource",
@@ -19,7 +26,7 @@ enableCommandLineArguments(process)
 
 process.simpleAnalyzer = cms.EDAnalyzer(
 	'SimpleEventAnalyzer',
-	interestingCollection = cms.untracked.string("goodElectrons")
+	interestingCollection = cms.untracked.string("recoNu")
 )
 
 
