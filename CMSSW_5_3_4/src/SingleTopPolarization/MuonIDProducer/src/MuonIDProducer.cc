@@ -126,12 +126,12 @@ MuonIDProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    iEvent.getByLabel(primaryVertexSource, primaryVertices);
 
    std::auto_ptr<std::vector<pat::Muon> > outMuons(new std::vector<pat::Muon>(*muons));
-   float dz;
-   float dxy;
+   float dz = TMath::QuietNaN();
+   float dxy = TMath::QuietNaN();
 
    const reco::Vertex::Point* pvPoint;
-   if (primaryVertices->size()==0) {
-    edm::LogError("muon <-> primary vertex dz calculation") << "No primary vertices";
+   if (!(primaryVertices.isValid()) || primaryVertices->size()==0) {
+    edm::LogError("produce()") << "No primary vertices";
     pvPoint = 0;
    }
    else {
@@ -145,10 +145,10 @@ MuonIDProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       x = muon.track()->hitPattern().trackerLayersWithMeasurement();
     }
     else {
-      edm::LogError("muon track") << "muon does not have track()";
+      edm::LogError("produce()") << "muon does not have track()";
     }
     muon.addUserFloat("track_hitPattern_trackerLayersWithMeasurement", x);
-    LogDebug("muon track") << "track_hitPattern_trackerLayersWithMeasurement " << x;
+    LogDebug("produce()") << "track_hitPattern_trackerLayersWithMeasurement " << x;
 
     x = TMath::QuietNaN();
     if(muon.globalTrack().isAvailable()) {
@@ -163,25 +163,27 @@ MuonIDProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     x = TMath::QuietNaN();
     if (muon.innerTrack().isAvailable()) {
       x = muon.innerTrack()->hitPattern().numberOfValidPixelHits();
+
+      if (pvPoint) {
+        dz = muon.innerTrack()->dz(*pvPoint);
+        dxy = muon.innerTrack()->dxy(*pvPoint);
+      }
+      else {
+        dz = TMath::QuietNaN();
+        dxy = TMath::QuietNaN();
+        LogDebug("produce()") << "Could not use primary vertex";
+      }
     }
     else {
-      edm::LogError("muon track") << "muon does not have innerTrack()";
+      edm::LogError("produce()") << "muon does not have innerTrack()";
     }
     muon.addUserFloat("innerTrack_hitPattern_numberOfValidPixelHits", x);
-    LogDebug("muon track") << "innerTrack_hitPattern_numberOfValidPixelHits " << x;
+    LogDebug("produce()") << "innerTrack_hitPattern_numberOfValidPixelHits " << x;
 
-    if (pvPoint) {
-      dz = muon.innerTrack()->dz(*pvPoint);
-      dxy = muon.innerTrack()->dxy(*pvPoint);
-    }
-    else {
-      dz = TMath::QuietNaN();
-      dxy = TMath::QuietNaN();
-    }
     muon.addUserFloat("dz", dz);
-    LogDebug("muon track") << "dz " << dz;
+    LogDebug("produce()") << "dz " << dz;
     muon.addUserFloat("dxy", dxy);
-    LogDebug("muon track") << "dxy " << dxy;
+    LogDebug("produce()") << "dxy " << dxy;
 
    }
    iEvent.put(outMuons);
