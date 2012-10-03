@@ -103,6 +103,7 @@ SimpleEventAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
    edm::Handle<edm::View<reco::Candidate>> objects;
    iEvent.getByLabel(objectOfInterest, objects);
    //for (edm::View<reco::Candidate>::const_iterator obj = objects->begin(); obj != objects->end(); obj++) {
+   edm::LogInfo("analyze()") << "Collection " << objectOfInterest << " has " << objects->size() << " items";
    int i = 0;
    for (auto& obj : *objects) {
     edm::LogInfo("analyze()") << objectOfInterest << "(" << i << "): pt: " << obj.pt() << " eta: " << obj.eta() << " phi: " << obj.phi() << " et: " << obj.et() << std::endl;
