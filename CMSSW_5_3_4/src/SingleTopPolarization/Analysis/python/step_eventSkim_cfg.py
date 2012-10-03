@@ -6,7 +6,7 @@ import FWCore.ParameterSet.Config as cms
 from SingleTopPolarization.Analysis.eventCounting import countInSequence
 
 def skimFilters(process):
-    muonMinPt = 10
+    muonMinPt = 20
     muonEtaRange = [-4.5, 4.5]
     muonSource = "muons"
     process.looseMuonsSkim = cms.EDFilter("EtaPtMinCandViewSelector",
@@ -16,7 +16,7 @@ def skimFilters(process):
     etaMax = cms.double(max(muonEtaRange))
     )
 
-    jetMinPt = 10
+    jetMinPt = 30
     jetEtaRange = [-4.5, 4.5]
     jetSource = "ak5PFJets"
     process.looseJetsSkim = cms.EDFilter("EtaPtMinCandViewSelector",
@@ -26,7 +26,7 @@ def skimFilters(process):
     etaMax = cms.double(max(jetEtaRange))
     )
 
-    electronMinPt = 10
+    electronMinPt = 20
     electronEtaRange = [-4.5, 4.5]
     electronSource = "gsfElectrons"
     process.looseElectronsSkim = cms.EDFilter("EtaPtMinCandViewSelector",
@@ -39,18 +39,19 @@ def skimFilters(process):
     process.muonFilterSkim = cms.EDFilter("PATCandViewCountFilter",
       src = cms.InputTag("looseMuonsSkim"),
       minNumber = cms.uint32(1),
-      maxNumber = cms.uint32(9), #Somehow maxNumber works in PATCandViewCountFilter but not in CandViewCountFilter
+      maxNumber = cms.uint32(9999), #Somehow maxNumber works in PATCandViewCountFilter but not in CandViewCountFilter
     )
 
-    process.jetFilterSkim = cms.EDFilter("CandViewCountFilter",
+    process.jetFilterSkim = cms.EDFilter("PATCandViewCountFilter",
       src = cms.InputTag("looseJetsSkim"),
       minNumber = cms.uint32(2),
+      maxNumber = cms.uint32(9999),
     )
 
     process.electronFilterSkim = cms.EDFilter("PATCandViewCountFilter",
       src = cms.InputTag("looseElectronsSkim"),
       minNumber = cms.uint32(1),
-      maxNumber = cms.uint32(9),
+      maxNumber = cms.uint32(9999),
     )
 
     process.electronVetoFilterSkim = cms.EDFilter("PATCandViewCountFilter",
@@ -68,16 +69,16 @@ def skimFilters(process):
     process.muonSkim = cms.Sequence(
           process.looseMuonsSkim
         * process.muonFilterSkim
-        * process.looseElectronsSkim
-        * process.electronVetoFilterSkim
+        #* process.looseElectronsSkim
+        #* process.electronVetoFilterSkim
         * process.looseJetsSkim
         * process.jetFilterSkim
     )
     process.electronSkim = cms.Sequence(
           process.looseElectronsSkim
         * process.electronFilterSkim
-        * process.looseMuonsSkim
-        * process.muonVetoFilterSkim
+        #* process.looseMuonsSkim
+        #* process.muonVetoFilterSkim
         * process.looseJetsSkim
         * process.jetFilterSkim
     )
