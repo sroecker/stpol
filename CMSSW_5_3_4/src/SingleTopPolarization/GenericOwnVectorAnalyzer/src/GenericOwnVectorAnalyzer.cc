@@ -108,7 +108,7 @@ GenericOwnVectorAnalyzer<T>::analyze(const edm::Event& iEvent, const edm::EventS
    for (auto& obj : *objects) {
        //std::cout << "pt: " << (*obj).pt() << std::endl;
     const T* castObj = static_cast<const T*>(&obj);
-    std::cout << "pt: " << obj.pt() << " eta: " << obj.eta() << " phi: " << obj.phi() << std::endl;
+    std::cout << "pt: " << castObj->pt() << " eta: " << castObj->eta() << " phi: " << castObj->phi() << std::endl;
     //std::cout << "bTag: " << jet->bDiscriminator("default") << std::endl;
    }
    
@@ -170,4 +170,6 @@ GenericOwnVectorAnalyzer<T>::fillDescriptions(edm::ConfigurationDescriptions& de
 
 //define this as a plug-in
 typedef GenericOwnVectorAnalyzer<pat::Jet> JetOwnVectorSimpleAnalyzer;
+typedef GenericOwnVectorAnalyzer<pat::Jet> CandOwnVectorSimpleAnalyzer;
+DEFINE_FWK_MODULE(CandOwnVectorSimpleAnalyzer);
 DEFINE_FWK_MODULE(JetOwnVectorSimpleAnalyzer);
