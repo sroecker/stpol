@@ -160,6 +160,8 @@ process.elesWithIso = cms.EDProducer(
 
 from PhysicsTools.PatAlgos.selectionLayer1.jetSelector_cfi import *
 process.pfNoTau.enable = False
+process.load("JetMETCorrections.Type1MET.pfMETCorrections_cff")
+
 
 #-------------------------------------------------
 # Object counters
@@ -176,6 +178,7 @@ process.pfNoTau.enable = False
 
 process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatElectrons) + 1, process.elesWithIso)
 process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatMuons) + 1, process.muonsWithIso*process.muonsWithID)
+process.patPF2PATSequence.insert(-1, process.producePFMETCorrections)
 
 #Need separate paths because of skimming
 process.singleTopPathStep1Mu = cms.Path(
@@ -258,3 +261,11 @@ process.GlobalTag.globaltag = cms.string('START52_V9B::All')
 #VarParsing
 from SingleTopPolarization.Analysis.cmdlineParsing import enableCommandLineArguments
 enableCommandLineArguments(process)
+
+if doSkimming:
+  process.out.fileName.setValue(process.out.fileName.value().replace(".root", "_Skim.root"))
+else:
+  process.out.fileName.setValue(process.out.fileName.value().replace(".root", "_noSkim.root"))
+
+if not doSlimming:
+  process.out.fileName.setValue(process.out.fileName.value().replace(".root", "_noSlim.root"))
