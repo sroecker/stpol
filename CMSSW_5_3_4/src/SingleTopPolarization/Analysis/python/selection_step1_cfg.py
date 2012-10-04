@@ -29,7 +29,7 @@ else:
     process.load("FWCore.MessageService.MessageLogger_cfi")
 
 #Should do pre-PFBRECO-skimming (discard uninteresting events)
-doSkimming = False
+doSkimming = True
 
 #Should slim (drop the unnecessary collections) the output?
 doSlimming = True
@@ -161,6 +161,7 @@ process.elesWithIso = cms.EDProducer(
 from PhysicsTools.PatAlgos.selectionLayer1.jetSelector_cfi import *
 process.pfNoTau.enable = False
 process.load("JetMETCorrections.Type1MET.pfMETCorrections_cff")
+process.selectedPatJets.cut = cms.string("pt>30")
 
 
 #-------------------------------------------------
