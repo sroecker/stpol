@@ -16,7 +16,7 @@ def skimFilters(process):
     etaMax = cms.double(max(muonEtaRange))
     )
 
-    jetMinPt = 30
+    jetMinPt = 20
     jetEtaRange = [-4.5, 4.5]
     jetSource = "ak5PFJets"
     process.looseJetsSkim = cms.EDFilter("EtaPtMinCandViewSelector",
