@@ -64,6 +64,9 @@
 //for ITOA
 #include <sstream>
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+
+
 //
 // class declaration
 //
@@ -227,26 +230,32 @@ GenericViewTreemakerAnalyzer<T, C>::analyze(const edm::Event& iEvent, const edm:
     //std::cout << "col " << collectionName << " " << objects->size() << std::endl;
 
     int i = 0; //count the objects of the collection of interest
-    for (auto& obj : *objects) {
-      //std::cout << "obj ";
-      for (auto& var : varMap) {
-        auto& tag = var.first;
-        //std::cout << "var(" << tag << ") ";
-        auto& varParser = *(var.second);
-        //const double value = varParser((pat::Jet)(obj));
-        const C* pObj = static_cast<const C*>(&obj);
-        if (pObj == 0) {
-          std::cout << "Could not cast" << std::endl;
+    if(objects.isValid() ) {
+      for (auto& obj : *objects) {
+        //std::cout << "obj ";
+        for (auto& var : varMap) {
+          auto& tag = var.first;
+          //std::cout << "var(" << tag << ") ";
+          auto& varParser = *(var.second);
+          //const double value = varParser((pat::Jet)(obj));
+          const C* pObj = static_cast<const C*>(&obj);
+          if (pObj == 0) {
+            std::cout << "Could not cast" << std::endl;
+          }
+          const double&& value = varParser(*pObj);
+          //std::cout << value << " ";
+          //std::cout << collectionName << "[" << i << "] " << tag << " " << value << std::endl;
+          if (i<maxElems[collectionName]) {
+            *(treeValues[collectionName][tag][i]) = value;
+          } else {
+            break;
+          }
         }
-        const double&& value = varParser(*pObj);
-        //std::cout << value << " ";
-        //std::cout << collectionName << "[" << i << "] " << tag << " " << value << std::endl;
-        if (i<maxElems[collectionName]) {
-          *(treeValues[collectionName][tag][i]) = value;
-        }
+        //std::cout << std::endl;
+        i++;
       }
-      //std::cout << std::endl;
-      i++;
+    } else { //
+      LogDebug("produce()") << "Collection " << collectionName << " does not exist in event";
     }
   }
 

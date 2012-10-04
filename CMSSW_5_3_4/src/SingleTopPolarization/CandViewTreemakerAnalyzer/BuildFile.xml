@@ -6,4 +6,5 @@
 <use name="CommonTools/UtilAlgos"/>
 <use name="DataFormats/PatCandidates"/>
 <use name="DataFormats/Common"/>
+<use name="FWCore/MessageLogger"/>
 <flags EDM_PLUGIN="1"/>
