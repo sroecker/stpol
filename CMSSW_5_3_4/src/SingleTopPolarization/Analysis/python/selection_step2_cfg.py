@@ -38,7 +38,7 @@ process.source = cms.Source("PoolSource",
 # Jets
 #-------------------------------------------------
 
-jetCut = 'pt > 40.'                                                   # transverse momentum
+jetCut = 'userFloat("pt_smear") > 40.'                                                   # transverse momentum
 jetCut += ' && abs(eta) < 5.0'                                        # pseudo-rapidity range
 jetCut += ' && numberOfDaughters > 1'                                 # PF jet ID:
 jetCut += ' && neutralHadronEnergyFraction < 0.99'                    # PF jet ID:
@@ -47,8 +47,12 @@ jetCut += ' && (chargedEmEnergyFraction < 0.99 || abs(eta) >= 2.4)'  # PF jet ID
 jetCut += ' && (chargedHadronEnergyFraction > 0. || abs(eta) >= 2.4)'   # PF jet ID:
 jetCut += ' && (chargedMultiplicity > 0 || abs(eta) >= 2.4)'          # PF jet ID:
 
+process.smearedJets = cms.EDProducer('JetMCSmearProducer',
+    src=cms.InputTag("selectedPatJets")
+)
+
 process.goodJets = cms.EDFilter("CandViewSelector",
-    src=cms.InputTag('selectedPatJets'),
+    src=cms.InputTag('smearedJets'),
     cut=cms.string(jetCut)
 )
 
@@ -251,6 +255,15 @@ process.recoNuProducerEle = cms.EDProducer('ReconstructedNeutrinoProducer',
 #-----------------------------------------------
 # Paths
 #-----------------------------------------------
+from HLTrigger.HLTfilters.hltHighLevel_cfi import *
+
+process.stepHLTsync = hltHighLevel.clone(
+  TriggerResultsTag = "TriggerResults::HLT"
+, HLTPaths = [
+    "HLT_IsoMu24_eta2p1_v11"
+  ]
+, andOr = True
+)
 
 process.goodSignalLeptons = cms.EDProducer(
     'CandRefCombiner',
@@ -292,6 +305,7 @@ process.cosThetaProducer = cms.EDProducer('CosThetaProducer',
 process.muPathPreCount = cms.EDProducer("EventCountProducer")
 process.muPath = cms.Path(
     process.muPathPreCount *
+    process.stepHLTsync *
     process.goodSignalMuons *
     process.goodQCDMuons *
     process.looseVetoMuons *
@@ -299,6 +313,7 @@ process.muPath = cms.Path(
     process.looseMuVetoMu *
     process.looseVetoElectrons *
     process.looseEleVetoMu *
+    process.smearedJets *
     process.goodJets *
     process.nJets *
     process.muAndMETMT *
@@ -317,6 +332,7 @@ process.muPath = cms.Path(
 )
 countAfter(process, process.muPath,
     [
+    "stepHLTsync",
     "oneIsoMu",
     "looseMuVetoMu",
     "looseEleVetoMu",
@@ -329,6 +345,7 @@ countAfter(process, process.muPath,
 process.elePathPreCount = cms.EDProducer("EventCountProducer")
 process.elePath = cms.Path(
     process.elePathPreCount *
+    #process.stepHLTsync *
     process.goodSignalElectrons *
     process.goodQCDElectrons *
     process.looseVetoElectrons *
@@ -336,6 +353,7 @@ process.elePath = cms.Path(
     process.looseEleVetoEle *
     process.looseVetoMuons *
     process.looseMuVetoEle *
+    process.smearedJets *
     process.goodJets *
     process.nJets *
     process.goodMETs *
@@ -354,6 +372,7 @@ process.elePath = cms.Path(
 )
 countAfter(process, process.elePath,
     [
+    #"stepHLTsync",
     "oneIsoEle",
     "looseEleVetoEle",
     "looseMuVetoEle",
@@ -386,6 +405,64 @@ process.out = cms.OutputModule("PoolOutputModule",
 process.outpath = cms.EndPath(process.out)
 
 
+#-----------------------------------------------
+# Treemaking
+#-----------------------------------------------
+
+
+def treeCollection(collection_, maxElems_, varlist):
+    varVPSet = cms.untracked.VPSet()
+    for v in varlist:
+        pset = cms.untracked.PSet(tag=cms.untracked.string(v[0]), expr=cms.untracked.string(v[1]), )
+        varVPSet.append(pset)
+    ret = cms.untracked.PSet(
+        collection=cms.untracked.string(collection_),
+        maxElems=cms.untracked.int32(maxElems_),
+        variables=varVPSet
+    )
+    return ret
+
+process.treesMu = cms.EDAnalyzer('MuonCandViewTreemakerAnalyzer',
+        makeTree = cms.untracked.bool(True),
+        treeName = cms.untracked.string("eventTree"),
+        collections = cms.untracked.VPSet(treeCollection("goodSignalMuons", 1,
+            [
+                ["Pt", "pt"],
+                ["Eta", "eta"],
+                ["Phi", "phi"],
+                ["deltaBetaCorrRelIso", "userFloat('deltaBetaCorrRelIso')"],
+            ]
+            )
+        )
+)
+
+process.treesEle = cms.EDAnalyzer('ElectronCandViewTreemakerAnalyzer',
+        makeTree = cms.untracked.bool(True),
+        treeName = cms.untracked.string("eventTree"),
+        collections = cms.untracked.VPSet(treeCollection("goodSignalElectrons", 1,
+            [
+                ["Pt", "pt"],
+                ["Eta", "eta"],
+                ["Phi", "phi"],
+                ["rhoCorrRelIso", "userFloat('rhoCorrRelIso')"],
+            ]
+            )
+        )
+)
+process.treeSequence = cms.Sequence(process.treesMu*process.treesEle)
+process.muPath.insert(-1, process.treeSequence)
+process.elePath.insert(-1, process.treeSequence)
+
+#-----------------------------------------------
+#
+#-----------------------------------------------
+
 #Command-line arguments
 from SingleTopPolarization.Analysis.cmdlineParsing import enableCommandLineArguments
 enableCommandLineArguments(process)
+
+process.TFileService = cms.Service(
+    "TFileService",
+    fileName=cms.string(process.out.fileName.value().replace(".root", "_trees.root")),
+)
+
