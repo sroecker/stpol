@@ -48,15 +48,15 @@ def effCalcs():
 
 	paths = dict()
 	for hn in hists:
-		print hn
 		h = f.Get("efficiencyAnalyzer").Get(hn)
 		path = list()
 		for i in range(1,h.GetNbinsX()+1):
 			path.append(h.GetBinContent(i))
-		print path
 		paths[hn] = path
 	f.Close()
 	return paths
 
 #A = etaPlots()
 A = effCalcs()
+muCounts = map(int, A["muPath"][-7:])
+print("mu counts: " + ' | '.join('{0}'.format(k) for k in muCounts))
