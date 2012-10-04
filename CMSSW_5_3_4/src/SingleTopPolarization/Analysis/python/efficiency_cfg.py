@@ -19,7 +19,8 @@ process.efficiencyAnalyzer = cms.EDAnalyzer('EfficiencyAnalyzer'
 , muPath = cms.untracked.vstring([
 	"singleTopPathStep1MuPreCount", 
 	"singleTopPathStep1MuPostCount", 
-	"muPathPreCount", 
+	"muPathPreCount",
+	"muPathStepHLTsyncPostCount",
 	"muPathOneIsoMuPostCount", 
 	"muPathLooseMuVetoMuPostCount", 
 	"muPathLooseEleVetoMuPostCount",
@@ -31,7 +32,8 @@ process.efficiencyAnalyzer = cms.EDAnalyzer('EfficiencyAnalyzer'
 , elePath = cms.untracked.vstring([
 	"singleTopPathStep1MuPreCount", 
 	"singleTopPathStep1ElePostCount", 
-	"elePathPreCount", 
+	"elePathPreCount",
+	#"elePathStepHLTsyncPostCount",
 	"elePathOneIsoElePostCount", 
 	"elePathLooseEleVetoElePostCount", 
 	"elePathLooseMuVetoElePostCount",
