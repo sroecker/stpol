@@ -260,7 +260,8 @@ from HLTrigger.HLTfilters.hltHighLevel_cfi import *
 process.stepHLTsync = hltHighLevel.clone(
   TriggerResultsTag = "TriggerResults::HLT"
 , HLTPaths = [
-    "HLT_IsoMu24_eta2p1_v11"
+    #"HLT_IsoMu24_eta2p1_v11"
+    #"HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet30_30_20_v1"
   ]
 , andOr = True
 )
