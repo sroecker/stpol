@@ -59,10 +59,10 @@ class LeptonIsolationProducer : public edm::EDProducer {
       virtual void beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
       virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
 
-      edm::InputTag leptonSource;
-      edm::InputTag rhoSource;
+      const edm::InputTag leptonSource;
+      const edm::InputTag rhoSource;
 
-      float dR;
+      const float dR;
 
 
       // ----------member data ---------------------------
@@ -81,6 +81,9 @@ class LeptonIsolationProducer : public edm::EDProducer {
 //
 template <typename T>
 LeptonIsolationProducer<T>::LeptonIsolationProducer(const edm::ParameterSet& iConfig)
+: leptonSource(iConfig.getParameter<edm::InputTag>("leptonSrc"))
+, rhoSource(iConfig.getParameter<edm::InputTag>("rhoSrc"))
+, dR(iConfig.getParameter<double>("dR"))
 {
    //register your products
 /* Examples
@@ -94,9 +97,7 @@ LeptonIsolationProducer<T>::LeptonIsolationProducer(const edm::ParameterSet& iCo
 */
    produces<std::vector<T> >();
 
-   leptonSource = iConfig.getParameter<edm::InputTag>("leptonSrc");
-   rhoSource = iConfig.getParameter<edm::InputTag>("rhoSrc");
-   dR = iConfig.getUntrackedParameter<double>("dR", 0.4);
+
    //now do what ever other initialization is needed
   
 }
