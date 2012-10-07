@@ -143,6 +143,8 @@ def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fil
   process.load("JetMETCorrections.Type1MET.pfMETCorrections_cff")
   process.selectedPatJets.cut = cms.string("pt>30")
   process.patPF2PATSequence.insert(-1, process.producePFMETCorrections)
+  process.load("CMGTools.External.pujetidsequence_cff")
+  process.patPF2PATSequence.insert(-1, process.puJetIdSqeuence)
 
 
   #-------------------------------------------------
@@ -213,6 +215,8 @@ def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fil
           'keep patJets_selectedPatJets__PAT',
           'keep double_*_rho_RECO', #For rho-corr rel iso
           'keep recoGenJets_selectedPatJets_genJets_PAT', #For Jet MC smearing we need to keep the genJets
+          "keep *_puJetId_*_*", # input variables
+          "keep *_puJetMva_*_*", # final MVAs and working point flags
 
           # Muons
           'keep patMuons_muonsWithID__PAT',
@@ -231,7 +235,7 @@ def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fil
     )
   )
 
-  process.GlobalTag.globaltag = cms.string('START53_V7A::All')
+  process.GlobalTag.globaltag = cms.string('START53_V7F::All')
 
   if fileName == None:
     #VarParsing
