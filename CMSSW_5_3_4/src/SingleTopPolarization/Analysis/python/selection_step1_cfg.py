@@ -88,18 +88,6 @@ def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fil
   process.pfIsolatedMuons.doDeltaBetaCorrection = False
   process.pfIsolatedMuons.isolationCut = 100.0  # Deliberately put a large isolation cut
 
-  process.muonsWithIso = cms.EDProducer(
-    'MuonIsolationProducer',
-    leptonSrc = cms.InputTag("selectedPatMuons" + postfix),
-    rhoSrc = cms.InputTag("kt6PFJets", "rho")
-  )
-
-  process.muonsWithID = cms.EDProducer(
-    'MuonIDProducer',
-    muonSrc = cms.InputTag("muonsWithIso"),
-    primaryVertexSource = cms.InputTag("offlinePrimaryVertices")
-  )
-
   # process.muSequence = cms.Sequence(
   #   process.goodSignalMuons
   #   * process.goodQCDMuons
@@ -129,11 +117,6 @@ def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fil
   process.patElectrons.electronIDSources.mvaNonTrigV0 = cms.InputTag("mvaNonTrigV0")
   process.patPF2PATSequence.replace(process.patElectrons, process.mvaID * process.patElectrons)
 
-  process.elesWithIso = cms.EDProducer(
-    'ElectronIsolationProducer',
-    leptonSrc = cms.InputTag("selectedPatElectrons" + postfix),
-    rhoSrc = cms.InputTag("kt6PFJets", "rho")
-  )
 
   #-------------------------------------------------
   # Jets
@@ -160,8 +143,8 @@ def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fil
   # Paths
   #-------------------------------------------------
 
-  process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatElectrons) + 1, process.elesWithIso)
-  process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatMuons) + 1, process.muonsWithIso*process.muonsWithID)
+  #process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatElectrons) + 1, process.elesWithIso)
+  #process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatMuons) + 1, process.muonsWithIso*process.muonsWithID)
 
   #Need separate paths because of skimming
   process.singleTopPathStep1Mu = cms.Path(
@@ -219,10 +202,10 @@ def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fil
           "keep *_puJetMva_*_*", # final MVAs and working point flags
 
           # Muons
-          'keep patMuons_muonsWithID__PAT',
+          'keep patMuons_selectedPatMuons__PAT',
 
           # Electrons
-          'keep patElectrons_elesWithIso__PAT',
+          'keep patElectrons_selectedPatElectrons__PAT',
 
           # METs
           'keep patMETs_patMETs__PAT'

@@ -100,6 +100,18 @@ process.mBTags = cms.EDFilter(
 #-------------------------------------------------
 # Muons
 #-------------------------------------------------
+process.muonsWithIso = cms.EDProducer(
+  'MuonIsolationProducer',
+  leptonSrc = cms.InputTag("selectedPatMuons"),
+  rhoSrc = cms.InputTag("kt6PFJets", "rho"),
+  dR = cms.double(0.4)
+)
+
+process.muonsWithID = cms.EDProducer(
+  'MuonIDProducer',
+  muonSrc = cms.InputTag("muonsWithIso"),
+  primaryVertexSource = cms.InputTag("offlinePrimaryVertices")
+)
 
 goodMuonCut = 'isPFMuon'                                                                       # general reconstruction property
 goodMuonCut += ' && isGlobalMuon'                                                                   # general reconstruction property
@@ -186,6 +198,13 @@ process.recoNuProducerMu = cms.EDProducer('ReconstructedNeutrinoProducer',
 #-------------------------------------------------
 # Electrons
 #-------------------------------------------------
+
+process.elesWithIso = cms.EDProducer(
+  'ElectronIsolationProducer',
+  leptonSrc = cms.InputTag("selectedPatElectrons"),
+  rhoSrc = cms.InputTag("kt6PFJets", "rho"),
+  dR = cms.double(0.4)
+)
 
 goodElectronCut = "pt>30"
 goodElectronCut += "&& abs(eta)<2.5"
@@ -349,7 +368,7 @@ process.stepHLTsync = hltHighLevel.clone(
 , HLTPaths = [
     #"HLT_IsoMu24_eta2p1_v11"
     #"HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet30_30_20_v1"
-    "HLT_IsoMu24_eta2p1_v13"
+    #"HLT_IsoMu24_eta2p1_v13"
   ]
 , andOr = True
 )
@@ -393,6 +412,8 @@ process.cosThetaProducer = cms.EDProducer('CosThetaProducer',
 
 process.muPathPreCount = cms.EDProducer("EventCountProducer")
 process.muPath = cms.Path(
+    process.muonsWithIso * 
+    process.muonsWithID *
     process.muPathPreCount *
     process.stepHLTsync *
     process.goodSignalMuons *
@@ -436,6 +457,7 @@ countAfter(process, process.muPath,
 
 process.elePathPreCount = cms.EDProducer("EventCountProducer")
 process.elePath = cms.Path(
+    process.elesWithIso * 
     process.elePathPreCount *
     #process.stepHLTsync *
     process.goodSignalElectrons *
