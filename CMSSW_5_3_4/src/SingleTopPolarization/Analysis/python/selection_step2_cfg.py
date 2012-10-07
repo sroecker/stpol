@@ -59,7 +59,13 @@ process.goodJets = cms.EDFilter("CandViewSelector",
 process.bTagsTCHPtight = cms.EDFilter(
     "CandViewSelector",
     src=cms.InputTag("goodJets"),
-    cut=cms.string('bDiscriminator("trackCountingHighPurBJetTags") > 3.41')
+    cut=cms.string('bDiscriminator("trackCountingHighPurBJetTags") >= 3.41')
+)
+
+process.untaggedTCHPtight = cms.EDFilter(
+    "CandViewSelector",
+    src=cms.InputTag("goodJets"),
+    cut=cms.string('bDiscriminator("trackCountingHighPurBJetTags") < 3.41')
 )
 
 process.bTagsCSVmedium = cms.EDFilter(
@@ -253,6 +259,87 @@ process.recoNuProducerEle = cms.EDProducer('ReconstructedNeutrinoProducer',
 )
 
 #-----------------------------------------------
+# Treemaking
+#-----------------------------------------------
+
+
+def treeCollection(collection_, maxElems_, varlist):
+    varVPSet = cms.untracked.VPSet()
+    for v in varlist:
+        pset = cms.untracked.PSet(tag=cms.untracked.string(v[0]), expr=cms.untracked.string(v[1]), )
+        varVPSet.append(pset)
+    ret = cms.untracked.PSet(
+        collection=cms.untracked.string(collection_),
+        maxElems=cms.untracked.int32(maxElems_),
+        variables=varVPSet
+    )
+    return ret
+
+process.treesMu = cms.EDAnalyzer('MuonCandViewTreemakerAnalyzer',
+        collections = cms.untracked.VPSet(treeCollection("goodSignalMuons", 1,
+            [
+                ["Pt", "pt"],
+                ["Eta", "eta"],
+                ["Phi", "phi"],
+                ["deltaBetaCorrRelIso", "userFloat('deltaBetaCorrRelIso')"],
+            ]
+            )
+        )
+)
+
+process.treesEle = cms.EDAnalyzer('ElectronCandViewTreemakerAnalyzer',
+        collections = cms.untracked.VPSet(treeCollection("goodSignalElectrons", 1,
+            [
+                ["Pt", "pt"],
+                ["Eta", "eta"],
+                ["Phi", "phi"],
+                ["rhoCorrRelIso", "userFloat('rhoCorrRelIso')"],
+            ]
+            )
+        )
+)
+
+process.treesDouble = cms.EDAnalyzer("DoubleTreemakerAnalyzer",
+    collections = cms.VInputTag(
+        cms.InputTag("cosThetaProducer", "cosThetaLightJet", "STPOLSEL2"),
+        cms.InputTag("muAndMETMT", "", "STPOLSEL2"),
+        cms.InputTag("kt6PFJets", "rho", "RECO")
+    )
+)
+process.treeSequence = cms.Sequence(process.treesMu*process.treesEle*process.treesDouble)
+
+process.efficiencyAnalyzerMu = cms.EDAnalyzer('EfficiencyAnalyzer'
+, histogrammableCounters = cms.untracked.vstring(["muPath"])
+, muPath = cms.untracked.vstring([
+    "singleTopPathStep1MuPreCount", 
+    "singleTopPathStep1MuPostCount", 
+    "muPathPreCount",
+    "muPathStepHLTsyncPostCount",
+    "muPathOneIsoMuPostCount", 
+    "muPathLooseMuVetoMuPostCount", 
+    "muPathLooseEleVetoMuPostCount",
+    "muPathNJetsPostCount",
+    "muPathHasMuMETMTPostCount",
+    "muPathMBTagsPostCount"
+    ]
+))
+process.efficiencyAnalyzerEle = cms.EDAnalyzer('EfficiencyAnalyzer'
+, histogrammableCounters = cms.untracked.vstring(["elePath"])
+, elePath = cms.untracked.vstring([
+    "singleTopPathStep1MuPreCount", 
+    "singleTopPathStep1ElePostCount", 
+    "elePathPreCount",
+    #"elePathStepHLTsyncPostCount",
+    "elePathOneIsoElePostCount", 
+    "elePathLooseEleVetoElePostCount", 
+    "elePathLooseMuVetoElePostCount",
+    "elePathNJetsPostCount",
+    "elePathHasMETPostCount",
+    "elePathMBTagsPostCount"
+    ]
+))
+
+#-----------------------------------------------
 # Paths
 #-----------------------------------------------
 from HLTrigger.HLTfilters.hltHighLevel_cfi import *
@@ -262,6 +349,7 @@ process.stepHLTsync = hltHighLevel.clone(
 , HLTPaths = [
     #"HLT_IsoMu24_eta2p1_v11"
     #"HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet30_30_20_v1"
+    "HLT_IsoMu24_eta2p1_v13"
   ]
 , andOr = True
 )
@@ -287,7 +375,7 @@ process.recoTop = cms.EDProducer('SimpleCompositeCandProducer',
 
 process.cosThetaProducer = cms.EDProducer('CosThetaProducer',
     topSrc=cms.InputTag("recoTop"),
-    jetSrc=cms.InputTag("bTagsTCHPtight"),
+    jetSrc=cms.InputTag("untaggedTCHPtight"),
     leptonSrc=cms.InputTag("goodSignalLeptons")
 )
 
@@ -325,10 +413,13 @@ process.muPath = cms.Path(
     process.bTagsCSVmedium *
     process.bTagsCSVtight *
     process.bTagsTCHPtight *
+    process.untaggedTCHPtight *
     process.mBTags *
     #process.topsFromMu *
     process.recoTop *
-    process.cosThetaProducer
+    process.cosThetaProducer *
+    process.treeSequence *
+    process.efficiencyAnalyzerMu
     #process.nuAnalyzer
 )
 countAfter(process, process.muPath,
@@ -365,10 +456,13 @@ process.elePath = cms.Path(
     process.bTagsCSVmedium *
     process.bTagsCSVtight *
     process.bTagsTCHPtight *
+    process.untaggedTCHPtight *
     process.mBTags *
     #process.topsFromEle *
     process.recoTop *
-    process.cosThetaProducer
+    process.cosThetaProducer *
+    process.treeSequence *
+    process.efficiencyAnalyzerEle
     #process.nuAnalyzer
 )
 countAfter(process, process.elePath,
@@ -404,55 +498,6 @@ process.out = cms.OutputModule("PoolOutputModule",
     )
 )
 process.outpath = cms.EndPath(process.out)
-
-
-#-----------------------------------------------
-# Treemaking
-#-----------------------------------------------
-
-
-def treeCollection(collection_, maxElems_, varlist):
-    varVPSet = cms.untracked.VPSet()
-    for v in varlist:
-        pset = cms.untracked.PSet(tag=cms.untracked.string(v[0]), expr=cms.untracked.string(v[1]), )
-        varVPSet.append(pset)
-    ret = cms.untracked.PSet(
-        collection=cms.untracked.string(collection_),
-        maxElems=cms.untracked.int32(maxElems_),
-        variables=varVPSet
-    )
-    return ret
-
-process.treesMu = cms.EDAnalyzer('MuonCandViewTreemakerAnalyzer',
-        makeTree = cms.untracked.bool(True),
-        treeName = cms.untracked.string("eventTree"),
-        collections = cms.untracked.VPSet(treeCollection("goodSignalMuons", 1,
-            [
-                ["Pt", "pt"],
-                ["Eta", "eta"],
-                ["Phi", "phi"],
-                ["deltaBetaCorrRelIso", "userFloat('deltaBetaCorrRelIso')"],
-            ]
-            )
-        )
-)
-
-process.treesEle = cms.EDAnalyzer('ElectronCandViewTreemakerAnalyzer',
-        makeTree = cms.untracked.bool(True),
-        treeName = cms.untracked.string("eventTree"),
-        collections = cms.untracked.VPSet(treeCollection("goodSignalElectrons", 1,
-            [
-                ["Pt", "pt"],
-                ["Eta", "eta"],
-                ["Phi", "phi"],
-                ["rhoCorrRelIso", "userFloat('rhoCorrRelIso')"],
-            ]
-            )
-        )
-)
-process.treeSequence = cms.Sequence(process.treesMu*process.treesEle)
-process.muPath.insert(-1, process.treeSequence)
-process.elePath.insert(-1, process.treeSequence)
 
 #-----------------------------------------------
 #
