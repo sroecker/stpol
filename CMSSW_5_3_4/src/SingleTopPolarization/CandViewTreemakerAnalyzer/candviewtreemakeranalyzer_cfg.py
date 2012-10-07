@@ -2,8 +2,12 @@ import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("TREEMAKER")
 
-process.load("FWCore.MessageService.MessageLogger_cfi")
-
+process.load("FWCore.MessageLogger.MessageLogger_cfi")
+process.MessageLogger = cms.Service("MessageLogger",
+       destinations=cms.untracked.vstring('cout'),
+       debugModules=cms.untracked.vstring('*'),
+       cout=cms.untracked.PSet(threshold=cms.untracked.string('DEBUG')),
+)
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 process.source = cms.Source("PoolSource",
@@ -12,9 +16,6 @@ process.source = cms.Source("PoolSource",
     	""
     )
 )
-
-from SingleTopPolarization.Analysis.cmdlineParsing import enableCommandLineArguments
-enableCommandLineArguments(process)
 
 process.trees1 = cms.EDAnalyzer('CandViewTreemakerAnalyzer',
 	makeTree = cms.untracked.bool(True),
@@ -87,9 +88,20 @@ process.trees2 = cms.EDAnalyzer('JetViewTreemakerAnalyzer',
 	)
 )
 
+process.treesDouble = cms.EDAnalyzer("DoubleTreemakerAnalyzer",
+	collections = cms.VInputTag(cms.InputTag("cosThetaProducer", "cosThetaLightJet"), cms.InputTag("muAndMETMT", ""))
+)
+
 process.TFileService = cms.Service(
     "TFileService",
     fileName = cms.string("trees.root"),
 )
 
-process.p = cms.Path(process.trees1*process.trees2)
+process.p = cms.Path(
+	#process.trees1 *
+	#process.trees2 *
+	process.treesDouble
+)
+
+from SingleTopPolarization.Analysis.cmdlineParsing import enableCommandLineArguments
+enableCommandLineArguments(process)
