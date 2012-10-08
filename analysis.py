@@ -41,14 +41,14 @@ def etaPlots():
 	return c, h0, h1
 
 def effCalcs():
-	f = ROOT.TFile("effHist.root")
+	f = ROOT.TFile("out_step2_trees.root")
 
-	histKeys = f.Get("efficiencyAnalyzer").GetListOfKeys()
+	histKeys = f.Get("efficiencyAnalyzerMu").GetListOfKeys()
 	hists = [histKeys[i].GetName() for i in range(len(histKeys))]
 
 	paths = dict()
 	for hn in hists:
-		h = f.Get("efficiencyAnalyzer").Get(hn)
+		h = f.Get("efficiencyAnalyzerMu").Get(hn)
 		path = list()
 		for i in range(1,h.GetNbinsX()+1):
 			path.append(h.GetBinContent(i))
