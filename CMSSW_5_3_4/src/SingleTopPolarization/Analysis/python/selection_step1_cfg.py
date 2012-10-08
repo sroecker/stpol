@@ -88,6 +88,15 @@ def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fil
   process.pfIsolatedMuons.doDeltaBetaCorrection = False
   process.pfIsolatedMuons.isolationCut = 100.0  # Deliberately put a large isolation cut
 
+  # muon ID production (essentially track count embedding) must be here
+  # because tracks get dropped from the collection after this step, resulting
+  # in null ptrs.
+  process.muonsWithID = cms.EDProducer(
+    'MuonIDProducer',
+    muonSrc = cms.InputTag("selectedPatMuons"),
+    primaryVertexSource = cms.InputTag("offlinePrimaryVertices")
+  )
+
   # process.muSequence = cms.Sequence(
   #   process.goodSignalMuons
   #   * process.goodQCDMuons
@@ -144,7 +153,7 @@ def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fil
   #-------------------------------------------------
 
   #process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatElectrons) + 1, process.elesWithIso)
-  #process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatMuons) + 1, process.muonsWithIso*process.muonsWithID)
+  process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatMuons) + 1, process.muonsWithID)
 
   #Need separate paths because of skimming
   process.singleTopPathStep1Mu = cms.Path(
@@ -202,7 +211,7 @@ def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fil
           "keep *_puJetMva_*_*", # final MVAs and working point flags
 
           # Muons
-          'keep patMuons_selectedPatMuons__PAT',
+          'keep patMuons_muonsWithID__PAT',
 
           # Electrons
           'keep patElectrons_selectedPatElectrons__PAT',

@@ -4,7 +4,7 @@ from SingleTopPolarization.Analysis.eventCounting import *
 process = cms.Process("STPOLSEL2")
 countProcessed(process)
 
-doDebug = False
+doDebug = True
 
 if doDebug:
     process.load("FWCore.MessageLogger.MessageLogger_cfi")
@@ -46,6 +46,13 @@ jetCut += ' && neutralEmEnergyFraction < 0.99'                        # PF jet I
 jetCut += ' && (chargedEmEnergyFraction < 0.99 || abs(eta) >= 2.4)'  # PF jet ID:
 jetCut += ' && (chargedHadronEnergyFraction > 0. || abs(eta) >= 2.4)'   # PF jet ID:
 jetCut += ' && (chargedMultiplicity > 0 || abs(eta) >= 2.4)'          # PF jet ID:
+
+
+process.noPUJets = cms.EDProducer('CleanNoPUJetProducer',
+    jetSrc = cms.InputTag("selectedPatJets"),
+    PUidMVA = cms.InputTag("puJetMva", "fullDiscriminant", "PAT"),
+    PUidFlag = cms.InputTag("puJetMva", "fullId", "PAT"),
+)
 
 process.smearedJets = cms.EDProducer('JetMCSmearProducer',
     src=cms.InputTag("selectedPatJets")
@@ -102,16 +109,12 @@ process.mBTags = cms.EDFilter(
 #-------------------------------------------------
 process.muonsWithIso = cms.EDProducer(
   'MuonIsolationProducer',
-  leptonSrc = cms.InputTag("selectedPatMuons"),
+  leptonSrc = cms.InputTag("muonsWithID"),
   rhoSrc = cms.InputTag("kt6PFJets", "rho"),
   dR = cms.double(0.4)
 )
 
-process.muonsWithID = cms.EDProducer(
-  'MuonIDProducer',
-  muonSrc = cms.InputTag("muonsWithIso"),
-  primaryVertexSource = cms.InputTag("offlinePrimaryVertices")
-)
+muonSrc = "muonsWithIso"
 
 goodMuonCut = 'isPFMuon'                                                                       # general reconstruction property
 goodMuonCut += ' && isGlobalMuon'                                                                   # general reconstruction property
@@ -141,15 +144,15 @@ goodQCDMuonCut += '&& userFloat("deltaBetaCorrRelIso") < 0.5'
 goodQCDMuonCut += '&& userFloat("deltaBetaCorrRelIso") > 0.3'
 
 process.goodSignalMuons = cms.EDFilter("CandViewSelector",
-  src=cms.InputTag("muonsWithID"), cut=cms.string(goodSignalMuonCut)
+  src=cms.InputTag(muonSrc), cut=cms.string(goodSignalMuonCut)
 )
 
 process.goodQCDMuons = cms.EDFilter("CandViewSelector",
-  src=cms.InputTag("muonsWithID"), cut=cms.string(goodQCDMuonCut)
+  src=cms.InputTag(muonSrc), cut=cms.string(goodQCDMuonCut)
 )
 
 process.looseVetoMuons = cms.EDFilter("CandViewSelector",
-  src=cms.InputTag("muonsWithID"), cut=cms.string(looseVetoMuonCut)
+  src=cms.InputTag(muonSrc), cut=cms.string(looseVetoMuonCut)
 )
 
 process.oneIsoMu = cms.EDFilter(
@@ -368,7 +371,7 @@ process.stepHLTsync = hltHighLevel.clone(
 , HLTPaths = [
     #"HLT_IsoMu24_eta2p1_v11"
     #"HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet30_30_20_v1"
-    #"HLT_IsoMu24_eta2p1_v13"
+    "HLT_IsoMu24_eta2p1_v13"
   ]
 , andOr = True
 )
@@ -412,8 +415,8 @@ process.cosThetaProducer = cms.EDProducer('CosThetaProducer',
 
 process.muPathPreCount = cms.EDProducer("EventCountProducer")
 process.muPath = cms.Path(
-    process.muonsWithIso * 
-    process.muonsWithID *
+    process.muonsWithIso *
+    process.elesWithIso * 
     process.muPathPreCount *
     process.stepHLTsync *
     process.goodSignalMuons *
@@ -423,6 +426,7 @@ process.muPath = cms.Path(
     process.looseMuVetoMu *
     process.looseVetoElectrons *
     process.looseEleVetoMu *
+    process.noPUJets *
     process.smearedJets *
     process.goodJets *
     process.nJets *
@@ -457,6 +461,7 @@ countAfter(process, process.muPath,
 
 process.elePathPreCount = cms.EDProducer("EventCountProducer")
 process.elePath = cms.Path(
+    process.muonsWithIso *
     process.elesWithIso * 
     process.elePathPreCount *
     #process.stepHLTsync *
@@ -467,6 +472,7 @@ process.elePath = cms.Path(
     process.looseEleVetoEle *
     process.looseVetoMuons *
     process.looseMuVetoEle *
+    process.noPUJets *
     process.smearedJets *
     process.goodJets *
     process.nJets *
