@@ -55,7 +55,7 @@ process.noPUJets = cms.EDProducer('CleanNoPUJetProducer',
 )
 
 process.smearedJets = cms.EDProducer('JetMCSmearProducer',
-    src=cms.InputTag("selectedPatJets")
+    src=cms.InputTag("noPUJets")
 )
 
 process.goodJets = cms.EDFilter("CandViewSelector",
@@ -132,16 +132,16 @@ looseVetoMuonCut = "isPFMuon"
 looseVetoMuonCut += "&& (isGlobalMuon | isTrackerMuon)"
 looseVetoMuonCut += "&& pt > 10"
 looseVetoMuonCut += "&& abs(eta)<2.5"
-looseVetoMuonCut += ' && userFloat("deltaBetaCorrRelIso") < 0.2'  # Delta beta corrections (factor 0.5)
+looseVetoMuonCut += ' && userFloat("rhoCorrRelIso") < 0.2'  # Delta beta corrections (factor 0.5)
 
 #isolated region
 goodSignalMuonCut = goodMuonCut
-goodSignalMuonCut += ' && userFloat("deltaBetaCorrRelIso") < 0.12'
+goodSignalMuonCut += ' && userFloat("rhoCorrRelIso") < 0.12'
 
 #anti-isolated region
 goodQCDMuonCut = goodMuonCut
-goodQCDMuonCut += '&& userFloat("deltaBetaCorrRelIso") < 0.5'
-goodQCDMuonCut += '&& userFloat("deltaBetaCorrRelIso") > 0.3'
+goodQCDMuonCut += '&& userFloat("rhoCorrRelIso") < 0.5'
+goodQCDMuonCut += '&& userFloat("rhoCorrRelIso") > 0.3'
 
 process.goodSignalMuons = cms.EDFilter("CandViewSelector",
   src=cms.InputTag(muonSrc), cut=cms.string(goodSignalMuonCut)
@@ -323,7 +323,8 @@ process.treesEle = cms.EDAnalyzer('ElectronCandViewTreemakerAnalyzer',
 
 process.treesDouble = cms.EDAnalyzer("DoubleTreemakerAnalyzer",
     collections = cms.VInputTag(
-        cms.InputTag("cosThetaProducer", "cosThetaLightJet", "STPOLSEL2"),
+        cms.InputTag("cosThetaProducerEle", "cosThetaLightJet", "STPOLSEL2"),
+        cms.InputTag("cosThetaProducerMu", "cosThetaLightJet", "STPOLSEL2"),
         cms.InputTag("muAndMETMT", "", "STPOLSEL2"),
         cms.InputTag("kt6PFJets", "rho", "RECO")
     )
@@ -391,12 +392,22 @@ process.recoNu = cms.EDProducer(
     maxOut=cms.untracked.uint32(1),
 )
 
-process.recoTop = cms.EDProducer('SimpleCompositeCandProducer',
-    sources=cms.VInputTag(["recoNu", "bTagsTCHPtight", "goodSignalLeptons"])
+process.recoTopEle = cms.EDProducer('SimpleCompositeCandProducer',
+    sources=cms.VInputTag(["recoNuProducerEle", "bTagsTCHPtight", "goodSignalElectrons"])
 )
 
-process.cosThetaProducer = cms.EDProducer('CosThetaProducer',
-    topSrc=cms.InputTag("recoTop"),
+process.recoTopMu = cms.EDProducer('SimpleCompositeCandProducer',
+    sources=cms.VInputTag(["recoNuProducerMu", "bTagsTCHPtight", "goodSignalMuons"])
+)
+
+process.cosThetaProducerEle = cms.EDProducer('CosThetaProducer',
+    topSrc=cms.InputTag("recoTopEle"),
+    jetSrc=cms.InputTag("untaggedTCHPtight"),
+    leptonSrc=cms.InputTag("goodSignalLeptons")
+)
+
+process.cosThetaProducerMu = cms.EDProducer('CosThetaProducer',
+    topSrc=cms.InputTag("recoTopMu"),
     jetSrc=cms.InputTag("untaggedTCHPtight"),
     leptonSrc=cms.InputTag("goodSignalLeptons")
 )
@@ -441,8 +452,8 @@ process.muPath = cms.Path(
     process.untaggedTCHPtight *
     process.mBTags *
     #process.topsFromMu *
-    process.recoTop *
-    process.cosThetaProducer *
+    process.recoTopMu *
+    process.cosThetaProducerMu *
     process.treeSequence *
     process.efficiencyAnalyzerMu
     #process.nuAnalyzer
@@ -487,8 +498,8 @@ process.elePath = cms.Path(
     process.untaggedTCHPtight *
     process.mBTags *
     #process.topsFromEle *
-    process.recoTop *
-    process.cosThetaProducer *
+    process.recoTopEle *
+    process.cosThetaProducerEle *
     process.treeSequence *
     process.efficiencyAnalyzerEle
     #process.nuAnalyzer
