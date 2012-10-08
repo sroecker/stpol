@@ -133,10 +133,11 @@ CleanNoPUJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     int idflag = (*flags)[jets->refAt(i)];
     LogDebug("produce()") << "jet pt: " << jet.pt() << " eta: " << jet.eta() << " mvaID: " << mva;
     if( PileupJetIdentifier::passJetId( idflag, PileupJetIdentifier::kLoose ) ) {
-           LogDebug("produce()") << " pass loose wp";
-           outJets->push_back(*outJet);
-      }
-    i++;
+      LogDebug("produce()") << " pass loose wp";
+      outJets->push_back(*outJet);
+    } else {
+      LogDebug("produce()") << " fail loose wp";
+    }
    }
    iEvent.put(outJets);
 /* This is an event example
