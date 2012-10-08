@@ -1,8 +1,15 @@
 import sys
 import ROOT
-if "-b" in sys.argv:
-	ROOT.gROOT.SetBatch(True)
-
+import argparse
+parser = argparse.ArgumentParser("analysis")
+parser.add_argument("--file", action="store", dest="fileName", default="")
+parser.add_argument('--batch', action="store_true", default=True)
+args = parser.parse_args(sys.argv[1:])
+if args.batch:
+    ROOT.gROOT.SetBatch(True)
+if args.fileName=="":
+    print "No filename specified"
+    sys.exit(1)
 
 def tb(batch, canv=None):
 	if canv==None:
@@ -40,8 +47,8 @@ def etaPlots():
 	h1.Draw("SAME")
 	return c, h0, h1
 
-def effCalcs():
-	f = ROOT.TFile("out_step2_trees.root")
+def effCalcs(inFile):
+	f = ROOT.TFile(inFile)
 
 	histKeys = f.Get("efficiencyAnalyzerMu").GetListOfKeys()
 	hists = [histKeys[i].GetName() for i in range(len(histKeys))]
@@ -56,7 +63,6 @@ def effCalcs():
 	f.Close()
 	return paths
 
-#A = etaPlots()
-A = effCalcs()
+A = effCalcs(args.fileName)
 muCounts = map(int, A["muPath"][-7:])
 print("mu counts: " + ' | '.join('{0}'.format(k) for k in muCounts))
