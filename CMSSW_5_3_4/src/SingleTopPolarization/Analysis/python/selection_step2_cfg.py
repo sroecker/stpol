@@ -334,12 +334,12 @@ process.treeSequence = cms.Sequence(process.treesMu*process.treesEle*process.tre
 process.efficiencyAnalyzerMu = cms.EDAnalyzer('EfficiencyAnalyzer'
 , histogrammableCounters = cms.untracked.vstring(["muPath"])
 , muPath = cms.untracked.vstring([
-    "singleTopPathStep1MuPreCount", 
-    "singleTopPathStep1MuPostCount", 
+    "singleTopPathStep1MuPreCount",
+    "singleTopPathStep1MuPostCount",
     "muPathPreCount",
     "muPathStepHLTsyncPostCount",
-    "muPathOneIsoMuPostCount", 
-    "muPathLooseMuVetoMuPostCount", 
+    "muPathOneIsoMuPostCount",
+    "muPathLooseMuVetoMuPostCount",
     "muPathLooseEleVetoMuPostCount",
     "muPathNJetsPostCount",
     "muPathHasMuMETMTPostCount",
@@ -349,12 +349,12 @@ process.efficiencyAnalyzerMu = cms.EDAnalyzer('EfficiencyAnalyzer'
 process.efficiencyAnalyzerEle = cms.EDAnalyzer('EfficiencyAnalyzer'
 , histogrammableCounters = cms.untracked.vstring(["elePath"])
 , elePath = cms.untracked.vstring([
-    "singleTopPathStep1MuPreCount", 
-    "singleTopPathStep1ElePostCount", 
+    "singleTopPathStep1ElePreCount",
+    "singleTopPathStep1ElePostCount",
     "elePathPreCount",
     #"elePathStepHLTsyncPostCount",
-    "elePathOneIsoElePostCount", 
-    "elePathLooseEleVetoElePostCount", 
+    "elePathOneIsoElePostCount",
+    "elePathLooseEleVetoElePostCount",
     "elePathLooseMuVetoElePostCount",
     "elePathNJetsPostCount",
     "elePathHasMETPostCount",
@@ -427,7 +427,7 @@ process.cosThetaProducerMu = cms.EDProducer('CosThetaProducer',
 process.muPathPreCount = cms.EDProducer("EventCountProducer")
 process.muPath = cms.Path(
     process.muonsWithIso *
-    process.elesWithIso * 
+    process.elesWithIso *
     process.muPathPreCount *
     process.stepHLTsync *
     process.goodSignalMuons *
@@ -473,7 +473,7 @@ countAfter(process, process.muPath,
 process.elePathPreCount = cms.EDProducer("EventCountProducer")
 process.elePath = cms.Path(
     process.muonsWithIso *
-    process.elesWithIso * 
+    process.elesWithIso *
     process.elePathPreCount *
     #process.stepHLTsync *
     process.goodSignalElectrons *
