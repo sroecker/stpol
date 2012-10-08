@@ -59,6 +59,8 @@ class LeptonIsolationProducer : public edm::EDProducer {
       virtual void beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
       virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
 
+      double effectiveArea(const reco::Candidate& lepton);
+
       const edm::InputTag leptonSource;
       const edm::InputTag rhoSource;
 
@@ -117,6 +119,42 @@ LeptonIsolationProducer<T>::~LeptonIsolationProducer()
 // member functions
 //
 
+
+//Generic effective area (spherical approximation)
+template <typename T>
+double LeptonIsolationProducer<T>::effectiveArea(const reco::Candidate& lepton) {
+  LogDebug("effectiveArea()") << "Calculating generic effective area";
+  return TMath::Pi()*pow(dR, 2);
+}
+
+// Muon EA source info: https://indico.cern.ch/getFile.py/access?contribId=1&resId=0&materialId=slides&confId=188494 (slide 9, last column (dR<0.4))
+template <>
+double LeptonIsolationProducer<pat::Muon>::effectiveArea(const reco::Candidate& lepton) {
+  LogDebug("effectiveArea()") << "Calculating muon effective area";
+  const double eta = abs(lepton.eta());
+  if (eta < 1.0) return 0.674;
+  if (eta < 1.5) return 0.565;
+  if (eta < 2.0) return 0.442;
+  if (eta < 2.2) return 0.515;
+  if (eta < 2.3) return 0.821;
+  if (eta < 2.4) return 0.66;
+  else return TMath::QuietNaN(); //TODO: what is going on here?
+}
+
+// Electron EA source info: https://twiki.cern.ch/twiki/bin/view/CMS/EgammaEARhoCorrection
+template <>
+double LeptonIsolationProducer<pat::Electron>::effectiveArea(const reco::Candidate& lepton) {
+  LogDebug("effectiveArea()") << "Calculating electron effective area";
+  const double eta = abs(lepton.eta());
+  if (eta < 1.0) return 0.19;
+  if (eta < 1.5) return 0.25;
+  if (eta < 2.0) return 0.12;
+  if (eta < 2.2) return 0.21;
+  if (eta < 2.3) return 0.27;
+  if (eta < 2.4) return 0.44;
+  else return 0.52;
+}
+
 // ------------ method called to produce the data  ------------
 template <typename T>
 void
@@ -134,8 +172,9 @@ LeptonIsolationProducer<T>::produce(edm::Event& iEvent, const edm::EventSetup& i
 
   for (auto& lepton : *outLeptons) {
     float dbc_iso = (lepton.chargedHadronIso() + std::max(0., lepton.neutralHadronIso() + lepton.photonIso() - 0.5*lepton.puChargedHadronIso()))/lepton.et();
-    double e = TMath::Pi() * dR * dR * (*rho);
-    float rc_iso = (lepton.chargedHadronIso() + std::max(0., lepton.neutralHadronIso() + lepton.photonIso() - e))/lepton.et();
+    double ea = effectiveArea(lepton);
+
+    float rc_iso = (lepton.chargedHadronIso() + std::max(0., lepton.neutralHadronIso() + lepton.photonIso() - ea*(*rho)))/lepton.et();
     lepton.addUserFloat("deltaBetaCorrRelIso", dbc_iso);
     lepton.addUserFloat("rhoCorrRelIso", rc_iso);
   }
