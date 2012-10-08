@@ -56,6 +56,8 @@ class JetMCSmearProducer : public edm::EDProducer {
       virtual void beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
       virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
 
+      double smearFactor(const pat::Jet& jet);
+
       const edm::InputTag jetSrc;
       const bool reportMissingGenJet;
 
@@ -99,6 +101,36 @@ JetMCSmearProducer::~JetMCSmearProducer()
 // member functions
 //
 
+
+// https://twiki.cern.ch/twiki/bin/view/CMS/JetResolution
+/*
+
+0.0–0.5  1.052+-0.012+0.062-0.061
+0.5–1.1  1.057+-0.012+0.056-0.055
+1.1–1.7  1.096+-0.017+0.063-0.062
+1.7–2.3  1.134+-0.035+0.087-0.085
+2.3–5.0  1.288+-0.127+0.155-0.153
+
+*/
+double
+JetMCSmearProducer::smearFactor(const pat::Jet& jet) {
+  double genJetEta = abs(jet.genJet()->eta());
+  double smearFactor = TMath::QuietNaN();
+  if(genJetEta>=0.0 && genJetEta<0.5) {
+    smearFactor = 0.052;
+  } else if(genJetEta>0.5 && genJetEta<1.1) {
+    smearFactor = 0.057;
+  } else if(genJetEta>1.1 && genJetEta<1.7) {
+    smearFactor = 0.096;
+  } else if(genJetEta>1.7 && genJetEta<2.3) {
+    smearFactor = 0.134;
+  } else if(genJetEta>2.3 && genJetEta<=5.0) {
+    smearFactor = 0.288;
+  } else {
+    LogError("produce()") << "genJet eta is out of range: " << genJetEta;
+  }
+}
+
 // ------------ method called to produce the data  ------------
 void
 JetMCSmearProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
@@ -118,21 +150,7 @@ JetMCSmearProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     double smear = TMath::QuietNaN();
     if(jet.genJet()!=0) {
       
-      double genJetEta = abs(jet.genJet()->eta());
-      double smearFactor = TMath::QuietNaN();
-      if(genJetEta>=0.0 && genJetEta<0.5) {
-        smearFactor = 0.05;
-      } else if(genJetEta>0.5 && genJetEta<1.1) {
-        smearFactor = 0.06;
-      } else if(genJetEta>1.1 && genJetEta<1.7) {
-        smearFactor = 0.1;
-      } else if(genJetEta>1.7 && genJetEta<2.3) {
-        smearFactor = 0.13;
-      } else if(genJetEta>2.3 && genJetEta<=5.0) {
-        smearFactor = 0.29;
-      } else {
-        LogError("produce()") << "genJet eta is out of range: " << genJetEta;
-      }
+      double smearFactor = smearFactor(jet);
 
       smear = (std::max(0.0, jet.pt() + smearFactor*(jet.pt()-jet.genJet()->pt())))/jet.pt();
     } else {
