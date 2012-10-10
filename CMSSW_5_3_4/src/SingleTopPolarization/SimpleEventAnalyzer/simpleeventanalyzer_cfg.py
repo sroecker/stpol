@@ -26,7 +26,7 @@ enableCommandLineArguments(process)
 
 process.simpleAnalyzer = cms.EDAnalyzer(
 	'SimpleEventAnalyzer',
-	interestingCollection = cms.untracked.string("recoNu")
+	interestingCollections = cms.untracked.VInputTag(["goodJets"])
 )
 
 
