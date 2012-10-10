@@ -15,7 +15,7 @@ from HLTrigger.HLTfilters.hltHighLevel_cfi import *
 from PhysicsTools.PatAlgos.selectionLayer1.jetSelector_cfi import *
 
 
-def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fileName=None):
+def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fileName=None, noTau=False):
 
   if doDebug:
       process.load("FWCore.MessageLogger.MessageLogger_cfi")
@@ -131,7 +131,7 @@ def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fil
   # Jets
   #-------------------------------------------------
 
-  process.pfNoTau.enable = False
+  process.pfNoTau.enable = noTau
   process.load("JetMETCorrections.Type1MET.pfMETCorrections_cff")
   process.selectedPatJets.cut = cms.string("pt>30")
   process.patPF2PATSequence.insert(-1, process.producePFMETCorrections)
