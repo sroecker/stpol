@@ -15,7 +15,7 @@ from HLTrigger.HLTfilters.hltHighLevel_cfi import *
 from PhysicsTools.PatAlgos.selectionLayer1.jetSelector_cfi import *
 
 
-def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fileName=None, noTau=False):
+def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fileName=None, noTau=False, isMC=True):
 
   if doDebug:
       process.load("FWCore.MessageLogger.MessageLogger_cfi")
@@ -37,9 +37,9 @@ def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fil
 
   postfix = ""
 
-  usePF2PAT(process, runPF2PAT=True, jetAlgo='AK5', runOnMC=True, postfix=postfix,
+  usePF2PAT(process, runPF2PAT=True, jetAlgo='AK5', runOnMC=isMC, postfix=postfix,
     jetCorrections=('AK5PFchs', ['L1FastJet', 'L2Relative', 'L3Absolute']),
-    pvCollection=cms.InputTag('goodOfflinePrimaryVertices')
+    pvCollection=cms.InputTag('goodOfflinePrimaryVertices'),
   )
 
 
@@ -217,7 +217,10 @@ def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fil
           'keep patElectrons_selectedPatElectrons__PAT',
 
           # METs
-          'keep patMETs_patMETs__PAT'
+          'keep patMETs_patMETs__PAT',
+
+          #ECAL laser corr filter
+          'keep bool_ecalLaserCorrFilter__PAT'
       ])
 
   #Keep events that pass either the muon OR the electron path
@@ -227,7 +230,13 @@ def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fil
     )
   )
 
-  process.GlobalTag.globaltag = cms.string('START53_V7F::All')
+  if isMC:
+    process.GlobalTag.globaltag = cms.string('START53_V7F::All')
+  else:
+    process.GlobalTag.globaltag = 'FT_R_53_V6::All' #FT_53_V6_AN2
+    process.load('RecoMET.METFilters.ecalLaserCorrFilter_cfi')
+    process.ecalLaserCorrFilter.taggingMode=True
+    process.patPF2PATSequence.insert(-1, process.ecalLaserCorrFilter)
 
   if fileName == None:
     #VarParsing
