@@ -442,6 +442,16 @@ process.nJetIDs = cms.EDAnalyzer('EventIDAnalyzer',
     name=cms.untracked.string("nJetIDs")
 )
 
+process.goodMuonsAnalyzer = cms.EDAnalyzer(
+    'SimpleEventAnalyzer',
+    interestingCollections = cms.untracked.VInputTag(["goodSignalMuons"])
+)
+
+process.goodJetsAnalyzer = cms.EDAnalyzer(
+    'SimpleEventAnalyzer',
+    interestingCollections = cms.untracked.VInputTag(["goodJets"])
+)
+
 process.muPathPreCount = cms.EDProducer("EventCountProducer")
 process.muPath = cms.Path(
     process.muonsWithIso *
@@ -453,6 +463,7 @@ process.muPath = cms.Path(
     process.looseVetoMuons *
     process.oneIsoMu *
     process.oneIsoMuIDs *
+    process.goodMuonsAnalyzer *
     process.looseMuVetoMu *
     process.looseVetoElectrons *
     process.looseEleVetoMu *
@@ -461,6 +472,7 @@ process.muPath = cms.Path(
     process.goodJets *
     process.nJets *
     process.nJetIDs *
+    process.goodJetsAnalyzer *
     process.muAndMETMT *
     process.hasMuMETMT *
     process.goodSignalLeptons *
