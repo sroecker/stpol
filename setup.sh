@@ -27,6 +27,9 @@ cd EGamma/EGammaAnalysisTools/data
 cat download.url | xargs wget
 cd $CMSSW_BASE/src
 
+#https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFilters#EB_or_EE_Xtals_with_large_laser
+cvs co RecoMET/METFilters/
+
 #https://twiki.cern.ch/twiki/bin/viewauth/CMS/PileupJetID
 cvs co -r V00-02-10 -d CMGTools/External UserCode/CMG/CMGTools/External
 
