@@ -39,7 +39,7 @@ process.source = cms.Source("PoolSource",
 #-------------------------------------------------
 
 jetCut = 'userFloat("pt_smear") > 40.'                                                   # transverse momentum
-jetCut += ' && abs(eta) < 5.0'                                        # pseudo-rapidity range
+jetCut += ' && abs(eta) < 4.7'                                        # pseudo-rapidity range
 jetCut += ' && numberOfDaughters > 1'                                 # PF jet ID:
 jetCut += ' && neutralHadronEnergyFraction < 0.99'                    # PF jet ID:
 jetCut += ' && neutralEmEnergyFraction < 0.99'                        # PF jet ID:
@@ -337,7 +337,7 @@ process.efficiencyAnalyzerMu = cms.EDAnalyzer('EfficiencyAnalyzer'
     "singleTopPathStep1MuPreCount",
     "singleTopPathStep1MuPostCount",
     "muPathPreCount",
-    "muPathStepHLTsyncPostCount",
+    "muPathStepHLTsyncMuPostCount",
     "muPathOneIsoMuPostCount",
     "muPathLooseMuVetoMuPostCount",
     "muPathLooseEleVetoMuPostCount",
@@ -352,7 +352,7 @@ process.efficiencyAnalyzerEle = cms.EDAnalyzer('EfficiencyAnalyzer'
     "singleTopPathStep1ElePreCount",
     "singleTopPathStep1ElePostCount",
     "elePathPreCount",
-    #"elePathStepHLTsyncPostCount",
+    "elePathStepHLTsyncElePostCount",
     "elePathOneIsoElePostCount",
     "elePathLooseEleVetoElePostCount",
     "elePathLooseMuVetoElePostCount",
@@ -367,12 +367,22 @@ process.efficiencyAnalyzerEle = cms.EDAnalyzer('EfficiencyAnalyzer'
 #-----------------------------------------------
 from HLTrigger.HLTfilters.hltHighLevel_cfi import *
 
-process.stepHLTsync = hltHighLevel.clone(
+process.stepHLTsyncMu = hltHighLevel.clone(
   TriggerResultsTag = "TriggerResults::HLT"
 , HLTPaths = [
     #"HLT_IsoMu24_eta2p1_v11"
     #"HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet30_30_20_v1"
     "HLT_IsoMu24_eta2p1_v13"
+  ]
+, andOr = True
+)
+
+process.stepHLTsyncEle = hltHighLevel.clone(
+  TriggerResultsTag = "TriggerResults::HLT"
+, HLTPaths = [
+    #"HLT_IsoMu24_eta2p1_v11"
+    #"HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet30_30_20_v1"
+    #"HLT_IsoMu24_eta2p1_v13"
   ]
 , andOr = True
 )
@@ -424,16 +434,25 @@ process.cosThetaProducerMu = cms.EDProducer('CosThetaProducer',
 #   interestingCollection=cms.untracked.string("recoNu")
 # )
 
+process.oneIsoMuIDs = cms.EDAnalyzer('EventIDAnalyzer',
+    name=cms.untracked.string("oneIsoMu")
+)
+
+process.nJetIDs = cms.EDAnalyzer('EventIDAnalyzer',
+    name=cms.untracked.string("nJetIDs")
+)
+
 process.muPathPreCount = cms.EDProducer("EventCountProducer")
 process.muPath = cms.Path(
     process.muonsWithIso *
     process.elesWithIso *
     process.muPathPreCount *
-    process.stepHLTsync *
+    process.stepHLTsyncMu *
     process.goodSignalMuons *
     process.goodQCDMuons *
     process.looseVetoMuons *
     process.oneIsoMu *
+    process.oneIsoMuIDs *
     process.looseMuVetoMu *
     process.looseVetoElectrons *
     process.looseEleVetoMu *
@@ -441,6 +460,7 @@ process.muPath = cms.Path(
     process.smearedJets *
     process.goodJets *
     process.nJets *
+    process.nJetIDs *
     process.muAndMETMT *
     process.hasMuMETMT *
     process.goodSignalLeptons *
@@ -460,7 +480,7 @@ process.muPath = cms.Path(
 )
 countAfter(process, process.muPath,
     [
-    "stepHLTsync",
+    "stepHLTsyncMu",
     "oneIsoMu",
     "looseMuVetoMu",
     "looseEleVetoMu",
@@ -475,7 +495,7 @@ process.elePath = cms.Path(
     process.muonsWithIso *
     process.elesWithIso *
     process.elePathPreCount *
-    #process.stepHLTsync *
+    process.stepHLTsyncEle *
     process.goodSignalElectrons *
     process.goodQCDElectrons *
     process.looseVetoElectrons *
@@ -506,7 +526,7 @@ process.elePath = cms.Path(
 )
 countAfter(process, process.elePath,
     [
-    #"stepHLTsync",
+    "stepHLTsyncEle",
     "oneIsoEle",
     "looseEleVetoEle",
     "looseMuVetoEle",
