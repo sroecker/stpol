@@ -127,8 +127,9 @@ JetMCSmearProducer::smearFactor(const pat::Jet& jet) {
   } else if(genJetEta>2.3 && genJetEta<=5.0) {
     smearFactor = 0.288;
   } else {
-    LogError("produce()") << "genJet eta is out of range: " << genJetEta;
+    edm::LogError("produce()") << "genJet eta is out of range: " << genJetEta;
   }
+  return smearFactor;
 }
 
 // ------------ method called to produce the data  ------------
@@ -150,9 +151,9 @@ JetMCSmearProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     double smear = TMath::QuietNaN();
     if(jet.genJet()!=0) {
       
-      double smearFactor = smearFactor(jet);
+      double sf = smearFactor(jet);
 
-      smear = (std::max(0.0, jet.pt() + smearFactor*(jet.pt()-jet.genJet()->pt())))/jet.pt();
+      smear = (std::max(0.0, jet.pt() + sf*(jet.pt()-jet.genJet()->pt())))/jet.pt();
     } else {
       if(reportMissingGenJet) {
         LogError("produce()") << "Could not access genJet for jet " << jetSrc.label() << "(" << i << ")";
