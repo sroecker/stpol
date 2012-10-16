@@ -61,7 +61,7 @@ class ReconstructedNeutrinoProducer : public edm::EDProducer {
       virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
 
 
-
+      float p_Nu_z(const reco::Candidate& chLepton, const reco::Candidate& met);
 
       edm::InputTag leptonSrc;
       edm::InputTag metSrc;
@@ -113,7 +113,35 @@ ReconstructedNeutrinoProducer::~ReconstructedNeutrinoProducer()
 
 }
 
+float ReconstructedNeutrinoProducer::p_Nu_z(const reco::Candidate& chLepton, const reco::Candidate& met) {
 
+  const auto& lp4 = chLepton.p4();
+  const auto& metp4 = met.p4();
+  
+  float Lambda = TMath::Power(ReconstructedNeutrinoProducer::mW, 2) / 2 + lp4.px()*metp4.px() + lp4.py()*metp4.py();
+  LogDebug("p_Nu_z() MET kinematics") << "MET: px (" << metp4.Px() << ") py (" << metp4.Py() << ") pt (" << metp4.Pt() << ")";
+  LogDebug("p_Nu_z() lepton kinematics") << "lepton: px (" << lp4.Px() << ") py (" << lp4.Py() << ") pz (" << lp4.Pz() << ") E (" << lp4.E() << ")";
+  float Delta = TMath::Power(lp4.E(), 2) * (TMath::Power(Lambda, 2) - TMath::Power(lp4.Pt()*metp4.Pt(), 2) );
+  float p_nu_z = TMath::QuietNaN();
+
+  if(Delta>0.0) { //Real roots
+    float r = TMath::Sqrt(Delta);
+    float A = (Lambda*lp4.Pz() + r)/ TMath::Power(lp4.Pt(), 2);
+    float B = (Lambda*lp4.Pz() + r)/ TMath::Power(lp4.Pt(), 2);
+    p_nu_z = std::min(abs(A), abs(B)); //Choose root with minimal absolute value
+  }
+  else { //Negative discriminant, complex roots (MET resolution effect)
+    LogDebug("p_Nu_z()") << "Delta is negative, complex roots";
+    float sk1 = lp4.Pt()*metp4.Pt();
+    float sk2 = metp4.Px()*lp4.Px() + metp4.Py()*lp4.Py();
+    float mW_new = TMath::Sqrt(2*(sk1-sk2));
+    LogDebug("p_Nu_z()") << "Choosing new mW value to make Delta==0: mW_new=" << mW_new;
+    float Lambda_new = TMath::Power(mW_new, 2) / 2.0 + sk2;
+    //float Delta_new = (TMath::Power(Lambda_new, 2) - TMath::Power(sk1, 2))*TMath::Power(lp4.E(), 2);
+    p_nu_z = (Lambda_new*lp4.Pz())/TMath::Power(lp4.Pt(), 2);
+  }
+  return p_nu_z;
+}
 //
 // member functions
 //
@@ -146,11 +174,10 @@ ReconstructedNeutrinoProducer::produce(edm::Event& iEvent, const edm::EventSetup
     const reco::Candidate& lepton(leptons->at(0));
     const reco::Candidate& MET(mets->at(0));
 
-    float Lambda = TMath::Power(ReconstructedNeutrinoProducer::mW, 2) / 2 + lepton.p4().px()*MET.p4().px() + lepton.p4().py()*MET.p4().py();
-    LogDebug("produce()") << "MET: px (" << MET.p4().Px() << ") py (" << MET.p4().Py() << ") pt (" << MET.p4().Pt() << ")";
-    float Delta = TMath::Power(lepton.p4().E(), 2) * (TMath::Power(Lambda, 2) - TMath::Power(lepton.p4().Pt()*MET.p4().Pt(), 2) );
+    //float Lambda = TMath::Power(ReconstructedNeutrinoProducer::mW, 2) / 2 + lepton.p4().px()*MET.p4().px() + lepton.p4().py()*MET.p4().py();
+    //float Delta = TMath::Power(lepton.p4().E(), 2) * (TMath::Power(Lambda, 2) - TMath::Power(lepton.p4().Pt()*MET.p4().Pt(), 2) );
     float p_nu_z = TMath::QuietNaN();
-
+/*
     if(Delta>0.0) { //Real roots
       float r = TMath::Sqrt(Delta);
       float A = (Lambda*lepton.p4().Pz() + r)/ TMath::Power(lepton.p4().Pt(), 2);
@@ -167,6 +194,8 @@ ReconstructedNeutrinoProducer::produce(edm::Event& iEvent, const edm::EventSetup
       //float Delta_new = (TMath::Power(Lambda_new, 2) - TMath::Power(sk1, 2))*TMath::Power(lepton.p4().E(), 2);
       p_nu_z = (Lambda_new*lepton.p4().Pz())/TMath::Power(lepton.p4().Pt(), 2);
     }
+    */
+    p_nu_z = p_Nu_z(lepton, MET);
     float E_nu = TMath::Sqrt(TMath::Power(MET.p4().Pt(), 2) + TMath::Power(p_nu_z, 2));
     nuVec->SetPx(MET.p4().Px());
     nuVec->SetPy(MET.p4().Py());
