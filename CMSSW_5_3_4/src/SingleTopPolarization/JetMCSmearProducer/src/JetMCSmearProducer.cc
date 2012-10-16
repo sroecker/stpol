@@ -143,10 +143,7 @@ JetMCSmearProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
    std::auto_ptr<std::vector<pat::Jet> > outJets(new std::vector<pat::Jet>());
    int i = 0;
-   for(auto & inJet : *jets) {
-
-    pat::Jet* pJet = new pat::Jet(inJet);
-    pat::Jet& jet = (pat::Jet&)*pJet;
+   for(auto & jet : *outJets) {
     
 
     double smear = TMath::QuietNaN();
