@@ -78,7 +78,7 @@ class JetMCSmearProducer : public edm::EDProducer {
 //
 JetMCSmearProducer::JetMCSmearProducer(const edm::ParameterSet& iConfig)
 : jetSrc(iConfig.getParameter<edm::InputTag>("src"))
-, reportMissingGenJet(iConfig.getUntrackedParameter<bool>("reportMissingGenJet", false))
+, reportMissingGenJet(iConfig.getUntrackedParameter<bool>("reportMissingGenJet", true))
 {
    //register your products
    produces<std::vector<pat::Jet> >();
@@ -114,7 +114,7 @@ JetMCSmearProducer::~JetMCSmearProducer()
 */
 double
 JetMCSmearProducer::smearFactor(const pat::Jet& jet) {
-  double genJetEta = abs(jet.genJet()->eta());
+  double genJetEta = fabs(jet.genJet()->eta());
   double smearFactor = TMath::QuietNaN();
   if(genJetEta>=0.0 && genJetEta<0.5) {
     smearFactor = 0.052;
@@ -129,6 +129,7 @@ JetMCSmearProducer::smearFactor(const pat::Jet& jet) {
   } else {
     edm::LogError("produce()") << "genJet eta is out of range: " << genJetEta;
   }
+  LogDebug("smearFactor()") << "smearFactor " << smearFactor;
   return smearFactor;
 }
 
