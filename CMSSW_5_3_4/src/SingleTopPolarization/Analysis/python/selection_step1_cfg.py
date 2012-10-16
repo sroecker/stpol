@@ -15,7 +15,7 @@ from HLTrigger.HLTfilters.hltHighLevel_cfi import *
 from PhysicsTools.PatAlgos.selectionLayer1.jetSelector_cfi import *
 
 
-def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fileName=None, noTau=False, isMC=True):
+def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fileName=None, noTau=True, isMC=True):
 
   if doDebug:
       process.load("FWCore.MessageLogger.MessageLogger_cfi")
@@ -40,14 +40,16 @@ def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fil
   usePF2PAT(process, runPF2PAT=True, jetAlgo='AK5', runOnMC=isMC, postfix=postfix,
     jetCorrections=('AK5PFchs', ['L1FastJet', 'L2Relative', 'L3Absolute']),
     pvCollection=cms.InputTag('goodOfflinePrimaryVertices'),
+    typeIMetCorrections=True
   )
-
-
-  getattr(process, "pfPileUp" + postfix).checkClosestZVertex = False
-
-  process.patMuons.usePV = False
+  # https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections#JetEnCorPFnoPU2012
   process.pfPileUp.Enable = True
   process.pfPileUp.checkClosestZVertex = False
+  process.load("JetMETCorrections.Type1MET.pfMETCorrections_cff")
+  process.patPF2PATSequence.insert(-1, process.producePFMETCorrections)
+
+
+  #process.patMuons.usePV = False
 
   #-------------------------------------------------
   # selection step 1: trigger
@@ -56,19 +58,21 @@ def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fil
   # Section Monte Carlo Summer12 with CMSSW_5_2_X and GT START52_V9
   #-------------------------------------------------
 
-  process.step1_HLT = hltHighLevel.clone(
-    TriggerResultsTag = "TriggerResults::HLT"
-  , HLTPaths = [
-      "HLT_IsoMu17_eta2p1_TriCentralPFJet30_v2"
-    , "HLT_IsoMu20_eta2p1_TriCentralPFNoPUJet30_v2"
-    ]
-  , andOr = True
-  )
+  # process.step1_HLT = hltHighLevel.clone(
+  #   TriggerResultsTag = "TriggerResults::HLT"
+  # , HLTPaths = [
+  #     "HLT_IsoMu17_eta2p1_TriCentralPFJet30_v2"
+  #   , "HLT_IsoMu20_eta2p1_TriCentralPFNoPUJet30_v2"
+  #   ]
+  # , andOr = True
+  # )
 
   #-------------------------------------------------
   # selection step 2: vertex filter
   #-------------------------------------------------
 
+  # https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections#JetEnCorPFnoPU2012
+  # https://twiki.cern.ch/twiki/bin/viewauth/CMS/TWikiTopRefEventSel#Cleaning_Filters
   process.goodOfflinePrimaryVertices = cms.EDFilter(
     "PrimaryVertexObjectFilter"
   , filterParams = cms.PSet(
@@ -85,8 +89,8 @@ def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fil
   # Muons
   #-------------------------------------------------
 
-  process.pfIsolatedMuons.doDeltaBetaCorrection = False
-  process.pfIsolatedMuons.isolationCut = 100.0  # Deliberately put a large isolation cut
+  #process.pfIsolatedMuons.doDeltaBetaCorrection = False
+  #process.pfIsolatedMuons.isolationCut = 100  # Deliberately put a large isolation cut
 
   # muon ID production (essentially track count embedding) must be here
   # because tracks get dropped from the collection after this step, resulting
@@ -94,7 +98,7 @@ def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fil
   process.muonsWithID = cms.EDProducer(
     'MuonIDProducer',
     muonSrc = cms.InputTag("selectedPatMuons"),
-    primaryVertexSource = cms.InputTag("offlinePrimaryVertices")
+    primaryVertexSource = cms.InputTag("goodOfflinePrimaryVertices")
   )
 
   # process.muSequence = cms.Sequence(
@@ -119,7 +123,7 @@ def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fil
   # Implemented as in https://indico.cern.ch/getFile.py/access?contribId=1&resId=0&materialId=slides&confId=208765
   #-------------------------------------------------
 
-  useGsfElectrons(process, postfix=postfix)
+  useGsfElectrons(process, postfix=postfix, dR="03")
   process.load('EGamma.EGammaAnalysisTools.electronIdMVAProducer_cfi')
   process.mvaID = cms.Sequence(process.mvaTrigV0 + process.mvaNonTrigV0)
   process.patElectrons.electronIDSources.mvaTrigV0 = cms.InputTag("mvaTrigV0")
@@ -129,12 +133,13 @@ def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fil
 
   #-------------------------------------------------
   # Jets
+  # MET corrections as https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMetAnalysis#Type_I_0_with_PAT
   #-------------------------------------------------
 
-  process.pfNoTau.enable = noTau
-  process.load("JetMETCorrections.Type1MET.pfMETCorrections_cff")
+  #pfNoTau == True => remove taus from jets
+  #process.pfNoTau.enable = noTau
+
   process.selectedPatJets.cut = cms.string("pt>30")
-  process.patPF2PATSequence.insert(-1, process.producePFMETCorrections)
   process.load("CMGTools.External.pujetidsequence_cff")
   process.patPF2PATSequence.insert(-1, process.puJetIdSqeuence)
 
@@ -236,6 +241,17 @@ def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fil
     process.GlobalTag.globaltag = 'FT_R_53_V6::All' #FT_53_V6_AN2
     process.load('RecoMET.METFilters.ecalLaserCorrFilter_cfi')
     process.ecalLaserCorrFilter.taggingMode=True
+
+    # https://twiki.cern.ch/twiki/bin/viewauth/CMS/TWikiTopRefEventSel#Cleaning_Filters
+    process.scrapingFilter = cms.EDFilter("FilterOutScraping"
+      , applyfilter = cms.untracked.bool( True )
+      , debugOn = cms.untracked.bool( False )
+      , numtrack = cms.untracked.uint32( 10 )
+      , thresh = cms.untracked.double( 0.25 )
+    )
+    process.singleTopPathStep1Ele.insert(0, process.scrapingFilter)
+    process.singleTopPathStep1Mu.insert(0, process.scrapingFilter)
+
     process.patPF2PATSequence.insert(-1, process.ecalLaserCorrFilter)
 
   if fileName == None:
