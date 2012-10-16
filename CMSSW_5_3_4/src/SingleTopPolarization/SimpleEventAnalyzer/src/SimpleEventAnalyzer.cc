@@ -108,7 +108,6 @@ SimpleEventAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
    int i = 0;
    for (auto& obj : *objects) {
     edm::LogInfo("analyze()") << o.label() << "(" << i << "): pt: " << obj.pt() << " eta: " << obj.eta() << " phi: " << obj.phi() << " et: " << obj.et() << std::endl;
-    i++;
    }
  }
    
