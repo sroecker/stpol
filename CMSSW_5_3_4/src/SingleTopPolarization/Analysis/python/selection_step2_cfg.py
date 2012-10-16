@@ -5,6 +5,7 @@ process = cms.Process("STPOLSEL2")
 countProcessed(process)
 
 doDebug = True
+isMC = True
 
 if doDebug:
     process.load("FWCore.MessageLogger.MessageLogger_cfi")
@@ -38,7 +39,11 @@ process.source = cms.Source("PoolSource",
 # Jets
 #-------------------------------------------------
 
-jetCut = 'userFloat("pt_smear") > 40.'                                                   # transverse momentum
+if isMC:
+    jetCut = 'userFloat("pt_smear") > 40.'
+else:
+    jetCut = 'pt > 40'
+
 jetCut += ' && abs(eta) < 4.7'                                        # pseudo-rapidity range
 jetCut += ' && numberOfDaughters > 1'                                 # PF jet ID:
 jetCut += ' && neutralHadronEnergyFraction < 0.99'                    # PF jet ID:
@@ -55,7 +60,8 @@ process.noPUJets = cms.EDProducer('CleanNoPUJetProducer',
 )
 
 process.smearedJets = cms.EDProducer('JetMCSmearProducer',
-    src=cms.InputTag("noPUJets")
+    src=cms.InputTag("noPUJets"),
+    reportMissingGenJet=cms.untracked.bool(True)
 )
 
 process.goodJets = cms.EDFilter("CandViewSelector",
@@ -213,7 +219,8 @@ goodElectronCut = "pt>30"
 goodElectronCut += "&& abs(eta)<2.5"
 goodElectronCut += "&& !(1.4442 < abs(superCluster.eta) < 1.5660)"
 goodElectronCut += "&& passConversionVeto()"
-goodElectronCut += "&& (0.0 < electronID('mvaTrigV0') < 1.0)"
+#goodElectronCut += "&& (0.0 < electronID('mvaTrigV0') < 1.0)"
+goodElectronCut += "&& electronID('mvaTrigV0') > 0.1"
 
 goodSignalElectronCut = goodElectronCut
 goodSignalElectronCut += '&& userFloat("rhoCorrRelIso") < 0.1'
@@ -224,8 +231,9 @@ goodQCDElectronCut += '&& userFloat("rhoCorrRelIso") < 0.5'
 
 looseVetoElectronCut = "pt > 20"
 looseVetoElectronCut += "&& abs(eta) < 2.5"
-looseVetoElectronCut += "&& (0.0 < electronID('mvaTrigV0') < 1.0)"
-looseVetoElectronCut += '&& userFloat("rhoCorrRelIso") < 0.15'
+#looseVetoElectronCut += "&& (0.0 < electronID('mvaTrigV0') < 1.0)"
+looseVetoElectronCut += "&& electronID('mvaTrigV0') > 0.1"
+looseVetoElectronCut += '&& userFloat("rhoCorrRelIso") < 0.3'
 
 process.goodSignalElectrons = cms.EDFilter("CandViewSelector",
   src=cms.InputTag("elesWithIso"), cut=cms.string(goodSignalElectronCut)
@@ -329,7 +337,15 @@ process.treesDouble = cms.EDAnalyzer("DoubleTreemakerAnalyzer",
         cms.InputTag("kt6PFJets", "rho", "RECO")
     )
 )
+
+process.treesBool = cms.EDAnalyzer("BoolTreemakerAnalyzer",
+    collections = cms.VInputTag(
+        cms.InputTag("ecalLaserCorrFilter", "", "PAT"),
+    )
+)
 process.treeSequence = cms.Sequence(process.treesMu*process.treesEle*process.treesDouble)
+if not isMC:
+    process.treeSequence.insert(-1, process.treesBool)
 
 process.efficiencyAnalyzerMu = cms.EDAnalyzer('EfficiencyAnalyzer'
 , histogrammableCounters = cms.untracked.vstring(["muPath"])
@@ -447,10 +463,25 @@ process.goodMuonsAnalyzer = cms.EDAnalyzer(
     interestingCollections = cms.untracked.VInputTag(["goodSignalMuons"])
 )
 
-process.goodJetsAnalyzer = cms.EDAnalyzer(
+process.eleAnalyzer = cms.EDAnalyzer(
     'SimpleEventAnalyzer',
+    interestingCollections = cms.untracked.VInputTag(["selectedPatElectrons"])
+)
+
+process.patJetsAnalyzer = cms.EDAnalyzer(
+    'SimpleJetAnalyzer',
+    interestingCollections = cms.untracked.VInputTag(["selectedPatJets"])
+)
+
+process.goodJetsPreAnalyzer = cms.EDAnalyzer(
+    'SimpleJetAnalyzer',
+    interestingCollections = cms.untracked.VInputTag(["smearedJets"])
+)
+process.goodJetsPostAnalyzer = cms.EDAnalyzer(
+    'SimpleJetAnalyzer',
     interestingCollections = cms.untracked.VInputTag(["goodJets"])
 )
+
 
 process.muPathPreCount = cms.EDProducer("EventCountProducer")
 process.muPath = cms.Path(
@@ -462,17 +493,25 @@ process.muPath = cms.Path(
     process.goodQCDMuons *
     process.looseVetoMuons *
     process.oneIsoMu *
-    process.oneIsoMuIDs *
+    #process.oneIsoMuIDs *
     process.goodMuonsAnalyzer *
     process.looseMuVetoMu *
     process.looseVetoElectrons *
     process.looseEleVetoMu *
+
+    #process.patJetsAnalyzer *
+
     process.noPUJets *
     process.smearedJets *
+    
+    #process.eleAnalyzer *
+
+    process.goodJetsPreAnalyzer *
     process.goodJets *
     process.nJets *
     process.nJetIDs *
-    process.goodJetsAnalyzer *
+    process.goodJetsPostAnalyzer *
+
     process.muAndMETMT *
     process.hasMuMETMT *
     process.goodSignalLeptons *
@@ -486,7 +525,7 @@ process.muPath = cms.Path(
     #process.topsFromMu *
     process.recoTopMu *
     process.cosThetaProducerMu *
-    process.treeSequence *
+    #process.treeSequence *
     process.efficiencyAnalyzerMu
     #process.nuAnalyzer
 )
@@ -532,7 +571,7 @@ process.elePath = cms.Path(
     #process.topsFromEle *
     process.recoTopEle *
     process.cosThetaProducerEle *
-    process.treeSequence *
+    #process.treeSequence *
     process.efficiencyAnalyzerEle
     #process.nuAnalyzer
 )
