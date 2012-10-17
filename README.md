@@ -11,26 +11,14 @@ SETUP
 
 >. ./setup.sh
 
-2. a simple test of the code can be run by using 
-
->cd $CMSSW_BASE/
-
->cmsenv
-
->cd ..
-
->cmsRun $CMSSW_BASE/src/SingleTopPolarization/Analysis/python/selection_step1_cfg.py inputFiles=file:/path/to/input/file.root outputFile=out_step1.root maxEvents=100
-
->. .\test.sh out_step1.root
-
 ANALYSIS PATHWAY
 =====
 The generic analysis pathway is as follows, all the relevant *.py files are in $CMSSW_BASE/src/SingleTopPolarization/Analysis/python/:
 
 0. *selection_step1_cfg.py* for initial event skimming and slimming (both optional), PF2PAT sequence and object ID
 1. *selection_step2_cfg.py* for event selection according 1 lepton, MET, N-Jet and M-tag.
-2. *treemaker_step3_cfg.py* for converting edm pat-tuples to flat TTrees.
-3. *efficiency_cfg.py* for evaluating various efficiencies stored in the patTuples by CMSSW.
+
+For convenience, the steps have been wrapped as methods that are called from the files *step1_cfg.py* and *step2_cfg.py*.
 
 SYNC INPUT FILES
 =====
@@ -44,6 +32,11 @@ t-channel (/T_t-channel_TuneZ2star_8TeV-powheg-tauola/Summer12_DR53X-PU_S10_STAR
 
 DEBUGGING
 =====
->scram b USER_CXXFLAGS=-g
-
+Compile the code using the following command to enable LogDebug and related debugging symbols
 >scram b -j8 USER_CXXFLAGS="-DEDM_ML_DEBUG"
+
+Check for memory errors using valgrind:
+
+>valgrind --tool=memcheck `cmsvgsupp` --leak-check=yes --show-reachable=yes --num-callers=20 --track-fds=yes cmsRun your_cfg.py >& vglog.out &
+
+The most important memory errors are in the end of vglog.out
