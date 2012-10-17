@@ -128,16 +128,17 @@ CleanNoPUJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    for ( uint i = 0; i < jets->size(); ++i ) {
     const pat::Jet& jet = jets->at(i);
 
-    pat::Jet* outJet = jet.clone();
+    //pat::Jet* outJet = jet.clone();
     float mva = (*mvaIDs)[jets->refAt(i)];
     int idflag = (*flags)[jets->refAt(i)];
     LogDebug("produce()") << "jet pt: " << jet.pt() << " eta: " << jet.eta() << " mvaID: " << mva;
     if( PileupJetIdentifier::passJetId( idflag, PileupJetIdentifier::kLoose ) ) {
-      LogDebug("produce()") << " pass loose wp";
-      outJets->push_back(*outJet);
+      edm::LogInfo("produce()") << " pass loose wp";
+      outJets->push_back(jet);
     } else {
-      LogDebug("produce()") << " fail loose wp";
+      edm::LogInfo("produce()") << " fail loose wp";
     }
+    //delete outJet;
    }
    iEvent.put(outJets);
 /* This is an event example

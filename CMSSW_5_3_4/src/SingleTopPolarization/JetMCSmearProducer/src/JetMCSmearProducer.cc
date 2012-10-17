@@ -138,10 +138,10 @@ void
 JetMCSmearProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
    using namespace edm;
-   Handle<View<pat::Jet> > jets;
+   Handle<std::vector<pat::Jet> > jets;
    iEvent.getByLabel(jetSrc, jets);
 
-   std::auto_ptr<std::vector<pat::Jet> > outJets(new std::vector<pat::Jet>());
+   std::auto_ptr<std::vector<pat::Jet> > outJets(new std::vector<pat::Jet>(*jets));
    int i = 0;
    for(auto & jet : *outJets) {
     
@@ -164,7 +164,6 @@ JetMCSmearProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
     jet.addUserFloat("pt_smear", pt_smear);
     jet.addUserFloat("M_smear", M_smear);
-    outJets->push_back(jet);
 
     i++;
     //ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiE4D<double> >* vec = new ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiE4D<double> >(jet.p4());
