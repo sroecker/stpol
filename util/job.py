@@ -27,7 +27,9 @@ WJets_all = "fileLists/WJets.txt"
 TTBar_all = "fileLists/TTBar.txt"
 Tbar_t_all = "fileLists/TBar_t.txt"
 
-step2_cfg = "$CMSSW_BASE/src/SingleTopPolarization/Analysis/python/selection_step2_cfg.py"
+#step2_cfg = "$CMSSW_BASE/src/SingleTopPolarization/Analysis/python/selection_step2_cfg.py"
+step2_MC_cfg = "./step2_MC_cfg.py"
+step2_Data_cfg = "./step2_Data_cfg.py"
 
 #runJob("sync_Tbar_53X", "step1_cfg.py", Tbar_53X, ofdir="sync_step1")
 #runJob("sync_Tbar_53X", "step1_noTauTrue_cfg.py", Tbar_53X, ofdir="sync_step1")
@@ -38,5 +40,6 @@ step2_cfg = "$CMSSW_BASE/src/SingleTopPolarization/Analysis/python/selection_ste
 
 
 #runJob("TTBar_", step2_cfg, TTBar_all, "testRun_v1")
-runJob("WJets_", step2_cfg, WJets_all, "testRun_v1")
+#runJob("WJets_", step2_MC_cfg, WJets_all, "testRun_v1")
+#runJob("Data_SingleMu2012A_", step2_Data_cfg, Data_SingleMu_all, "testRun_v1")
 
