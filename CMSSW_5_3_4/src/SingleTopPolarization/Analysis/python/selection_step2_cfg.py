@@ -4,7 +4,7 @@ from SingleTopPolarization.Analysis.eventCounting import *
 process = cms.Process("STPOLSEL2")
 countProcessed(process)
 
-doDebug = True
+doDebug = False
 isMC = True
 
 if doDebug:
@@ -493,8 +493,10 @@ process.muPath = cms.Path(
     process.goodQCDMuons *
     process.looseVetoMuons *
     process.oneIsoMu *
+
     #process.oneIsoMuIDs *
-    process.goodMuonsAnalyzer *
+    #process.goodMuonsAnalyzer *
+
     process.looseMuVetoMu *
     process.looseVetoElectrons *
     process.looseEleVetoMu *
@@ -503,14 +505,14 @@ process.muPath = cms.Path(
 
     process.noPUJets *
     process.smearedJets *
-    
+
     #process.eleAnalyzer *
 
-    process.goodJetsPreAnalyzer *
+    #process.goodJetsPreAnalyzer *
     process.goodJets *
     process.nJets *
-    process.nJetIDs *
-    process.goodJetsPostAnalyzer *
+    #process.nJetIDs *
+    #process.goodJetsPostAnalyzer *
 
     process.muAndMETMT *
     process.hasMuMETMT *
@@ -525,7 +527,7 @@ process.muPath = cms.Path(
     #process.topsFromMu *
     process.recoTopMu *
     process.cosThetaProducerMu *
-    #process.treeSequence *
+    process.treeSequence *
     process.efficiencyAnalyzerMu
     #process.nuAnalyzer
 )
@@ -571,7 +573,7 @@ process.elePath = cms.Path(
     #process.topsFromEle *
     process.recoTopEle *
     process.cosThetaProducerEle *
-    #process.treeSequence *
+    process.treeSequence *
     process.efficiencyAnalyzerEle
     #process.nuAnalyzer
 )
