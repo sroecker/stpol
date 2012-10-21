@@ -125,14 +125,14 @@ MuonIDProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    iEvent.getByLabel(muonSource, muons);
    iEvent.getByLabel(primaryVertexSource, primaryVertices);
 
-   assert(muons.isValid());
-   assert(primaryVertices.isValid());
+//   assert(muons.isValid());
+//   assert(primaryVertices.isValid());
 
    LogDebug("produce()") << "Creating auto_ptr";
 
    std::auto_ptr<std::vector<pat::Muon> > outMuons(new std::vector<pat::Muon>(*muons));
    LogDebug("produce()") << "Created auto_ptr";
-   
+   LogDebug("produce()") << "Input collection " << muonSource.label() << " has " << muons->size() << " items";   
    float dz = TMath::QuietNaN();
    float dxy = TMath::QuietNaN();
 
