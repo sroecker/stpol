@@ -90,7 +90,7 @@ def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fil
   #-------------------------------------------------
 
   #process.pfIsolatedMuons.doDeltaBetaCorrection = False
-  #process.pfIsolatedMuons.isolationCut = 100  # Deliberately put a large isolation cut
+  process.pfIsolatedMuons.isolationCut = 0.5
 
   # muon ID production (essentially track count embedding) must be here
   # because tracks get dropped from the collection after this step, resulting
@@ -123,7 +123,7 @@ def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fil
   # Implemented as in https://indico.cern.ch/getFile.py/access?contribId=1&resId=0&materialId=slides&confId=208765
   #-------------------------------------------------
 
-  useGsfElectrons(process, postfix=postfix, dR="03")
+  #useGsfElectrons(process, postfix=postfix, dR="03")
   process.load('EGamma.EGammaAnalysisTools.electronIdMVAProducer_cfi')
   process.mvaID = cms.Sequence(process.mvaTrigV0 + process.mvaNonTrigV0)
   process.patElectrons.electronIDSources.mvaTrigV0 = cms.InputTag("mvaTrigV0")
@@ -139,7 +139,7 @@ def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fil
   #pfNoTau == True => remove taus from jets
   #process.pfNoTau.enable = noTau
 
-  process.selectedPatJets.cut = cms.string("pt>30")
+  #process.selectedPatJets.cut = cms.string("pt>30")
   process.load("CMGTools.External.pujetidsequence_cff")
   process.patPF2PATSequence.insert(-1, process.puJetIdSqeuence)
 
@@ -187,7 +187,7 @@ def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fil
   #-----------------------------------------------
 
   #count all processed events
-  countProcessed(process) 
+  countProcessed(process)
 
   #count events passing mu and ele paths
   countInSequence(process, process.singleTopPathStep1Mu)
