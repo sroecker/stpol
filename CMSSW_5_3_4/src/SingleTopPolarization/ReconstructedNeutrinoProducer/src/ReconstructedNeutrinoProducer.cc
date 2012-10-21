@@ -5,10 +5,10 @@
 // 
 /**\class ReconstructedNeutrinoProducer ReconstructedNeutrinoProducer.cc SingleTopPolarization/ReconstructedNeutrinoProducer/src/ReconstructedNeutrinoProducer.cc
 
- Description: [one line class summary]
+ Description: Reconstructs the neutrino 4-momentum in the decay W->lepton, neutrino using the W mass constraint.
 
  Implementation:
-     [Notes on implementation]
+    The z-momentum ambiguity can be solved in various ways, here the rescaling of the W mass or solving for new (p_nu, p_nu_y) using the on-shell constraint is used.
 */
 //
 // Original Author:  
@@ -20,6 +20,9 @@
 
 // system include files
 #include <memory>
+#include <array>
+#include <algorithm>
+#include <cmath>
 
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
@@ -41,13 +44,17 @@
 
 #include "CommonTools/UtilAlgos/interface/StringCutEventSelector.h"
 
+//Cubic equation solver
+#include <gsl/gsl_poly.h>
+#include <gsl/gsl_complex.h>
+
 class ReconstructedNeutrinoProducer : public edm::EDProducer {
    public:
       explicit ReconstructedNeutrinoProducer(const edm::ParameterSet&);
       ~ReconstructedNeutrinoProducer();
 
       static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
-      static const float mW;
+      static const long double mW;
 
 
    private:
@@ -62,6 +69,7 @@ class ReconstructedNeutrinoProducer : public edm::EDProducer {
 
 
       float p_Nu_z(const reco::Candidate& chLepton, const reco::Candidate& met);
+      float p_Nu_z_complex_cubic(const reco::Candidate& chLepton, const reco::Candidate& met);
 
       edm::InputTag leptonSrc;
       edm::InputTag metSrc;
@@ -69,7 +77,7 @@ class ReconstructedNeutrinoProducer : public edm::EDProducer {
 
       // ----------member data ---------------------------
 };
-const float ReconstructedNeutrinoProducer::mW = 80.399;
+const long double ReconstructedNeutrinoProducer::mW = 80.399;
 
 //
 // constants, enums and typedefs
@@ -118,28 +126,137 @@ float ReconstructedNeutrinoProducer::p_Nu_z(const reco::Candidate& chLepton, con
   const auto& lp4 = chLepton.p4();
   const auto& metp4 = met.p4();
   
-  float Lambda = TMath::Power(ReconstructedNeutrinoProducer::mW, 2) / 2 + lp4.px()*metp4.px() + lp4.py()*metp4.py();
+  float Lambda = std::pow(ReconstructedNeutrinoProducer::mW, 2) / 2 + lp4.px()*metp4.px() + lp4.py()*metp4.py();
   LogDebug("p_Nu_z() MET kinematics") << "MET: px (" << metp4.Px() << ") py (" << metp4.Py() << ") pt (" << metp4.Pt() << ")";
   LogDebug("p_Nu_z() lepton kinematics") << "lepton: px (" << lp4.Px() << ") py (" << lp4.Py() << ") pz (" << lp4.Pz() << ") E (" << lp4.E() << ")";
-  float Delta = TMath::Power(lp4.E(), 2) * (TMath::Power(Lambda, 2) - TMath::Power(lp4.Pt()*metp4.Pt(), 2) );
+  float Delta = std::pow(lp4.E(), 2) * (std::pow(Lambda, 2) - std::pow(lp4.Pt()*metp4.Pt(), 2) );
   float p_nu_z = TMath::QuietNaN();
 
   if(Delta>0.0) { //Real roots
     float r = TMath::Sqrt(Delta);
-    float A = (Lambda*lp4.Pz() + r)/ TMath::Power(lp4.Pt(), 2);
-    float B = (Lambda*lp4.Pz() + r)/ TMath::Power(lp4.Pt(), 2);
-    p_nu_z = std::min(abs(A), abs(B)); //Choose root with minimal absolute value
+    float A = (Lambda*lp4.Pz() + r)/ std::pow(lp4.Pt(), 2);
+    float B = (Lambda*lp4.Pz() + r)/ std::pow(lp4.Pt(), 2);
+    p_nu_z = std::min(fabs(A), fabs(B)); //Choose root with minimal absolute value
   }
   else { //Negative discriminant, complex roots (MET resolution effect)
-    LogDebug("p_Nu_z()") << "Delta is negative, complex roots";
+    LogDebug("p_Nu_z():complex") << "Delta is negative, complex roots";
     float sk1 = lp4.Pt()*metp4.Pt();
     float sk2 = metp4.Px()*lp4.Px() + metp4.Py()*lp4.Py();
     float mW_new = TMath::Sqrt(2*(sk1-sk2));
-    LogDebug("p_Nu_z()") << "Choosing new mW value to make Delta==0: mW_new=" << mW_new;
-    float Lambda_new = TMath::Power(mW_new, 2) / 2.0 + sk2;
-    //float Delta_new = (TMath::Power(Lambda_new, 2) - TMath::Power(sk1, 2))*TMath::Power(lp4.E(), 2);
-    p_nu_z = (Lambda_new*lp4.Pz())/TMath::Power(lp4.Pt(), 2);
+    LogDebug("p_Nu_z():complex") << "Choosing new mW value to make Delta==0: mW_new=" << mW_new;
+    float Lambda_new = std::pow(mW_new, 2) / 2.0 + sk2;
+    //float Delta_new = (std::pow(Lambda_new, 2) - std::pow(sk1, 2))*std::pow(lp4.E(), 2);
+    p_nu_z = (Lambda_new*lp4.Pz())/std::pow(lp4.Pt(), 2);
+    double p_nu_z_ce = p_Nu_z_complex_cubic(chLepton, met);
+    LogDebug("p_Nu_z():complex") << "p_nu_z with mW rescaling: " << p_nu_z << "; p_nu_z with cubic equation: " << p_nu_z_ce;
   }
+  return p_nu_z;
+}
+
+float ReconstructedNeutrinoProducer::p_Nu_z_complex_cubic(const reco::Candidate& chLepton, const reco::Candidate& met) {
+  LogDebug("p_Nu_z_complex_cubic()") << "Solving complex root problem with cubic equation";
+  /*
+   * 
+        double EquationA = 1;
+        double EquationB = -3 * pylep * mW / (ptlep);
+        double EquationC = mW * mW * (2 * pylep * pylep) / (ptlep * ptlep) + mW * mW - 4 * pxlep * pxlep * pxlep * metpx / (ptlep * ptlep) - 4 * pxlep * pxlep * pylep * metpy / (ptlep * ptlep);
+        double EquationD = 4 * pxlep * pxlep * mW * metpy / (ptlep) - pylep * mW * mW * mW / ptlep;
+   * */
+
+  long double lepPx = chLepton.p4().Px();
+  long double lepPy = chLepton.p4().Py();
+  long double lepPt = chLepton.p4().Pt();
+  long double metPx = met.p4().Px();
+  long double metPy = met.p4().Py();
+  long double metPt = met.p4().Pt();
+  const long double & mW = ReconstructedNeutrinoProducer::mW;
+ 
+  long double b = -3.0*lepPy*mW / lepPt;
+  //long double c = 2.0*std::pow(mW*lepPy, (long double)2) / std::pow(lepPt, (long double)2) + std::pow(mW, (long double)2) - 
+  //(long double)4.0* std::pow(lepPx, (long double)3)*metPx/std::pow(lepPt, (long double)2) - (long double)4.0*std::pow(lepPx, (long double)2)*lepPy*metPy/std::pow(lepPt, (long double)2);
+  long double c = (std::pow(mW, 2.0) * (lepPx*lepPx + 3*lepPy*lepPy) - 4.0*std::pow(lepPx, 2.0) * (metPx*lepPx + metPy*lepPy)) / std::pow(lepPt, 2.0); 
+  long double d = (4.0*mW*metPy*std::pow(lepPx, 2.0) - lepPy*std::pow(mW, 3.0))/lepPt;
+  //long double d = (long double)(4.0)*std::pow(lepPx, (long double)2.0)*metPy*mW / lepPt - lepPy*std::pow(mW, (long double)3.0) / lepPt;
+
+  const gsl_complex cnan{{TMath::QuietNaN(), TMath::QuietNaN()}};
+  std::array<gsl_complex, 3> solsA{{cnan, cnan, cnan}};
+  std::array<gsl_complex, 3> solsB{{cnan, cnan, cnan}};
+  int nSolsA = gsl_poly_complex_solve_cubic(b, c, d, &(solsA[0]), &(solsA[1]), &(solsA[2]));
+  int nSolsB = gsl_poly_complex_solve_cubic(-b, c, -d, &(solsB[0]), &(solsB[1]), &(solsB[2]));
+#define COMP(A) GSL_REAL(A) << " " << GSL_IMAG(A)
+  LogDebug("p_Nu_z_complex_cubic()") << "Cubic equation x**3 + " << b << " x**2 + " << c << " x**1 + " << d << " = 0 has " << nSolsA << " roots: " << COMP(solsA[0]) << " | " << COMP(solsA[1]) << " | " << COMP(solsA[2]);
+  LogDebug("p_Nu_z_complex_cubic()") << "Cubic equation x**3 + " << -b << " x**2 + " << c << " x**1 + " << -d << " = 0 has " << nSolsB << " roots: " << COMP(solsB[0]) << " | " << COMP(solsB[1]) << " | " << COMP(solsB[2]);
+
+  //eqSign is -1 for x**3+bx**2+cx**1+d==0
+  //eqSign is +1 for x**3-bx**2+cx**1+d==0
+  auto nuMomenta = [&b, &c, &d, &mW, &lepPx, &lepPy, &lepPt](const gsl_complex& _sol, double* _px, double* _py, const double & eqSign) {
+      //double p_x = (solutions[i] * solutions[i] - mW * mW) / (4 * pxlep);
+      //double p_y = ( mW * mW * pylep + 2 * pxlep * pylep * p_x - mW * ptlep * solutions[i]) / (2 * pxlep * pxlep);
+      long double sol = (long double)(GSL_REAL(_sol)); 
+      //LogDebug("p_Nu_z_complex_cubic():nuMomenta") << eqSign;
+      //LogDebug("p_Nu_z_complex_cubic():nuMomenta") << sol;
+      //LogDebug("p_Nu_z_complex_cubic():nuMomenta") << std::pow(sol, (long double)3.0);
+      //LogDebug("p_Nu_z_complex_cubic():nuMomenta") << eqSign*b*std::pow(sol, (long double)2.0);
+      //LogDebug("p_Nu_z_complex_cubic():nuMomenta") << c*std::pow(sol, (long double)1.0);
+      //LogDebug("p_Nu_z_complex_cubic():nuMomenta") << d;
+      LogDebug("p_Nu_z_complex_cubic():nuMomenta") << "Constraint = " << (double)(std::pow(sol, (long double)3.0) - eqSign*b*std::pow(sol, (long double)2.0) + c*std::pow(sol, (long double)1.0) - eqSign*d);
+      long double px = (sol*sol - std::pow(mW, 2.0)) / (4.0*lepPx);
+      long double py = (std::pow(mW, 2.0)*lepPy + 2.0*lepPx*lepPy*px + eqSign*mW*lepPt*sol) / (2.0 * std::pow(lepPx, 2.0));
+      *(_px) = (double)px;
+      *(_py) = (double)py;
+      LogDebug("p_Nu_z_complex_cubic():nuMomenta") << "New momentum corresponding to solution (" << COMP(_sol) << "): " << px << " " << py; 
+      //return;
+  };
+
+  auto Delta2 = [&metPx, &metPy](double& _px, double& _py) {
+      double D = std::pow(_px-metPx, 2) + std::pow(_py-metPy, 2);
+      LogDebug("p_Nu_z_complex_cubic():Delta2") << "Delta2(" << _px << ", " << _py << ") = " << D;
+      return (double)D;
+  };
+
+  std::vector<std::array<double, 3> > newMomenta;
+
+  auto calcNewMomenta = [&nuMomenta, &Delta2](std::vector<std::array<double, 3> > & outVect, const gsl_complex & c, const double & eqSign) {
+      if (fabs(GSL_IMAG(c)) > 0.000001) return;
+      double px = TMath::QuietNaN();
+      double py = TMath::QuietNaN();
+      nuMomenta(c, &px, &py, eqSign);
+      double D = Delta2(px, py);
+
+      const std::array<double, 3> arr{{px, py, D}};
+      outVect.push_back(arr);
+  };
+
+  for(auto& s : solsA) {
+      calcNewMomenta(newMomenta, s, -1.0);
+  }
+  for(auto& s : solsB) {
+      calcNewMomenta(newMomenta, s, 1.0);
+  }
+
+  auto compare = [](const std::array<double, 3> & a, const std::array<double, 3> & b) {
+      return bool(a[2]<b[2]); 
+  };
+
+  std::sort(newMomenta.begin(), newMomenta.end(), compare);
+
+  for (auto& arr : newMomenta) {
+      LogDebug("p_Nu_z_complex_cubic()") << "sorted p_nu_x, p_nu_y: " << arr[0] << " " << arr[1] << " -> D = " << arr[2];
+  }
+  LogDebug("p_Nu_z_complex_cubic()") << "Best guess for new (p_nu_x, p_nu_y) is (" << newMomenta[0][0] << ", " << newMomenta[0][1] << ") with old MET (" << metPx << ", " << metPy << ")";
+  
+  double& newPx = newMomenta[0][0];
+  double& newPy = newMomenta[0][1];
+  double newPt = TMath::Sqrt(newPx*newPx+newPy*newPy);
+
+  double Lambda_new = std::pow(mW, 2.0) / 2.0 + newPx*lepPx + newPy*lepPy;
+  LogDebug("p_Nu_z_complex_cubic()") << "New discriminant is " << std::pow(Lambda_new, 2.0) - std::pow(lepPt*newPt, 2.0);
+  double p_nu_z = Lambda_new * chLepton.p4().Pz() / std::pow(lepPt, 2.0);
+/*
+double mu_Minimum = (mW * mW) / 2 + minPx * pxlep + minPy * pylep;
+double a_Minimum  = (mu_Minimum * leptonPz) / (leptonE * leptonE - leptonPz * leptonPz);
+*/
+
   return p_nu_z;
 }
 //
@@ -174,14 +291,14 @@ ReconstructedNeutrinoProducer::produce(edm::Event& iEvent, const edm::EventSetup
     const reco::Candidate& lepton(leptons->at(0));
     const reco::Candidate& MET(mets->at(0));
 
-    //float Lambda = TMath::Power(ReconstructedNeutrinoProducer::mW, 2) / 2 + lepton.p4().px()*MET.p4().px() + lepton.p4().py()*MET.p4().py();
-    //float Delta = TMath::Power(lepton.p4().E(), 2) * (TMath::Power(Lambda, 2) - TMath::Power(lepton.p4().Pt()*MET.p4().Pt(), 2) );
+    //float Lambda = std::pow(ReconstructedNeutrinoProducer::mW, 2) / 2 + lepton.p4().px()*MET.p4().px() + lepton.p4().py()*MET.p4().py();
+    //float Delta = std::pow(lepton.p4().E(), 2) * (std::pow(Lambda, 2) - std::pow(lepton.p4().Pt()*MET.p4().Pt(), 2) );
     float p_nu_z = TMath::QuietNaN();
 /*
     if(Delta>0.0) { //Real roots
       float r = TMath::Sqrt(Delta);
-      float A = (Lambda*lepton.p4().Pz() + r)/ TMath::Power(lepton.p4().Pt(), 2);
-      float B = (Lambda*lepton.p4().Pz() + r)/ TMath::Power(lepton.p4().Pt(), 2);
+      float A = (Lambda*lepton.p4().Pz() + r)/ std::pow(lepton.p4().Pt(), 2);
+      float B = (Lambda*lepton.p4().Pz() + r)/ std::pow(lepton.p4().Pt(), 2);
       p_nu_z = std::min(abs(A), abs(B)); //Choose root with minimal absolute value
     }
     else { //Negative discriminant, complex roots (MET resolution effect)
@@ -190,13 +307,13 @@ ReconstructedNeutrinoProducer::produce(edm::Event& iEvent, const edm::EventSetup
       float sk2 = MET.p4().Px()*lepton.p4().Px() + MET.p4().Py()*lepton.p4().Py();
       float mW_new = TMath::Sqrt(2*(sk1-sk2));
       LogDebug("produce()") << "Choosing new mW value to make Delta==0: mW_new=" << mW_new;
-      float Lambda_new = TMath::Power(mW_new, 2) / 2.0 + sk2;
-      //float Delta_new = (TMath::Power(Lambda_new, 2) - TMath::Power(sk1, 2))*TMath::Power(lepton.p4().E(), 2);
-      p_nu_z = (Lambda_new*lepton.p4().Pz())/TMath::Power(lepton.p4().Pt(), 2);
+      float Lambda_new = std::pow(mW_new, 2) / 2.0 + sk2;
+      //float Delta_new = (std::pow(Lambda_new, 2) - std::pow(sk1, 2))*std::pow(lepton.p4().E(), 2);
+      p_nu_z = (Lambda_new*lepton.p4().Pz())/std::pow(lepton.p4().Pt(), 2);
     }
     */
     p_nu_z = p_Nu_z(lepton, MET);
-    float E_nu = TMath::Sqrt(TMath::Power(MET.p4().Pt(), 2) + TMath::Power(p_nu_z, 2));
+    float E_nu = TMath::Sqrt(std::pow(MET.p4().Pt(), 2) + std::pow(p_nu_z, 2));
     nuVec->SetPx(MET.p4().Px());
     nuVec->SetPy(MET.p4().Py());
     nuVec->SetPz(p_nu_z);
