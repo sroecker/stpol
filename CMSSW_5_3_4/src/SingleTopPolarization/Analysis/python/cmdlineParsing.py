@@ -13,3 +13,4 @@ def enableCommandLineArguments(process):
     )
     if hasattr(process, "out"):
     	process.out.fileName = cms.untracked.string(options.outputFile)
+    return (options.inputFiles, options.outputFile)
