@@ -131,7 +131,7 @@ double LeptonIsolationProducer<T>::effectiveArea(const reco::Candidate& lepton) 
 template <>
 double LeptonIsolationProducer<pat::Muon>::effectiveArea(const reco::Candidate& lepton) {
   LogDebug("effectiveArea()") << "Calculating muon effective area";
-  const double eta = abs(lepton.eta());
+  const double eta = fabs(lepton.eta());
   if (eta < 1.0) return 0.674;
   if (eta < 1.5) return 0.565;
   if (eta < 2.0) return 0.442;
@@ -145,7 +145,7 @@ double LeptonIsolationProducer<pat::Muon>::effectiveArea(const reco::Candidate& 
 template <>
 double LeptonIsolationProducer<pat::Electron>::effectiveArea(const reco::Candidate& lepton) {
   LogDebug("effectiveArea()") << "Calculating electron effective area";
-  const double eta = abs(lepton.eta());
+  const double eta = fabs(lepton.eta());
   if (eta < 1.0) return 0.19;
   if (eta < 1.5) return 0.25;
   if (eta < 2.0) return 0.12;
