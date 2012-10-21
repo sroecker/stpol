@@ -1,11 +1,9 @@
 import FWCore.ParameterSet.Config as cms
 import SingleTopPolarization.Analysis.eventCounting as eventCounting
 
-def SingleTopStep2(isMC):
+def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False, doDebug=True):
     process = cms.Process("STPOLSEL2")
     eventCounting.countProcessed(process)
-
-    doDebug = False
 
     if doDebug:
         process.load("FWCore.MessageLogger.MessageLogger_cfi")
@@ -59,13 +57,14 @@ def SingleTopStep2(isMC):
         PUidFlag = cms.InputTag("puJetMva", "fullId", "PAT"),
     )
 
-    process.smearedJets = cms.EDProducer('JetMCSmearProducer',
-        src=cms.InputTag("noPUJets"),
-        reportMissingGenJet=cms.untracked.bool(True)
-    )
+    if isMC:
+        process.smearedJets = cms.EDProducer('JetMCSmearProducer',
+            src=cms.InputTag("noPUJets"),
+            reportMissingGenJet=cms.untracked.bool(True)
+        )
 
     process.goodJets = cms.EDFilter("CandViewSelector",
-        src=cms.InputTag('smearedJets'),
+        src=cms.InputTag("smearedJets" if isMC else 'noPUJets'),
         cut=cms.string(jetCut)
     )
 
@@ -385,23 +384,19 @@ def SingleTopStep2(isMC):
 
     process.stepHLTsyncMu = HLT.hltHighLevel.clone(
       TriggerResultsTag = "TriggerResults::HLT"
-    , HLTPaths = [
-        #"HLT_IsoMu24_eta2p1_v11"
-        #"HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet30_30_20_v1"
-        "HLT_IsoMu24_eta2p1_v13"
-      ]
+    , HLTPaths = []
     , andOr = True
     )
 
     process.stepHLTsyncEle = HLT.hltHighLevel.clone(
       TriggerResultsTag = "TriggerResults::HLT"
-    , HLTPaths = [
-        #"HLT_IsoMu24_eta2p1_v11"
-        #"HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet30_30_20_v1"
-        #"HLT_IsoMu24_eta2p1_v13"
-      ]
+    , HLTPaths = []
     , andOr = True
     )
+
+    if filterHLT:
+        process.stepHLTsyncMu.HLTPaths = ["HLT_IsoMu24_eta2p1_v13"]
+        process.stepHLTsyncEle.HLTPaths = []
 
     process.goodSignalLeptons = cms.EDProducer(
         'CandRefCombiner',
@@ -459,8 +454,13 @@ def SingleTopStep2(isMC):
     )
 
     process.goodMuonsAnalyzer = cms.EDAnalyzer(
-        'SimpleEventAnalyzer',
+        'SimpleMuonAnalyzer',
         interestingCollections = cms.untracked.VInputTag(["goodSignalMuons"])
+    )
+
+    process.selectedPatMuonsAnalyzer = cms.EDAnalyzer(
+        'SimpleMuonAnalyzer',
+        interestingCollections = cms.untracked.VInputTag(["muonsWithID"])
     )
 
     process.eleAnalyzer = cms.EDAnalyzer(
@@ -492,10 +492,13 @@ def SingleTopStep2(isMC):
         process.goodSignalMuons *
         process.goodQCDMuons *
         process.looseVetoMuons *
+
+        process.selectedPatMuonsAnalyzer *
+
         process.oneIsoMu *
 
-        #process.oneIsoMuIDs *
-        #process.goodMuonsAnalyzer *
+        process.oneIsoMuIDs *
+        process.goodMuonsAnalyzer *
 
         process.looseMuVetoMu *
         process.looseVetoElectrons *
@@ -504,7 +507,7 @@ def SingleTopStep2(isMC):
         #process.patJetsAnalyzer *
 
         process.noPUJets *
-        process.smearedJets *
+        #process.smearedJets *
 
         #process.eleAnalyzer *
 
@@ -526,11 +529,13 @@ def SingleTopStep2(isMC):
         process.mBTags *
         #process.topsFromMu *
         process.recoTopMu *
-        process.cosThetaProducerMu *
-        process.treeSequence *
+        process.cosThetaProducerMu +
+        process.treeSequence +
         process.efficiencyAnalyzerMu
         #process.nuAnalyzer
     )
+    if isMC:
+        process.muPath.insert(process.muPath.index(process.noPUJets)+1, process.smearedJets)
     eventCounting.countAfter(process, process.muPath,
         [
         "stepHLTsyncMu",
@@ -557,7 +562,7 @@ def SingleTopStep2(isMC):
         process.looseVetoMuons *
         process.looseMuVetoEle *
         process.noPUJets *
-        process.smearedJets *
+        #process.smearedJets *
         process.goodJets *
         process.nJets *
         process.goodMETs *
@@ -577,6 +582,9 @@ def SingleTopStep2(isMC):
         process.efficiencyAnalyzerEle
         #process.nuAnalyzer
     )
+    if isMC:
+        process.elePath.insert(process.elePath.index(process.noPUJets)+1, process.smearedJets)
+
     eventCounting.countAfter(process, process.elePath,
         [
         "stepHLTsyncEle",
@@ -593,35 +601,38 @@ def SingleTopStep2(isMC):
     #-----------------------------------------------
     # Outpath
     #-----------------------------------------------
-
-    process.out = cms.OutputModule("PoolOutputModule",
-        fileName=cms.untracked.string('out_step2.root'),
-         SelectEvents=cms.untracked.PSet(
-             SelectEvents=cms.vstring(['muPath', 'elePath'])
-         ),
-        outputCommands=cms.untracked.vstring(
-            'keep *',
-            'drop patElectrons_looseVetoElectrons__PAT',
-            'drop patMuons_looseVetoMuons__PAT',
-            'drop *_recoNuProducerEle_*_*',
-            'drop *_recoNuProducerMu_*_*',
-            #'drop *_topsFromMu_*_*',
-            #'drop *_topsFromEle_*_*',
+    if not skipPatTupleOutput:
+        process.out = cms.OutputModule("PoolOutputModule",
+            fileName=cms.untracked.string('out_step2.root'),
+             SelectEvents=cms.untracked.PSet(
+                 SelectEvents=cms.vstring(['muPath', 'elePath'])
+             ),
+            outputCommands=cms.untracked.vstring(
+                'keep *',
+                'drop patElectrons_looseVetoElectrons__PAT',
+                'drop patMuons_looseVetoMuons__PAT',
+                'drop *_recoNuProducerEle_*_*',
+                'drop *_recoNuProducerMu_*_*',
+                #'drop *_topsFromMu_*_*',
+                #'drop *_topsFromEle_*_*',
+            )
         )
-    )
-    process.outpath = cms.EndPath(process.out)
+        process.outpath = cms.EndPath(process.out)
 
     #-----------------------------------------------
     #
     #-----------------------------------------------
 
     #Command-line arguments
-    from SingleTopPolarization.Analysis.cmdlineParsing import enableCommandLineArguments
-    enableCommandLineArguments(process)
+    if not onGrid:
+        from SingleTopPolarization.Analysis.cmdlineParsing import enableCommandLineArguments
+        (inFiles, outFile) = enableCommandLineArguments(process)
+    else:
+        outFile = "step2.root"
 
     process.TFileService = cms.Service(
         "TFileService",
-        fileName=cms.string(process.out.fileName.value().replace(".root", "_trees.root")),
+        fileName=cms.string(outFile.replace(".root", "_trees.root")),
     )
     print "Step2 configured"
     return process
