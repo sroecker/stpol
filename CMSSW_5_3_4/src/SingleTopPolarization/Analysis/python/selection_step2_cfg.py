@@ -333,6 +333,7 @@ def SingleTopStep2(isMC):
         collections = cms.VInputTag(
             cms.InputTag("cosThetaProducerEle", "cosThetaLightJet", "STPOLSEL2"),
             cms.InputTag("cosThetaProducerMu", "cosThetaLightJet", "STPOLSEL2"),
+            cms.InputTag("trueCosThetaProducerMu", "cosThetaLightJet", "STPOLSEL2"),
             cms.InputTag("muAndMETMT", "", "STPOLSEL2"),
             cms.InputTag("kt6PFJets", "rho", "RECO")
         )
@@ -432,10 +433,27 @@ def SingleTopStep2(isMC):
         leptonSrc=cms.InputTag("goodSignalLeptons")
     )
 
+    process.genParticleSelectorMu = cms.EDProducer('GenParticleSelector',
+	     src=cms.InputTag("genParticles")
+    )
+
     process.cosThetaProducerMu = cms.EDProducer('CosThetaProducer',
         topSrc=cms.InputTag("recoTopMu"),
         jetSrc=cms.InputTag("untaggedTCHPtight"),
         leptonSrc=cms.InputTag("goodSignalLeptons")
+    )
+
+    process.hasMuon = cms.EDFilter(
+        "PATCandViewCountFilter",
+        src=cms.InputTag("genParticleSelectorMu", "trueLepton"),
+        minNumber=cms.uint32(1),
+        maxNumber=cms.uint32(1),
+    )   
+
+    process.trueCosThetaProducerMu = cms.EDProducer('CosThetaProducer',
+        topSrc=cms.InputTag("genParticleSelectorMu", "trueTop"),
+        jetSrc=cms.InputTag("genParticleSelectorMu", "trueLightJet"),
+        leptonSrc=cms.InputTag("genParticleSelectorMu", "trueLepton")
     )
 
     # process.recoTop = cms.EDProducer(
@@ -482,9 +500,14 @@ def SingleTopStep2(isMC):
         interestingCollections = cms.untracked.VInputTag(["goodJets"])
     )
 
-
+    process.dumpContent = cms.EDAnalyzer('EventContentAnalyzer')
+   
     process.muPathPreCount = cms.EDProducer("EventCountProducer")
     process.muPath = cms.Path(
+        process.genParticleSelectorMu *
+        #process.dumpContent *
+        process.hasMuon *
+        process.trueCosThetaProducerMu *
         process.muonsWithIso *
         process.elesWithIso *
         process.muPathPreCount *
@@ -525,12 +548,20 @@ def SingleTopStep2(isMC):
         process.untaggedTCHPtight *
         process.mBTags *
         #process.topsFromMu *
-        process.recoTopMu *
+        process.recoTopMu *        
         process.cosThetaProducerMu *
         process.treeSequence *
         process.efficiencyAnalyzerMu
         #process.nuAnalyzer
     )
+    """
+    process.genParticlePath = cms.Path(
+        process.genParticleSelectorMu *
+        #process.dumpContent *
+        process.hasMuon *
+        process.trueCosThetaProducerMu
+    )"""
+
     eventCounting.countAfter(process, process.muPath,
         [
         "stepHLTsyncMu",
