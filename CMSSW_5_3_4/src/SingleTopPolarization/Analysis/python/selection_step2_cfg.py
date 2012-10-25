@@ -1,7 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 import SingleTopPolarization.Analysis.eventCounting as eventCounting
 
-def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False, doDebug=True):
+def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False, doDebug=False, doMuon=True, doElectron=True):
     process = cms.Process("STPOLSEL2")
     eventCounting.countProcessed(process)
 
@@ -60,7 +60,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
     if isMC:
         process.smearedJets = cms.EDProducer('JetMCSmearProducer',
             src=cms.InputTag("noPUJets"),
-            reportMissingGenJet=cms.untracked.bool(True)
+            reportMissingGenJet=cms.untracked.bool(doDebug)
         )
 
     process.goodJets = cms.EDFilter("CandViewSelector",
@@ -103,7 +103,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
     #Require exactly M bTags of the given type
     process.mBTags = cms.EDFilter(
         "PATCandViewCountFilter",
-        src=cms.InputTag("bTagsTCHPtight"),
+        src=cms.InputTag("bTagsCSVmedium"),
         minNumber=cms.uint32(1),
         maxNumber=cms.uint32(1),
     )
@@ -195,7 +195,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
 
     process.recoNuProducerMu = cms.EDProducer('ReconstructedNeutrinoProducer',
         leptonSrc=cms.InputTag("goodSignalLeptons"),
-        bjetSrc=cms.InputTag("bTagsTCHPtight"),
+        bjetSrc=cms.InputTag("bTagsCSVmedium"),
         metSrc=cms.InputTag("patMETs"),
     )
 
@@ -209,7 +209,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
 
     process.elesWithIso = cms.EDProducer(
       'ElectronIsolationProducer',
-      leptonSrc = cms.InputTag("selectedPatElectrons"),
+      leptonSrc = cms.InputTag("electronsWithID"),
       rhoSrc = cms.InputTag("kt6PFJets", "rho"),
       dR = cms.double(0.4)
     )
@@ -223,6 +223,8 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
 
     goodSignalElectronCut = goodElectronCut
     goodSignalElectronCut += '&& userFloat("rhoCorrRelIso") < 0.1'
+    goodSignalElectronCut += '&& abs(userFloat("dxy")) < 0.2'
+    goodSignalElectronCut += '&& userInt("gsfTrack_trackerExpectedHitsInner_numberOfHits") <= 0'
 
     goodQCDElectronCut = goodElectronCut
     goodQCDElectronCut += '&& userFloat("rhoCorrRelIso") > 0.2'
@@ -281,9 +283,19 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
         maxNumber=cms.uint32(1),
     )
 
+    process.eleAndMETMT = cms.EDProducer('CandTransverseMassProducer',
+        collections=cms.untracked.vstring(["patMETs", "goodSignalElectrons"])
+    )
+
+    process.hasEleMETMT = cms.EDFilter('EventDoubleFilter',
+        src=cms.InputTag("eleAndMETMT"),
+        min=cms.double(35),
+        max=cms.double(9999999)
+    )
+
     process.recoNuProducerEle = cms.EDProducer('ReconstructedNeutrinoProducer',
         leptonSrc=cms.InputTag("goodSignalLeptons"),
-        bjetSrc=cms.InputTag("bTagsTCHPtight"),
+        bjetSrc=cms.InputTag("bTagsCSVmedium"),
         metSrc=cms.InputTag("goodMETs"),
     )
 
@@ -346,57 +358,64 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
     if not isMC:
         process.treeSequence.insert(-1, process.treesBool)
 
-    process.efficiencyAnalyzerMu = cms.EDAnalyzer('EfficiencyAnalyzer'
-    , histogrammableCounters = cms.untracked.vstring(["muPath"])
-    , muPath = cms.untracked.vstring([
-        "singleTopPathStep1MuPreCount",
-        "singleTopPathStep1MuPostCount",
-        "muPathPreCount",
-        "muPathStepHLTsyncMuPostCount",
-        "muPathOneIsoMuPostCount",
-        "muPathLooseMuVetoMuPostCount",
-        "muPathLooseEleVetoMuPostCount",
-        "muPathNJetsPostCount",
-        "muPathHasMuMETMTPostCount",
-        "muPathMBTagsPostCount"
-        ]
-    ))
-    process.efficiencyAnalyzerEle = cms.EDAnalyzer('EfficiencyAnalyzer'
-    , histogrammableCounters = cms.untracked.vstring(["elePath"])
-    , elePath = cms.untracked.vstring([
-        "singleTopPathStep1ElePreCount",
-        "singleTopPathStep1ElePostCount",
-        "elePathPreCount",
-        "elePathStepHLTsyncElePostCount",
-        "elePathOneIsoElePostCount",
-        "elePathLooseEleVetoElePostCount",
-        "elePathLooseMuVetoElePostCount",
-        "elePathNJetsPostCount",
-        "elePathHasMETPostCount",
-        "elePathMBTagsPostCount"
-        ]
-    ))
+    if doMuon:
+        process.efficiencyAnalyzerMu = cms.EDAnalyzer('EfficiencyAnalyzer'
+        , histogrammableCounters = cms.untracked.vstring(["muPath"])
+        , muPath = cms.untracked.vstring([
+            "singleTopPathStep1MuPreCount",
+            "singleTopPathStep1MuPostCount",
+            "muPathPreCount",
+            "muPathStepHLTsyncMuPostCount",
+            "muPathOneIsoMuPostCount",
+            "muPathLooseMuVetoMuPostCount",
+            "muPathLooseEleVetoMuPostCount",
+            "muPathNJetsPostCount",
+            "muPathHasMuMETMTPostCount",
+            "muPathMBTagsPostCount"
+            ]
+        ))
+
+    if doElectron:
+        process.efficiencyAnalyzerEle = cms.EDAnalyzer('EfficiencyAnalyzer'
+        , histogrammableCounters = cms.untracked.vstring(["elePath"])
+        , elePath = cms.untracked.vstring([
+            "singleTopPathStep1ElePreCount",
+            "singleTopPathStep1ElePostCount",
+            "elePathPreCount",
+            "elePathStepHLTsyncElePostCount",
+            "elePathOneIsoElePostCount",
+            "elePathLooseEleVetoElePostCount",
+            "elePathLooseMuVetoElePostCount",
+            "elePathNJetsPostCount",
+            "elePathHasEleMETMTPostCount",
+            "elePathMBTagsPostCount"
+            ]
+        ))
 
     #-----------------------------------------------
     # Paths
     #-----------------------------------------------
-    import HLTrigger.HLTfilters.hltHighLevel_cfi as HLT
 
-    process.stepHLTsyncMu = HLT.hltHighLevel.clone(
-      TriggerResultsTag = "TriggerResults::HLT"
-    , HLTPaths = []
-    , andOr = True
-    )
+    import HLTrigger.HLTfilters.triggerResultsFilter_cfi as HLT
 
-    process.stepHLTsyncEle = HLT.hltHighLevel.clone(
-      TriggerResultsTag = "TriggerResults::HLT"
-    , HLTPaths = []
-    , andOr = True
-    )
+    process.stepHLTsyncMu = HLT.triggerResultsFilter.clone( 
+            hltResults = cms.InputTag( "TriggerResults","","HLT"), 
+            l1tResults = '', 
+            throw = False 
+            ) 
+
+    process.stepHLTsyncEle = HLT.triggerResultsFilter.clone( 
+            hltResults = cms.InputTag( "TriggerResults","","HLT"), 
+            l1tResults = '', 
+            throw = False 
+            ) 
 
     if filterHLT:
-        process.stepHLTsyncMu.HLTPaths = ["HLT_IsoMu24_eta2p1_v13"]
-        process.stepHLTsyncEle.HLTPaths = []
+        process.stepHLTsyncMu.triggerConditions = ["HLT_IsoMu24_eta2p1_v* OR HLT_IsoMu17_eta2p1_CentralPFNoPUJet30_BTagIPIter_v*"]
+        process.stepHLTsyncEle.triggerConditions = ["HLT_Ele27_WP80_v* OR HLT_Ele25_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_CentralPFNoPUJet30_BTagIPIter_v*"]
+    else:
+        process.stepHLTsyncMu.triggerConditions = ["HLT_*"]
+        process.stepHLTsyncEle.triggerConditions = ["HLT_*"]
 
     process.goodSignalLeptons = cms.EDProducer(
         'CandRefCombiner',
@@ -458,6 +477,16 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
         interestingCollections = cms.untracked.VInputTag(["goodSignalMuons"])
     )
 
+    process.selectedPatElectronsAnalyzer = cms.EDAnalyzer(
+        'SimpleElectronAnalyzer',
+        interestingCollections = cms.untracked.VInputTag(["electronsWithID"])
+    )
+
+    process.goodElectronsAnalyzer = cms.EDAnalyzer(
+        'SimpleElectronAnalyzer',
+        interestingCollections = cms.untracked.VInputTag(["goodSignalElectrons"])
+    )
+
     process.selectedPatMuonsAnalyzer = cms.EDAnalyzer(
         'SimpleMuonAnalyzer',
         interestingCollections = cms.untracked.VInputTag(["muonsWithID"])
@@ -482,120 +511,127 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
         interestingCollections = cms.untracked.VInputTag(["goodJets"])
     )
 
+    if doMuon:
+        process.muPathPreCount = cms.EDProducer("EventCountProducer")
+        process.muPath = cms.Path(
+            process.muonsWithIso *
+            process.elesWithIso *
+            process.muPathPreCount *
+            process.stepHLTsyncMu *
+            process.goodSignalMuons *
+            process.goodQCDMuons *
+            process.looseVetoMuons *
 
-    process.muPathPreCount = cms.EDProducer("EventCountProducer")
-    process.muPath = cms.Path(
-        process.muonsWithIso *
-        process.elesWithIso *
-        process.muPathPreCount *
-        process.stepHLTsyncMu *
-        process.goodSignalMuons *
-        process.goodQCDMuons *
-        process.looseVetoMuons *
+            process.selectedPatMuonsAnalyzer *
 
-        process.selectedPatMuonsAnalyzer *
+            process.oneIsoMu *
 
-        process.oneIsoMu *
+            process.oneIsoMuIDs *
+            process.goodMuonsAnalyzer *
 
-        process.oneIsoMuIDs *
-        process.goodMuonsAnalyzer *
+            process.looseMuVetoMu *
+            process.looseVetoElectrons *
+            process.looseEleVetoMu *
 
-        process.looseMuVetoMu *
-        process.looseVetoElectrons *
-        process.looseEleVetoMu *
+            #process.patJetsAnalyzer *
 
-        #process.patJetsAnalyzer *
+            process.noPUJets *
+            #process.smearedJets *
 
-        process.noPUJets *
-        #process.smearedJets *
+            #process.eleAnalyzer *
 
-        #process.eleAnalyzer *
+            #process.goodJetsPreAnalyzer *
+            process.goodJets *
+            process.nJets *
+            #process.nJetIDs *
+            #process.goodJetsPostAnalyzer *
 
-        #process.goodJetsPreAnalyzer *
-        process.goodJets *
-        process.nJets *
-        #process.nJetIDs *
-        #process.goodJetsPostAnalyzer *
+            process.muAndMETMT *
+            process.hasMuMETMT *
+            process.goodSignalLeptons *
+            process.recoNuProducerMu *
+            process.recoNu *
+            process.bTagsCSVmedium *
+            process.bTagsCSVtight *
+            process.bTagsTCHPtight *
+            process.untaggedTCHPtight *
+            process.mBTags *
+            #process.topsFromMu *
+            process.recoTopMu *
+            process.cosThetaProducerMu +
+            process.treeSequence +
+            process.efficiencyAnalyzerMu
+            #process.nuAnalyzer
+        )
+        if isMC:
+            process.muPath.insert(process.muPath.index(process.noPUJets)+1, process.smearedJets)
+        eventCounting.countAfter(process, process.muPath,
+            [
+            "stepHLTsyncMu",
+            "oneIsoMu",
+            "looseMuVetoMu",
+            "looseEleVetoMu",
+            "hasMuMETMT",
+            "nJets",
+            "mBTags"
+            ]
+        )
 
-        process.muAndMETMT *
-        process.hasMuMETMT *
-        process.goodSignalLeptons *
-        process.recoNuProducerMu *
-        process.recoNu *
-        process.bTagsCSVmedium *
-        process.bTagsCSVtight *
-        process.bTagsTCHPtight *
-        process.untaggedTCHPtight *
-        process.mBTags *
-        #process.topsFromMu *
-        process.recoTopMu *
-        process.cosThetaProducerMu +
-        process.treeSequence +
-        process.efficiencyAnalyzerMu
-        #process.nuAnalyzer
-    )
-    if isMC:
-        process.muPath.insert(process.muPath.index(process.noPUJets)+1, process.smearedJets)
-    eventCounting.countAfter(process, process.muPath,
-        [
-        "stepHLTsyncMu",
-        "oneIsoMu",
-        "looseMuVetoMu",
-        "looseEleVetoMu",
-        "hasMuMETMT",
-        "nJets",
-        "mBTags"
-        ]
-    )
+    if doElectron:
+        process.elePathPreCount = cms.EDProducer("EventCountProducer")
+        process.elePath = cms.Path(
+            process.muonsWithIso *
+            process.elesWithIso *
+            process.elePathPreCount *
+            process.stepHLTsyncEle *
+            process.goodSignalElectrons *
+            process.goodQCDElectrons *
+            process.looseVetoElectrons *
 
-    process.elePathPreCount = cms.EDProducer("EventCountProducer")
-    process.elePath = cms.Path(
-        process.muonsWithIso *
-        process.elesWithIso *
-        process.elePathPreCount *
-        process.stepHLTsyncEle *
-        process.goodSignalElectrons *
-        process.goodQCDElectrons *
-        process.looseVetoElectrons *
-        process.oneIsoEle *
-        process.looseEleVetoEle *
-        process.looseVetoMuons *
-        process.looseMuVetoEle *
-        process.noPUJets *
-        #process.smearedJets *
-        process.goodJets *
-        process.nJets *
-        process.goodMETs *
-        process.hasMET *
-        process.goodSignalLeptons *
-        process.recoNuProducerEle *
-        process.recoNu *
-        process.bTagsCSVmedium *
-        process.bTagsCSVtight *
-        process.bTagsTCHPtight *
-        process.untaggedTCHPtight *
-        process.mBTags *
-        #process.topsFromEle *
-        process.recoTopEle *
-        process.cosThetaProducerEle *
-        process.treeSequence *
-        process.efficiencyAnalyzerEle
-        #process.nuAnalyzer
-    )
-    if isMC:
-        process.elePath.insert(process.elePath.index(process.noPUJets)+1, process.smearedJets)
+            process.selectedPatElectronsAnalyzer *
+            process.oneIsoEle *
+            process.goodElectronsAnalyzer *
+            
+            process.looseEleVetoEle *
+            process.looseVetoMuons *
+            process.looseMuVetoEle *
+            process.noPUJets *
+            #process.smearedJets *
+            process.goodJets *
+            process.nJets *
+            process.goodMETs *
+            #process.hasMET *
+            process.eleAndMETMT *
+            process.hasEleMETMT *
+            process.goodSignalLeptons *
+            process.recoNuProducerEle *
+            process.recoNu *
+            process.bTagsCSVmedium *
+            process.bTagsCSVtight *
+            process.bTagsTCHPtight *
+            process.untaggedTCHPtight *
+            process.mBTags *
+            #process.topsFromEle *
+            process.recoTopEle *
+            process.cosThetaProducerEle *
+            process.treeSequence *
+            process.efficiencyAnalyzerEle
+            #process.nuAnalyzer
+        )
+        if isMC:
+            process.elePath.insert(process.elePath.index(process.noPUJets)+1, process.smearedJets)
 
-    eventCounting.countAfter(process, process.elePath,
-        [
-        "stepHLTsyncEle",
-        "oneIsoEle",
-        "looseEleVetoEle",
-        "looseMuVetoEle",
-        "hasMET",
-        "nJets",
-        "mBTags"
-        ]
-    )
+        eventCounting.countAfter(process, process.elePath,
+            [
+            "stepHLTsyncEle",
+            "oneIsoEle",
+            "looseEleVetoEle",
+            "looseMuVetoEle",
+            "hasEleMETMT",
+            "nJets",
+            "mBTags"
+            ]
+        )
 
 
     #-----------------------------------------------
@@ -605,7 +641,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
         process.out = cms.OutputModule("PoolOutputModule",
             fileName=cms.untracked.string('out_step2.root'),
              SelectEvents=cms.untracked.PSet(
-                 SelectEvents=cms.vstring(['muPath', 'elePath'])
+                 SelectEvents=cms.vstring([])
              ),
             outputCommands=cms.untracked.vstring(
                 'keep *',
@@ -618,6 +654,10 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
             )
         )
         process.outpath = cms.EndPath(process.out)
+        if doElectron:
+            process.out.SelectEvents.SelectEvents.append("elePath")
+        if doMuon:
+            process.out.SelectEvents.SelectEvents.append("muPath")
 
     #-----------------------------------------------
     #
