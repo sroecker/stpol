@@ -31,7 +31,7 @@ Data_SingleMu_all = "fileLists/Data_SingleMu_RunA.txt"
 step2_MC_cfg = "./step2_MC_cfg.py"
 step2_Data_cfg = "./step2_Data_cfg.py"
 
-runJob("sync_Tbar_53X", "./step1_cfg.py", Tbar_53X, ofdir="sync_step1")
+runJob("sync_Tbar_53X", "./runconfs/step1_MC_cfg.py", Tbar_53X, ofdir="sync_step1")
 #runJob("sync_Tbar_53X", "step1_noTauTrue_cfg.py", Tbar_53X, ofdir="sync_step1")
 #runJob("sync_Tbar_53X", "step1_noSkim_cfg.py", Tbar_53X, ofdir="sync_step1")
 #runJob("TTBar_", "step1_cfg.py", TTBar, "testRun_v1")
