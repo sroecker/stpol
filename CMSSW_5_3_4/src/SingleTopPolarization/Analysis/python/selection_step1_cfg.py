@@ -129,6 +129,11 @@ def SingleTopStep1(process, isMC, doDebug=False, doSkimming=True, doSlimming=Tru
   process.patElectrons.electronIDSources.mvaTrigV0 = cms.InputTag("mvaTrigV0")
   process.patElectrons.electronIDSources.mvaNonTrigV0 = cms.InputTag("mvaNonTrigV0")
   process.patPF2PATSequence.replace(process.patElectrons, process.mvaID * process.patElectrons)
+  process.electronsWithID = cms.EDProducer(
+    'ElectronIDProducer',
+    electronSrc = cms.InputTag("selectedPatElectrons"),
+    primaryVertexSource = cms.InputTag("goodOfflinePrimaryVertices")
+  )
 
 
   #-------------------------------------------------
@@ -159,6 +164,7 @@ def SingleTopStep1(process, isMC, doDebug=False, doSkimming=True, doSlimming=Tru
 
   #process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatElectrons) + 1, process.elesWithIso)
   process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatMuons) + 1, process.muonsWithID)
+  process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatElectrons) + 1, process.electronsWithID)
 
   #Need separate paths because of skimming
 
@@ -182,8 +188,11 @@ def SingleTopStep1(process, isMC, doDebug=False, doSkimming=True, doSlimming=Tru
   if doSkimming:
       from SingleTopPolarization.Analysis.step_eventSkim_cfg import skimFilters
       skimFilters(process)
-      process.singleTopPathStep1Mu.insert(0, process.muonSkim)
-      process.singleTopPathStep1Ele.insert(0, process.electronSkim)
+
+      if doMuon:
+        process.singleTopPathStep1Mu.insert(0, process.muonSkim)
+      if doElectron:
+        process.singleTopPathStep1Ele.insert(0, process.electronSkim)
 
   #-----------------------------------------------
   # Skim efficiency counters
@@ -225,7 +234,7 @@ def SingleTopStep1(process, isMC, doDebug=False, doSkimming=True, doSlimming=Tru
           'keep patMuons_muonsWithID__PAT',
 
           # Electrons
-          'keep patElectrons_selectedPatElectrons__PAT',
+          'keep patElectrons_electronsWithID__PAT',
 
           # METs
           'keep patMETs_patMETs__PAT',
@@ -237,9 +246,13 @@ def SingleTopStep1(process, isMC, doDebug=False, doSkimming=True, doSlimming=Tru
   #Keep events that pass either the muon OR the electron path
   process.out.SelectEvents = cms.untracked.PSet(
     SelectEvents = cms.vstring(
-      ["singleTopPathStep1Mu", "singleTopPathStep1Ele"]
+      []
     )
   )
+  if doMuon:
+    process.out.SelectEvents.SelectEvents.append("singleTopPathStep1Mu")
+  if doElectron:
+    process.out.SelectEvents.SelectEvents.append("singleTopPathStep1Ele")
 
   if isMC:
     process.GlobalTag.globaltag = cms.string('START53_V7F::All')
@@ -274,6 +287,8 @@ def SingleTopStep1(process, isMC, doDebug=False, doSkimming=True, doSlimming=Tru
     process.out.fileName.setValue(process.out.fileName.value().replace(".root", "_Skim.root"))
   else:
     process.out.fileName.setValue(process.out.fileName.value().replace(".root", "_noSkim.root"))
+
+  print "Output file is %s" % process.out.fileName
 
   if not doSlimming:
     process.out.fileName.setValue(process.out.fileName.value().replace(".root", "_noSlim.root"))
