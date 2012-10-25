@@ -15,7 +15,7 @@ from HLTrigger.HLTfilters.hltHighLevel_cfi import *
 from PhysicsTools.PatAlgos.selectionLayer1.jetSelector_cfi import *
 
 
-def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fileName=None, noTau=True, isMC=True):
+def SingleTopStep1(process, isMC, doDebug=False, doSkimming=True, doSlimming=True, fileName=None, doMuon=True, doElectron=True):
 
   if doDebug:
       process.load("FWCore.MessageLogger.MessageLogger_cfi")
@@ -90,7 +90,7 @@ def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fil
   #-------------------------------------------------
 
   #process.pfIsolatedMuons.doDeltaBetaCorrection = False
-  #process.pfIsolatedMuons.isolationCut = 100  # Deliberately put a large isolation cut
+  process.pfIsolatedMuons.isolationCut = 0.5
 
   # muon ID production (essentially track count embedding) must be here
   # because tracks get dropped from the collection after this step, resulting
@@ -123,12 +123,17 @@ def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fil
   # Implemented as in https://indico.cern.ch/getFile.py/access?contribId=1&resId=0&materialId=slides&confId=208765
   #-------------------------------------------------
 
-  useGsfElectrons(process, postfix=postfix, dR="03")
+  #useGsfElectrons(process, postfix=postfix, dR="03")
   process.load('EGamma.EGammaAnalysisTools.electronIdMVAProducer_cfi')
   process.mvaID = cms.Sequence(process.mvaTrigV0 + process.mvaNonTrigV0)
   process.patElectrons.electronIDSources.mvaTrigV0 = cms.InputTag("mvaTrigV0")
   process.patElectrons.electronIDSources.mvaNonTrigV0 = cms.InputTag("mvaNonTrigV0")
   process.patPF2PATSequence.replace(process.patElectrons, process.mvaID * process.patElectrons)
+  process.electronsWithID = cms.EDProducer(
+    'ElectronIDProducer',
+    electronSrc = cms.InputTag("selectedPatElectrons"),
+    primaryVertexSource = cms.InputTag("goodOfflinePrimaryVertices")
+  )
 
 
   #-------------------------------------------------
@@ -139,7 +144,7 @@ def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fil
   #pfNoTau == True => remove taus from jets
   #process.pfNoTau.enable = noTau
 
-  process.selectedPatJets.cut = cms.string("pt>30")
+  #process.selectedPatJets.cut = cms.string("pt>30")
   process.load("CMGTools.External.pujetidsequence_cff")
   process.patPF2PATSequence.insert(-1, process.puJetIdSqeuence)
 
@@ -159,17 +164,21 @@ def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fil
 
   #process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatElectrons) + 1, process.elesWithIso)
   process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatMuons) + 1, process.muonsWithID)
+  process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatElectrons) + 1, process.electronsWithID)
 
   #Need separate paths because of skimming
-  process.singleTopPathStep1Mu = cms.Path(
-    process.goodOfflinePrimaryVertices
-    * process.patPF2PATSequence
-  )
 
-  process.singleTopPathStep1Ele = cms.Path(
-    process.goodOfflinePrimaryVertices
-    * process.patPF2PATSequence
-  )
+  if doMuon:
+    process.singleTopPathStep1Mu = cms.Path(
+      process.goodOfflinePrimaryVertices
+      * process.patPF2PATSequence
+    )
+
+  if doElectron:
+    process.singleTopPathStep1Ele = cms.Path(
+      process.goodOfflinePrimaryVertices
+      * process.patPF2PATSequence
+    )
 
   #-----------------------------------------------
   # Skimming
@@ -179,19 +188,25 @@ def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fil
   if doSkimming:
       from SingleTopPolarization.Analysis.step_eventSkim_cfg import skimFilters
       skimFilters(process)
-      process.singleTopPathStep1Mu.insert(0, process.muonSkim)
-      process.singleTopPathStep1Ele.insert(0, process.electronSkim)
+
+      if doMuon:
+        process.singleTopPathStep1Mu.insert(0, process.muonSkim)
+      if doElectron:
+        process.singleTopPathStep1Ele.insert(0, process.electronSkim)
 
   #-----------------------------------------------
   # Skim efficiency counters
   #-----------------------------------------------
 
   #count all processed events
-  countProcessed(process) 
+  countProcessed(process)
 
   #count events passing mu and ele paths
-  countInSequence(process, process.singleTopPathStep1Mu)
-  countInSequence(process, process.singleTopPathStep1Ele)
+
+  if doMuon:
+    countInSequence(process, process.singleTopPathStep1Mu)
+  if doElectron:
+    countInSequence(process, process.singleTopPathStep1Ele)
 
   #-----------------------------------------------
   # Slimming
@@ -219,7 +234,7 @@ def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fil
           'keep patMuons_muonsWithID__PAT',
 
           # Electrons
-          'keep patElectrons_selectedPatElectrons__PAT',
+          'keep patElectrons_electronsWithID__PAT',
 
           # METs
           'keep patMETs_patMETs__PAT',
@@ -231,9 +246,13 @@ def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fil
   #Keep events that pass either the muon OR the electron path
   process.out.SelectEvents = cms.untracked.PSet(
     SelectEvents = cms.vstring(
-      ["singleTopPathStep1Mu", "singleTopPathStep1Ele"]
+      []
     )
   )
+  if doMuon:
+    process.out.SelectEvents.SelectEvents.append("singleTopPathStep1Mu")
+  if doElectron:
+    process.out.SelectEvents.SelectEvents.append("singleTopPathStep1Ele")
 
   if isMC:
     process.GlobalTag.globaltag = cms.string('START53_V7F::All')
@@ -249,8 +268,11 @@ def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fil
       , numtrack = cms.untracked.uint32( 10 )
       , thresh = cms.untracked.double( 0.25 )
     )
-    process.singleTopPathStep1Ele.insert(0, process.scrapingFilter)
-    process.singleTopPathStep1Mu.insert(0, process.scrapingFilter)
+
+    if doElectron:
+      process.singleTopPathStep1Ele.insert(0, process.scrapingFilter)
+    if doMuon:
+      process.singleTopPathStep1Mu.insert(0, process.scrapingFilter)
 
     process.patPF2PATSequence.insert(-1, process.ecalLaserCorrFilter)
 
@@ -258,11 +280,15 @@ def SingleTopStep1(process, doDebug=False, doSkimming=True, doSlimming=True, fil
     #VarParsing
     from SingleTopPolarization.Analysis.cmdlineParsing import enableCommandLineArguments
     enableCommandLineArguments(process)
+  else:
+    process.out.fileName = fileName
 
   if doSkimming:
     process.out.fileName.setValue(process.out.fileName.value().replace(".root", "_Skim.root"))
   else:
     process.out.fileName.setValue(process.out.fileName.value().replace(".root", "_noSkim.root"))
+
+  print "Output file is %s" % process.out.fileName
 
   if not doSlimming:
     process.out.fileName.setValue(process.out.fileName.value().replace(".root", "_noSlim.root"))

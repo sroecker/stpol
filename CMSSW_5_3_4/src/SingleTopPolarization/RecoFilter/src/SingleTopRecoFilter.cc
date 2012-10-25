@@ -147,7 +147,7 @@ SingleTopRecoFilter::filter(edm::Event &iEvent, const edm::EventSetup &iSetup)
     {
         if ((*mu).pt() > minMuonPt
                 && (*mu).isGlobalMuon()
-                && abs((*mu).eta()) < maxMuonEta
+                && fabs((*mu).eta()) < maxMuonEta
                 && (*mu).isPFMuon()
                 && PFDeltaBetaRelIso(&(*mu)) < maxMuonRelIso
                 && (*mu).globalTrack()->hitPattern().numberOfValidMuonHits() > 0
@@ -164,7 +164,7 @@ SingleTopRecoFilter::filter(edm::Event &iEvent, const edm::EventSetup &iSetup)
     for (View<PFJet>::const_iterator jet = jets->begin(); jet != jets->end(); jet++)
     {
         if ((*jet).pt() > minJetPt
-                && abs((*jet).eta()) < maxJetEta
+                && fabs((*jet).eta()) < maxJetEta
                 && (*jet).numberOfDaughters() > 1
            )
         {
