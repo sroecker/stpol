@@ -346,7 +346,9 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
             cms.InputTag("cosThetaProducerMu", "cosThetaLightJet", "STPOLSEL2"),
             cms.InputTag("trueCosThetaProducerMu", "cosThetaLightJet", "STPOLSEL2"),
             cms.InputTag("muAndMETMT", "", "STPOLSEL2"),
-            cms.InputTag("kt6PFJets", "rho", "RECO")
+            cms.InputTag("kt6PFJets", "rho", "RECO"),
+            cms.InputTag("recoNuProducerMu", "Delta", "STPOLSEL2"),
+            cms.InputTag("recoNuProducerEle", "Delta", "STPOLSEL2")
         )
     )
 
