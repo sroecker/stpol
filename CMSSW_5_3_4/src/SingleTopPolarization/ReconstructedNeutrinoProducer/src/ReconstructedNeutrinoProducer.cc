@@ -71,8 +71,8 @@ class ReconstructedNeutrinoProducer : public edm::EDProducer {
       //float p_Nu_z(const reco::Candidate& chLepton, const reco::Candidate& met);
       //float p_Nu_z_complex_cubic(const reco::Candidate& chLepton, const reco::Candidate& met);
 
-      const reco::CompositeCandidate::LorentzVector nuMomentum(const reco::Candidate& chLepton, const reco::Candidate& met);
-      const reco::CompositeCandidate::LorentzVector nuMomentum_complex_cubic(const reco::Candidate& chLepton, const reco::Candidate& met);
+      const reco::CompositeCandidate::LorentzVector nuMomentum(const reco::Candidate& chLepton, const reco::Candidate& met, edm::Event& iEvent);
+      const reco::CompositeCandidate::LorentzVector nuMomentum_complex_cubic(const reco::Candidate& chLepton, const reco::Candidate& met, double& Delta_);
       float p_Nu_z_mW_rescale(const reco::Candidate& chLepton, const reco::Candidate& met);
       float p_Nu_z(const reco::Candidate& chLepton, const reco::Candidate& met);
 
@@ -103,6 +103,7 @@ ReconstructedNeutrinoProducer::ReconstructedNeutrinoProducer(const edm::Paramete
   metSrc = iConfig.getParameter<edm::InputTag>("metSrc");
 
   produces<std::vector<reco::CompositeCandidate> >(outName);
+  produces<double>("Delta");
   
 }
 
@@ -154,7 +155,7 @@ float ReconstructedNeutrinoProducer::p_Nu_z_mW_rescale(const reco::Candidate& ch
   return p_nu_z;
 }
 
-const reco::CompositeCandidate::LorentzVector ReconstructedNeutrinoProducer::nuMomentum_complex_cubic(const reco::Candidate& chLepton, const reco::Candidate& met) {
+const reco::CompositeCandidate::LorentzVector ReconstructedNeutrinoProducer::nuMomentum_complex_cubic(const reco::Candidate& chLepton, const reco::Candidate& met, double& Delta_) {
   LogDebug("p_Nu_z_complex_cubic()") << "Solving complex root problem with cubic equation";
   /*
    * 
@@ -243,6 +244,7 @@ const reco::CompositeCandidate::LorentzVector ReconstructedNeutrinoProducer::nuM
   double& newPx = newMomenta[0][0];
   double& newPy = newMomenta[0][1];
   double newPt = TMath::Sqrt(newPx*newPx+newPy*newPy);
+  Delta_ = newMomenta[0][2];
 
   double Lambda_new = std::pow(mW, 2.0) / 2.0 + newPx*lepPx + newPy*lepPy;
   LogDebug("p_Nu_z_complex_cubic()") << "New discriminant is " << std::pow(Lambda_new, 2.0) - std::pow(lepPt*newPt, 2.0);
@@ -256,9 +258,10 @@ const reco::CompositeCandidate::LorentzVector ReconstructedNeutrinoProducer::nuM
   return (const reco::CompositeCandidate::LorentzVector)nuVec;
 }
 
-const reco::CompositeCandidate::LorentzVector ReconstructedNeutrinoProducer::nuMomentum(const reco::Candidate& chLepton, const reco::Candidate& met) {
+const reco::CompositeCandidate::LorentzVector ReconstructedNeutrinoProducer::nuMomentum(const reco::Candidate& chLepton, const reco::Candidate& met, edm::Event& iEvent) {
   const double& nan = TMath::QuietNaN();
   reco::CompositeCandidate::LorentzVector nuVec(nan, nan, nan, nan);
+  double Delta = 0;
 
   float p_nu_z = p_Nu_z(chLepton, met);
   if (p_nu_z==p_nu_z) { //real root
@@ -266,9 +269,10 @@ const reco::CompositeCandidate::LorentzVector ReconstructedNeutrinoProducer::nuM
     nuVec.SetPy(met.p4().Py());
     nuVec.SetPz(p_nu_z);
   } else { //Complex root
-    nuVec = nuMomentum_complex_cubic(chLepton, met);
+    nuVec = nuMomentum_complex_cubic(chLepton, met, Delta);
   }
   nuVec.SetE(TMath::Sqrt(nuVec.Px()*nuVec.Px() + nuVec.Py()*nuVec.Py() + nuVec.Pz()*nuVec.Pz()));
+  iEvent.put(std::auto_ptr<double>(new double(Delta)), "Delta");
 
   return nuVec;
 }
@@ -302,7 +306,7 @@ ReconstructedNeutrinoProducer::produce(edm::Event& iEvent, const edm::EventSetup
     const reco::Candidate& lepton(leptons->at(0));
     const reco::Candidate& MET(mets->at(0));
 
-    nuVec = nuMomentum(lepton, MET);
+    nuVec = nuMomentum(lepton, MET, iEvent);
    }
 
    nu->setP4(nuVec);
