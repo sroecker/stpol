@@ -171,6 +171,7 @@ EfficiencyAnalyzer::endJob()
         for(std::string& s : *(histBins))
         {
             hist->AddBinContent(i, countMap[s]);
+            hist->GetXaxis()->SetBinLabel(i, s.c_str());
             i++;
         }
 
