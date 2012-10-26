@@ -475,6 +475,29 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
         leptonSrc=cms.InputTag("genParticleSelectorMu", "trueLepton")
     )
 
+    process.matrixCreator = cms.EDAnalyzer('TransferMatrixCreator',
+        src = cms.InputTag("cosThetaProducerMu", "cosThetaLightJet"),
+        trueSrc = cms.InputTag("trueCosThetaProducerMu", "cosThetaLightJet")        
+    )
+
+    process.leptonComparer = cms.EDAnalyzer('ParticleComparer',
+        src = cms.InputTag("goodSignalLeptons"),
+        trueSrc = cms.InputTag("genParticleSelectorMu", "trueLepton"),      
+        maxMass=cms.untracked.double(.3)
+    )
+
+    process.jetComparer = cms.EDAnalyzer('ParticleComparer',
+        src = cms.InputTag("untaggedTCHPtight"),
+        trueSrc = cms.InputTag("genParticleSelectorMu", "trueLightJet"),
+        maxMass=cms.untracked.double(40.)
+    )
+
+    process.topComparer = cms.EDAnalyzer('ParticleComparer',
+        src = cms.InputTag("recoTopMu"),
+        trueSrc = cms.InputTag("genParticleSelectorMu", "trueTop"),
+        maxMass=cms.untracked.double(300.)
+    )
+
     # process.recoTop = cms.EDProducer(
     #     'CompositeCandCollectionCombiner',
     #     sources=cms.untracked.vstring(["topsFromMu", "topsFromEle"]),
@@ -591,6 +614,9 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
         if isMC:
             process.muPath.insert(process.muPath.index(process.noPUJets)+1, process.smearedJets)
             process.muPath.insert(0, process.genParticleSelectorMu * process.hasMuon * process.trueCosThetaProducerMu)
+            
+            process.muPath.insert(process.muPath.index(process.cosThetaProducerMu)+1, 
+               process.matrixCreator * process.leptonComparer * process.jetComparer * process.topComparer)
 
         eventCounting.countAfter(process, process.muPath,
             [
