@@ -588,7 +588,6 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
         if isMC:
             process.muPath.insert(process.muPath.index(process.noPUJets)+1, process.smearedJets)
             process.muPath.insert(0, process.genParticleSelectorMu * process.hasMuon * process.trueCosThetaProducerMu)
-            print process.muPath
             
         eventCounting.countAfter(process, process.muPath,
             [
