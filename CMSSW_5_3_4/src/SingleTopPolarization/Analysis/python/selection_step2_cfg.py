@@ -81,6 +81,12 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
         cut=cms.string('bDiscriminator("trackCountingHighPurBJetTags") < 3.41')
     )
 
+    process.untaggedCSVmedium = cms.EDFilter(
+        "CandViewSelector",
+        src=cms.InputTag("goodJets"),
+        cut=cms.string('bDiscriminator("combinedSecondaryVertexBJetTags") <= 0.679')
+    )
+
     process.bTagsCSVmedium = cms.EDFilter(
         "CandViewSelector",
         src=cms.InputTag("goodJets"),
@@ -448,7 +454,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
 
     process.cosThetaProducerEle = cms.EDProducer('CosThetaProducer',
         topSrc=cms.InputTag("recoTopEle"),
-        jetSrc=cms.InputTag("untaggedTCHPtight"),
+        jetSrc=cms.InputTag("untaggedCSVmedium"),
         leptonSrc=cms.InputTag("goodSignalLeptons")
     )
 
@@ -458,7 +464,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
 
     process.cosThetaProducerMu = cms.EDProducer('CosThetaProducer',
         topSrc=cms.InputTag("recoTopMu"),
-        jetSrc=cms.InputTag("untaggedTCHPtight"),
+        jetSrc=cms.InputTag("untaggedCSVmedium"),
         leptonSrc=cms.InputTag("goodSignalLeptons")
     )
 
@@ -579,7 +585,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
             process.bTagsCSVmedium *
             process.bTagsCSVtight *
             process.bTagsTCHPtight *
-            process.untaggedTCHPtight *
+            process.untaggedCSVmedium *
             process.mBTags *
             #process.topsFromMu *
             process.recoTopMu *
@@ -637,7 +643,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
             process.bTagsCSVmedium *
             process.bTagsCSVtight *
             process.bTagsTCHPtight *
-            process.untaggedTCHPtight *
+            process.untaggedCSVmedium *
             process.mBTags *
             #process.topsFromEle *
             process.recoTopEle *
