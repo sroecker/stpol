@@ -102,6 +102,8 @@ class GenericTreemakerAnalyzer : public edm::EDAnalyzer {
       bool makeTree;
       std::string treeName;
 
+      const bool reportMissing;
+
 };
 
 //
@@ -116,7 +118,8 @@ class GenericTreemakerAnalyzer : public edm::EDAnalyzer {
 // constructors and destructor
 //
 template <typename T, typename C>
-GenericTreemakerAnalyzer<T, C>::GenericTreemakerAnalyzer(const edm::ParameterSet& iConfig)
+GenericTreemakerAnalyzer<T, C>::GenericTreemakerAnalyzer(const edm::ParameterSet& iConfig) :
+reportMissing(iConfig.getUntrackedParameter<bool>("reportMissing", false))
 {
 
   makeTree = iConfig.getUntrackedParameter<bool>("makeTree", true);
@@ -170,7 +173,9 @@ GenericTreemakerAnalyzer<T, C>::analyze(const edm::Event& iEvent, const edm::Eve
       LogDebug("produce()") << "Collection " << cols.second.encode()  << " = " << *object;
       *(treeValues[cols.first]) = *object;
     } else {
-      LogError("produce()") << "Collection " << cols.second.encode() << " is not available";
+      if(reportMissing) {
+          LogError("produce()") << "Collection " << cols.second.encode() << " is not available";
+      }
     }
 
   }
