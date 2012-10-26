@@ -22,6 +22,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
         )
     else:
         process.load("FWCore.MessageService.MessageLogger_cfi")
+        process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
     process.maxEvents = cms.untracked.PSet(input=cms.untracked.int32(-1))
 
@@ -352,6 +353,8 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
         )
     )
 
+    process.treesDouble
+
     process.treesBool = cms.EDAnalyzer("BoolTreemakerAnalyzer",
         collections = cms.VInputTag(
             cms.InputTag("ecalLaserCorrFilter", "", "PAT"),
@@ -401,17 +404,17 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
 
     import HLTrigger.HLTfilters.triggerResultsFilter_cfi as HLT
 
-    process.stepHLTsyncMu = HLT.triggerResultsFilter.clone( 
-            hltResults = cms.InputTag( "TriggerResults","","HLT"), 
-            l1tResults = '', 
-            throw = False 
-            ) 
+    process.stepHLTsyncMu = HLT.triggerResultsFilter.clone(
+            hltResults = cms.InputTag( "TriggerResults","","HLT"),
+            l1tResults = '',
+            throw = False
+            )
 
-    process.stepHLTsyncEle = HLT.triggerResultsFilter.clone( 
-            hltResults = cms.InputTag( "TriggerResults","","HLT"), 
-            l1tResults = '', 
-            throw = False 
-            ) 
+    process.stepHLTsyncEle = HLT.triggerResultsFilter.clone(
+            hltResults = cms.InputTag( "TriggerResults","","HLT"),
+            l1tResults = '',
+            throw = False
+            )
 
     if filterHLT:
         process.stepHLTsyncMu.triggerConditions = ["HLT_IsoMu24_eta2p1_v* OR HLT_IsoMu17_eta2p1_CentralPFNoPUJet30_BTagIPIter_v*"]
@@ -464,7 +467,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
         src=cms.InputTag("genParticleSelectorMu", "trueLepton"),
         minNumber=cms.uint32(1),
         maxNumber=cms.uint32(1),
-    )   
+    )
 
     process.trueCosThetaProducerMu = cms.EDProducer('CosThetaProducer',
         topSrc=cms.InputTag("genParticleSelectorMu", "trueTop"),
@@ -530,9 +533,9 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
         'SimpleJetAnalyzer',
         interestingCollections = cms.untracked.VInputTag(["goodJets"])
     )
-    
+
     process.dumpContent = cms.EDAnalyzer('EventContentAnalyzer')
-   
+
     if doMuon:
         process.muPathPreCount = cms.EDProducer("EventCountProducer")
         process.muPath = cms.Path(
@@ -548,8 +551,8 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
 
             process.oneIsoMu *
 
-            process.oneIsoMuIDs *
-            process.goodMuonsAnalyzer *
+            #process.oneIsoMuIDs *
+            #process.goodMuonsAnalyzer *
 
             process.looseMuVetoMu *
             process.looseVetoElectrons *
@@ -581,7 +584,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
             #process.topsFromMu *
             process.recoTopMu *
             process.cosThetaProducerMu +
-            process.treeSequence +
+            #process.treeSequence +
             process.efficiencyAnalyzerMu
             #process.nuAnalyzer
         )
@@ -589,7 +592,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
             process.muPath.insert(process.muPath.index(process.noPUJets)+1, process.smearedJets)
             process.muPath.insert(0, process.genParticleSelectorMu * process.hasMuon * process.trueCosThetaProducerMu)
             print process.muPath
-            
+
         eventCounting.countAfter(process, process.muPath,
             [
             "stepHLTsyncMu",
@@ -616,7 +619,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
             process.selectedPatElectronsAnalyzer *
             process.oneIsoEle *
             process.goodElectronsAnalyzer *
-            
+
             process.looseEleVetoEle *
             process.looseVetoMuons *
             process.looseMuVetoEle *
@@ -639,7 +642,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
             #process.topsFromEle *
             process.recoTopEle *
             process.cosThetaProducerEle *
-            process.treeSequence *
+            #process.treeSequence *
             process.efficiencyAnalyzerEle
             #process.nuAnalyzer
         )
@@ -657,6 +660,8 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
             "mBTags"
             ]
         )
+
+    process.treePath = cms.Path(process.treeSequence)
 
 
     #-----------------------------------------------
