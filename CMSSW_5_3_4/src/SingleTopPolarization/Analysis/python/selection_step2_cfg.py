@@ -638,9 +638,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
             process.goodSignalElectrons *
             process.goodQCDElectrons *
             process.looseVetoElectrons *
-            process.selectedPatElectronsAnalyzer *
             process.oneIsoEle *
-            process.goodElectronsAnalyzer *
             process.looseEleVetoEle *
             process.looseVetoMuons *
             process.looseMuVetoEle *
