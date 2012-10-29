@@ -335,6 +335,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
         collections = cms.VInputTag(
             cms.InputTag("cosThetaProducerEle", "cosThetaLightJet", "STPOLSEL2"),
             cms.InputTag("cosThetaProducerMu", "cosThetaLightJet", "STPOLSEL2"),
+            cms.InputTag("cosThetaProducerTrueTopMu", "cosThetaLightJet", "STPOLSEL2"),
             cms.InputTag("trueCosThetaProducerMu", "cosThetaLightJet", "STPOLSEL2"),
             cms.InputTag("muAndMETMT", "", "STPOLSEL2"),
             cms.InputTag("kt6PFJets", "rho", "RECO"),
@@ -343,7 +344,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
         )
     )
 
-    process.treesDouble
+    #process.treesDouble
 
     process.treesBool = cms.EDAnalyzer("BoolTreemakerAnalyzer",
         collections = cms.VInputTag(
@@ -451,6 +452,12 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
 
     process.cosThetaProducerMu = cms.EDProducer('CosThetaProducer',
         topSrc=cms.InputTag("recoTopMu"),
+        jetSrc=cms.InputTag("untaggedJets"),
+        leptonSrc=cms.InputTag("goodSignalMuons")
+    )
+
+    process.cosThetaProducerTrueTopMu = cms.EDProducer('CosThetaProducer',
+        topSrc=cms.InputTag("genParticleSelectorMu", "trueTop"),
         jetSrc=cms.InputTag("untaggedJets"),
         leptonSrc=cms.InputTag("goodSignalMuons")
     )
@@ -608,8 +615,10 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
             process.muPath.insert(process.muPath.index(process.noPUJets)+1, process.smearedJets)
 
             process.muPath.insert(0, process.genParticleSelectorMu * process.hasMuon * process.trueCosThetaProducerMu)
-            process.muPath.insert(process.muPath.index(process.cosThetaProducerMu)+1,
-            process.matrixCreator * process.leptonComparer * process.jetComparer * process.topComparer)
+            process.muPath.insert(
+                process.muPath.index(process.cosThetaProducerMu)+1,
+                process.cosThetaProducerTrueTopMu * process.matrixCreator * process.leptonComparer * process.jetComparer * process.topComparer
+            )
 
         #Count number of events passing the selection filters
         eventCounting.countAfter(process, process.muPath,
