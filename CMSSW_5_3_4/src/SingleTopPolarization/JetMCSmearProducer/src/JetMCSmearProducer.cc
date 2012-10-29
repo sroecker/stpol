@@ -127,7 +127,7 @@ JetMCSmearProducer::smearFactor(const pat::Jet& jet) {
   } else if(genJetEta>2.3 && genJetEta<=5.0) {
     smearFactor = 0.288;
   } else {
-    edm::LogError("produce()") << "genJet eta is out of range: " << genJetEta;
+    edm::LogWarning("produce()") << "genJet eta is out of range: " << genJetEta;
   }
   LogDebug("smearFactor()") << "smearFactor " << smearFactor;
   return smearFactor;
