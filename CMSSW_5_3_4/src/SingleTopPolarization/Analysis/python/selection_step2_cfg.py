@@ -485,7 +485,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
     )
 
     process.jetComparer = cms.EDAnalyzer('ParticleComparer',
-        src = cms.InputTag("untaggedTCHPtight"),
+        src = cms.InputTag("untaggedJets"),
         trueSrc = cms.InputTag("genParticleSelectorMu", "trueLightJet"),
         maxMass=cms.untracked.double(40.)
     )
