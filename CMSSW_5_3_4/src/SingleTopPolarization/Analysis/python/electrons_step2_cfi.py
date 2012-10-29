@@ -90,6 +90,23 @@ def ElectronSetup(process, isMC):
 
 def ElectronPath(process, isMC):
     process.elePathPreCount = cms.EDProducer("EventCountProducer")
+
+    process.efficiencyAnalyzerEle = cms.EDAnalyzer('EfficiencyAnalyzer'
+    , histogrammableCounters = cms.untracked.vstring(["elePath"])
+    , elePath = cms.untracked.vstring([
+        "singleTopPathStep1ElePreCount",
+        "singleTopPathStep1ElePostCount",
+        "elePathPreCount",
+        "elePathStepHLTsyncElePostCount",
+        "elePathOneIsoElePostCount",
+        "elePathLooseEleVetoElePostCount",
+        "elePathLooseMuVetoElePostCount",
+        "elePathNJetsPostCount",
+        "elePathHasEleMETMTPostCount",
+        "elePathMBTagsPostCount"
+        ]
+    ))
+
     process.elePath = cms.Path(
 
         process.muonsWithIso *
@@ -142,18 +159,3 @@ def ElectronPath(process, isMC):
         ]
     )
 
-    process.efficiencyAnalyzerEle = cms.EDAnalyzer('EfficiencyAnalyzer'
-    , histogrammableCounters = cms.untracked.vstring(["elePath"])
-    , elePath = cms.untracked.vstring([
-        "singleTopPathStep1ElePreCount",
-        "singleTopPathStep1ElePostCount",
-        "elePathPreCount",
-        "elePathStepHLTsyncElePostCount",
-        "elePathOneIsoElePostCount",
-        "elePathLooseEleVetoElePostCount",
-        "elePathLooseMuVetoElePostCount",
-        "elePathNJetsPostCount",
-        "elePathHasEleMETMTPostCount",
-        "elePathMBTagsPostCount"
-        ]
-    ))

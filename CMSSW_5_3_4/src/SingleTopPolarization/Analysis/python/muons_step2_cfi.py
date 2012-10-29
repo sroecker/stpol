@@ -85,6 +85,23 @@ def MuonSetup(process, isMC, muonSrc="muonsWithIso"):
 
 def MuonPath(process, isMC):
     process.muPathPreCount = cms.EDProducer("EventCountProducer")
+
+    process.efficiencyAnalyzerMu = cms.EDAnalyzer('EfficiencyAnalyzer'
+    , histogrammableCounters = cms.untracked.vstring(["muPath"])
+    , muPath = cms.untracked.vstring([
+        "singleTopPathStep1MuPreCount",
+        "singleTopPathStep1MuPostCount",
+        "muPathPreCount",
+        "muPathStepHLTsyncMuPostCount",
+        "muPathOneIsoMuPostCount",
+        "muPathLooseMuVetoMuPostCount",
+        "muPathLooseEleVetoMuPostCount",
+        "muPathNJetsPostCount",
+        "muPathHasMuMETMTPostCount",
+        "muPathMBTagsPostCount"
+        ]
+    ))
+
     process.muPath = cms.Path(
         process.muonsWithIso *
         process.elesWithIso *
@@ -148,18 +165,3 @@ def MuonPath(process, isMC):
         ]
     )
 
-    process.efficiencyAnalyzerMu = cms.EDAnalyzer('EfficiencyAnalyzer'
-    , histogrammableCounters = cms.untracked.vstring(["muPath"])
-    , muPath = cms.untracked.vstring([
-        "singleTopPathStep1MuPreCount",
-        "singleTopPathStep1MuPostCount",
-        "muPathPreCount",
-        "muPathStepHLTsyncMuPostCount",
-        "muPathOneIsoMuPostCount",
-        "muPathLooseMuVetoMuPostCount",
-        "muPathLooseEleVetoMuPostCount",
-        "muPathNJetsPostCount",
-        "muPathHasMuMETMTPostCount",
-        "muPathMBTagsPostCount"
-        ]
-    ))

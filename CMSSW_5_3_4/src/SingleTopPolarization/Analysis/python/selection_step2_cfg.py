@@ -46,18 +46,18 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
     #-------------------------------------------------
 
     process.muonsWithIso = cms.EDProducer(
-	  'MuonIsolationProducer',
-	  leptonSrc = cms.InputTag("muonsWithID"),
-	  rhoSrc = cms.InputTag("kt6PFJets", "rho"),
-	  dR = cms.double(0.4)
-	)
+      'MuonIsolationProducer',
+      leptonSrc = cms.InputTag("muonsWithID"),
+      rhoSrc = cms.InputTag("kt6PFJets", "rho"),
+      dR = cms.double(0.4)
+    )
 
     process.elesWithIso = cms.EDProducer(
-	  'ElectronIsolationProducer',
-	  leptonSrc = cms.InputTag("electronsWithID"),
-	  rhoSrc = cms.InputTag("kt6PFJets", "rho"),
-	  dR = cms.double(0.4)
-	)
+      'ElectronIsolationProducer',
+      leptonSrc = cms.InputTag("electronsWithID"),
+      rhoSrc = cms.InputTag("kt6PFJets", "rho"),
+      dR = cms.double(0.4)
+    )
 
     from SingleTopPolarization.Analysis.muons_step2_cfi import MuonSetup
     MuonSetup(process, isMC)
@@ -134,40 +134,6 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
     )
 
     process.treeSequence = cms.Sequence(process.treesMu*process.treesEle*process.treesDouble*process.treesBool)
-
-    if doMuon:
-        process.efficiencyAnalyzerMu = cms.EDAnalyzer('EfficiencyAnalyzer'
-        , histogrammableCounters = cms.untracked.vstring(["muPath"])
-        , muPath = cms.untracked.vstring([
-            "singleTopPathStep1MuPreCount",
-            "singleTopPathStep1MuPostCount",
-            "muPathPreCount",
-            "muPathStepHLTsyncMuPostCount",
-            "muPathOneIsoMuPostCount",
-            "muPathLooseMuVetoMuPostCount",
-            "muPathLooseEleVetoMuPostCount",
-            "muPathNJetsPostCount",
-            "muPathHasMuMETMTPostCount",
-            "muPathMBTagsPostCount"
-            ]
-        ))
-
-    if doElectron:
-        process.efficiencyAnalyzerEle = cms.EDAnalyzer('EfficiencyAnalyzer'
-        , histogrammableCounters = cms.untracked.vstring(["elePath"])
-        , elePath = cms.untracked.vstring([
-            "singleTopPathStep1ElePreCount",
-            "singleTopPathStep1ElePostCount",
-            "elePathPreCount",
-            "elePathStepHLTsyncElePostCount",
-            "elePathOneIsoElePostCount",
-            "elePathLooseEleVetoElePostCount",
-            "elePathLooseMuVetoElePostCount",
-            "elePathNJetsPostCount",
-            "elePathHasEleMETMTPostCount",
-            "elePathMBTagsPostCount"
-            ]
-        ))
 
     #-----------------------------------------------
     # Paths
