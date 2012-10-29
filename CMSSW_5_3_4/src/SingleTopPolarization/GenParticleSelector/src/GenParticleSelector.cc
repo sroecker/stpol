@@ -302,6 +302,7 @@ GenParticleSelector::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    iEvent.put(outTops, "trueTop");
    iEvent.put(outLeptons, "trueLepton");
    outLightJets->push_back(*lightJet);
+   //cout << "NoLightJets " << outLightJets->size() << endl;
    iEvent.put(outLightJets, "trueLightJet");
    //pOut->push_back(*topCand);
    //iEvent.put(pOut);

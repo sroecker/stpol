@@ -1,6 +1,8 @@
 import ROOT
+import sys
 
-f = ROOT.TFile("T_t_trees_v1.root")
+fn = sys.argv[1]
+f = ROOT.TFile(fn)
 
 c = ROOT.TCanvas()
 t = f.Get("treesDouble").Get("eventTree")
