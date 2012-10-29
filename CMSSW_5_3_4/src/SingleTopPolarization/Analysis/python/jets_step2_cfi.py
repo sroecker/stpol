@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-def JetSetup(process, isMC, bTag="combinedSecondaryVertexBJetTags", bTagCut=0.679):
+def JetSetup(process, isMC, doDebug, bTag="combinedSecondaryVertexBJetTags", bTagCut=0.679):
 	if isMC:
 	    jetCut = 'userFloat("pt_smear") > 40.'
 	else:

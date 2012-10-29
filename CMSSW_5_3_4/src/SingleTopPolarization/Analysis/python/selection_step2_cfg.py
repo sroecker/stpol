@@ -39,23 +39,39 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
     #-------------------------------------------------
 
     from SingleTopPolarization.Analysis.jets_step2_cfi import JetSetup
-    JetSetup(process, isMC)
+    JetSetup(process, isMC, doDebug)
 
     #-------------------------------------------------
-    # Muons
+    # Leptons
     #-------------------------------------------------
 
-    if doMuon:
-        from SingleTopPolarization.Analysis.muons_step2_cfi import MuonSetup
-        MuonSetup(process, isMC)
+    process.muonsWithIso = cms.EDProducer(
+	  'MuonIsolationProducer',
+	  leptonSrc = cms.InputTag("muonsWithID"),
+	  rhoSrc = cms.InputTag("kt6PFJets", "rho"),
+	  dR = cms.double(0.4)
+	)
 
-    #-------------------------------------------------
-    # Electrons
-    #-------------------------------------------------
+    process.elesWithIso = cms.EDProducer(
+	  'ElectronIsolationProducer',
+	  leptonSrc = cms.InputTag("electronsWithID"),
+	  rhoSrc = cms.InputTag("kt6PFJets", "rho"),
+	  dR = cms.double(0.4)
+	)
 
-    if doElectron:
-        from SingleTopPolarization.Analysis.electrons_step2_cfi import ElectronSetup
-        ElectronSetup(process, isMC)
+    from SingleTopPolarization.Analysis.muons_step2_cfi import MuonSetup
+    MuonSetup(process, isMC)
+
+    from SingleTopPolarization.Analysis.electrons_step2_cfi import ElectronSetup
+    ElectronSetup(process, isMC)
+
+
+    #-----------------------------------------------
+    # Top reco and cosine calcs
+    #-----------------------------------------------
+
+    from SingleTopPolarization.Analysis.top_step2_cfi import TopRecoSetup
+    TopRecoSetup(process)
 
     #-----------------------------------------------
     # Treemaking
@@ -160,120 +176,13 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
     from SingleTopPolarization.Analysis.hlt_step2_cfi import HLTSetup
     HLTSetup(process, isMC, filterHLT)
 
-    # #Combine reconstuctd muon and electron collections to a single reconstructed lepton collection
-    # process.goodSignalLeptons = cms.EDProducer(
-    #     'CandRefCombiner',
-    #     sources=cms.untracked.vstring(["goodSignalMuons", "goodSignalElectrons"]),
-    #     minOut=cms.untracked.uint32(1),
-    #     maxOut=cms.untracked.uint32(1),
-    # )
-
-    # #Combine muon-derived and electron-derived neutrino collections to a single recoNu colletion
-    # process.recoNu = cms.EDProducer(
-    #     #'CompositeCandCollectionCombiner',
-    #     'CandRefCombiner',
-    #     sources=cms.untracked.vstring(["recoNuProducerEle", "recoNuProducerMu"]),
-    #     minOut=cms.untracked.uint32(1),
-    #     maxOut=cms.untracked.uint32(1),
-    # )
-
     if isMC:
-        process.cosThetaProducerTrueTopMu = cms.EDProducer('CosThetaProducer',
-            topSrc=cms.InputTag("genParticleSelectorMu", "trueTop"),
-            jetSrc=cms.InputTag("untaggedJets"),
-            leptonSrc=cms.InputTag("goodSignalMuons")
-        )
-
-        #Select the generated top quark, light jet and charged lepton
-        process.genParticleSelectorMu = cms.EDProducer('GenParticleSelector',
-    	     src=cms.InputTag("genParticles")
-        )
-
-        process.hasMuon = cms.EDFilter(
-            "PATCandViewCountFilter",
-            src=cms.InputTag("genParticleSelectorMu", "trueLepton"),
-            minNumber=cms.uint32(1),
-            maxNumber=cms.uint32(1),
-        )
-
-        process.trueCosThetaProducerMu = cms.EDProducer('CosThetaProducer',
-            topSrc=cms.InputTag("genParticleSelectorMu", "trueTop"),
-            jetSrc=cms.InputTag("genParticleSelectorMu", "trueLightJet"),
-            leptonSrc=cms.InputTag("genParticleSelectorMu", "trueLepton")
-        )
-
-        process.matrixCreator = cms.EDAnalyzer('TransferMatrixCreator',
-            src = cms.InputTag("cosThetaProducerMu", "cosThetaLightJet"),
-            trueSrc = cms.InputTag("trueCosThetaProducerMu", "cosThetaLightJet")
-        )
-
-        process.leptonComparer = cms.EDAnalyzer('ParticleComparer',
-            src = cms.InputTag("goodSignalLeptons"),
-            trueSrc = cms.InputTag("genParticleSelectorMu", "trueLepton"),
-            maxMass=cms.untracked.double(.3)
-        )
-
-        process.jetComparer = cms.EDAnalyzer('ParticleComparer',
-            src = cms.InputTag("untaggedJets"),
-            trueSrc = cms.InputTag("genParticleSelectorMu", "trueLightJet"),
-            maxMass=cms.untracked.double(40.)
-        )
-
-        process.topComparer = cms.EDAnalyzer('ParticleComparer',
-            src = cms.InputTag("recoTopMu"),
-            trueSrc = cms.InputTag("genParticleSelectorMu", "trueTop"),
-            maxMass=cms.untracked.double(300.)
-        )
+        from SingleTopPolarization.Analysis.partonStudy_step2_cfi import PartonStudySetup
+        PartonStudySetup(process)
 
     if doDebug:
-        process.oneIsoMuIDs = cms.EDAnalyzer('EventIDAnalyzer',
-            name=cms.untracked.string("oneIsoMu")
-        )
-
-        process.nJetIDs = cms.EDAnalyzer('EventIDAnalyzer',
-            name=cms.untracked.string("nJetIDs")
-        )
-
-        process.goodMuonsAnalyzer = cms.EDAnalyzer(
-            'SimpleMuonAnalyzer',
-            interestingCollections = cms.untracked.VInputTag(["goodSignalMuons"])
-        )
-
-        process.selectedPatElectronsAnalyzer = cms.EDAnalyzer(
-            'SimpleElectronAnalyzer',
-            interestingCollections = cms.untracked.VInputTag(["electronsWithID"])
-        )
-
-        process.goodElectronsAnalyzer = cms.EDAnalyzer(
-            'SimpleElectronAnalyzer',
-            interestingCollections = cms.untracked.VInputTag(["goodSignalElectrons"])
-        )
-
-        process.selectedPatMuonsAnalyzer = cms.EDAnalyzer(
-            'SimpleMuonAnalyzer',
-            interestingCollections = cms.untracked.VInputTag(["muonsWithID"])
-        )
-
-        process.eleAnalyzer = cms.EDAnalyzer(
-            'SimpleEventAnalyzer',
-            interestingCollections = cms.untracked.VInputTag(["selectedPatElectrons"])
-        )
-
-        process.patJetsAnalyzer = cms.EDAnalyzer(
-            'SimpleJetAnalyzer',
-            interestingCollections = cms.untracked.VInputTag(["selectedPatJets"])
-        )
-
-        process.goodJetsPreAnalyzer = cms.EDAnalyzer(
-            'SimpleJetAnalyzer',
-            interestingCollections = cms.untracked.VInputTag(["smearedJets"])
-        )
-        process.goodJetsPostAnalyzer = cms.EDAnalyzer(
-            'SimpleJetAnalyzer',
-            interestingCollections = cms.untracked.VInputTag(["goodJets"])
-        )
-
-        process.dumpContent = cms.EDAnalyzer('EventContentAnalyzer')
+        from SingleTopPolarization.Analysis.debugAnalyzers_step2_cfi import DebugAnalyzerSetup
+        DebugAnalyzerSetup(process)
 
     if doMuon:
         from SingleTopPolarization.Analysis.muons_step2_cfi import MuonPath
@@ -326,4 +235,5 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
         fileName=cms.string(outFile.replace(".root", "_trees.root")),
     )
     print "Step2 configured"
+    print "Running paths: %s" % str(process.paths)
     return process
