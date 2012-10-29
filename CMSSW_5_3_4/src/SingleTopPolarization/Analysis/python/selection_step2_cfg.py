@@ -65,6 +65,12 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
     from SingleTopPolarization.Analysis.electrons_step2_cfi import ElectronSetup
     ElectronSetup(process, isMC)
 
+    process.goodSignalLeptons = cms.EDProducer(
+         'CandRefCombiner',
+         sources=cms.untracked.vstring(["goodSignalMuons", "goodSignalElectrons"]),
+             maxOut=cms.untracked.uint32(1),
+             minOut=cms.untracked.uint32(1)
+     )
 
     #-----------------------------------------------
     # Top reco and cosine calcs
@@ -153,10 +159,12 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
     if doMuon:
         from SingleTopPolarization.Analysis.muons_step2_cfi import MuonPath
         MuonPath(process, isMC)
+        process.muPath.insert(process.muPath.index(process.oneIsoMu)+1, process.goodSignalLeptons)
 
     if doElectron:
         from SingleTopPolarization.Analysis.electrons_step2_cfi import ElectronPath
         ElectronPath(process, isMC)
+        process.muPath.insert(process.muPath.index(process.oneIsoEle)+1, process.goodSignalLeptons)
 
     process.treePath = cms.Path(process.treeSequence)
 
