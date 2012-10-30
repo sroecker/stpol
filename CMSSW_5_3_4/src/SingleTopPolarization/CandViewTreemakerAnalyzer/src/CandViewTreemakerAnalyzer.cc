@@ -145,10 +145,10 @@ GenericViewTreemakerAnalyzer<T, C>::GenericViewTreemakerAnalyzer(const edm::Para
   for (auto& colPSet : collectionsPSets) {
 
     //The name of the collection to analyze
-    const auto& collection = colPSet.template getUntrackedParameter<std::string>("collection");
-
+    const auto& collection = colPSet.template getUntrackedParameter<edm::InputTag>("collection");
+    const auto& collectionName = collection.encode();
     //The maximum number of elements from a collection to write down
-    maxElems[collection] = colPSet.template getUntrackedParameter<int>("maxElems");
+    maxElems[collectionName] = colPSet.template getUntrackedParameter<int>("maxElems");
 
     //The vector of variables to get from the collections
     const auto& varPSets = colPSet.template getUntrackedParameter<std::vector<edm::ParameterSet>>("variables");
@@ -162,11 +162,11 @@ GenericViewTreemakerAnalyzer<T, C>::GenericViewTreemakerAnalyzer(const edm::Para
       const auto& expr = varPSet.template getUntrackedParameter<std::string>("expr");
 
       StringObjectFunction<C>* t = new StringObjectFunction<C>(expr, false);
-      quantities[collection][tag] = t;
-      for(int i=0;i<maxElems[collection];i++) {
+      quantities[collectionName][tag] = t;
+      for(int i=0;i<maxElems[collectionName];i++) {
         double* d = new double(D_NAN);
-        treeValues[collection][tag].push_back(d);
-        const std::string brName = collection + "_" + ITOA(i) + "_" + tag;
+        treeValues[collectionName][tag].push_back(d);
+        const std::string brName = collection.instance() + "_" + collection.label() + "_" + ITOA(i) + "_" + tag;
         outTree->Branch(brName.c_str(), d);
       }
     }
@@ -223,7 +223,7 @@ GenericViewTreemakerAnalyzer<T, C>::analyze(const edm::Event& iEvent, const edm:
 
   for (auto& collection : quantities) {
     auto& collectionName = collection.first;
-    iEvent.getByLabel(collectionName, objects);
+    iEvent.getByLabel(edm::InputTag(collectionName), objects);
 
     auto& varMap = collection.second;
 
@@ -255,7 +255,7 @@ GenericViewTreemakerAnalyzer<T, C>::analyze(const edm::Event& iEvent, const edm:
         i++;
       }
     } else { //
-      LogDebug("produce()") << "Collection " << collectionName << " does not exist in event";
+      edm::LogWarning("produce()") << "Collection " << collectionName << " does not exist in event";
     }
   }
 
