@@ -23,6 +23,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
     else:
         process.load("FWCore.MessageService.MessageLogger_cfi")
         process.MessageLogger.cerr.FwkReport.reportEvery = 1000
+        process.MessageLogger.cerr.threshold = cms.untracked.string("ERROR")
 
     process.maxEvents = cms.untracked.PSet(input=cms.untracked.int32(-1))
 
@@ -90,14 +91,16 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
             pset = cms.untracked.PSet(tag=cms.untracked.string(v[0]), expr=cms.untracked.string(v[1]), )
             varVPSet.append(pset)
         ret = cms.untracked.PSet(
-            collection=cms.untracked.string(collection_),
+            collection=collection_,
             maxElems=cms.untracked.int32(maxElems_),
             variables=varVPSet
         )
         return ret
 
     process.treesMu = cms.EDAnalyzer('MuonCandViewTreemakerAnalyzer',
-            collections = cms.untracked.VPSet(treeCollection("goodSignalMuons", 1,
+            collections = cms.untracked.VPSet(
+            treeCollection(
+                cms.untracked.InputTag("goodSignalMuons"), 1,
                 [
                     ["Pt", "pt"],
                     ["Eta", "eta"],
@@ -108,8 +111,10 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
             )
     )
 
-    process.treesEle = cms.EDAnalyzer('ElectronCandViewTreemakerAnalyzer',
-            collections = cms.untracked.VPSet(treeCollection("goodSignalElectrons", 1,
+    process.treesEle = cms.EDAnalyzer('MuonCandViewTreemakerAnalyzer',
+            collections = cms.untracked.VPSet(
+            treeCollection(
+                cms.untracked.InputTag("goodSignalElectrons"), 1,
                 [
                     ["Pt", "pt"],
                     ["Eta", "eta"],
@@ -119,12 +124,107 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
                 )
             )
     )
+    process.treesJets = cms.EDAnalyzer('JetCandViewTreemakerAnalyzer',
+            collections = cms.untracked.VPSet(
+            treeCollection(
+                cms.untracked.InputTag("untaggedJets"), 1,
+                [
+                    ["Pt", "pt"],
+                    ["Eta", "eta"],
+                    ["Phi", "phi"],
+                    ["Mass", "mass"],
+                    ["bDiscriminator", "bDiscriminator('combinedSecondaryVertexBJetTags')"]
+                ]
+            ),
+            treeCollection(
+                cms.untracked.InputTag("btaggedJets"), 1,
+                [
+                    ["Pt", "pt"],
+                    ["Eta", "eta"],
+                    ["Phi", "phi"],
+                    ["Mass", "mass"],
+                    ["bDiscriminator", "bDiscriminator('combinedSecondaryVertexBJetTags')"]
+                ]
+            )
+        )
+    )
+
+
+
+    #process.treesEle = cms.EDAnalyzer('ElectronCandViewTreemakerAnalyzer',
+    #        collections = cms.untracked.VPSet(treeCollection("goodSignalElectrons", 1,
+    #            [
+    #                ["Pt", "pt"],
+    #                ["Eta", "eta"],
+    #                ["Phi", "phi"],
+    #                ["rhoCorrRelIso", "userFloat('rhoCorrRelIso')"],
+    #            ]
+    #            )
+    #        )
+    #)
+
+    process.treesCands = cms.EDAnalyzer('CandViewTreemakerAnalyzer',
+            collections = cms.untracked.VPSet(
+            treeCollection(
+                cms.untracked.InputTag("recoTopMu"), 1,
+                [
+                    ["Pt", "pt"],
+                    ["Eta", "eta"],
+                    ["Phi", "phi"],
+                    ["Mass", "mass"],
+                ]
+            ),
+            treeCollection(
+                cms.untracked.InputTag("recoNuProducerMu"), 1,
+                [
+                    ["Pt", "pt"],
+                    ["Eta", "eta"],
+                    ["Phi", "phi"],
+                ]
+            ),
+            treeCollection(
+                cms.untracked.InputTag("genParticleSelectorMu", "trueTop", "STPOLSEL2"), 1,
+                [
+                    ["Pt", "pt"],
+                    ["Eta", "eta"],
+                    ["Phi", "phi"],
+                    ["Mass", "mass"],
+                ]
+            ),
+            treeCollection(
+                cms.untracked.InputTag("genParticleSelectorMu", "trueNeutrino", "STPOLSEL2"), 1,
+                [
+                    ["Pt", "pt"],
+                    ["Eta", "eta"],
+                    ["Phi", "phi"],
+                ]
+            ),
+            treeCollection(
+                cms.untracked.InputTag("genParticleSelectorMu", "trueLepton", "STPOLSEL2"), 1,
+                [
+                    ["Pt", "pt"],
+                    ["Eta", "eta"],
+                    ["Phi", "phi"],
+                ]
+            ),
+            treeCollection(
+                cms.untracked.InputTag("genParticleSelectorMu", "trueLightJet", "STPOLSEL2"), 1,
+                [
+                    ["Pt", "pt"],
+                    ["Eta", "eta"],
+                    ["Phi", "phi"],
+                ]
+            ),
+        )
+    )
 
     process.treesDouble = cms.EDAnalyzer("DoubleTreemakerAnalyzer",
         collections = cms.VInputTag(
             cms.InputTag("cosThetaProducerEle", "cosThetaLightJet", "STPOLSEL2"),
             cms.InputTag("cosThetaProducerMu", "cosThetaLightJet", "STPOLSEL2"),
             cms.InputTag("cosThetaProducerTrueTopMu", "cosThetaLightJet", "STPOLSEL2"),
+            cms.InputTag("cosThetaProducerTrueLeptonMu", "cosThetaLightJet", "STPOLSEL2"),
+            cms.InputTag("cosThetaProducerTrueJetMu", "cosThetaLightJet", "STPOLSEL2"),
             cms.InputTag("trueCosThetaProducerMu", "cosThetaLightJet", "STPOLSEL2"),
             cms.InputTag("muAndMETMT", "", "STPOLSEL2"),
             cms.InputTag("kt6PFJets", "rho", "RECO"),
@@ -139,7 +239,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
         )
     )
 
-    process.treeSequence = cms.Sequence(process.treesMu*process.treesEle*process.treesDouble*process.treesBool)
+    process.treeSequence = cms.Sequence(process.treesMu*process.treesEle*process.treesDouble*process.treesBool*process.treesCands*process.treesJets)
 
     #-----------------------------------------------
     # Paths
@@ -151,6 +251,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
     if isMC:
         from SingleTopPolarization.Analysis.partonStudy_step2_cfi import PartonStudySetup
         PartonStudySetup(process)
+        process.partonPath = cms.Path(process.partonStudyTrueSequence)
 
     if doDebug:
         from SingleTopPolarization.Analysis.debugAnalyzers_step2_cfi import DebugAnalyzerSetup

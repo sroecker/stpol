@@ -24,7 +24,7 @@ def PartonStudySetup(process):
          src=cms.InputTag("genParticles")
     )
 
-    process.hasMuon = cms.EDFilter(
+    process.hasGenMuon = cms.EDFilter(
         "PATCandViewCountFilter",
         src=cms.InputTag("genParticleSelectorMu", "trueLepton"),
         minNumber=cms.uint32(1),
@@ -60,13 +60,14 @@ def PartonStudySetup(process):
         maxMass=cms.untracked.double(300.)
     )
 
-    process.partonStudyTrueSequence = cms.Sequence(process.genParticleSelectorMu * process.hasMuon * process.trueCosThetaProducerMu)
+    process.partonStudyTrueSequence = cms.Sequence(process.genParticleSelectorMu * process.hasGenMuon * process.trueCosThetaProducerMu)
     process.partonStudyCompareSequence = cms.Sequence(
+        process.hasGenMuon *
         process.cosThetaProducerTrueTopMu *
         process.cosThetaProducerTrueLeptonMu *
         process.cosThetaProducerTrueJetMu *
-        process.matrixCreator *
         process.leptonComparer *
         process.jetComparer *
-        process.topComparer
+        process.topComparer *
+        process.matrixCreator
         )
