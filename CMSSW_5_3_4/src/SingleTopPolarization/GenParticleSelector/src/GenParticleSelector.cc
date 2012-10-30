@@ -59,7 +59,7 @@ class GenParticleSelector : public edm::EDProducer {
       virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
 
       // ----------member data ---------------------------
-      int count_t, count_other, count_events, count_over3, count_diff, count_siblings;
+      int count_t, count_other, count_events, count_over3, count_diff, count_siblings, count_nu;
       int mother1, mother2;
       int s1_mother1, s1_mother2, s2_mother1, s2_mother2;
       int sibling1, sibling2;
@@ -86,6 +86,7 @@ GenParticleSelector::GenParticleSelector(const edm::ParameterSet& iConfig)
    produces<std::vector<GenParticle>>("trueTop");
    produces<std::vector<GenParticle>>("trueLightJet");
    produces<std::vector<GenParticle>>("trueLepton");
+   produces<std::vector<GenParticle>>("trueNeutrino");
    //register your products
 /* Examples
    produces<ExampleData2>();
@@ -142,10 +143,12 @@ GenParticleSelector::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    Handle<GenParticleCollection> genParticles;
    iEvent.getByLabel("genParticles", genParticles);
    count_events++;
+   count_nu = 0;
 
    std::auto_ptr<std::vector<GenParticle> > outTops(new std::vector<GenParticle>());
    std::auto_ptr<std::vector<GenParticle> > outLightJets(new std::vector<GenParticle>());
    std::auto_ptr<std::vector<GenParticle> > outLeptons(new std::vector<GenParticle>());
+   std::auto_ptr<std::vector<GenParticle> > outNeutrinos(new std::vector<GenParticle>());
 
    GenParticle* lightJet;
    
@@ -204,6 +207,13 @@ GenParticleSelector::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
                   //nst GenParticle* lepton = (GenParticle*)d2;
                   outLeptons->push_back(*d2);                  
                }
+               else if(abs(dau2Id) == 14/* || abs(dau2Id) == 11*/){  //mu-neutrino
+                  //cout << "    " << dau2Id << endl;
+                  //nst GenParticle* lepton = (GenParticle*)d2;
+                  outNeutrinos->push_back(*d2);
+                  //count_nu++;
+               }
+   
              }
           }
           
@@ -254,17 +264,6 @@ GenParticleSelector::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
          which_sibling++;
      }
-     
-     
-     /*if(abs(id) == 1){ //d-quark
-        cout << id << " " << st << " " << pt << " " << eta << " " << n << endl;
-        for(size_t mi = 0; mi < p.numberOfMothers(); ++ mi){
-          mom = p.mother(mi);
-          cout << mom->pdgId() << " ";
-        }
-        cout << endl; 
-     }*/
-        // . . . 
    }
 
    
@@ -280,32 +279,14 @@ GenParticleSelector::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
          fstateSiblings[sibling1][sibling2]++;
      else
          fstateSiblings[sibling2][sibling1]++;
-   //Use the ExampleData to create an ExampleData2 which 
-   // is put into the Event
-/*   std::auto_ptr<ExampleData2> pOut(new ExampleData2(*pIn));
-   iEvent.put(pOut);
-*/
-
-/* this is an EventSetup example
-   //Read SetupData from the SetupRecord in the EventSetup
-   ESHandle<SetupData> pSetup;
-   iSetup.get<SetupRecord>().get(pSetup);
-*/
    
-   /*const GenParticle& lightJet;
-
-   if(abs(jet1->pdgId()) < abs(jet2->pdgId()))
-      lightJet = jet1;
-   else
-      lightJet = jet2;
-   */
    iEvent.put(outTops, "trueTop");
    iEvent.put(outLeptons, "trueLepton");
    outLightJets->push_back(*lightJet);
    //cout << "NoLightJets " << outLightJets->size() << endl;
    iEvent.put(outLightJets, "trueLightJet");
-   //pOut->push_back(*topCand);
-   //iEvent.put(pOut);
+   iEvent.put(outNeutrinos, "trueNeutrino");
+   
 
 
    
