@@ -7,6 +7,18 @@ def PartonStudySetup(process):
         leptonSrc=cms.InputTag("goodSignalMuons")
     )
 
+    process.cosThetaProducerTrueLeptonMu = cms.EDProducer('CosThetaProducer',
+        topSrc=cms.InputTag("recoTopMu"),
+        jetSrc=cms.InputTag("untaggedJets"),
+        leptonSrc=cms.InputTag("genParticleSelectorMu", "trueLepton")
+    )
+
+    process.cosThetaProducerTrueJetMu = cms.EDProducer('CosThetaProducer',
+        topSrc=cms.InputTag("recoTopMu"),
+        jetSrc=cms.InputTag("genParticleSelectorMu", "trueLightJet"),
+        leptonSrc=cms.InputTag("goodSignalMuons")
+    )
+
     #Select the generated top quark, light jet and charged lepton
     process.genParticleSelectorMu = cms.EDProducer('GenParticleSelector',
          src=cms.InputTag("genParticles")
@@ -47,3 +59,14 @@ def PartonStudySetup(process):
         trueSrc = cms.InputTag("genParticleSelectorMu", "trueTop"),
         maxMass=cms.untracked.double(300.)
     )
+
+    process.partonStudyTrueSequence = cms.Sequence(process.genParticleSelectorMu * process.hasMuon * process.trueCosThetaProducerMu)
+    process.partonStudyCompareSequence = cms.Sequence(
+        process.cosThetaProducerTrueTopMu *
+        process.cosThetaProducerTrueLeptonMu *
+        process.cosThetaProducerTrueJetMu *
+        process.matrixCreator *
+        process.leptonComparer *
+        process.jetComparer *
+        process.topComparer
+        )

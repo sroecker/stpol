@@ -146,10 +146,10 @@ def MuonPath(process, isMC):
         #in MC we need to smear the reconstucted jet pt, E
         process.muPath.insert(process.muPath.index(process.noPUJets)+1, process.smearedJets)
 
-        process.muPath.insert(0, process.genParticleSelectorMu * process.hasMuon * process.trueCosThetaProducerMu)
+        process.muPath.insert(0, process.partonStudyTrueSequence)
         process.muPath.insert(
             process.muPath.index(process.cosThetaProducerMu)+1,
-            process.cosThetaProducerTrueTopMu * process.matrixCreator * process.leptonComparer * process.jetComparer * process.topComparer
+            process.partonStudyCompareSequence
         )
 
     #Count number of events passing the selection filters
