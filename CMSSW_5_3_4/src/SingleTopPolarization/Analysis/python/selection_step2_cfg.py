@@ -180,6 +180,9 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
                     ["Pt", "pt"],
                     ["Eta", "eta"],
                     ["Phi", "phi"],
+                    ["Px", "p4().Px()"],
+                    ["Py", "p4().Py()"],
+                    ["Pz", "p4().Pz()"],
                 ]
             ),
             treeCollection(
@@ -197,6 +200,9 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
                     ["Pt", "pt"],
                     ["Eta", "eta"],
                     ["Phi", "phi"],
+                    ["Px", "p4().Px()"],
+                    ["Py", "p4().Py()"],
+                    ["Pz", "p4().Pz()"],
                 ]
             ),
             treeCollection(
@@ -220,16 +226,16 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
 
     process.treesDouble = cms.EDAnalyzer("DoubleTreemakerAnalyzer",
         collections = cms.VInputTag(
-            cms.InputTag("cosThetaProducerEle", "cosThetaLightJet", "STPOLSEL2"),
-            cms.InputTag("cosThetaProducerMu", "cosThetaLightJet", "STPOLSEL2"),
-            cms.InputTag("cosThetaProducerTrueTopMu", "cosThetaLightJet", "STPOLSEL2"),
-            cms.InputTag("cosThetaProducerTrueLeptonMu", "cosThetaLightJet", "STPOLSEL2"),
-            cms.InputTag("cosThetaProducerTrueJetMu", "cosThetaLightJet", "STPOLSEL2"),
-            cms.InputTag("trueCosThetaProducerMu", "cosThetaLightJet", "STPOLSEL2"),
-            cms.InputTag("muAndMETMT", "", "STPOLSEL2"),
+            cms.InputTag("cosThetaProducerEle", "cosThetaLightJet"),
+            cms.InputTag("cosThetaProducerMu", "cosThetaLightJet"),
+            cms.InputTag("cosThetaProducerTrueTopMu", "cosThetaLightJet"),
+            cms.InputTag("cosThetaProducerTrueLeptonMu", "cosThetaLightJet"),
+            cms.InputTag("cosThetaProducerTrueJetMu", "cosThetaLightJet"),
+            cms.InputTag("trueCosThetaProducerMu", "cosThetaLightJet"),
+            cms.InputTag("muAndMETMT", ""),
             cms.InputTag("kt6PFJets", "rho", "RECO"),
-            cms.InputTag("recoNuProducerMu", "Delta", "STPOLSEL2"),
-            cms.InputTag("recoNuProducerEle", "Delta", "STPOLSEL2")
+            cms.InputTag("recoNuProducerMu", "Delta"),
+            cms.InputTag("recoNuProducerEle", "Delta"),
         )
     )
 
@@ -239,7 +245,13 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
         )
     )
 
-    process.treeSequence = cms.Sequence(process.treesMu*process.treesEle*process.treesDouble*process.treesBool*process.treesCands*process.treesJets)
+    process.treesInt = cms.EDAnalyzer("IntTreemakerAnalyzer",
+        collections = cms.VInputTag(
+            cms.InputTag("recoNuProducerMu", "solType")
+        )
+    )
+
+    process.treeSequence = cms.Sequence(process.treesMu*process.treesEle*process.treesDouble*process.treesBool*process.treesCands*process.treesJets*process.treesInt)
 
     #-----------------------------------------------
     # Paths
