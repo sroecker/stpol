@@ -104,6 +104,7 @@ ReconstructedNeutrinoProducer::ReconstructedNeutrinoProducer(const edm::Paramete
 
   produces<std::vector<reco::CompositeCandidate> >(outName);
   produces<double>("Delta");
+  produces<int>("solType");
   
 }
 
@@ -131,7 +132,14 @@ float ReconstructedNeutrinoProducer::p_Nu_z(const reco::Candidate& chLepton, con
     float r = TMath::Sqrt(Delta);
     float A = (Lambda*lp4.Pz() + r)/ std::pow(lp4.Pt(), 2);
     float B = (Lambda*lp4.Pz() - r)/ std::pow(lp4.Pt(), 2);
-    p_nu_z = std::min(fabs(A), fabs(B)); //Choose root with minimal absolute value
+ 
+    //Choose root with minimal absolute value
+    if (fabs(A) < fabs(B)) {
+        p_nu_z = A;
+    }
+    else {
+        p_nu_z = B;
+    }
   }
   else { //Negative discriminant, complex roots (MET resolution effect)
     LogDebug("p_Nu_z():complex") << "Delta is negative, complex roots";
@@ -194,7 +202,8 @@ const reco::CompositeCandidate::LorentzVector ReconstructedNeutrinoProducer::nuM
   auto nuMomenta = [&b, &c, &d, &mW, &lepPx, &lepPy, &lepPt](const gsl_complex& _sol, double* _px, double* _py, const double & eqSign) {
       //double p_x = (solutions[i] * solutions[i] - mW * mW) / (4 * pxlep);
       //double p_y = ( mW * mW * pylep + 2 * pxlep * pylep * p_x - mW * ptlep * solutions[i]) / (2 * pxlep * pxlep);
-      long double sol = (long double)(GSL_REAL(_sol)); 
+      long double sol = (long double)(GSL_REAL(_sol));
+      LogDebug("p_Nu_z_complex_cubic():nuMomenta") << "eqSign = " << eqSign;
       LogDebug("p_Nu_z_complex_cubic():nuMomenta") << "Constraint = " << (double)(std::pow(sol, (long double)3.0) - eqSign*b*std::pow(sol, (long double)2.0) + c*std::pow(sol, (long double)1.0) - eqSign*d);
       long double px = (sol*sol - std::pow(mW, 2.0)) / (4.0*lepPx);
       long double py = (std::pow(mW, 2.0)*lepPy + 2.0*lepPx*lepPy*px + eqSign*mW*lepPt*sol) / (2.0 * std::pow(lepPx, 2.0));
@@ -254,6 +263,11 @@ const reco::CompositeCandidate::LorentzVector ReconstructedNeutrinoProducer::nuM
   nuVec.SetPx(newPx);
   nuVec.SetPy(newPy);
   nuVec.SetPz(p_nu_z);
+  nuVec.SetE(TMath::Sqrt(nuVec.Px()*nuVec.Px() + nuVec.Py()*nuVec.Py() + nuVec.Pz()*nuVec.Pz()));
+
+  reco::CompositeCandidate::LorentzVector nuVec2 = reco::CompositeCandidate::LorentzVector(nuVec);
+  nuVec2.SetPz(-nuVec2.Pz());
+  LogDebug("p_Nu_z_complex_cubic()") << "eta1: " << nuVec.eta() << " eta2: " << nuVec2.eta();
 
   return (const reco::CompositeCandidate::LorentzVector)nuVec;
 }
@@ -262,17 +276,22 @@ const reco::CompositeCandidate::LorentzVector ReconstructedNeutrinoProducer::nuM
   const double& nan = TMath::QuietNaN();
   reco::CompositeCandidate::LorentzVector nuVec(nan, nan, nan, nan);
   double Delta = 0;
+  int whichSol = -1;
 
   float p_nu_z = p_Nu_z(chLepton, met);
   if (p_nu_z==p_nu_z) { //real root
     nuVec.SetPx(met.p4().Px());
     nuVec.SetPy(met.p4().Py());
     nuVec.SetPz(p_nu_z);
+    nuVec.SetE(TMath::Sqrt(nuVec.Px()*nuVec.Px() + nuVec.Py()*nuVec.Py() + nuVec.Pz()*nuVec.Pz()));
+    whichSol = 0;
   } else { //Complex root
     nuVec = nuMomentum_complex_cubic(chLepton, met, Delta);
+    whichSol = 1;
   }
-  nuVec.SetE(TMath::Sqrt(nuVec.Px()*nuVec.Px() + nuVec.Py()*nuVec.Py() + nuVec.Pz()*nuVec.Pz()));
   iEvent.put(std::auto_ptr<double>(new double(Delta)), "Delta");
+  iEvent.put(std::auto_ptr<int>(new int(whichSol)), "solType");
+  LogDebug("nuMomentum()") << "Finished nu momentum calculation";
 
   return nuVec;
 }
@@ -311,9 +330,9 @@ ReconstructedNeutrinoProducer::produce(edm::Event& iEvent, const edm::EventSetup
 
    nu->setP4(nuVec);
    outNeutrinoColl->push_back(*nu);
+   LogDebug("produce()") << "neutrino: pt (" << nu->pt() << ") eta (" << nu->eta() << ") phi (" << nu->phi() << ") et (" << nu->et() << ")";
    delete nu;
 
-   LogDebug("produce()") << "neutrino: pt (" << nu->pt() << ") eta (" << nu->eta() << ") phi (" << nu->phi() << ") et (" << nu->et() << ")";
    iEvent.put(outNeutrinoColl, outName);
 
 /* This is an event example
