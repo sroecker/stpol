@@ -301,7 +301,11 @@ template<> const double DoubleTreemakerAnalyzer::defaultValue = TMath::QuietNaN(
 typedef GenericTreemakerAnalyzer<bool, int> BoolTreemakerAnalyzer;
 template<> const int BoolTreemakerAnalyzer::defaultValue = -1;
 
+typedef GenericTreemakerAnalyzer<int, int> IntTreemakerAnalyzer;
+template<> const int IntTreemakerAnalyzer::defaultValue = -1;
+
 //define this as a plug-in
 DEFINE_FWK_MODULE(DoubleTreemakerAnalyzer);
 DEFINE_FWK_MODULE(BoolTreemakerAnalyzer);
+DEFINE_FWK_MODULE(IntTreemakerAnalyzer);
 
