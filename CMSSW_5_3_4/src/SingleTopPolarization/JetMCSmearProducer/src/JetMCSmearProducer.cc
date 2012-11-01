@@ -154,7 +154,7 @@ JetMCSmearProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       smear = (std::max(0.0, jet.pt() + sf*(jet.pt()-jet.genJet()->pt())))/jet.pt();
     } else {
       if(reportMissingGenJet) {
-        LogError("produce()") << "Could not access genJet for jet " << jetSrc.label() << "(" << i << ")";
+        LogWarning("produce()") << "Could not access genJet for jet " << jetSrc.label() << "(" << i << ")";
       }
     }
 
