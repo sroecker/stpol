@@ -13,15 +13,22 @@ process.source = cms.Source("PoolSource",
     )
 )
 
-process.myProducerLabel = cms.EDProducer('CollectionSizeProducer'
+# Producers
+process.muonCollectionSizeProducer = cms.EDProducer('CollectionSizeProducer<reco::Muon>',
+	vectorTag = cms.InputTag("muons")
 )
+
+process.photonCollectionSizeProducer = cms.EDProducer('CollectionSizeProducer<reco::Photon>',
+	vectorTag = cms.InputTag("photons")
+)
+
+# Path
+process.p = cms.Path(process.muonCollectionSizeProducer
+                    *process.photonCollectionSizeProducer)
 
 process.out = cms.OutputModule("PoolOutputModule",
     fileName = cms.untracked.string('myOutputFile.root')
 )
-
-  
-process.p = cms.Path(process.myProducerLabel)
 
 process.e = cms.EndPath(process.out)
 

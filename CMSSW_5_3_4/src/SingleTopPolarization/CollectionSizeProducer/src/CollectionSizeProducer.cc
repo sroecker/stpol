@@ -30,10 +30,15 @@
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
+#include <DataFormats/Common/interface/View.h>
+#include <DataFormats/MuonReco/interface/Muon.h>
+#include <DataFormats/EgammaCandidates/interface/Photon.h>
+
 //
 // class declaration
 //
 
+template<class T>
 class CollectionSizeProducer : public edm::EDProducer {
    public:
       explicit CollectionSizeProducer(const edm::ParameterSet&);
@@ -52,6 +57,7 @@ class CollectionSizeProducer : public edm::EDProducer {
       virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
 
       // ----------member data ---------------------------
+      edm::InputTag vectorTag;
 };
 
 //
@@ -66,8 +72,11 @@ class CollectionSizeProducer : public edm::EDProducer {
 //
 // constructors and destructor
 //
-CollectionSizeProducer::CollectionSizeProducer(const edm::ParameterSet& iConfig)
+template<class T>
+CollectionSizeProducer<T>::CollectionSizeProducer(const edm::ParameterSet& iConfig)
 {
+	vectorTag = iConfig.getParameter<edm::InputTag>("vectorTag");
+	produces<int>();
    //register your products
 /* Examples
    produces<ExampleData2>();
@@ -83,7 +92,8 @@ CollectionSizeProducer::CollectionSizeProducer(const edm::ParameterSet& iConfig)
 }
 
 
-CollectionSizeProducer::~CollectionSizeProducer()
+template<class T>
+CollectionSizeProducer<T>::~CollectionSizeProducer()
 {
  
    // do anything here that needs to be done at desctruction time
@@ -97,66 +107,58 @@ CollectionSizeProducer::~CollectionSizeProducer()
 //
 
 // ------------ method called to produce the data  ------------
-void
-CollectionSizeProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
+template<class T>
+void CollectionSizeProducer<T>::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-   using namespace edm;
-/* This is an event example
-   //Read 'ExampleData' from the Event
-   Handle<ExampleData> pIn;
-   iEvent.getByLabel("example",pIn);
-
-   //Use the ExampleData to create an ExampleData2 which 
-   // is put into the Event
-   std::auto_ptr<ExampleData2> pOut(new ExampleData2(*pIn));
-   iEvent.put(pOut);
-*/
-
-/* this is an EventSetup example
-   //Read SetupData from the SetupRecord in the EventSetup
-   ESHandle<SetupData> pSetup;
-   iSetup.get<SetupRecord>().get(pSetup);
-*/
+   edm::Handle< edm::View<T> > vector;
+   iEvent.getByLabel(vectorTag, vector);
+	
+   std::auto_ptr<int> outCount(new int(vector->size()));
+   iEvent.put(outCount);
+   
+   //std::cout << "Count: " << *outCount << std::endl;
+   //std::cout << "Count: " << (vector->size()) << std::endl;
+   //LogDebug("Count: ") << vector->size();
 }
 
 // ------------ method called once each job just before starting event loop  ------------
-void 
-CollectionSizeProducer::beginJob()
+template<class T>
+void CollectionSizeProducer<T>::beginJob()
 {
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
-void 
-CollectionSizeProducer::endJob() {
+template<class T>
+void CollectionSizeProducer<T>::endJob() {
 }
 
 // ------------ method called when starting to processes a run  ------------
-void 
-CollectionSizeProducer::beginRun(edm::Run&, edm::EventSetup const&)
+template<class T>
+void CollectionSizeProducer<T>::beginRun(edm::Run&, edm::EventSetup const&)
 {
 }
 
 // ------------ method called when ending the processing of a run  ------------
-void 
-CollectionSizeProducer::endRun(edm::Run&, edm::EventSetup const&)
+template<class T>
+void CollectionSizeProducer<T>::endRun(edm::Run&, edm::EventSetup const&)
 {
 }
 
 // ------------ method called when starting to processes a luminosity block  ------------
-void 
-CollectionSizeProducer::beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&)
+template<class T>
+void CollectionSizeProducer<T>::beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&)
 {
 }
 
 // ------------ method called when ending the processing of a luminosity block  ------------
-void 
-CollectionSizeProducer::endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&)
+template<class T>
+void CollectionSizeProducer<T>::endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&)
 {
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
-void
-CollectionSizeProducer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
+template<class T>
+void CollectionSizeProducer<T>::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
   //The following says we do not know what parameters are allowed so do no validation
   // Please change this to state exactly what you do use, even if it is no parameters
   edm::ParameterSetDescription desc;
@@ -165,4 +167,8 @@ CollectionSizeProducer::fillDescriptions(edm::ConfigurationDescriptions& descrip
 }
 
 //define this as a plug-in
-DEFINE_FWK_MODULE(CollectionSizeProducer);
+//DEFINE_FWK_MODULE(CollectionSizeProducer);
+DEFINE_FWK_MODULE(CollectionSizeProducer<reco::Muon>);
+DEFINE_FWK_MODULE(CollectionSizeProducer<reco::Photon>);
+//typedef CollectionSizeProducer<reco::Muon> MuonCollectionSizeProducer;
+//DEFINE_FWK_MODULE(MuonCollectionSizeProducer);
