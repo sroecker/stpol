@@ -1,8 +1,8 @@
 Single top polarization analysis
 =====
 
-SETUP
-=====
+#SETUP
+
 0. Make sure you have sourced cmsset
 
 >source /cvmfs/cms.cern.ch/cmsset_default.sh
@@ -11,8 +11,8 @@ SETUP
 
 >. ./setup.sh
 
-ANALYSIS PATHWAY
-=====
+#ANALYSIS PATHWAY
+
 The generic analysis pathway is as follows, all the relevant *.py files are in $CMSSW_BASE/src/SingleTopPolarization/Analysis/python/:
 
 0. *selection_step1_cfg.py* for initial event skimming and slimming (both optional), PF2PAT sequence and object ID
@@ -20,8 +20,8 @@ The generic analysis pathway is as follows, all the relevant *.py files are in $
 
 For convenience, the steps have been wrapped as methods that are called from the files *step1_cfg.py* and *step2_cfg.py*.
 
-SYNC INPUT FILES
-=====
+#SYNC INPUT FILES
+
 t-channel (/T_t-channel_TuneZ2star_8TeV-powheg-tauola/Summer12-PU_S7_START52_V9-v1/AODSIM)
 
 >/hdfs/local/stpol/sync2012/FCE664EC-E79B-E111-8B06-00266CF2507C.root (1 runs, 18 lumis, 5279 events, 2261976796 bytes)
@@ -30,8 +30,8 @@ t-channel (/T_t-channel_TuneZ2star_8TeV-powheg-tauola/Summer12_DR53X-PU_S10_STAR
 
 >/hdfs/local/stpol/sync2012/FEFF01BD-87DC-E111-BC9E-003048678F8E.root (1 runs, 40 lumis, 11789 events, 4271759218 bytes)
 
-DEBUGGING
-=====
+#DEBUGGING
+
 Compile the code using the following command to enable LogDebug and related debugging symbols
 >scram b -j8 USER_CXXFLAGS="-DEDM_ML_DEBUG"
 
@@ -41,9 +41,10 @@ Check for memory errors using valgrind:
 
 The most important memory errors are in the end of vglog.out
 
-RUNNING
-=====
+#RUNNING
 
-TTBar estimation
-***
->cmsRun runconfs/step2_MC_3J_1T_cfg.py inputFiles_load=fileLists/TTBar.txt maxEvents=10000 outputFile=test.root
+##TTBar estimation
+The goal is to select a ttbar enriched region and compare the distribution of some interesting variable to data.
+>cmsRun runconfs/step2_MC_3J_1T_cfg.py inputFiles_load=fileLists/TTBar.txt maxEvents=10000 outputFile=stpol_TTBar_3J1T.root
+
+This will give you *stpol_TTBar_3J1T_trees.root* which contain the trees for the ttbar-enriched region.
