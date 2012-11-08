@@ -1,7 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 import SingleTopPolarization.Analysis.eventCounting as eventCounting
 
-def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False, doDebug=False, doMuon=True, doElectron=True):
+def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False, doDebug=False, doMuon=True, doElectron=True, channel="sig"):
     process = cms.Process("STPOLSEL2")
     eventCounting.countProcessed(process)
 
@@ -260,7 +260,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
     from SingleTopPolarization.Analysis.hlt_step2_cfi import HLTSetup
     HLTSetup(process, isMC, filterHLT)
 
-    if isMC:
+    if isMC and channel=="sig":
         from SingleTopPolarization.Analysis.partonStudy_step2_cfi import PartonStudySetup
         PartonStudySetup(process)
         process.partonPath = cms.Path(process.partonStudyTrueSequence)
@@ -271,12 +271,12 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
 
     if doMuon:
         from SingleTopPolarization.Analysis.muons_step2_cfi import MuonPath
-        MuonPath(process, isMC)
+        MuonPath(process, isMC, channel)
         process.muPath.insert(process.muPath.index(process.oneIsoMu)+1, process.goodSignalLeptons)
 
     if doElectron:
         from SingleTopPolarization.Analysis.electrons_step2_cfi import ElectronPath
-        ElectronPath(process, isMC)
+        ElectronPath(process, isMC, channel)
         process.muPath.insert(process.muPath.index(process.oneIsoEle)+1, process.goodSignalLeptons)
 
     process.treePath = cms.Path(process.treeSequence)
@@ -322,5 +322,6 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
         fileName=cms.string(outFile.replace(".root", "_trees.root")),
     )
     print "Step2 configured"
+    print "isMC: %s" % str(isMC)
     print "Running paths: %s" % str(process.paths)
     return process
