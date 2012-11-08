@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-def JetSetup(process, isMC, doDebug, bTag="combinedSecondaryVertexBJetTags", bTagCut=0.679):
+def JetSetup(process, isMC, doDebug, bTag="combinedSecondaryVertexBJetTags", bTagCut=0.679, nJets=2, nBTags=1):
     if isMC:
         jetCut = 'userFloat("pt_smear") > 40.'
     else:
@@ -41,6 +41,7 @@ def JetSetup(process, isMC, doDebug, bTag="combinedSecondaryVertexBJetTags", bTa
         cut=cms.string(bTagCutStr)
     )
 
+    #invert the b-tag cut
     process.untaggedJets = cms.EDFilter(
         "CandViewSelector",
         src=cms.InputTag("goodJets"),
@@ -58,16 +59,16 @@ def JetSetup(process, isMC, doDebug, bTag="combinedSecondaryVertexBJetTags", bTa
     process.nJets = cms.EDFilter(
         "PATCandViewCountFilter",
         src=cms.InputTag("goodJets"),
-        minNumber=cms.uint32(2),
-        maxNumber=cms.uint32(2),
+        minNumber=cms.uint32(nJets),
+        maxNumber=cms.uint32(nJets),
     )
 
     #Require exactly M bTags of the given type
     process.mBTags = cms.EDFilter(
         "PATCandViewCountFilter",
         src=cms.InputTag("btaggedJets"),
-        minNumber=cms.uint32(1),
-        maxNumber=cms.uint32(1),
+        minNumber=cms.uint32(nBTags),
+        maxNumber=cms.uint32(nBTags),
     )
 
     process.jetSequence = cms.Sequence(
