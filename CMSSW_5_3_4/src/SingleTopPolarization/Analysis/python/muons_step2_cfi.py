@@ -77,13 +77,13 @@ def MuonSetup(process, isMC, muonSrc="muonsWithIso"):
         max=cms.double(9999)
     )
 
-    process.recoNuProducerMu = cms.EDProducer('ReconstructedNeutrinoProducer',
+    process.recoNuProducerMu = cms.EDProducer('ClassicReconstructedNeutrinoProducer',
         leptonSrc=cms.InputTag("goodSignalMuons"),
         bjetSrc=cms.InputTag("btaggedJets"),
         metSrc=cms.InputTag("patMETs"),
     )
 
-def MuonPath(process, isMC):
+def MuonPath(process, isMC, channel="sig"):
     process.muPathPreCount = cms.EDProducer("EventCountProducer")
 
     process.efficiencyAnalyzerMu = cms.EDAnalyzer('EfficiencyAnalyzer'
@@ -143,9 +143,9 @@ def MuonPath(process, isMC):
         process.efficiencyAnalyzerMu
     )
     if isMC:
-        #in MC we need to smear the reconstucted jet pt, E
         process.muPath.insert(process.muPath.index(process.noPUJets)+1, process.smearedJets)
 
+    if isMC and channel=="sig":
         #process.muPath.insert(0, process.partonStudyTrueSequence)
         process.muPath.insert(
             process.muPath.index(process.cosThetaProducerMu)+1,
