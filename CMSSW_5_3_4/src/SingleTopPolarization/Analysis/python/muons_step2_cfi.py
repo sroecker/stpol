@@ -121,8 +121,9 @@ def MuonPath(process, isMC, channel="sig"):
         process.looseEleVetoMu *
 
         #Do PU-jet cleaning, and select 2 good jets
-        process.noPUJets *
-        process.goodJets *
+        #process.noPUJets *
+        #process.goodJets *
+        process.jetSequence *
         process.nJets *
 
         #Select mu and MET invariant transverse mass
@@ -133,8 +134,8 @@ def MuonPath(process, isMC, channel="sig"):
         process.recoNuProducerMu *
 
         #Select b-tagged jets and events with ==1 btag
-        process.btaggedJets *
-        process.untaggedJets *
+        #process.btaggedJets *
+        #process.untaggedJets *
         process.mBTags *
 
         #Reconstruct the top quark and calculate the cosTheta* variable
@@ -142,8 +143,8 @@ def MuonPath(process, isMC, channel="sig"):
         process.cosThetaProducerMu *
         process.efficiencyAnalyzerMu
     )
-    if isMC:
-        process.muPath.insert(process.muPath.index(process.noPUJets)+1, process.smearedJets)
+    #if isMC:
+    #    process.muPath.insert(process.muPath.index(process.noPUJets)+1, process.smearedJets)
 
     if isMC and channel=="sig":
         #process.muPath.insert(0, process.partonStudyTrueSequence)

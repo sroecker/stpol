@@ -47,6 +47,13 @@ def JetSetup(process, isMC, doDebug, bTag="combinedSecondaryVertexBJetTags", bTa
         cut=cms.string(bTagCutStr.replace(">=", "<"))
     )
 
+    #Select the most forward untagged jet by absolute eta
+    process.fwdMostLightJet = cms.EDFilter(
+        'LargestAbsEtaCandViewProducer',
+        src = cms.InputTag("untaggedJets"),
+        maxNumber = cms.uint32(1)
+    )
+
     #Require exactly N jets
     process.nJets = cms.EDFilter(
         "PATCandViewCountFilter",
@@ -62,3 +69,14 @@ def JetSetup(process, isMC, doDebug, bTag="combinedSecondaryVertexBJetTags", bTa
         minNumber=cms.uint32(1),
         maxNumber=cms.uint32(1),
     )
+
+    process.jetSequence = cms.Sequence(
+      process.noPUJets *
+      process.goodJets *
+      process.btaggedJets *
+      process.untaggedJets *
+      process.fwdMostLightJet
+    )
+
+    if isMC:
+        process.jetSequence.insert(process.jetSequence.index(process.noPUJets)+1, process.smearedJets)
