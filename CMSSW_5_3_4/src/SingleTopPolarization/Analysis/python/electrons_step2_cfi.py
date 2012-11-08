@@ -13,7 +13,7 @@ def ElectronSetup(process, isMC):
 
 	goodSignalElectronCut = goodElectronCut
 	goodSignalElectronCut += '&& userFloat("rhoCorrRelIso") < 0.1'
-	goodSignalElectronCut += '&& abs(userFloat("dxy")) < 0.2'
+	goodSignalElectronCut += '&& abs(userFloat("dxy")) < 0.02'
 	goodSignalElectronCut += '&& userInt("gsfTrack_trackerExpectedHitsInner_numberOfHits") <= 0'
 
 	goodQCDElectronCut = goodElectronCut
