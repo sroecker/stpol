@@ -48,6 +48,8 @@
 #include <gsl/gsl_poly.h>
 #include <gsl/gsl_complex.h>
 
+
+template <const int solStrategy>
 class ReconstructedNeutrinoProducer : public edm::EDProducer {
    public:
       explicit ReconstructedNeutrinoProducer(const edm::ParameterSet&);
@@ -82,8 +84,9 @@ class ReconstructedNeutrinoProducer : public edm::EDProducer {
 
       // ----------member data ---------------------------
 };
-const long double ReconstructedNeutrinoProducer::mW = 80.399;
 
+template <const int solStrategy>
+const long double ReconstructedNeutrinoProducer<solStrategy>::mW = 80.399;
 //
 // constants, enums and typedefs
 //
@@ -96,7 +99,8 @@ const long double ReconstructedNeutrinoProducer::mW = 80.399;
 //
 // constructors and destructor
 //
-ReconstructedNeutrinoProducer::ReconstructedNeutrinoProducer(const edm::ParameterSet& iConfig)
+template <const int solStrategy>
+ReconstructedNeutrinoProducer<solStrategy>::ReconstructedNeutrinoProducer(const edm::ParameterSet& iConfig)
 : outName("")
 {
   leptonSrc = iConfig.getParameter<edm::InputTag>("leptonSrc");
@@ -109,7 +113,8 @@ ReconstructedNeutrinoProducer::ReconstructedNeutrinoProducer(const edm::Paramete
 }
 
 
-ReconstructedNeutrinoProducer::~ReconstructedNeutrinoProducer()
+template <const int solStrategy>
+ReconstructedNeutrinoProducer<solStrategy>::~ReconstructedNeutrinoProducer()
 {
  
    // do anything here that needs to be done at desctruction time
@@ -117,12 +122,13 @@ ReconstructedNeutrinoProducer::~ReconstructedNeutrinoProducer()
 
 }
 
-float ReconstructedNeutrinoProducer::p_Nu_z(const reco::Candidate& chLepton, const reco::Candidate& met) {
+template <const int solStrategy>
+float ReconstructedNeutrinoProducer<solStrategy>::p_Nu_z(const reco::Candidate& chLepton, const reco::Candidate& met) {
 
   const auto& lp4 = chLepton.p4();
   const auto& metp4 = met.p4();
   
-  float Lambda = std::pow(ReconstructedNeutrinoProducer::mW, 2) / 2 + lp4.px()*metp4.px() + lp4.py()*metp4.py();
+  float Lambda = std::pow(ReconstructedNeutrinoProducer<solStrategy>::mW, 2) / 2 + lp4.px()*metp4.px() + lp4.py()*metp4.py();
   LogDebug("p_Nu_z() MET kinematics") << "MET: px (" << metp4.Px() << ") py (" << metp4.Py() << ") pt (" << metp4.Pt() << ")";
   LogDebug("p_Nu_z() lepton kinematics") << "lepton: px (" << lp4.Px() << ") py (" << lp4.Py() << ") pz (" << lp4.Pz() << ") E (" << lp4.E() << ")";
   float Delta = std::pow(lp4.E(), 2) * (std::pow(Lambda, 2) - std::pow(lp4.Pt()*metp4.Pt(), 2) );
@@ -148,7 +154,8 @@ float ReconstructedNeutrinoProducer::p_Nu_z(const reco::Candidate& chLepton, con
   return p_nu_z;
 }
 
-float ReconstructedNeutrinoProducer::p_Nu_z_mW_rescale(const reco::Candidate& chLepton, const reco::Candidate& met) {
+template <const int solStrategy>
+float ReconstructedNeutrinoProducer<solStrategy>::p_Nu_z_mW_rescale(const reco::Candidate& chLepton, const reco::Candidate& met) {
   const auto& lp4 = chLepton.p4();
   const auto& metp4 = met.p4();
 
@@ -163,7 +170,8 @@ float ReconstructedNeutrinoProducer::p_Nu_z_mW_rescale(const reco::Candidate& ch
   return p_nu_z;
 }
 
-const reco::CompositeCandidate::LorentzVector ReconstructedNeutrinoProducer::nuMomentum_complex_cubic(const reco::Candidate& chLepton, const reco::Candidate& met, double& Delta_) {
+template <const int solStrategy>
+const reco::CompositeCandidate::LorentzVector ReconstructedNeutrinoProducer<solStrategy>::nuMomentum_complex_cubic(const reco::Candidate& chLepton, const reco::Candidate& met, double& Delta_) {
   LogDebug("p_Nu_z_complex_cubic()") << "Solving complex root problem with cubic equation";
   /*
    * 
@@ -179,7 +187,7 @@ const reco::CompositeCandidate::LorentzVector ReconstructedNeutrinoProducer::nuM
   long double metPx = met.p4().Px();
   long double metPy = met.p4().Py();
   long double metPt = met.p4().Pt();
-  const long double & mW = ReconstructedNeutrinoProducer::mW;
+  const long double & mW = ReconstructedNeutrinoProducer<solStrategy>::mW;
  
   long double b = -3.0*lepPy*mW / lepPt;
   //long double c = 2.0*std::pow(mW*lepPy, (long double)2) / std::pow(lepPt, (long double)2) + std::pow(mW, (long double)2) - 
@@ -265,41 +273,73 @@ const reco::CompositeCandidate::LorentzVector ReconstructedNeutrinoProducer::nuM
   nuVec.SetPz(p_nu_z);
   nuVec.SetE(TMath::Sqrt(nuVec.Px()*nuVec.Px() + nuVec.Py()*nuVec.Py() + nuVec.Pz()*nuVec.Pz()));
 
-  reco::CompositeCandidate::LorentzVector nuVec2 = reco::CompositeCandidate::LorentzVector(nuVec);
-  nuVec2.SetPz(-nuVec2.Pz());
-  LogDebug("p_Nu_z_complex_cubic()") << "eta1: " << nuVec.eta() << " eta2: " << nuVec2.eta();
+ // reco::CompositeCandidate::LorentzVector nuVec2 = reco::CompositeCandidate::LorentzVector(nuVec);
+ // nuVec2.SetPz(-nuVec2.Pz());
+ // LogDebug("p_Nu_z_complex_cubic()") << "eta1: " << nuVec.eta() << " eta2: " << nuVec2.eta();
 
   return (const reco::CompositeCandidate::LorentzVector)nuVec;
 }
 
-const reco::CompositeCandidate::LorentzVector ReconstructedNeutrinoProducer::nuMomentum(const reco::Candidate& chLepton, const reco::Candidate& met, edm::Event& iEvent) {
+template <const int solStrategy>
+const reco::CompositeCandidate::LorentzVector ReconstructedNeutrinoProducer<solStrategy>::nuMomentum(const reco::Candidate& chLepton, const reco::Candidate& met, edm::Event& iEvent) {
   const double& nan = TMath::QuietNaN();
   reco::CompositeCandidate::LorentzVector nuVec(nan, nan, nan, nan);
   double Delta = 0;
   int whichSol = -1;
 
-  float p_nu_z = p_Nu_z(chLepton, met);
-  if (p_nu_z==p_nu_z) { //real root
-    nuVec.SetPx(met.p4().Px());
-    nuVec.SetPy(met.p4().Py());
-    nuVec.SetPz(p_nu_z);
-    nuVec.SetE(TMath::Sqrt(nuVec.Px()*nuVec.Px() + nuVec.Py()*nuVec.Py() + nuVec.Pz()*nuVec.Pz()));
-    whichSol = 0;
-  } else { //Complex root
+ // float p_nu_z = p_Nu_z(chLepton, met);
+ // if (p_nu_z==p_nu_z) { //real root
+ //   nuVec.SetPx(met.p4().Px());
+ //   nuVec.SetPy(met.p4().Py());
+ //   nuVec.SetPz(p_nu_z);
+ //   nuVec.SetE(TMath::Sqrt(nuVec.Px()*nuVec.Px() + nuVec.Py()*nuVec.Py() + nuVec.Pz()*nuVec.Pz()));
+ //   whichSol = 0;
+ // } else { //Complex root
+ //   nuVec = nuMomentum_complex_cubic(chLepton, met, Delta);
+ //   whichSol = 1;
+ // }
+ //
+  
+  //Always use complex solution
+  if(solStrategy == 2) {
     nuVec = nuMomentum_complex_cubic(chLepton, met, Delta);
-    whichSol = 1;
+    whichSol = 2;
+  }
+
+  //Use real+complex solution
+  else if(solStrategy==1 || solStrategy==0) {
+ 
+    float p_nu_z = p_Nu_z(chLepton, met);
+  
+    if (p_nu_z==p_nu_z) { //real root
+      nuVec.SetPx(met.p4().Px());
+      nuVec.SetPy(met.p4().Py());
+      nuVec.SetPz(p_nu_z);
+      nuVec.SetE(TMath::Sqrt(nuVec.Px()*nuVec.Px() + nuVec.Py()*nuVec.Py() + nuVec.Pz()*nuVec.Pz()));
+      whichSol = 0;
+    } else { //Complex root
+      if (solStrategy==0) { //mW rescaling
+        edm::LogError("nuMomentum()") << "solStrategy==0 is not implemented!";
+        assert(true);
+      }
+      else if(solStrategy == 1) { //Cubic equation
+        nuVec = nuMomentum_complex_cubic(chLepton, met, Delta);
+        whichSol = 1;
+      }
+    }
   }
   iEvent.put(std::auto_ptr<double>(new double(Delta)), "Delta");
   iEvent.put(std::auto_ptr<int>(new int(whichSol)), "solType");
-  LogDebug("nuMomentum()") << "Finished nu momentum calculation";
+  LogDebug("nuMomentum()") << "Finished nu momentum calculation using algo " << whichSol;
 
   return nuVec;
 }
 
 
 // ------------ method called to produce the data  ------------
+template <const int solStrategy>
 void
-ReconstructedNeutrinoProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
+ReconstructedNeutrinoProducer<solStrategy>::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
    using namespace edm;
 
@@ -355,43 +395,50 @@ ReconstructedNeutrinoProducer::produce(edm::Event& iEvent, const edm::EventSetup
 }
 
 // ------------ method called once each job just before starting event loop  ------------
+template <const int solStrategy>
 void 
-ReconstructedNeutrinoProducer::beginJob()
+ReconstructedNeutrinoProducer<solStrategy>::beginJob()
 {
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
+template <const int solStrategy>
 void 
-ReconstructedNeutrinoProducer::endJob() {
+ReconstructedNeutrinoProducer<solStrategy>::endJob() {
 }
 
 // ------------ method called when starting to processes a run  ------------
+template <const int solStrategy>
 void 
-ReconstructedNeutrinoProducer::beginRun(edm::Run&, edm::EventSetup const&)
+ReconstructedNeutrinoProducer<solStrategy>::beginRun(edm::Run&, edm::EventSetup const&)
 {
 }
 
 // ------------ method called when ending the processing of a run  ------------
+template <const int solStrategy>
 void 
-ReconstructedNeutrinoProducer::endRun(edm::Run&, edm::EventSetup const&)
+ReconstructedNeutrinoProducer<solStrategy>::endRun(edm::Run&, edm::EventSetup const&)
 {
 }
 
 // ------------ method called when starting to processes a luminosity block  ------------
+template <const int solStrategy>
 void 
-ReconstructedNeutrinoProducer::beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&)
+ReconstructedNeutrinoProducer<solStrategy>::beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&)
 {
 }
 
 // ------------ method called when ending the processing of a luminosity block  ------------
+template <const int solStrategy>
 void 
-ReconstructedNeutrinoProducer::endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&)
+ReconstructedNeutrinoProducer<solStrategy>::endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&)
 {
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
+template <const int solStrategy>
 void
-ReconstructedNeutrinoProducer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
+ReconstructedNeutrinoProducer<solStrategy>::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
   //The following says we do not know what parameters are allowed so do no validation
   // Please change this to state exactly what you do use, even if it is no parameters
   edm::ParameterSetDescription desc;
@@ -400,4 +447,6 @@ ReconstructedNeutrinoProducer::fillDescriptions(edm::ConfigurationDescriptions& 
 }
 
 //define this as a plug-in
-DEFINE_FWK_MODULE(ReconstructedNeutrinoProducer);
+
+typedef ReconstructedNeutrinoProducer<1> ClassicReconstructedNeutrinoProducer;
+DEFINE_FWK_MODULE(ClassicReconstructedNeutrinoProducer);
