@@ -133,7 +133,8 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
                     ["Eta", "eta"],
                     ["Phi", "phi"],
                     ["Mass", "mass"],
-                    ["bDiscriminator", "bDiscriminator('combinedSecondaryVertexBJetTags')"]
+                    ["bDiscriminator", "bDiscriminator('combinedSecondaryVertexBJetTags')"],
+                    ["rms", "userFloat('rms')"]
                 ]
             ),
             treeCollection(
@@ -143,7 +144,8 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
                     ["Eta", "eta"],
                     ["Phi", "phi"],
                     ["Mass", "mass"],
-                    ["bDiscriminator", "bDiscriminator('combinedSecondaryVertexBJetTags')"]
+                    ["bDiscriminator", "bDiscriminator('combinedSecondaryVertexBJetTags')"],
+                    ["rms", "userFloat('rms')"]
                 ]
             )
         )

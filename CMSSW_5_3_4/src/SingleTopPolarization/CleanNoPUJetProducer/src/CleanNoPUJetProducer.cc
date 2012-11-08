@@ -60,6 +60,7 @@ class CleanNoPUJetProducer : public edm::EDProducer {
       const edm::InputTag jetSrc;
       const edm::InputTag jetPUIdMVASrc;
       const edm::InputTag jetPUIdFlagSrc;
+      const edm::InputTag jetPUIdVarsSrc;
 
       // ----------member data ---------------------------
 };
@@ -80,19 +81,9 @@ CleanNoPUJetProducer::CleanNoPUJetProducer(const edm::ParameterSet& iConfig)
 : jetSrc(iConfig.getParameter<edm::InputTag>("jetSrc"))
 , jetPUIdMVASrc(iConfig.getParameter<edm::InputTag>("PUidMVA"))
 , jetPUIdFlagSrc(iConfig.getParameter<edm::InputTag>("PUidFlag"))
+, jetPUIdVarsSrc(iConfig.getParameter<edm::InputTag>("PUidVars"))
 {
   produces<std::vector<pat::Jet> >();
-   //register your products
-/* Examples
-   produces<ExampleData2>();
-
-   //if do put with a label
-   produces<ExampleData2>("label");
- 
-   //if you want to put into the Run
-   produces<ExampleData2,InRun>();
-*/
-   //now do what ever other initialization is needed
   
 }
 
@@ -118,46 +109,37 @@ CleanNoPUJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    Handle<View<pat::Jet> > jets;
    Handle<ValueMap<float> > mvaIDs;
    Handle<ValueMap<int> > flags;
+   Handle<ValueMap<StoredPileupJetIdentifier> > jetIDs;
+
    iEvent.getByLabel(jetSrc, jets);
    iEvent.getByLabel(jetPUIdMVASrc, mvaIDs);
    iEvent.getByLabel(jetPUIdFlagSrc, flags);
+   iEvent.getByLabel(jetPUIdVarsSrc, jetIDs);
 
    std::auto_ptr<std::vector<pat::Jet> > outJets(new std::vector<pat::Jet>());
-
 
    for ( uint i = 0; i < jets->size(); ++i ) {
     const pat::Jet& jet = jets->at(i);
 
-    //pat::Jet* outJet = jet.clone();
+    //Get the values from the valueMaps
     float mva = (*mvaIDs)[jets->refAt(i)];
     int idflag = (*flags)[jets->refAt(i)];
+    const StoredPileupJetIdentifier& id = (*jetIDs)[jets->refAt(i)];
+
     LogDebug("produce()") << "jet pt: " << jet.pt() << " eta: " << jet.eta() << " mvaID: " << mva;
     if( PileupJetIdentifier::passJetId( idflag, PileupJetIdentifier::kLoose ) ) {
-      edm::LogInfo("produce()") << " pass loose wp";
+      LogDebug("produce()") << " pass loose wp";
       outJets->push_back(jet);
+
+      pat::Jet& jet = outJets->back();
+      jet.addUserFloat("rms", id.RMS());
+
     } else {
-      edm::LogInfo("produce()") << " fail loose wp";
+      LogDebug("produce()") << " fail loose wp";
     }
-    //delete outJet;
    }
    iEvent.put(outJets);
-/* This is an event example
-   //Read 'ExampleData' from the Event
-   Handle<ExampleData> pIn;
-   iEvent.getByLabel("example",pIn);
-
-   //Use the ExampleData to create an ExampleData2 which 
-   // is put into the Event
-   std::auto_ptr<ExampleData2> pOut(new ExampleData2(*pIn));
-   iEvent.put(pOut);
-*/
-
-/* this is an EventSetup example
-   //Read SetupData from the SetupRecord in the EventSetup
-   ESHandle<SetupData> pSetup;
-   iSetup.get<SetupRecord>().get(pSetup);
-*/
- 
+    
 }
 
 // ------------ method called once each job just before starting event loop  ------------

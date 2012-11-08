@@ -19,6 +19,7 @@ def JetSetup(process, isMC, doDebug, bTag="combinedSecondaryVertexBJetTags", bTa
         jetSrc = cms.InputTag("selectedPatJets"),
         PUidMVA = cms.InputTag("puJetMva", "fullDiscriminant", "PAT"),
         PUidFlag = cms.InputTag("puJetMva", "fullId", "PAT"),
+        PUidVars = cms.InputTag("puJetId", "", "PAT"),
     )
 
     if isMC:
