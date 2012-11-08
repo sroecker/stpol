@@ -40,3 +40,10 @@ Check for memory errors using valgrind:
 >valgrind --tool=memcheck `cmsvgsupp` --leak-check=yes --show-reachable=yes --num-callers=20 --track-fds=yes cmsRun your_cfg.py >& vglog.out &
 
 The most important memory errors are in the end of vglog.out
+
+RUNNING
+=====
+
+TTBar estimation
+***
+>cmsRun runconfs/step2_MC_3J_1T_cfg.py inputFiles_load=fileLists/TTBar.txt maxEvents=10000 outputFile=test.root
