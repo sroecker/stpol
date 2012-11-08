@@ -82,13 +82,13 @@ def ElectronSetup(process, isMC):
         max=cms.double(9999999)
     )
 
-    process.recoNuProducerEle = cms.EDProducer('ReconstructedNeutrinoProducer',
+    process.recoNuProducerEle = cms.EDProducer('ClassicReconstructedNeutrinoProducer',
         leptonSrc=cms.InputTag("goodSignalLeptons"),
         bjetSrc=cms.InputTag("btaggedJets"),
         metSrc=cms.InputTag("goodMETs"),
     )
 
-def ElectronPath(process, isMC):
+def ElectronPath(process, isMC, channel):
     process.elePathPreCount = cms.EDProducer("EventCountProducer")
 
     process.efficiencyAnalyzerEle = cms.EDAnalyzer('EfficiencyAnalyzer'
@@ -158,4 +158,3 @@ def ElectronPath(process, isMC):
         "mBTags"
         ]
     )
-
