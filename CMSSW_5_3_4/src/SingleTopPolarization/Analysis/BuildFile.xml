@@ -5,3 +5,4 @@
 <use name="DataFormats/RecoCandidate"/>
 <use name="DataFormats/PatCandidates"/>
 
+<flags EDM_PLUGIN="1"/>

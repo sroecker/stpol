@@ -84,7 +84,8 @@ def JetSetup(process, isMC, doDebug, bTag="combinedSecondaryVertexBJetTags", bTa
       process.goodJets *
       process.btaggedJets *
       process.untaggedJets *
-      process.fwdMostLightJet
+      process.fwdMostLightJet *
+      process.highestBTagJet
     )
 
     if isMC:
