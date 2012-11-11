@@ -17,6 +17,6 @@ struct GreaterByAbsEta {
     return std::fabs(t1.eta())>std::fabs(t2.eta());
   }
 };
-typedef ObjectSelector< SortCollectionSelector< reco::CandidateView, GreaterByAbsEta<reco::Candidate> > > LargestAbsEtaCandViewProducer;
+typedef ObjectSelector<SortCollectionSelector<reco::CandidateView, GreaterByAbsEta<reco::Candidate> > > LargestAbsEtaCandViewProducer;
 DEFINE_FWK_MODULE(LargestAbsEtaCandViewProducer);
 

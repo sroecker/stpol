@@ -1,6 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 
 def JetSetup(process, isMC, doDebug, bTag="combinedSecondaryVertexBJetTags", bTagCut=0.679, nJets=2, nBTags=1):
+    print "Using %d jets, %d tags" % (nJets, nBTags)
     if isMC:
         jetCut = 'userFloat("pt_smear") > 40.'
     else:
@@ -54,6 +55,13 @@ def JetSetup(process, isMC, doDebug, bTag="combinedSecondaryVertexBJetTags", bTa
         src = cms.InputTag("untaggedJets"),
         maxNumber = cms.uint32(1)
     )
+
+    if bTag == "combinedSecondaryVertexBJetTags":
+        process.highestBTagJet = cms.EDFilter(
+            'LargestCSVDiscriminatorJetViewProducer',
+            src = cms.InputTag("btaggedJets"),
+            maxNumber = cms.uint32(1)
+        )
 
     #Require exactly N jets
     process.nJets = cms.EDFilter(
