@@ -149,6 +149,17 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
 				]
 			),
 			treeCollection(
+				cms.untracked.InputTag("highestBTagJet"), 1,
+				[
+					["Pt", "pt"],
+					["Eta", "eta"],
+					["Phi", "phi"],
+					["Mass", "mass"],
+					["bDiscriminator", "bDiscriminator('combinedSecondaryVertexBJetTags')"],
+					["rms", "userFloat('rms')"]
+				]
+			),
+			treeCollection(
 				cms.untracked.InputTag("btaggedJets"), 1,
 				[
 					["Pt", "pt"],
@@ -179,7 +190,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
 	process.treesCands = cms.EDAnalyzer('CandViewTreemakerAnalyzer',
 			collections = cms.untracked.VPSet(
 			treeCollection(
-				cms.untracked.InputTag("recoTopMu"), 1,
+				cms.untracked.InputTag("recoTop"), 1,
 				[
 					["Pt", "pt"],
 					["Eta", "eta"],
@@ -188,7 +199,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
 				]
 			),
 			treeCollection(
-				cms.untracked.InputTag("recoNuProducerMu"), 1,
+				cms.untracked.InputTag("recoNu"), 1,
 				[
 					["Pt", "pt"],
 					["Eta", "eta"],
@@ -272,7 +283,8 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
 
 	process.treesInt = cms.EDAnalyzer("IntTreemakerAnalyzer",
 		collections = cms.VInputTag(
-			cms.InputTag("recoNuProducerMu", "solType")
+			cms.InputTag("recoNuProducerMu", "solType"),
+			cms.InputTag("muonCount")
 		)
 	)
 
@@ -317,10 +329,10 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
 			 ),
 			outputCommands=cms.untracked.vstring(
 				'keep *',
-				'drop patElectrons_looseVetoElectrons__PAT',
-				'drop patMuons_looseVetoMuons__PAT',
-				'drop *_recoNuProducerEle_*_*',
-				'drop *_recoNuProducerMu_*_*',
+				#'drop patElectrons_looseVetoElectrons__PAT',
+				#'drop patMuons_looseVetoMuons__PAT',
+				#'drop *_recoNuProducerEle_*_*',
+				#'drop *_recoNuProducerMu_*_*',
 				#'drop *_topsFromMu_*_*',
 				#'drop *_topsFromEle_*_*',
 			)
