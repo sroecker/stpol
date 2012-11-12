@@ -285,6 +285,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
 		collections = cms.VInputTag(
 			cms.InputTag("recoNuProducerMu", "solType"),
 			cms.InputTag("muonCount")
+			cms.InputTag("electronCount")
 		)
 	)
 
