@@ -284,7 +284,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
 	process.treesInt = cms.EDAnalyzer("IntTreemakerAnalyzer",
 		collections = cms.VInputTag(
 			cms.InputTag("recoNuProducerMu", "solType"),
-			cms.InputTag("muonCount")
+			cms.InputTag("muonCount"),
 			cms.InputTag("electronCount")
 		)
 	)
