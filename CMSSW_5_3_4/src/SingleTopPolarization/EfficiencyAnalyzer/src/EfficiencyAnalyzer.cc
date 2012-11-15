@@ -69,7 +69,7 @@ class EfficiencyAnalyzer : public edm::EDAnalyzer {
       unsigned long processedEventCounter;
       unsigned long passedEventCounter;
       std::map <std::string, unsigned long> countMap;
-      std::set <std::string> trackedCounters;
+      std::vector <std::string> trackedCounters;
 
       std::map<std::string, std::vector<std::string>> histogrammableCounterNames;
 
@@ -99,7 +99,7 @@ EfficiencyAnalyzer::EfficiencyAnalyzer(const edm::ParameterSet& iConfig)
     {
         histogrammableCounterNames[s] = iConfig.getUntrackedParameter<std::vector<std::string>>(s);
         for(std::string& hn : histogrammableCounterNames[s]) {
-            trackedCounters.insert(hn);
+            trackedCounters.push_back(hn);
         }
         const char* histName = s.c_str();
         histograms[s] = fs->make<TH1I>(histName, histName, histogrammableCounterNames[s].size(), 0, histogrammableCounterNames[s].size() - 1);
