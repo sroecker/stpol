@@ -148,6 +148,12 @@ def ElectronPath(process, isMC, channel):
 		process.efficiencyAnalyzerEle
 	)
 
+	if isMC and channel=="sig":
+		process.elePath.insert(
+			process.elePath.index(process.topRecoSequenceEle)+1,
+			process.partonStudyCompareSequence
+		)
+
 	eventCounting.countAfter(process, process.elePath,
 		[
 		"stepHLTsyncEle",

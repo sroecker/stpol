@@ -61,7 +61,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
     )
 
     from SingleTopPolarization.Analysis.muons_step2_cfi import MuonSetup
-    MuonSetup(process, isMC)
+    MuonSetup(process, isMC, metType="MET")
 
     from SingleTopPolarization.Analysis.electrons_step2_cfi import ElectronSetup
     ElectronSetup(process, isMC)
@@ -261,7 +261,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
             cms.InputTag("cosThetaProducerTrueTopMu", "cosThetaLightJet"),
             cms.InputTag("cosThetaProducerTrueLeptonMu", "cosThetaLightJet"),
             cms.InputTag("cosThetaProducerTrueJetMu", "cosThetaLightJet"),
-            cms.InputTag("trueCosThetaProducerMu", "cosThetaLightJet"),
+            cms.InputTag("cosThetaProducerTrueAll", "cosThetaLightJet"),
 
 
             #Transverse mass of MET and lepton

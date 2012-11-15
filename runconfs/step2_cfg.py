@@ -1,5 +1,5 @@
 import sys
-import args
+from SingleTopPolarization.Analysis import args
 
 isMC = args.inArgs("mc")
 filterHLT = args.inArgs("hlt")

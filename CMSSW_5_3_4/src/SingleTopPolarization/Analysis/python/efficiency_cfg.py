@@ -25,7 +25,7 @@ process.efficiencyAnalyzer = cms.EDAnalyzer('EfficiencyAnalyzer'
 	"muPathLooseMuVetoMuPostCount", 
 	"muPathLooseEleVetoMuPostCount",
 	"muPathNJetsPostCount",
-	"muPathHasMuMETMTPostCount",
+	#"muPathMetMuSequencePostCount",
 	"muPathMBTagsPostCount"
 	]
 )
@@ -33,12 +33,12 @@ process.efficiencyAnalyzer = cms.EDAnalyzer('EfficiencyAnalyzer'
 	"singleTopPathStep1MuPreCount", 
 	"singleTopPathStep1ElePostCount", 
 	"elePathPreCount",
-	#"elePathStepHLTsyncPostCount",
+	"elePathStepHLTsyncPostCount",
 	"elePathOneIsoElePostCount", 
 	"elePathLooseEleVetoElePostCount", 
 	"elePathLooseMuVetoElePostCount",
 	"elePathNJetsPostCount",
-	"elePathHasMETPostCount",
+	#"elePathHasMETPostCount",
 	"elePathMBTagsPostCount"
 	]
 )
