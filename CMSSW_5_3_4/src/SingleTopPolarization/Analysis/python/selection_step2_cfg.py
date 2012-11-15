@@ -64,7 +64,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
     MuonSetup(process, isMC, metType="MET")
 
     from SingleTopPolarization.Analysis.electrons_step2_cfi import ElectronSetup
-    ElectronSetup(process, isMC)
+    ElectronSetup(process, isMC, doDebug=doDebug)
 
     process.goodSignalLeptons = cms.EDProducer(
          'CandRefCombiner',
@@ -283,8 +283,10 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
     process.treesInt = cms.EDAnalyzer("IntTreemakerAnalyzer",
         collections = cms.VInputTag(
             cms.InputTag("recoNuProducerMu", "solType"),
+            cms.InputTag("recoNuProducerEle ", "solType"),
             cms.InputTag("muonCount"),
-            cms.InputTag("electronCount")
+            cms.InputTag("electronCount"),
+            cms.InputTag("topCount")
         )
     )
 
@@ -313,7 +315,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
 
     if doElectron:
         from SingleTopPolarization.Analysis.electrons_step2_cfi import ElectronPath
-        ElectronPath(process, isMC, channel)
+        ElectronPath(process, isMC, channel, doDebug=doDebug)
         process.elePath.insert(process.elePath.index(process.oneIsoEle)+1, process.goodSignalLeptons)
 
     process.treePath = cms.Path(process.treeSequence)
