@@ -130,13 +130,6 @@ void
 GenParticleSelector::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
    //using namespace edm;
-
-
-// This is an event example
-   //Read 'ExampleData' from the Event
-   //Handle<GenParticle> pIn;
-   //iEvent.getByLabel("example",pIn);
-   //cout << "algus" << endl;
    count_siblings = 0;
    which_sibling = 0;
    s1_mother1 = s1_mother2 = s2_mother1 = s2_mother2 = 0;
@@ -202,12 +195,12 @@ GenParticleSelector::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
             for(int j2 = 0; j2 < n2; ++ j2) {
                const GenParticle* d2 = (GenParticle*)d->daughter( j2 );
                int dau2Id = d2->pdgId();
-               if(abs(dau2Id) == 13/* || abs(dau2Id) == 11*/){  //muon or electron
+               if(abs(dau2Id) == 13 || abs(dau2Id) == 11){  //muon or electron
                   //cout << "    " << dau2Id << endl;
                   //nst GenParticle* lepton = (GenParticle*)d2;
                   outLeptons->push_back(*d2);                  
                }
-               else if(abs(dau2Id) == 14/* || abs(dau2Id) == 11*/){  //mu-neutrino
+               else if(abs(dau2Id) == 14 || abs(dau2Id) == 11){  //mu-neutrino
                   //cout << "    " << dau2Id << endl;
                   //nst GenParticle* lepton = (GenParticle*)d2;
                   outNeutrinos->push_back(*d2);
