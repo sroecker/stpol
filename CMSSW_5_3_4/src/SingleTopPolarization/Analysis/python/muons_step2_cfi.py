@@ -51,6 +51,11 @@ def MuonSetup(process, isMC, muonSrc="muonsWithIso"):
 		maxNumber=cms.uint32(1),
 	)
 
+	process.muonCount = cms.EDProducer(
+		"CollectionSizeProducer<reco::Candidate>",
+        src = cms.InputTag("goodSignalMuons")
+	)
+
 	#in mu path we must have 1 loose muon (== THE isolated muon)
 	process.looseMuVetoMu = cms.EDFilter(
 		"PATCandViewCountFilter",
@@ -113,6 +118,7 @@ def MuonPath(process, isMC, channel="sig"):
 
 		#Select one isolated muon and veto additional loose muon/electron
 		process.goodSignalMuons *
+		process.muonCount *
 		process.goodQCDMuons *
 		process.looseVetoMuons *
 		process.oneIsoMu *

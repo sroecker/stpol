@@ -15,7 +15,7 @@ from HLTrigger.HLTfilters.hltHighLevel_cfi import *
 from PhysicsTools.PatAlgos.selectionLayer1.jetSelector_cfi import *
 
 
-def SingleTopStep1(process, isMC, doDebug=False, doSkimming=True, doSlimming=True, fileName=None, doMuon=True, doElectron=True):
+def SingleTopStep1(process, isMC, doDebug=False, doSkimming=True, doSlimming=True, doMuon=True, doElectron=True, onGrid=False):
 
   if doDebug:
       process.load("FWCore.MessageLogger.MessageLogger_cfi")
@@ -276,12 +276,11 @@ def SingleTopStep1(process, isMC, doDebug=False, doSkimming=True, doSlimming=Tru
 
     process.patPF2PATSequence.insert(-1, process.ecalLaserCorrFilter)
 
-  if fileName == None:
-    #VarParsing
+  if not onGrid:
     from SingleTopPolarization.Analysis.cmdlineParsing import enableCommandLineArguments
     enableCommandLineArguments(process)
   else:
-    process.out.fileName = fileName
+    process.out.fileName = "step1.root"
 
   if doSkimming:
     process.out.fileName.setValue(process.out.fileName.value().replace(".root", "_Skim.root"))

@@ -5,5 +5,5 @@
 <use name="DataFormats/Common" />
 <use name="DataFormats/MuonReco" />
 <use name="DataFormats/EgammaCandidates" />
-
+<use name="DataFormats/PatCandidates" />
 <flags EDM_PLUGIN="1"/>

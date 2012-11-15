@@ -29,9 +29,11 @@
 #include "FWCore/Framework/interface/MakerMacros.h"
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
+#include <DataFormats/Candidate/interface/Candidate.h>
 
 #include <DataFormats/Common/interface/View.h>
 #include <DataFormats/MuonReco/interface/Muon.h>
+#include <DataFormats/PatCandidates/interface/Muon.h>
 #include <DataFormats/EgammaCandidates/interface/Photon.h>
 
 //
@@ -57,7 +59,7 @@ class CollectionSizeProducer : public edm::EDProducer {
       virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
 
       // ----------member data ---------------------------
-      edm::InputTag vectorTag;
+      edm::InputTag src;
 };
 
 //
@@ -75,7 +77,7 @@ class CollectionSizeProducer : public edm::EDProducer {
 template<class T>
 CollectionSizeProducer<T>::CollectionSizeProducer(const edm::ParameterSet& iConfig)
 {
-	vectorTag = iConfig.getParameter<edm::InputTag>("vectorTag");
+	src = iConfig.getParameter<edm::InputTag>("src");
 	produces<int>();
    //register your products
 /* Examples
@@ -111,7 +113,7 @@ template<class T>
 void CollectionSizeProducer<T>::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
    edm::Handle< edm::View<T> > vector;
-   iEvent.getByLabel(vectorTag, vector);
+   iEvent.getByLabel(src, vector);
 	
    std::auto_ptr<int> outCount(new int(vector->size()));
    iEvent.put(outCount);
@@ -167,8 +169,7 @@ void CollectionSizeProducer<T>::fillDescriptions(edm::ConfigurationDescriptions&
 }
 
 //define this as a plug-in
-//DEFINE_FWK_MODULE(CollectionSizeProducer);
+DEFINE_FWK_MODULE(CollectionSizeProducer<reco::Candidate>);
+DEFINE_FWK_MODULE(CollectionSizeProducer<pat::Muon>);
 DEFINE_FWK_MODULE(CollectionSizeProducer<reco::Muon>);
 DEFINE_FWK_MODULE(CollectionSizeProducer<reco::Photon>);
-//typedef CollectionSizeProducer<reco::Muon> MuonCollectionSizeProducer;
-//DEFINE_FWK_MODULE(MuonCollectionSizeProducer);

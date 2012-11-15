@@ -35,4 +35,4 @@ def TopRecoSetup(process, leptonSource="goodSignal", bTagSource="highestBTagJet"
       process.recoNu *
 	  process.recoTop *
 	  process.cosTheta
-	)	
+	)

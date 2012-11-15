@@ -45,6 +45,12 @@ def ElectronSetup(process, isMC):
 		maxNumber=cms.uint32(1),
 	)
 
+	process.electronCount = cms.EDProducer(
+		"CollectionSizeProducer<reco::Candidate>",
+		src = cms.InputTag("goodSignalElectrons")
+	)
+
+
 	#In Electron path we must have 1 loose electron (== the isolated electron)
 	process.looseEleVetoEle = cms.EDFilter(
 		"PATCandViewCountFilter",
@@ -118,6 +124,7 @@ def ElectronPath(process, isMC, channel):
 		process.stepHLTsyncEle *
 
 		process.goodSignalElectrons *
+		process.electronCount *
 		process.goodQCDElectrons *
 		process.looseVetoElectrons *
 		process.oneIsoEle *
