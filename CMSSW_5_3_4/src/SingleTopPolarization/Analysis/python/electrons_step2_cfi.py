@@ -1,7 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 import SingleTopPolarization.Analysis.eventCounting as eventCounting
 
-def ElectronSetup(process, isMC):
+def ElectronSetup(process, isMC, mvaCut=0.1, doDebug=False):
 
 
 	goodElectronCut = "pt>30"
@@ -9,7 +9,7 @@ def ElectronSetup(process, isMC):
 	goodElectronCut += "&& !(1.4442 < abs(superCluster.eta) < 1.5660)"
 	goodElectronCut += "&& passConversionVeto()"
 	#goodElectronCut += "&& (0.0 < electronID('mvaTrigV0') < 1.0)"
-	goodElectronCut += "&& electronID('mvaTrigV0') > 0.1"
+	goodElectronCut += "&& electronID('mvaTrigV0') > %f" % mvaCut
 
 	goodSignalElectronCut = goodElectronCut
 	goodSignalElectronCut += '&& userFloat("rhoCorrRelIso") < 0.1'
@@ -23,7 +23,7 @@ def ElectronSetup(process, isMC):
 	looseVetoElectronCut = "pt > 20"
 	looseVetoElectronCut += "&& abs(eta) < 2.5"
 	#looseVetoElectronCut += "&& (0.0 < electronID('mvaTrigV0') < 1.0)"
-	looseVetoElectronCut += "&& electronID('mvaTrigV0') > 0.1"
+	looseVetoElectronCut += "&& electronID('mvaTrigV0') > %f" % mvaCut
 	looseVetoElectronCut += '&& userFloat("rhoCorrRelIso") < 0.3'
 
 	process.goodSignalElectrons = cms.EDFilter("CandViewSelector",
@@ -95,7 +95,12 @@ def ElectronSetup(process, isMC):
 		metSrc=cms.InputTag("patMETs"), #either patMETs if cutting on ele + MET transverse mass or goodMETs if cutting on patMETs->goodMets pt
 	)
 
-def ElectronPath(process, isMC, channel):
+	if doDebug:
+		process.oneIsoEleIDs = cms.EDAnalyzer('EventIDAnalyzer', name=cms.untracked.string("oneIsoEle"))
+		process.metIDS = cms.EDAnalyzer('EventIDAnalyzer', name=cms.untracked.string("MET"))
+		process.electronAnalyzer = cms.EDAnalyzer('SimpleElectronAnalyzer', interestingCollections=cms.untracked.VInputTag("elesWithIso"))
+
+def ElectronPath(process, isMC, channel, doDebug=False):
 	process.elePathPreCount = cms.EDProducer("EventCountProducer")
 
 	process.efficiencyAnalyzerEle = cms.EDAnalyzer('EfficiencyAnalyzer'
@@ -128,6 +133,9 @@ def ElectronPath(process, isMC, channel):
 		process.goodQCDElectrons *
 		process.looseVetoElectrons *
 		process.oneIsoEle *
+
+		#process.oneIsoEleIDs *
+
 		process.looseEleVetoEle *
 		process.looseVetoMuons *
 		process.looseMuVetoEle *
@@ -147,6 +155,21 @@ def ElectronPath(process, isMC, channel):
 
 		process.efficiencyAnalyzerEle
 	)
+
+	if doDebug:
+		process.elePath.insert(
+			process.elePath.index(process.oneIsoEle)+1,
+			process.oneIsoEleIDs
+		)
+		process.elePath.insert(
+			process.elePath.index(process.oneIsoEle),
+			process.electronAnalyzer
+		)
+		process.elePath.insert(
+			process.elePath.index(process.hasEleMETMT)+1,
+			process.metIDS
+		)
+
 
 	if isMC and channel=="sig":
 		process.elePath.insert(
