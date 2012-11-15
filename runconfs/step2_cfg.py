@@ -14,8 +14,9 @@ else:
     channel = "bkg"
 
 onGrid = args.inArgs("grid")
+doDebug = args.inArgs("DEBUG")
 
 import FWCore.ParameterSet.Config as cms
 from SingleTopPolarization.Analysis.selection_step2_cfg import SingleTopStep2
 
-process = SingleTopStep2(isMC=isMC, filterHLT=filterHLT, doMuon=doMuon, doElectron=doElectron, channel=channel, onGrid=onGrid, nJets=nJets, nBTags=nBTags)
+process = SingleTopStep2(isMC=isMC, filterHLT=filterHLT, doMuon=doMuon, doElectron=doElectron, channel=channel, onGrid=onGrid, nJets=nJets, nBTags=nBTags, doDebug=doDebug)
