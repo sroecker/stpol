@@ -61,7 +61,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
     )
 
     from SingleTopPolarization.Analysis.muons_step2_cfi import MuonSetup
-    MuonSetup(process, isMC, metType="MET")
+    MuonSetup(process, isMC, metType="MtW")
 
     from SingleTopPolarization.Analysis.electrons_step2_cfi import ElectronSetup
     ElectronSetup(process, isMC, doDebug=doDebug)
@@ -258,9 +258,9 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
             #cms.InputTag("cosThetaProducerMu", "cosThetaLightJet"),
 
             #cosTheta* from gen
-            cms.InputTag("cosThetaProducerTrueTopMu", "cosThetaLightJet"),
-            cms.InputTag("cosThetaProducerTrueLeptonMu", "cosThetaLightJet"),
-            cms.InputTag("cosThetaProducerTrueJetMu", "cosThetaLightJet"),
+            cms.InputTag("cosThetaProducerTrueTop", "cosThetaLightJet"),
+            cms.InputTag("cosThetaProducerTrueLepton", "cosThetaLightJet"),
+            cms.InputTag("cosThetaProducerTrueJet", "cosThetaLightJet"),
             cms.InputTag("cosThetaProducerTrueAll", "cosThetaLightJet"),
 
 
