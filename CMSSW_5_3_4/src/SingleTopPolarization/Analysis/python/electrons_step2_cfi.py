@@ -98,6 +98,7 @@ def ElectronSetup(process, isMC, mvaCut=0.1, doDebug=False):
 	if doDebug:
 		process.oneIsoEleIDs = cms.EDAnalyzer('EventIDAnalyzer', name=cms.untracked.string("oneIsoEle"))
 		process.metIDS = cms.EDAnalyzer('EventIDAnalyzer', name=cms.untracked.string("MET"))
+		process.NJetIDs = cms.EDAnalyzer('EventIDAnalyzer', name=cms.untracked.string("NJet"))
 		process.electronAnalyzer = cms.EDAnalyzer('SimpleElectronAnalyzer', interestingCollections=cms.untracked.VInputTag("elesWithIso"))
 
 def ElectronPath(process, isMC, channel, doDebug=False):
@@ -168,6 +169,10 @@ def ElectronPath(process, isMC, channel, doDebug=False):
 		process.elePath.insert(
 			process.elePath.index(process.hasEleMETMT)+1,
 			process.metIDS
+		)
+		process.elePath.insert(
+			process.elePath.index(process.nJets)+1,
+			process.NJetIDs
 		)
 
 
