@@ -3,12 +3,22 @@ Single top polarization analysis
 
 #SETUP
 
-0. Make sure you have sourced cmsset
+### Clone the repo
+
+For read-only access you can use
+>git clone git://github.com/HEP-KBFI/stpol.git
+
+If you also wish to commit, you'll have to have a github account and be added to the group, then you can use
+>git clone git@github.com:HEP-KBFI/stpol.git
+
+
+### Make sure you have sourced cmsset
 
 >source /cvmfs/cms.cern.ch/cmsset_default.sh
 
-1. run the following to create the CMSSW directory, link the SingleTopPolarization source code folder to it and compile everything
+### Create the workspace
 
+Run the following to create the CMSSW directory, link the SingleTopPolarization source code folder to it and compile everything
 >. ./setup.sh
 
 #ANALYSIS PATHWAY
