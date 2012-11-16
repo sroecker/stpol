@@ -1,7 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 import SingleTopPolarization.Analysis.eventCounting as eventCounting
 
-def ElectronSetup(process, isMC, mvaCut=0.1, doDebug=False):
+def ElectronSetup(process, isMC, mvaCut=0.1, doDebug=False, metType="MtW"):
 
 
 	goodElectronCut = "pt>30"
@@ -67,32 +67,35 @@ def ElectronSetup(process, isMC, mvaCut=0.1, doDebug=False):
 		maxNumber=cms.uint32(0),
 	)
 
-	process.goodMETs = cms.EDFilter("CandViewSelector",
-	  src=cms.InputTag("patMETs"),
-	  cut=cms.string("pt>35")
-	)
-
-	process.hasMET = cms.EDFilter(
-		"PATCandViewCountFilter",
-		src=cms.InputTag("goodMETs"),
-		minNumber=cms.uint32(1),
-		maxNumber=cms.uint32(1),
-	)
-
-	process.eleAndMETMT = cms.EDProducer('CandTransverseMassProducer',
-		collections=cms.untracked.vstring(["patMETs", "goodSignalElectrons"])
-	)
-
-	process.hasEleMETMT = cms.EDFilter('EventDoubleFilter',
-		src=cms.InputTag("eleAndMETMT"),
-		min=cms.double(35),
-		max=cms.double(9999999)
-	)
+	if metType == "MET":
+		process.goodMETs = cms.EDFilter("CandViewSelector",
+		  src=cms.InputTag("patMETs"),
+		  cut=cms.string("pt>35")
+		)
+		process.hasMET = cms.EDFilter(
+			"PATCandViewCountFilter",
+			src=cms.InputTag("goodMETs"),
+			minNumber=cms.uint32(1),
+			maxNumber=cms.uint32(1),
+		)
+		process.metEleSequence = cms.Sequence(process.goodMETs*process.hasMET)
+	elif metType == "MtW":
+		process.eleAndMETMT = cms.EDProducer('CandTransverseMassProducer',
+			collections=cms.untracked.vstring(["patMETs", "goodSignalElectrons"])
+		)
+		process.hasEleMETMT = cms.EDFilter('EventDoubleFilter',
+			src=cms.InputTag("eleAndMETMT"),
+			min=cms.double(40),
+			max=cms.double(9999999)
+		)
+		process.metEleSequence = cms.Sequence(process.eleAndMETMT * process.hasEleMETMT)
+	else:
+		print "WARNING: MET type not recognized in electron channel"
 
 	process.recoNuProducerEle = cms.EDProducer('ClassicReconstructedNeutrinoProducer',
 		leptonSrc=cms.InputTag("goodSignalLeptons"),
 		bjetSrc=cms.InputTag("btaggedJets"),
-		metSrc=cms.InputTag("patMETs"), #either patMETs if cutting on ele + MET transverse mass or goodMETs if cutting on patMETs->goodMets pt
+		metSrc=cms.InputTag("goodMETs" if metType=="MET" else "patMETs"), #either patMETs if cutting on ele + MET transverse mass or goodMETs if cutting on patMETs->goodMets pt
 	)
 
 	if doDebug:
@@ -100,6 +103,7 @@ def ElectronSetup(process, isMC, mvaCut=0.1, doDebug=False):
 		process.metIDS = cms.EDAnalyzer('EventIDAnalyzer', name=cms.untracked.string("MET"))
 		process.NJetIDs = cms.EDAnalyzer('EventIDAnalyzer', name=cms.untracked.string("NJet"))
 		process.electronAnalyzer = cms.EDAnalyzer('SimpleElectronAnalyzer', interestingCollections=cms.untracked.VInputTag("elesWithIso"))
+		process.metAnalyzer = cms.EDAnalyzer('SimpleMETAnalyzer', interestingCollections=cms.untracked.VInputTag("patMETs"))
 
 def ElectronPath(process, isMC, channel, doDebug=False):
 	process.elePathPreCount = cms.EDProducer("EventCountProducer")
@@ -115,7 +119,7 @@ def ElectronPath(process, isMC, channel, doDebug=False):
 		"elePathLooseEleVetoElePostCount",
 		"elePathLooseMuVetoElePostCount",
 		"elePathNJetsPostCount",
-		"elePathHasEleMETMTPostCount",
+		"elePathMetEleSequencePostCount",
 		"elePathMBTagsPostCount"
 		]
 	))
@@ -145,9 +149,7 @@ def ElectronPath(process, isMC, channel, doDebug=False):
 		process.nJets *
 
 		#process.goodMETs *
-		process.eleAndMETMT *
-		process.hasEleMETMT *
-
+		process.metEleSequence *
 		process.goodSignalLeptons *
 
 		process.mBTags *
@@ -167,12 +169,16 @@ def ElectronPath(process, isMC, channel, doDebug=False):
 			process.electronAnalyzer
 		)
 		process.elePath.insert(
-			process.elePath.index(process.hasEleMETMT)+1,
+			process.elePath.index(process.metEleSequence)+1,
 			process.metIDS
 		)
 		process.elePath.insert(
 			process.elePath.index(process.nJets)+1,
 			process.NJetIDs
+		)
+		process.elePath.insert(
+			process.elePath.index(process.metEleSequence),
+			process.metAnalyzer
 		)
 
 
@@ -188,7 +194,7 @@ def ElectronPath(process, isMC, channel, doDebug=False):
 		"oneIsoEle",
 		"looseEleVetoEle",
 		"looseMuVetoEle",
-		"hasEleMETMT",
+		"metEleSequence",
 		"nJets",
 		"mBTags"
 		]

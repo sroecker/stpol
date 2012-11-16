@@ -1,7 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 import SingleTopPolarization.Analysis.eventCounting as eventCounting
 
-def MuonSetup(process, isMC, muonSrc="muonsWithIso", isoType="rhoCorrRelIso", metType="MtW"):
+def MuonSetup(process, isMC, muonSrc="muonsWithIso", isoType="rhoCorrRelIso", metType="MtW", doDebug=False):
 
 	muonSrc = "muonsWithIso"
 
@@ -78,36 +78,35 @@ def MuonSetup(process, isMC, muonSrc="muonsWithIso", isoType="rhoCorrRelIso", me
 		maxNumber=cms.uint32(0),
 	)
 
-	process.goodMETs = cms.EDFilter("CandViewSelector",
-	  src=cms.InputTag("patMETs"), cut=cms.string("pt>35")
-	)
-
-	process.hasMET = cms.EDFilter("PATCandViewCountFilter",
-		src = cms.InputTag("goodMETs"),
-		minNumber = cms.uint32(1),
-		maxNumber = cms.uint32(1)
-	)
-
-	process.muAndMETMT = cms.EDProducer('CandTransverseMassProducer',
-		collections=cms.untracked.vstring(["patMETs", "goodSignalMuons"])
-	)
-
-	process.hasMuMETMT = cms.EDFilter('EventDoubleFilter',
-		src=cms.InputTag("muAndMETMT"),
-		min=cms.double(40),
-		max=cms.double(9999)
-	)
+	
 
 	#Either use MET cut or MtW cut
 	if metType == "MtW":
-		process.metMuSequence = cms.Sequence(
-			process.muAndMETMT *
-			process.hasMuMETMT
+		process.goodMETs = cms.EDFilter("CandViewSelector",
+		  src=cms.InputTag("patMETs"), cut=cms.string("pt>35")
 		)
-	elif metType == "MET":
+		process.hasMET = cms.EDFilter("PATCandViewCountFilter",
+			src = cms.InputTag("goodMETs"),
+			minNumber = cms.uint32(1),
+			maxNumber = cms.uint32(1)
+		)
 		process.metMuSequence = cms.Sequence(
 			process.goodMETs *
 			process.hasMET
+		)
+	elif metType == "MET":
+		process.muAndMETMT = cms.EDProducer('CandTransverseMassProducer',
+			collections=cms.untracked.vstring(["patMETs", "goodSignalMuons"])
+		)
+
+		process.hasMuMETMT = cms.EDFilter('EventDoubleFilter',
+			src=cms.InputTag("muAndMETMT"),
+			min=cms.double(40),
+			max=cms.double(9999)
+		)
+		process.metMuSequence = cms.Sequence(
+			process.muAndMETMT *
+			process.hasMuMETMT
 		)
 	else:
 		print "WARNING: MET type not specified!"
@@ -115,7 +114,7 @@ def MuonSetup(process, isMC, muonSrc="muonsWithIso", isoType="rhoCorrRelIso", me
 	process.recoNuProducerMu = cms.EDProducer('ClassicReconstructedNeutrinoProducer',
 		leptonSrc=cms.InputTag("goodSignalLeptons"),
 		bjetSrc=cms.InputTag("btaggedJets"),
-		metSrc=cms.InputTag("goodMETs" if hasattr(process, "goodMETs") else "patMETs"),
+		metSrc=cms.InputTag("goodMETs" if metType=="MET" else "patMETs"),
 	)
 
 def MuonPath(process, isMC, channel="sig"):

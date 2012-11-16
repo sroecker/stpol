@@ -61,7 +61,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
     )
 
     from SingleTopPolarization.Analysis.muons_step2_cfi import MuonSetup
-    MuonSetup(process, isMC, metType="MtW")
+    MuonSetup(process, isMC, doDebug=doDebug)
 
     from SingleTopPolarization.Analysis.electrons_step2_cfi import ElectronSetup
     ElectronSetup(process, isMC, doDebug=doDebug)
