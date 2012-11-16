@@ -40,13 +40,15 @@ def SingleTopStep1(process, isMC, doDebug=False, doSkimming=True, doSlimming=Tru
   usePF2PAT(process, runPF2PAT=True, jetAlgo='AK5', runOnMC=isMC, postfix=postfix,
     jetCorrections=('AK5PFchs', ['L1FastJet', 'L2Relative', 'L3Absolute']),
     pvCollection=cms.InputTag('goodOfflinePrimaryVertices'),
-    typeIMetCorrections=True
+    typeIMetCorrections = True #FIXME: Does this automatically add type1 corrections completely and consistently?
   )
+  
   # https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections#JetEnCorPFnoPU2012
   process.pfPileUp.Enable = True
   process.pfPileUp.checkClosestZVertex = False
-  process.load("JetMETCorrections.Type1MET.pfMETCorrections_cff")
-  process.patPF2PATSequence.insert(-1, process.producePFMETCorrections)
+
+  # process.load("JetMETCorrections.Type1MET.pfMETCorrections_cff")
+  # process.patPF2PATSequence.insert(-1, process.producePFMETCorrections)
 
 
   #process.patMuons.usePV = False
@@ -123,7 +125,6 @@ def SingleTopStep1(process, isMC, doDebug=False, doSkimming=True, doSlimming=Tru
   # Implemented as in https://indico.cern.ch/getFile.py/access?contribId=1&resId=0&materialId=slides&confId=208765
   #-------------------------------------------------
 
-  #useGsfElectrons(process, postfix=postfix, dR="03")
   process.load('EGamma.EGammaAnalysisTools.electronIdMVAProducer_cfi')
   process.mvaID = cms.Sequence(process.mvaTrigV0 + process.mvaNonTrigV0)
   process.patElectrons.electronIDSources.mvaTrigV0 = cms.InputTag("mvaTrigV0")
@@ -288,6 +289,7 @@ def SingleTopStep1(process, isMC, doDebug=False, doSkimming=True, doSlimming=Tru
     process.out.fileName.setValue(process.out.fileName.value().replace(".root", "_noSkim.root"))
 
   print "Output file is %s" % process.out.fileName
+  print "isMC: %s" % str(isMC)
 
   if not doSlimming:
     process.out.fileName.setValue(process.out.fileName.value().replace(".root", "_noSlim.root"))
