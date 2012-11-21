@@ -135,6 +135,7 @@ def SingleTopStep1(process, isMC, doDebug=False, doSkimming=True, doSlimming=Tru
     electronSrc = cms.InputTag("selectedPatElectrons"),
     primaryVertexSource = cms.InputTag("goodOfflinePrimaryVertices")
   )
+  process.pfIsolatedElectrons.isolationCut = 0.5
 
 
   #-------------------------------------------------

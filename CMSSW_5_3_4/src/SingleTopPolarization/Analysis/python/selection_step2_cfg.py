@@ -1,7 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 import SingleTopPolarization.Analysis.eventCounting as eventCounting
 
-def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False, doDebug=False, doMuon=True, doElectron=True, channel="sig", nJets=2, nBTags=1):
+def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False, doDebug=False, doMuon=True, doElectron=True, channel="sig", nJets=2, nBTags=1, reverseIsoCut=False):
     process = cms.Process("STPOLSEL2")
     eventCounting.countProcessed(process)
 
@@ -61,10 +61,10 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
     )
 
     from SingleTopPolarization.Analysis.muons_step2_cfi import MuonSetup
-    MuonSetup(process, isMC, doDebug=doDebug)
+    MuonSetup(process, isMC, doDebug=doDebug, reverseIsoCut=reverseIsoCut)
 
     from SingleTopPolarization.Analysis.electrons_step2_cfi import ElectronSetup
-    ElectronSetup(process, isMC, doDebug=doDebug)
+    ElectronSetup(process, isMC, doDebug=doDebug, reverseIsoCut=reverseIsoCut)
 
     process.goodSignalLeptons = cms.EDProducer(
          'CandRefCombiner',
@@ -105,7 +105,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
                     ["Pt", "pt"],
                     ["Eta", "eta"],
                     ["Phi", "phi"],
-                    ["deltaBetaCorrRelIso", "userFloat('deltaBetaCorrRelIso')"],
+                    ["relIso", "userFloat('deltaBetaCorrRelIso')"],
                 ]
                 )
             )
@@ -119,7 +119,8 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
                     ["Pt", "pt"],
                     ["Eta", "eta"],
                     ["Phi", "phi"],
-                    ["rhoCorrRelIso", "userFloat('rhoCorrRelIso')"],
+                    ["relIso", "userFloat('rhoCorrRelIso')"],
+                    ["mvaID", "electronID('mvaTrigV0')"],
                 ]
                 )
             )
@@ -282,11 +283,15 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
 
     process.treesInt = cms.EDAnalyzer("IntTreemakerAnalyzer",
         collections = cms.VInputTag(
+            [
             cms.InputTag("recoNuProducerMu", "solType"),
             cms.InputTag("recoNuProducerEle ", "solType"),
             cms.InputTag("muonCount"),
             cms.InputTag("electronCount"),
-            cms.InputTag("topCount")
+            cms.InputTag("topCount"),
+            cms.InputTag("bJetCount"),
+            cms.InputTag("lightJetCount")
+            ]
         )
     )
 
@@ -364,6 +369,8 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
     
     print "onGrid: %s" % str(onGrid)
     print "channel: %s" % channel
+
+    print "lepton antiIso: %s" % reverseIsoCut
 
     print ""
     print "Running paths: %s" % str(process.paths.list)
