@@ -55,6 +55,6 @@ The most important memory errors are in the end of vglog.out
 
 ##TTBar estimation
 The goal is to select a ttbar enriched region and compare the distribution of some interesting variable to data.
->cmsRun runconfs/step2_MC_3J_1T_cfg.py inputFiles_load=fileLists/TTBar.txt maxEvents=10000 outputFile=stpol_TTBar_3J1T.root
+>cmsRun runconfs/step2_cfg.py mc hlt mu ele nJets=3 nBTags=1 inputFiles_load=fileLists/TTBar.txt maxEvents=10000 outputFile=stpol_TTBar_3J1T.root
 
 This will give you *stpol_TTBar_3J1T_trees.root* which contain the trees for the ttbar-enriched region.
