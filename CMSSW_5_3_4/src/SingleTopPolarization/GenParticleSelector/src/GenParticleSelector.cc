@@ -200,7 +200,7 @@ GenParticleSelector::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
                   //nst GenParticle* lepton = (GenParticle*)d2;
                   outLeptons->push_back(*d2);                  
                }
-               else if(abs(dau2Id) == 14 || abs(dau2Id) == 11){  //mu-neutrino
+               else if(abs(dau2Id) == 14 || abs(dau2Id) == 12){  //mu-neutrino
                   //cout << "    " << dau2Id << endl;
                   //nst GenParticle* lepton = (GenParticle*)d2;
                   outNeutrinos->push_back(*d2);
