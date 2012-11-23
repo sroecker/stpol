@@ -1,7 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 import SingleTopPolarization.Analysis.eventCounting as eventCounting
 
-def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False, doDebug=False, doMuon=True, doElectron=True, channel="sig", nJets=2, nBTags=1, reverseIsoCut=False):
+def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False, doDebug=False, doMuon=True, doElectron=True, channel="sig", nJets=2, nBTags=1, reverseIsoCut=False, muonIsoType="rhoCorrRelIso", eleMetType="MtW"):
     process = cms.Process("STPOLSEL2")
     eventCounting.countProcessed(process)
 
@@ -61,10 +61,10 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
     )
 
     from SingleTopPolarization.Analysis.muons_step2_cfi import MuonSetup
-    MuonSetup(process, isMC, doDebug=doDebug, reverseIsoCut=reverseIsoCut)
+    MuonSetup(process, isMC, doDebug=doDebug, reverseIsoCut=reverseIsoCut, isoType=muonIsoType)
 
     from SingleTopPolarization.Analysis.electrons_step2_cfi import ElectronSetup
-    ElectronSetup(process, isMC, doDebug=doDebug, reverseIsoCut=reverseIsoCut)
+    ElectronSetup(process, isMC, doDebug=doDebug, reverseIsoCut=reverseIsoCut, metType=eleMetType)
 
     process.goodSignalLeptons = cms.EDProducer(
          'CandRefCombiner',
@@ -366,7 +366,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
         fileName=cms.string(outFile.replace(".root", "_trees.root")),
     )
     print "isMC: %s" % str(isMC)
-    
+
     print "onGrid: %s" % str(onGrid)
     print "channel: %s" % channel
 
