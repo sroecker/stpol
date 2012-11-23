@@ -38,7 +38,7 @@ def ElectronSetup(process, isMC, mvaCut=0.1, doDebug=False, metType="MtW", rever
 	looseVetoElectronCut = "pt > 20"
 	looseVetoElectronCut += "&& abs(eta) < 2.5"
 	#looseVetoElectronCut += "&& (0.0 < electronID('mvaTrigV0') < 1.0)"
-	looseVetoElectronCut += "&& electronID('mvaTrigV0') > %f" % mvaCut
+	looseVetoElectronCut += "&& electronID('mvaTrigV0') > %f" % 0.1
 	looseVetoElectronCut += '&& userFloat("rhoCorrRelIso") < 0.3'
 
 	process.goodSignalElectrons = cms.EDFilter("CandViewSelector",
@@ -113,10 +113,12 @@ def ElectronSetup(process, isMC, mvaCut=0.1, doDebug=False, metType="MtW", rever
 	)
 
 	if doDebug:
-		process.oneIsoEleIDs = cms.EDAnalyzer('EventIDAnalyzer', name=cms.untracked.string("oneIsoEle"))
+		process.oneIsoEleIDs = cms.EDAnalyzer('EventIDAnalyzer', name=cms.untracked.string("IDoneIsoEle"))
+		process.eleVetoIDs = cms.EDAnalyzer('EventIDAnalyzer', name=cms.untracked.string("IDeleVeto"))
 		process.metIDS = cms.EDAnalyzer('EventIDAnalyzer', name=cms.untracked.string("MET"))
 		process.NJetIDs = cms.EDAnalyzer('EventIDAnalyzer', name=cms.untracked.string("NJet"))
 		process.electronAnalyzer = cms.EDAnalyzer('SimpleElectronAnalyzer', interestingCollections=cms.untracked.VInputTag("elesWithIso"))
+		process.electronVetoAnalyzer = cms.EDAnalyzer('SimpleElectronAnalyzer', interestingCollections=cms.untracked.VInputTag("looseVetoElectrons"))
 		process.metAnalyzer = cms.EDAnalyzer('SimpleMETAnalyzer', interestingCollections=cms.untracked.VInputTag("patMETs"))
 
 """
@@ -183,6 +185,14 @@ def ElectronPath(process, isMC, channel, doDebug=False):
 		process.elePath.insert(
 			process.elePath.index(process.oneIsoEle),
 			process.electronAnalyzer
+		)
+		process.elePath.insert(
+			process.elePath.index(process.looseEleVetoEle),
+			process.electronVetoAnalyzer
+		)
+		process.elePath.insert(
+			process.elePath.index(process.looseEleVetoEle)+1,
+			process.eleVetoIDs
 		)
 		process.elePath.insert(
 			process.elePath.index(process.metEleSequence)+1,

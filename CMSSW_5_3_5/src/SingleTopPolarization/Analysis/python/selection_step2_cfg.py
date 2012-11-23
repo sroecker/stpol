@@ -211,7 +211,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
                 ]
             ),
             treeCollection(
-                cms.untracked.InputTag("genParticleSelectorMu", "trueTop", "STPOLSEL2"), 1,
+                cms.untracked.InputTag("genParticleSelector", "trueTop", "STPOLSEL2"), 1,
                 [
                     ["Pt", "pt"],
                     ["Eta", "eta"],
@@ -220,7 +220,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
                 ]
             ),
             treeCollection(
-                cms.untracked.InputTag("genParticleSelectorMu", "trueNeutrino", "STPOLSEL2"), 1,
+                cms.untracked.InputTag("genParticleSelector", "trueNeutrino", "STPOLSEL2"), 1,
                 [
                     ["Pt", "pt"],
                     ["Eta", "eta"],
@@ -231,7 +231,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
                 ]
             ),
             treeCollection(
-                cms.untracked.InputTag("genParticleSelectorMu", "trueLepton", "STPOLSEL2"), 1,
+                cms.untracked.InputTag("genParticleSelector", "trueLepton", "STPOLSEL2"), 1,
                 [
                     ["Pt", "pt"],
                     ["Eta", "eta"],
@@ -239,7 +239,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
                 ]
             ),
             treeCollection(
-                cms.untracked.InputTag("genParticleSelectorMu", "trueLightJet", "STPOLSEL2"), 1,
+                cms.untracked.InputTag("genParticleSelector", "trueLightJet", "STPOLSEL2"), 1,
                 [
                     ["Pt", "pt"],
                     ["Eta", "eta"],
