@@ -1,17 +1,19 @@
 #!/bin/bash
 #mv CMSSW_5_3_4_cand1/SingleTopPolarization ./
+#Tags for https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuidePATReleaseNotes52X#V08_09_43
+CMSVERSION=CMSSW_5_3_5
 git stash
-rm -Rf CMSSW_5_3_4
+rm -Rf $CMSVERSION
 export SCRAM_ARCH=slc5_amd64_gcc462
-cmsrel CMSSW_5_3_4
+cmsrel $CMSVERSION 
 git reset --hard
-cd CMSSW_5_3_4
+cd $CMSVERSION 
 
 cmsenv
 cd $CMSSW_BASE/src
 
-addpkg DataFormats/PatCandidates            V06-05-06-01
-addpkg PhysicsTools/PatAlgos                V08-09-37
+addpkg DataFormats/PatCandidates            V06-05-06-03
+addpkg PhysicsTools/PatAlgos                V08-09-43
 addpkg PhysicsTools/PatUtils                V03-09-26
 addpkg CommonTools/RecoUtils                V00-00-12
 addpkg CommonTools/RecoAlgos                V00-03-24
