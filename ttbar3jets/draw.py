@@ -1,68 +1,103 @@
+import argparse
 import ROOT
-from ROOT import TH1F,THStack,TFile,TBrowser,TColor,TCanvas,TLegend
+from ROOT import TH1F,TFile,TCanvas,TLegend
 
-# Configuration
+# Data parameters
 totalDataEvents = 5363303 # from DAS
 totalLuminosity = 808.472 # 1/pb, from TWiki
-ttbarCrossSection = 64.57 # pb, from TWiki
+ttbarCrossSection = 136.3 # pb, from PREP
 
-#fname_mc = 'stpol_TTBar_3J1T_numEvent10000_trees.root'
-fname_mc = 'stpol_TTBar_3J1T_numEvent1000000_trees.root'
-#fname_data = 'stpol_Data_3J1T_numEvent15000_trees.root'
-#fname_data = 'stpol_Data_3J1T_numEvent120000_trees.root'
-fname_data = 'stpol_Data_3J1T_numEvent10000000_trees.root'
+# Extra parameters from arguments:
+parser = argparse.ArgumentParser(description='Plots MC and Data for some variable.')
+parser.add_argument('tree')
+parser.add_argument('var')
+parser.add_argument('mc') # MC root file
+parser.add_argument('data') # DATA root file
+parser.add_argument('--hist', type=float,
+                    nargs=2, metavar=('min', 'max'),
+                    help='min and max boundary values for the histogram')
+parser.add_argument('--bins', type=int, default=16,
+                    help='number of histogram bins')
+parser.add_argument('--save', help='save the histogram to a file')
+parser.add_argument('-b', action='store_true',
+                    help='run in batch mode. Requires --save.')
 
-var_class = 'treesCands'; var_name = '_recoTop_0_Mass'
-check_name = '_topCount'
-hist_min = 0; hist_max = 1000; hist_bins = 20;
+args = parser.parse_args() # if the arguments are syntactically invalid, the script stops here
 
-title = 'topMass'
+# Check for batch mode
+if args.b and args.save is not None:
+	print 'Running in batch mode.'
+elif args.b and args.save is None:
+	print 'Error: Batch mode requires an output file!'
+	exit(-1)
 
-def fillHistogram(hist, fname, varclass, varname, checkname):
-	print 'Filling histogram using "%s"'%fname
-	
+# Open root files and get respective trees:
+def openTree(fname, treename):
+	print 'Open: from file `%s` tree `%s`.'%(fname, treename)
 	tfile = TFile(fname)
 	if tfile.IsZombie():
-		print 'Error opening file "%s"!'%fname
-		exit()
-	
-	tree_var  = tfile.Get(varclass).Get('eventTree')
-	tree_chck = tfile.Get('treesInt').Get('eventTree')
-	
-	entries = tree_var.GetEntries()
-	print 'Entries:', tree_var.GetEntries(), tree_chck.GetEntries()
-	
-	N = 0
-	for i in range(entries):
-		tree_var.GetEntry(i)
-		tree_chck.GetEntry(i)
+		raise Exception('Error opening file "%s"!'%fname)
+	tree = tfile.Get(treename).Get('eventTree')
+	N = tfile.Get('efficiencyAnalyzerMu').Get('muPath').GetBinContent(1)
+	return (tree, tfile, N)
+(tree_mc, tfile_mc, N_mc) = openTree(args.mc, args.tree)
+(tree_dt, tfile_dt, N_dt) = openTree(args.data, args.tree)
 
-		if getattr(tree_chck, checkname) > 0:
-			#print '%3i Top: %6.2f (%2i)' % (i, getattr(tree_var, varname), getattr(tree_chck, checkname))
-			hist.Fill(getattr(tree_var, varname))
-			N += 1
-	#return N
-	print 'File "%s". Useful data (var:%s) %i'%(fname, varname, N)
-	return tfile.Get('efficiencyAnalyzerMu').Get('muPath').GetBinContent(3)
+print 'Drawing variable `%s`' % args.var
 
-hist_mc   = TH1F('AAA', title, hist_bins, hist_min, hist_max)
-N_mc = fillHistogram(hist_mc, fname_mc, var_class, var_name, check_name)
-print 'MC datapoints  : %i' % N_mc
+# extract histogram parameters
+hist_bins = args.bins
+hist_min = min(tree_mc.GetMinimum(args.var), tree_dt.GetMinimum(args.var)) if args.hist is None else args.hist[0]
+hist_max = max(tree_mc.GetMaximum(args.var), tree_dt.GetMaximum(args.var)) if args.hist is None else args.hist[1]
 
-hist_data = TH1F('', '', hist_bins, hist_min, hist_max)
-N_data = fillHistogram(hist_data, fname_data, var_class, var_name, check_name)
-print 'Data datapoints: %i' % N_data
+# Histograms
+title = '%s.%s' % (args.tree, args.var)
+
+hist_mc   = TH1F('hist_mc', title, hist_bins, hist_min, hist_max)
+print 'Filling MC. Events:   ', tree_mc.Draw('%s>>hist_mc'%args.var, '{0}=={0}'.format(args.var), 'goff')
+
+hist_dt   = TH1F('hist_dt', title, hist_bins, hist_min, hist_max)
+print 'Filling data. Events: ', tree_dt.Draw('%s>>hist_dt'%args.var, '{0}=={0}'.format(args.var), 'goff')
 
 # MC scaling
-expectedEvents = ttbarCrossSection*totalLuminosity*float(N_data)/float(totalDataEvents)
-hist_mc.Scale(float(expectedEvents)/float(N_mc))
+effective_lumi = totalLuminosity*float(N_dt)/float(totalDataEvents)
+#effective_lumi = totalLuminosity
+expectedEvents = ttbarCrossSection*effective_lumi
+scale_factor = float(expectedEvents)/float(N_mc)
+hist_mc.Scale(scale_factor)
 
-hist_data.SetMarkerStyle(20)
+print 'Initial MC events:   %8d' % N_mc
+print 'Initial data events: %8d' % N_dt
+print 'Total data events:   %8d' % totalDataEvents
+
+print 'Luminosity:      %8.2f' % totalLuminosity
+print 'Eff, luminosity: %8.2f' % effective_lumi
+print 'Expected events:     %8d' % expectedEvents
+print 'Cross section:   %8.2f' % ttbarCrossSection
+print 'Scaling factor:  %f' % scale_factor
+
+
+hist_dt.SetMarkerStyle(20)
 hist_mc.SetFillColor(ROOT.kOrange + 7)
 hist_mc.SetLineWidth(0)
 
 canvas = TCanvas()
-hist_data.Draw('E1')
-hist_mc.Draw('SAME')
+if N_mc >= N_dt:
+	hist_mc.Draw('')
+	hist_dt.Draw('E1 SAME')
+else:
+	hist_dt.Draw('E1')
+	hist_mc.Draw('SAME')
 
-# canvas.SaveAs('filename') can be used for saving the plot
+# Save the canvas:
+if args.save is not None:
+	print 'Saving to: %s'%args.save
+	canvas.SaveAs(args.save)
+	if not args.b:
+		raw_input('Press enter to close')
+else:
+	print 'Enter filename to save or leave empty to exit.'
+	fout = raw_input('Filename: ')
+	if len(fout) > 0:
+		canvas.SaveAs(fout)
+
