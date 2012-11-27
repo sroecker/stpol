@@ -97,7 +97,7 @@ def MuonSetup(process,
 	
 
 	#Either use MET cut or MtW cut
-	if metType == "MtW":
+	if metType == "MET":
 		process.goodMETs = cms.EDFilter("CandViewSelector",
 		  src=cms.InputTag("patMETs"), cut=cms.string("pt>35")
 		)
@@ -110,7 +110,7 @@ def MuonSetup(process,
 			process.goodMETs *
 			process.hasMET
 		)
-	elif metType == "MET":
+	elif metType == "MtW":
 		process.muAndMETMT = cms.EDProducer('CandTransverseMassProducer',
 			collections=cms.untracked.vstring(["patMETs", "goodSignalMuons"])
 		)

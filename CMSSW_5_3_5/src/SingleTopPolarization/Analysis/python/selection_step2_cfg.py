@@ -1,7 +1,18 @@
 import FWCore.ParameterSet.Config as cms
 import SingleTopPolarization.Analysis.eventCounting as eventCounting
 
-def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False, doDebug=False, doMuon=True, doElectron=True, channel="sig", nJets=2, nBTags=1, reverseIsoCut=False, muonIsoType="rhoCorrRelIso", eleMetType="MtW"):
+def SingleTopStep2(isMC,
+    skipPatTupleOutput=True,
+    onGrid=False,
+    filterHLT=False,
+    doDebug=False,
+    doMuon=True,
+    doElectron=True,
+    channel="sig",
+    nJets=2, nBTags=1,
+    reverseIsoCut=False,
+    muonIsoType="rhoCorrRelIso", eleMetType="MtW"
+    ):
     process = cms.Process("STPOLSEL2")
     eventCounting.countProcessed(process)
 
