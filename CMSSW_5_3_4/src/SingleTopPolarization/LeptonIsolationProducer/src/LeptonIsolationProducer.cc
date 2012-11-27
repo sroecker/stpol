@@ -171,32 +171,21 @@ LeptonIsolationProducer<T>::produce(edm::Event& iEvent, const edm::EventSetup& i
   std::auto_ptr<std::vector<T> > outLeptons(new std::vector<T>(*leptons));
 
   for (auto& lepton : *outLeptons) {
+    //Calculate the delta-beta corrected relative isolation
     float dbc_iso = (lepton.chargedHadronIso() + std::max(0., lepton.neutralHadronIso() + lepton.photonIso() - 0.5*lepton.puChargedHadronIso()))/lepton.et();
-    double ea = effectiveArea(lepton);
 
+    //Calculate the rho-corrected relative isolation
+    double ea = effectiveArea(lepton);
     float rc_iso = (lepton.chargedHadronIso() + std::max(0., lepton.neutralHadronIso() + lepton.photonIso() - ea*(*rho)))/lepton.et();
+
+    //Calculate the uncorrected relative isolation
+    float uncorr_iso = (lepton.chargedHadronIso() + std::max((float)0.0, lepton.neutralHadronIso() + lepton.photonIso()))/lepton.et();
+
     lepton.addUserFloat("deltaBetaCorrRelIso", dbc_iso);
     lepton.addUserFloat("rhoCorrRelIso", rc_iso);
+    lepton.addUserFloat("unCorrRelIso", uncorr_iso);
   }
   iEvent.put(outLeptons);
-
-/* This is an event example
-   //Read 'ExampleData' from the Event
-   Handle<ExampleData> pIn;
-   iEvent.getByLabel("example",pIn);
-
-   //Use the ExampleData to create an ExampleData2 which 
-   // is put into the Event
-   std::auto_ptr<ExampleData2> pOut(new ExampleData2(*pIn));
-   iEvent.put(pOut);
-*/
-
-/* this is an EventSetup example
-   //Read SetupData from the SetupRecord in the EventSetup
-   ESHandle<SetupData> pSetup;
-   iSetup.get<SetupRecord>().get(pSetup);
-*/
- 
 }
 
 // ------------ method called once each job just before starting event loop  ------------

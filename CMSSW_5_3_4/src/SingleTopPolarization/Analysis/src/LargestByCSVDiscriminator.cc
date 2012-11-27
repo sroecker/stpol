@@ -15,7 +15,7 @@ struct GreaterByCSVDiscriminator {
   typedef T second_argument_type;
   
   bool operator()( const T & t1, const T & t2 ) const {
-    return ((const pat::Jet&)t1).bDiscriminator("combinedSecondaryVertexBJetTags") > ((const pat::Jet&)t2).bDiscriminator("combinedSecondaryVertexBJetTags");
+    return ((const pat::Jet&)t1).bDiscriminator("combinedSecondaryVertexMVABJetTags") > ((const pat::Jet&)t2).bDiscriminator("combinedSecondaryVertexMVABJetTags");
   }
 };
 typedef ObjectSelector< SortCollectionSelector< edm::View<reco::Candidate>, GreaterByCSVDiscriminator<reco::Candidate> > > LargestCSVDiscriminatorJetViewProducer;

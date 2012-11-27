@@ -17,6 +17,10 @@ def TopRecoSetup(process, leptonSource="goodSignal", bTagSource="highestBTagJet"
 		sources=cms.VInputTag(["recoNu", bTagSource, "goodSignalLeptons"])
 	)
 
+	process.topCount = cms.EDProducer('CollectionSizeProducer<reco::Candidate>',
+		src = cms.InputTag('recoTop')
+	)
+
 	process.cosTheta = cms.EDProducer('CosThetaProducer',
 		topSrc=cms.InputTag("recoTop"),
 		jetSrc=cms.InputTag(untaggedSource),
@@ -27,6 +31,7 @@ def TopRecoSetup(process, leptonSource="goodSignal", bTagSource="highestBTagJet"
       process.recoNuProducerMu *
       process.recoNu *
 	  process.recoTop *
+	  process.topCount *
 	  process.cosTheta
 	)
 
@@ -34,5 +39,6 @@ def TopRecoSetup(process, leptonSource="goodSignal", bTagSource="highestBTagJet"
       process.recoNuProducerEle *
       process.recoNu *
 	  process.recoTop *
+	  process.topCount *
 	  process.cosTheta
 	)

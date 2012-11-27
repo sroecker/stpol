@@ -1,9 +1,27 @@
 import FWCore.ParameterSet.Config as cms
 import SingleTopPolarization.Analysis.eventCounting as eventCounting
 
-def MuonSetup(process, isMC, muonSrc="muonsWithIso"):
-
-	muonSrc = "muonsWithIso"
+"""
+This method configures the muon modules.
+process: 		the process that obtain the modules (*modified by method*)
+isMC:			'True' - running on MC
+	   			'False' - running on data
+muonSrc:		what collection to use for the initial pat::Muon-s
+isoType:		'rhoCorrRelIso' - use the rho corrected relative isolation
+				'deltaBetaCorrRelIso' - use delta beta corrected relative isolation
+metType:		'MtW' - use the W transverse mass cut
+				'MET' - use a simple MET cut 
+doDebug:		'True/False' - enable/disable debbuging modules with printout
+reverseIsoCut:	'True' - choose anti-isolated leptons for QCD estimation
+				'False' - choose isolated leptons for QCD estimation (default)
+"""
+def MuonSetup(process,
+	isMC,
+	muonSrc="muonsWithIso",
+	isoType="rhoCorrRelIso",
+	metType="MtW",
+	doDebug=False,
+	reverseIsoCut=False):
 
 	goodMuonCut = 'isPFMuon'																	   # general reconstruction property
 	goodMuonCut += ' && isGlobalMuon'																   # general reconstruction property
@@ -23,22 +41,26 @@ def MuonSetup(process, isMC, muonSrc="muonsWithIso"):
 	looseVetoMuonCut += "&& abs(eta)<2.5"
 	looseVetoMuonCut += ' && userFloat("rhoCorrRelIso") < 0.2'  # Delta beta corrections (factor 0.5)
 
-	#isolated region
 	goodSignalMuonCut = goodMuonCut
-	goodSignalMuonCut += ' && userFloat("rhoCorrRelIso") < 0.12'
+	#Choose anti-isolated region
+	if reverseIsoCut:
+		goodSignalMuonCut += ' && userFloat("{0}") > 0.3 && userFloat("{0}") < 0.5'.format(isoType)
+	#Choose isolated region
+	else:
+		goodSignalMuonCut += ' && userFloat("{0}") < 0.12'.format(isoType)
 
-	#anti-isolated region
-	goodQCDMuonCut = goodMuonCut
-	goodQCDMuonCut += '&& userFloat("rhoCorrRelIso") < 0.5'
-	goodQCDMuonCut += '&& userFloat("rhoCorrRelIso") > 0.3'
+	# #anti-isolated region
+	# goodQCDMuonCut = goodMuonCut
+	# goodQCDMuonCut += '&& userFloat("%s") < 0.5' % isoType
+	# goodQCDMuonCut += '&& userFloat("%s") > 0.3' % isoType
 
 	process.goodSignalMuons = cms.EDFilter("CandViewSelector",
 	  src=cms.InputTag(muonSrc), cut=cms.string(goodSignalMuonCut)
 	)
 
-	process.goodQCDMuons = cms.EDFilter("CandViewSelector",
-	  src=cms.InputTag(muonSrc), cut=cms.string(goodQCDMuonCut)
-	)
+	# process.goodQCDMuons = cms.EDFilter("CandViewSelector",
+	#   src=cms.InputTag(muonSrc), cut=cms.string(goodQCDMuonCut)
+	# )
 
 	process.looseVetoMuons = cms.EDFilter("CandViewSelector",
 	  src=cms.InputTag(muonSrc), cut=cms.string(looseVetoMuonCut)
@@ -60,8 +82,8 @@ def MuonSetup(process, isMC, muonSrc="muonsWithIso"):
 	process.looseMuVetoMu = cms.EDFilter(
 		"PATCandViewCountFilter",
 		src=cms.InputTag("looseVetoMuons"),
-		minNumber=cms.uint32(1),
-		maxNumber=cms.uint32(1),
+		minNumber=cms.uint32(0),
+		maxNumber=cms.uint32(1 if not reverseIsoCut else 0),
 	)
 
 	#In Muon path we must have 0 loose electrons
@@ -72,20 +94,43 @@ def MuonSetup(process, isMC, muonSrc="muonsWithIso"):
 		maxNumber=cms.uint32(0),
 	)
 
-	process.muAndMETMT = cms.EDProducer('CandTransverseMassProducer',
-		collections=cms.untracked.vstring(["patMETs", "goodSignalMuons"])
-	)
+	
 
-	process.hasMuMETMT = cms.EDFilter('EventDoubleFilter',
-		src=cms.InputTag("muAndMETMT"),
-		min=cms.double(40),
-		max=cms.double(9999)
-	)
+	#Either use MET cut or MtW cut
+	if metType == "MtW":
+		process.goodMETs = cms.EDFilter("CandViewSelector",
+		  src=cms.InputTag("patMETs"), cut=cms.string("pt>35")
+		)
+		process.hasMET = cms.EDFilter("PATCandViewCountFilter",
+			src = cms.InputTag("goodMETs"),
+			minNumber = cms.uint32(1),
+			maxNumber = cms.uint32(1)
+		)
+		process.metMuSequence = cms.Sequence(
+			process.goodMETs *
+			process.hasMET
+		)
+	elif metType == "MET":
+		process.muAndMETMT = cms.EDProducer('CandTransverseMassProducer',
+			collections=cms.untracked.vstring(["patMETs", "goodSignalMuons"])
+		)
+
+		process.hasMuMETMT = cms.EDFilter('EventDoubleFilter',
+			src=cms.InputTag("muAndMETMT"),
+			min=cms.double(40),
+			max=cms.double(9999)
+		)
+		process.metMuSequence = cms.Sequence(
+			process.muAndMETMT *
+			process.hasMuMETMT
+		)
+	else:
+		print "WARNING: MET type not specified!"
 
 	process.recoNuProducerMu = cms.EDProducer('ClassicReconstructedNeutrinoProducer',
 		leptonSrc=cms.InputTag("goodSignalLeptons"),
 		bjetSrc=cms.InputTag("btaggedJets"),
-		metSrc=cms.InputTag("patMETs"),
+		metSrc=cms.InputTag("goodMETs" if metType=="MET" else "patMETs"),
 	)
 
 def MuonPath(process, isMC, channel="sig"):
@@ -102,7 +147,7 @@ def MuonPath(process, isMC, channel="sig"):
 		"muPathLooseMuVetoMuPostCount",
 		"muPathLooseEleVetoMuPostCount",
 		"muPathNJetsPostCount",
-		"muPathHasMuMETMTPostCount",
+		"muPathMetMuSequencePostCount",
 		"muPathMBTagsPostCount"
 		]
 	))
@@ -119,7 +164,7 @@ def MuonPath(process, isMC, channel="sig"):
 		#Select one isolated muon and veto additional loose muon/electron
 		process.goodSignalMuons *
 		process.muonCount *
-		process.goodQCDMuons *
+		#process.goodQCDMuons *
 		process.looseVetoMuons *
 		process.oneIsoMu *
 		process.looseMuVetoMu *
@@ -130,9 +175,8 @@ def MuonPath(process, isMC, channel="sig"):
 		process.jetSequence *
 		process.nJets *
 
-		#Select mu and MET invariant transverse mass
-		process.muAndMETMT *
-		process.hasMuMETMT *
+		#Select mu and MET invariant transverse mass OR the MET
+		process.metMuSequence *
 
 		process.mBTags *
 
@@ -157,7 +201,7 @@ def MuonPath(process, isMC, channel="sig"):
 		"oneIsoMu",
 		"looseMuVetoMu",
 		"looseEleVetoMu",
-		"hasMuMETMT",
+		"metMuSequence",
 		"nJets",
 		"mBTags"
 		]

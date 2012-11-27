@@ -3,12 +3,22 @@ Single top polarization analysis
 
 #SETUP
 
-0. Make sure you have sourced cmsset
+### Clone the repo
+
+For read-only access you can use
+>git clone git://github.com/HEP-KBFI/stpol.git
+
+If you also wish to commit, you'll have to have a github account and be added to the group, then you can use
+>git clone git@github.com:HEP-KBFI/stpol.git
+
+
+### Make sure you have sourced cmsset
 
 >source /cvmfs/cms.cern.ch/cmsset_default.sh
 
-1. run the following to create the CMSSW directory, link the SingleTopPolarization source code folder to it and compile everything
+### Create the workspace
 
+Run the following to create the CMSSW directory, link the SingleTopPolarization source code folder to it and compile everything
 >. ./setup.sh
 
 #ANALYSIS PATHWAY
@@ -45,6 +55,6 @@ The most important memory errors are in the end of vglog.out
 
 ##TTBar estimation
 The goal is to select a ttbar enriched region and compare the distribution of some interesting variable to data.
->cmsRun runconfs/step2_MC_3J_1T_cfg.py inputFiles_load=fileLists/TTBar.txt maxEvents=10000 outputFile=stpol_TTBar_3J1T.root
+>cmsRun runconfs/step2_cfg.py mc hlt mu ele nJets=3 nBTags=1 inputFiles_load=fileLists/TTBar.txt maxEvents=10000 outputFile=stpol_TTBar_3J1T.root
 
 This will give you *stpol_TTBar_3J1T_trees.root* which contain the trees for the ttbar-enriched region.

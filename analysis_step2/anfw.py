@@ -1,5 +1,7 @@
 import ROOT
 import sys
+import string
+import random
 
 class Files:
 	outFile = ROOT.TFile("outFile.root", "RECREATE")
@@ -73,8 +75,9 @@ class Channel:
 
 
 channels = {
-	"T_t": Channel("T_t", "data/stpol_T_t_trees.root", 47),
-	"TTBar": Channel("TTBar", "data/stpol_TTBar_trees.root", 136.3)
+	"T_t": Channel("T_t", "../trees/T_t.root", 47.0),
+	"Tbar_t": Channel("T_t", "../trees/Tbar_t.root", 25.0),
+	#"TTBar": Channel("TTBar", "data/stpol_TTBar_trees.root", 136.3)
 }
 
 
@@ -84,10 +87,15 @@ def normalize(h, to=1.0):
 	return h
 
 def canvas(s):
-	c = ROOT.TCanvas()
+	name = randStr(4)
+	c = ROOT.TCanvas(name, name)
 	c.SetCanvasSize(int(s*1280), int(s*1024))
-	c.SetWindowSize(int(s*1280), int(s*1024))
+	c.SetWindowSize(int(1.05*s*1280), int(1.05*s*1024))
 	return c
+
+def randStr(n):
+	chars = string.ascii_lowercase
+	return ''.join([random.choice(chars) for i in range(n)])
 
 def legend(corner=None):
 
@@ -96,8 +104,10 @@ def legend(corner=None):
 
 	if corner == "LU":
 		coords = [0.13, 0.64, 0.28, 0.87]
-	if corner == "RU":
+	elif corner == "RU":
 		coords = [0.56, 0.64, 0.71, 0.87]
+	elif corner == "CU":
+		coords = [0.42, 0.66, 0.58, 0.89]
 
 	leg = ROOT.TLegend(coords[0], coords[1], coords[2], coords[3])
 	leg.SetTextSize(0.05)

@@ -116,7 +116,7 @@ CandTransverseMassProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
 
 
     for(auto& c : *cands) {
-      LogDebug("produce()") << "Adding vector: pt " << c.p4().Pt() << " eta " << c.p4().Eta() << " phi " << c.p4().Phi();
+      LogDebug("produce()") << "Adding vector: pt " << c.p4().Pt() << " px " << c.p4().Px() << " py " << c.p4().Py();
       sumPx += c.p4().Px();
       sumPy += c.p4().Py();
       sumPt += c.p4().Pt();

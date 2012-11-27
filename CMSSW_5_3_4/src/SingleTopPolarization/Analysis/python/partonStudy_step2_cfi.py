@@ -1,73 +1,78 @@
 import FWCore.ParameterSet.Config as cms
 
-def PartonStudySetup(process):
-    process.cosThetaProducerTrueTopMu = cms.EDProducer('CosThetaProducer',
-        topSrc=cms.InputTag("genParticleSelectorMu", "trueTop"),
-        jetSrc=cms.InputTag("untaggedJets"),
-        leptonSrc=cms.InputTag("goodSignalMuons")
+def PartonStudySetup(process, untaggedSrc="fwdMostLightJet"):
+    process.cosThetaProducerTrueTop = cms.EDProducer('CosThetaProducer',
+        topSrc=cms.InputTag("genParticleSelector", "trueTop"),
+        jetSrc=cms.InputTag(untaggedSrc),
+        leptonSrc=cms.InputTag("goodSignalLeptons")
     )
 
-    process.cosThetaProducerTrueLeptonMu = cms.EDProducer('CosThetaProducer',
-        topSrc=cms.InputTag("recoTopMu"),
-        jetSrc=cms.InputTag("untaggedJets"),
-        leptonSrc=cms.InputTag("genParticleSelectorMu", "trueLepton")
+    process.cosThetaProducerTrueLepton = cms.EDProducer('CosThetaProducer',
+        topSrc=cms.InputTag("recoTop"),
+        jetSrc=cms.InputTag(untaggedSrc),
+        leptonSrc=cms.InputTag("genParticleSelector", "trueLepton")
     )
 
-    process.cosThetaProducerTrueJetMu = cms.EDProducer('CosThetaProducer',
-        topSrc=cms.InputTag("recoTopMu"),
-        jetSrc=cms.InputTag("genParticleSelectorMu", "trueLightJet"),
-        leptonSrc=cms.InputTag("goodSignalMuons")
+    process.cosThetaProducerTrueJet = cms.EDProducer('CosThetaProducer',
+        topSrc=cms.InputTag("recoTop"),
+        jetSrc=cms.InputTag("genParticleSelector", "trueLightJet"),
+        leptonSrc=cms.InputTag("goodSignalLeptons")
     )
 
     #Select the generated top quark, light jet and charged lepton
-    process.genParticleSelectorMu = cms.EDProducer('GenParticleSelector',
+    process.genParticleSelector = cms.EDProducer('GenParticleSelector',
          src=cms.InputTag("genParticles")
     )
 
-    process.hasGenMuon = cms.EDFilter(
+    process.hasGenLepton = cms.EDFilter(
         "PATCandViewCountFilter",
-        src=cms.InputTag("genParticleSelectorMu", "trueLepton"),
+        src=cms.InputTag("genParticleSelector", "trueLepton"),
         minNumber=cms.uint32(1),
         maxNumber=cms.uint32(1),
     )
 
-    process.trueCosThetaProducerMu = cms.EDProducer('CosThetaProducer',
-        topSrc=cms.InputTag("genParticleSelectorMu", "trueTop"),
-        jetSrc=cms.InputTag("genParticleSelectorMu", "trueLightJet"),
-        leptonSrc=cms.InputTag("genParticleSelectorMu", "trueLepton")
+    process.cosThetaProducerTrueAll = cms.EDProducer('CosThetaProducer',
+        topSrc=cms.InputTag("genParticleSelector", "trueTop"),
+        jetSrc=cms.InputTag("genParticleSelector", "trueLightJet"),
+        leptonSrc=cms.InputTag("genParticleSelector", "trueLepton")
     )
 
     process.matrixCreator = cms.EDAnalyzer('TransferMatrixCreator',
-        src = cms.InputTag("cosThetaProducerMu", "cosThetaLightJet"),
-        trueSrc = cms.InputTag("trueCosThetaProducerMu", "cosThetaLightJet")
+        src = cms.InputTag("cosTheta", "cosThetaLightJet"),
+        trueSrc = cms.InputTag("cosThetaProducerTrueAll", "cosThetaLightJet")
     )
 
     process.leptonComparer = cms.EDAnalyzer('ParticleComparer',
         src = cms.InputTag("goodSignalLeptons"),
-        trueSrc = cms.InputTag("genParticleSelectorMu", "trueLepton"),
+        trueSrc = cms.InputTag("genParticleSelector", "trueLepton"),
         maxMass=cms.untracked.double(.3)
     )
 
     process.jetComparer = cms.EDAnalyzer('ParticleComparer',
         src = cms.InputTag("untaggedJets"),
-        trueSrc = cms.InputTag("genParticleSelectorMu", "trueLightJet"),
+        trueSrc = cms.InputTag("genParticleSelector", "trueLightJet"),
         maxMass=cms.untracked.double(40.)
     )
 
     process.topComparer = cms.EDAnalyzer('ParticleComparer',
-        src = cms.InputTag("recoTopMu"),
-        trueSrc = cms.InputTag("genParticleSelectorMu", "trueTop"),
+        src = cms.InputTag("recoTop"),
+        trueSrc = cms.InputTag("genParticleSelector", "trueTop"),
         maxMass=cms.untracked.double(300.)
     )
 
-    process.partonStudyTrueSequence = cms.Sequence(process.genParticleSelectorMu * process.hasGenMuon * process.trueCosThetaProducerMu)
+    process.partonStudyTrueSequence = cms.Sequence(
+        process.genParticleSelector *
+        process.hasGenLepton *
+        process.cosThetaProducerTrueAll
+    )
+
     process.partonStudyCompareSequence = cms.Sequence(
-        process.hasGenMuon *
-        process.cosThetaProducerTrueTopMu *
-        process.cosThetaProducerTrueLeptonMu *
-        process.cosThetaProducerTrueJetMu *
+        process.hasGenLepton *
+        process.cosThetaProducerTrueTop *
+        process.cosThetaProducerTrueLepton *
+        process.cosThetaProducerTrueJet *
+        process.matrixCreator *
         process.leptonComparer *
         process.jetComparer *
-        process.topComparer *
-        process.matrixCreator
-        )
+        process.topComparer
+    )

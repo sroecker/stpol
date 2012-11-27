@@ -1,7 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 import SingleTopPolarization.Analysis.eventCounting as eventCounting
 
-def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False, doDebug=False, doMuon=True, doElectron=True, channel="sig", nJets=2, nBTags=1):
+def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False, doDebug=False, doMuon=True, doElectron=True, channel="sig", nJets=2, nBTags=1, reverseIsoCut=False):
     process = cms.Process("STPOLSEL2")
     eventCounting.countProcessed(process)
 
@@ -61,10 +61,10 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
     )
 
     from SingleTopPolarization.Analysis.muons_step2_cfi import MuonSetup
-    MuonSetup(process, isMC)
+    MuonSetup(process, isMC, doDebug=doDebug, reverseIsoCut=reverseIsoCut)
 
     from SingleTopPolarization.Analysis.electrons_step2_cfi import ElectronSetup
-    ElectronSetup(process, isMC)
+    ElectronSetup(process, isMC, doDebug=doDebug, reverseIsoCut=reverseIsoCut)
 
     process.goodSignalLeptons = cms.EDProducer(
          'CandRefCombiner',
@@ -105,7 +105,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
                     ["Pt", "pt"],
                     ["Eta", "eta"],
                     ["Phi", "phi"],
-                    ["deltaBetaCorrRelIso", "userFloat('deltaBetaCorrRelIso')"],
+                    ["relIso", "userFloat('deltaBetaCorrRelIso')"],
                 ]
                 )
             )
@@ -119,7 +119,8 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
                     ["Pt", "pt"],
                     ["Eta", "eta"],
                     ["Phi", "phi"],
-                    ["rhoCorrRelIso", "userFloat('rhoCorrRelIso')"],
+                    ["relIso", "userFloat('rhoCorrRelIso')"],
+                    ["mvaID", "electronID('mvaTrigV0')"],
                 ]
                 )
             )
@@ -210,7 +211,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
                 ]
             ),
             treeCollection(
-                cms.untracked.InputTag("genParticleSelectorMu", "trueTop", "STPOLSEL2"), 1,
+                cms.untracked.InputTag("genParticleSelector", "trueTop", "STPOLSEL2"), 1,
                 [
                     ["Pt", "pt"],
                     ["Eta", "eta"],
@@ -219,7 +220,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
                 ]
             ),
             treeCollection(
-                cms.untracked.InputTag("genParticleSelectorMu", "trueNeutrino", "STPOLSEL2"), 1,
+                cms.untracked.InputTag("genParticleSelector", "trueNeutrino", "STPOLSEL2"), 1,
                 [
                     ["Pt", "pt"],
                     ["Eta", "eta"],
@@ -230,7 +231,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
                 ]
             ),
             treeCollection(
-                cms.untracked.InputTag("genParticleSelectorMu", "trueLepton", "STPOLSEL2"), 1,
+                cms.untracked.InputTag("genParticleSelector", "trueLepton", "STPOLSEL2"), 1,
                 [
                     ["Pt", "pt"],
                     ["Eta", "eta"],
@@ -238,7 +239,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
                 ]
             ),
             treeCollection(
-                cms.untracked.InputTag("genParticleSelectorMu", "trueLightJet", "STPOLSEL2"), 1,
+                cms.untracked.InputTag("genParticleSelector", "trueLightJet", "STPOLSEL2"), 1,
                 [
                     ["Pt", "pt"],
                     ["Eta", "eta"],
@@ -258,10 +259,10 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
             #cms.InputTag("cosThetaProducerMu", "cosThetaLightJet"),
 
             #cosTheta* from gen
-            cms.InputTag("cosThetaProducerTrueTopMu", "cosThetaLightJet"),
-            cms.InputTag("cosThetaProducerTrueLeptonMu", "cosThetaLightJet"),
-            cms.InputTag("cosThetaProducerTrueJetMu", "cosThetaLightJet"),
-            cms.InputTag("trueCosThetaProducerMu", "cosThetaLightJet"),
+            cms.InputTag("cosThetaProducerTrueTop", "cosThetaLightJet"),
+            cms.InputTag("cosThetaProducerTrueLepton", "cosThetaLightJet"),
+            cms.InputTag("cosThetaProducerTrueJet", "cosThetaLightJet"),
+            cms.InputTag("cosThetaProducerTrueAll", "cosThetaLightJet"),
 
 
             #Transverse mass of MET and lepton
@@ -282,9 +283,15 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
 
     process.treesInt = cms.EDAnalyzer("IntTreemakerAnalyzer",
         collections = cms.VInputTag(
+            [
             cms.InputTag("recoNuProducerMu", "solType"),
+            cms.InputTag("recoNuProducerEle ", "solType"),
             cms.InputTag("muonCount"),
-            cms.InputTag("electronCount")
+            cms.InputTag("electronCount"),
+            cms.InputTag("topCount"),
+            cms.InputTag("bJetCount"),
+            cms.InputTag("lightJetCount")
+            ]
         )
     )
 
@@ -313,7 +320,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
 
     if doElectron:
         from SingleTopPolarization.Analysis.electrons_step2_cfi import ElectronPath
-        ElectronPath(process, isMC, channel)
+        ElectronPath(process, isMC, channel, doDebug=doDebug)
         process.elePath.insert(process.elePath.index(process.oneIsoEle)+1, process.goodSignalLeptons)
 
     process.treePath = cms.Path(process.treeSequence)
@@ -359,9 +366,11 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
         fileName=cms.string(outFile.replace(".root", "_trees.root")),
     )
     print "isMC: %s" % str(isMC)
-    
+
     print "onGrid: %s" % str(onGrid)
     print "channel: %s" % channel
+
+    print "lepton antiIso: %s" % reverseIsoCut
 
     print ""
     print "Running paths: %s" % str(process.paths.list)

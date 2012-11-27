@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-def JetSetup(process, isMC, doDebug, bTag="combinedSecondaryVertexBJetTags", bTagCut=0.679, nJets=2, nBTags=1):
+def JetSetup(process, isMC, doDebug, bTag="combinedSecondaryVertexMVABJetTags", bTagCut=0.679, nJets=2, nBTags=1, cutJets=True):
     print "Using %d jets, %d tags" % (nJets, nBTags)
     if isMC:
         jetCut = 'userFloat("pt_smear") > 40.'
@@ -42,12 +42,22 @@ def JetSetup(process, isMC, doDebug, bTag="combinedSecondaryVertexBJetTags", bTa
         cut=cms.string(bTagCutStr)
     )
 
+    process.bJetCount = cms.EDProducer(
+        "CollectionSizeProducer<reco::Candidate>",
+        src = cms.InputTag("btaggedJets")
+    )    
+
     #invert the b-tag cut
     process.untaggedJets = cms.EDFilter(
         "CandViewSelector",
         src=cms.InputTag("goodJets"),
         cut=cms.string(bTagCutStr.replace(">=", "<"))
     )
+
+    process.lightJetCount = cms.EDProducer(
+        "CollectionSizeProducer<reco::Candidate>",
+        src = cms.InputTag("untaggedJets")
+    ) 
 
     #Select the most forward untagged jet by absolute eta
     process.fwdMostLightJet = cms.EDFilter(
@@ -56,27 +66,27 @@ def JetSetup(process, isMC, doDebug, bTag="combinedSecondaryVertexBJetTags", bTa
         maxNumber = cms.uint32(1)
     )
 
-    if bTag == "combinedSecondaryVertexBJetTags":
+    if bTag == "combinedSecondaryVertexMVABJetTags":
         process.highestBTagJet = cms.EDFilter(
             'LargestCSVDiscriminatorJetViewProducer',
             src = cms.InputTag("btaggedJets"),
             maxNumber = cms.uint32(1)
         )
 
-    #Require exactly N jets
+    #Require exactly N jets if cutting on jets, otherwise 1...4 jets
     process.nJets = cms.EDFilter(
         "PATCandViewCountFilter",
         src=cms.InputTag("goodJets"),
-        minNumber=cms.uint32(nJets),
-        maxNumber=cms.uint32(nJets),
+        minNumber=cms.uint32(nJets if cutJets else 1),
+        maxNumber=cms.uint32(nJets if cutJets else 4),
     )
 
-    #Require exactly M bTags of the given type
+    #Require exactly M bTags, otherwise 0...3 bJets
     process.mBTags = cms.EDFilter(
         "PATCandViewCountFilter",
         src=cms.InputTag("btaggedJets"),
-        minNumber=cms.uint32(nBTags),
-        maxNumber=cms.uint32(nBTags),
+        minNumber=cms.uint32(nBTags if cutJets else 0),
+        maxNumber=cms.uint32(nBTags if cutJets else 3),
     )
 
     process.jetSequence = cms.Sequence(
@@ -84,6 +94,8 @@ def JetSetup(process, isMC, doDebug, bTag="combinedSecondaryVertexBJetTags", bTa
       process.goodJets *
       process.btaggedJets *
       process.untaggedJets *
+      process.bJetCount *
+      process.lightJetCount *
       process.fwdMostLightJet *
       process.highestBTagJet
     )
