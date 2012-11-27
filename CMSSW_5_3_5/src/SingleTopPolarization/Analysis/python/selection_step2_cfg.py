@@ -11,7 +11,9 @@ def SingleTopStep2(isMC,
     channel="sig",
     nJets=2, nBTags=1,
     reverseIsoCut=False,
-    muonIsoType="rhoCorrRelIso", eleMetType="MtW"
+    muonIsoType="rhoCorrRelIso",
+    eleMetType="MtW",
+    cutJets=True
     ):
     process = cms.Process("STPOLSEL2")
     eventCounting.countProcessed(process)
@@ -51,7 +53,7 @@ def SingleTopStep2(isMC,
     #-------------------------------------------------
 
     from SingleTopPolarization.Analysis.jets_step2_cfi import JetSetup
-    JetSetup(process, isMC, doDebug, nJets=nJets, nBTags=nBTags)
+    JetSetup(process, isMC, doDebug, nJets=nJets, nBTags=nBTags, cutJets=cutJets)
 
     #-------------------------------------------------
     # Leptons
