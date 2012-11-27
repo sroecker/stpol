@@ -36,6 +36,9 @@
 #include <DataFormats/PatCandidates/interface/Muon.h>
 #include <DataFormats/PatCandidates/interface/Electron.h>
 
+//Electron effective area
+#include <EGamma/EGammaAnalysisTools/interface/ElectronEffectiveArea.h>
+
 
 
 //
@@ -64,7 +67,7 @@ class LeptonIsolationProducer : public edm::EDProducer {
       const edm::InputTag leptonSource;
       const edm::InputTag rhoSource;
 
-      const float dR;
+      const double dR;
 
 
       // ----------member data ---------------------------
@@ -87,16 +90,6 @@ LeptonIsolationProducer<T>::LeptonIsolationProducer(const edm::ParameterSet& iCo
 , rhoSource(iConfig.getParameter<edm::InputTag>("rhoSrc"))
 , dR(iConfig.getParameter<double>("dR"))
 {
-   //register your products
-/* Examples
-   produces<ExampleData2>();
-
-   //if do put with a label
-   produces<ExampleData2>("label");
- 
-   //if you want to put into the Run
-   produces<ExampleData2,InRun>();
-*/
    produces<std::vector<T> >();
 
 
@@ -145,14 +138,15 @@ double LeptonIsolationProducer<pat::Muon>::effectiveArea(const reco::Candidate& 
 template <>
 double LeptonIsolationProducer<pat::Electron>::effectiveArea(const reco::Candidate& lepton) {
   LogDebug("effectiveArea()") << "Calculating electron effective area";
-  const double eta = fabs(lepton.eta());
-  if (eta < 1.0) return 0.19;
-  if (eta < 1.5) return 0.25;
-  if (eta < 2.0) return 0.12;
-  if (eta < 2.2) return 0.21;
-  if (eta < 2.3) return 0.27;
-  if (eta < 2.4) return 0.44;
-  else return 0.52;
+
+  const pat::Electron& _lepton = (const pat::Electron&)lepton;
+  const double eta = fabs(_lepton.superCluster()->eta());
+
+  return ElectronEffectiveArea::GetElectronEffectiveArea(
+    ElectronEffectiveArea::ElectronEffectiveAreaType::kEleGammaAndNeutralHadronIso03,
+    eta,
+    ElectronEffectiveArea::ElectronEffectiveAreaTarget::kEleEAData2012);
+
 }
 
 // ------------ method called to produce the data  ------------
