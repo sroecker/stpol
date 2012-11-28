@@ -37,7 +37,7 @@ def ElectronSetup(process, isMC, mvaCut=0.1, doDebug=False, metType="MtW", rever
 
 	looseVetoElectronCut = "pt > 20"
 	looseVetoElectronCut += "&& abs(eta) < 2.5"
-	#looseVetoElectronCut += "&& (0.0 < electronID('mvaTrigV0') < 1.0)"
+	looseVetoElectronCut += "&& (0.0 < electronID('mvaTrigV0') < 1.0)"
 	looseVetoElectronCut += "&& electronID('mvaTrigV0') > %f" % 0.1
 	looseVetoElectronCut += '&& userFloat("rhoCorrRelIso") < 0.3'
 

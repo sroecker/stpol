@@ -13,7 +13,8 @@ def SingleTopStep2(isMC,
     reverseIsoCut=False,
     muonIsoType="rhoCorrRelIso",
     eleMetType="MtW",
-    cutJets=True
+    cutJets=True,
+    eleMVACut=0.0
     ):
     process = cms.Process("STPOLSEL2")
     eventCounting.countProcessed(process)
@@ -77,7 +78,7 @@ def SingleTopStep2(isMC,
     MuonSetup(process, isMC, doDebug=doDebug, reverseIsoCut=reverseIsoCut, isoType=muonIsoType)
 
     from SingleTopPolarization.Analysis.electrons_step2_cfi import ElectronSetup
-    ElectronSetup(process, isMC, doDebug=doDebug, reverseIsoCut=reverseIsoCut, metType=eleMetType)
+    ElectronSetup(process, isMC, doDebug=doDebug, reverseIsoCut=reverseIsoCut, metType=eleMetType, mvaCut=eleMVACut)
 
     process.goodSignalLeptons = cms.EDProducer(
          'CandRefCombiner',
