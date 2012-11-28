@@ -54,10 +54,12 @@ hist_max = max(tree_mc.GetMaximum(args.var), tree_dt.GetMaximum(args.var)) if ar
 title = '%s.%s' % (args.tree, args.var)
 
 hist_mc   = TH1F('hist_mc', title, hist_bins, hist_min, hist_max)
-print 'Filling MC. Events:   ', tree_mc.Draw('%s>>hist_mc'%args.var, '{0}=={0}'.format(args.var), 'goff')
+filled_N_mc = tree_mc.Draw('%s>>hist_mc'%args.var, '{0}=={0}'.format(args.var), 'goff')
+print 'Filled MC events:    %8d' % filled_N_mc
 
 hist_dt   = TH1F('hist_dt', title, hist_bins, hist_min, hist_max)
-print 'Filling data. Events: ', tree_dt.Draw('%s>>hist_dt'%args.var, '{0}=={0}'.format(args.var), 'goff')
+filled_N_dt = tree_dt.Draw('%s>>hist_dt'%args.var, '{0}=={0}'.format(args.var), 'goff')
+print 'Filled data events:  %8d' % filled_N_dt
 
 # MC scaling
 effective_lumi = totalLuminosity*float(N_dt)/float(totalDataEvents)
@@ -76,18 +78,18 @@ print 'Expected events:     %8d' % expectedEvents
 print 'Cross section:   %8.2f' % ttbarCrossSection
 print 'Scaling factor:  %f' % scale_factor
 
-
 hist_dt.SetMarkerStyle(20)
 hist_mc.SetFillColor(ROOT.kOrange + 7)
 hist_mc.SetLineWidth(0)
 
+# y-axis scaling (with 10% margin)
+ymax = int(1.1 * max(hist_mc.GetMaximum(), hist_dt.GetMaximum()))
+hist_mc.SetMaximum(ymax)
+hist_dt.SetMaximum(ymax)
+
 canvas = TCanvas()
-if N_mc >= N_dt:
-	hist_mc.Draw('')
-	hist_dt.Draw('E1 SAME')
-else:
-	hist_dt.Draw('E1')
-	hist_mc.Draw('SAME')
+hist_mc.Draw('')
+hist_dt.Draw('E1 SAME')
 
 # Save the canvas:
 if args.save is not None:
