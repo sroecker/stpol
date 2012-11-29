@@ -1,0 +1,22 @@
+#!/bin/bash
+
+CFGFILE=$1
+SRC=$2
+JOBNAME=$3
+num_files=16
+
+if [ -d "$JOBNAME" ]; then
+    echo "Directory "$JOBNAME" already exists"
+    return
+fi
+
+mkdir $JOBNAME
+total_lines=$(cat ${SRC} | wc -l)
+((lines_per_file = (total_lines + num_files - 1) / num_files))
+
+split -l ${lines_per_file} ${SRC} ${JOBNAME}'/job_'
+
+for file in $JOBNAME/job_*
+do
+  cmsRun ${CFGFILE} inputFiles_load=${file} outputFile=${file}_out.root &> ${file}.log &
+done
