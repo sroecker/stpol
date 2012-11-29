@@ -255,7 +255,7 @@ GenericViewTreemakerAnalyzer<T, C>::analyze(const edm::Event& iEvent, const edm:
         i++;
       }
     } else { //
-      edm::LogWarning("produce()") << "Collection " << collectionName << " does not exist in event";
+      LogDebug("produce()") << "Collection " << collectionName << " does not exist in event";
     }
   }
 

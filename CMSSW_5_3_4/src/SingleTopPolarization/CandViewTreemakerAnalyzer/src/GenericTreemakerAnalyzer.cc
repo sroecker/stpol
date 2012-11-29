@@ -174,7 +174,7 @@ GenericTreemakerAnalyzer<T, C>::analyze(const edm::Event& iEvent, const edm::Eve
       *(treeValues[cols.first]) = *object;
     } else {
       if(reportMissing) {
-          LogError("produce()") << "Collection " << cols.second.encode() << " is not available";
+          LogDebug("produce()") << "Collection " << cols.second.encode() << " is not available";
       }
     }
 
