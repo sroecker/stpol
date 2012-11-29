@@ -132,6 +132,7 @@ def ElectronPath(process, isMC, channel, doDebug=False):
 	process.efficiencyAnalyzerEle = cms.EDAnalyzer('EfficiencyAnalyzer'
 	, histogrammableCounters = cms.untracked.vstring(["elePath"])
 	, elePath = cms.untracked.vstring([
+		"PATTotalEventsProcessedCount",
 		"singleTopPathStep1ElePreCount",
 		"singleTopPathStep1ElePostCount",
 		"elePathPreCount",
