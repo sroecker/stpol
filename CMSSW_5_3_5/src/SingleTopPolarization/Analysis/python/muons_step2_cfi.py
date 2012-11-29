@@ -139,6 +139,7 @@ def MuonPath(process, isMC, channel="sig"):
 	process.efficiencyAnalyzerMu = cms.EDAnalyzer('EfficiencyAnalyzer'
 	, histogrammableCounters = cms.untracked.vstring(["muPath"])
 	, muPath = cms.untracked.vstring([
+		"PATTotalEventsProcessedCount",
 		"singleTopPathStep1MuPreCount",
 		"singleTopPathStep1MuPostCount",
 		"muPathPreCount",
