@@ -30,6 +30,11 @@ class Cuts:
 	mlnu = Cut("ml#nu", "_recoTop_0_Mass>130&&_recoTop_0_Mass<220")
 	etaLJ = Cut("#eta_{lj}", "abs(_fwdMostLightJet_0_Eta)>2.5")
 	sidebandRegion = Cut("!ml#nu", "!(_recoTop_0_Mass>130&&_recoTop_0_Mass<220)")
+	jetPt = Cut("jetPt", "_fwdMostLightJet_0_Pt > 60 && _highestBTagJet_0_Pt>60")
+	jetEta = Cut("jetEta", "abs(_fwdMostLightJet_0_Eta) < 4.5 && abs(_highestBTagJet_0_Eta) < 4.5")
+	jetRMS = Cut("jetRMS", "_fwdMostLightJet_0_rms < 0.025")
+	met = Cut("jetRMS", "_muAndMETMT > 50 | _eleAndMETMT > 50")
+	Orso = mlnu + jets_2J1T + jetPt + jetRMS + met + jetEta
 
 class Channel:
 	def __init__(self, channelName, fileName, crossSection, color=None):
@@ -54,7 +59,7 @@ class Channel:
 
 
 
-	def plot1D(self, varName, r=[100, None, None], cut=None, fn="", weight=None):
+	def plot1D(self, var, r=[100, None, None], cut=None, fn="", weight=None):
 		c = ROOT.TCanvas()
 		c.SetBatch(True)
 		if r[1] is None:
@@ -123,6 +128,8 @@ def legend(corner=None):
 		coords = [0.42, 0.66, 0.58, 0.89]
 	elif corner == "R":
 		coords = [0.87, 0.12, 0.99, 0.90]
+	elif corner == "RL":
+		coords = [0.73, 0.20, 0.88, 0.43]
 
 	leg = ROOT.TLegend(coords[0], coords[1], coords[2], coords[3])
 	leg.SetTextSize(0.05)
