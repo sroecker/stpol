@@ -2,6 +2,7 @@
 #mv CMSSW_5_3_4_cand1/SingleTopPolarization ./
 #Tags for https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuidePATReleaseNotes52X#V08_09_43
 CMSVERSION=CMSSW_5_3_5
+echo "Stashing current working directory, use 'git stash pop' later to retrieve"
 git stash
 rm -Rf $CMSVERSION
 export SCRAM_ARCH=slc5_amd64_gcc462
