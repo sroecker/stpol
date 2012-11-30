@@ -110,6 +110,7 @@ SimpleElectronAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     const pat::Electron& obj = (const pat::Electron& )pobj;
     edm::LogInfo("analyze()") << o.label() << "(" << i << "):" <<
     " pt: " << obj.pt() << 
+    " ecalPt: " << obj.ecalDrivenMomentum().Pt() << 
     " eta: " << obj.eta() <<
     " phi: " << obj.phi() << 
     " rhoCorrRelIso: " << obj.userFloat("rhoCorrRelIso") <<

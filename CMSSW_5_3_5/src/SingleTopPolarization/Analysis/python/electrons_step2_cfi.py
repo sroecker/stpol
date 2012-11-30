@@ -16,11 +16,12 @@ def ElectronSetup(
 	doDebug=False,
 	metType="MtW",
 	reverseIsoCut=False,
-	applyMVA=True
+	applyMVA=True,
+	electronPt="ecalDrivenMomentum.Pt()"
 	):
 
 
-	goodElectronCut = "pt>30"
+	goodElectronCut = "%s>30" % electronPt
 	goodElectronCut += "&& abs(eta)<2.5"
 	goodElectronCut += "&& !(1.4442 < abs(superCluster.eta) < 1.5660)"
 	goodElectronCut += "&& passConversionVeto()"
@@ -43,7 +44,7 @@ def ElectronSetup(
 	# goodQCDElectronCut += '&& userFloat("rhoCorrRelIso") > 0.2'
 	# goodQCDElectronCut += '&& userFloat("rhoCorrRelIso") < 0.5'
 
-	looseVetoElectronCut = "pt > 20"
+	looseVetoElectronCut = "%s > 20" % electronPt
 	looseVetoElectronCut += "&& abs(eta) < 2.5"
 	#looseVetoElectronCut += "&& (0.0 < electronID('mvaTrigV0') < 1.0)"
 	looseVetoElectronCut += "&& electronID('mvaTrigV0') > %f" % 0.1

@@ -14,7 +14,8 @@ def SingleTopStep2(isMC,
     muonIsoType="deltaBetaCorrRelIso",
     eleMetType="MtW",
     cutJets=True,
-    eleMVACut=0.1
+    eleMVACut=0.1,
+    electronPt="ecalDrivenMomentum.Pt()"
     ):
     
     process = cms.Process("STPOLSEL2")
@@ -79,7 +80,7 @@ def SingleTopStep2(isMC,
     MuonSetup(process, isMC, doDebug=doDebug, reverseIsoCut=reverseIsoCut, isoType=muonIsoType)
 
     from SingleTopPolarization.Analysis.electrons_step2_cfi import ElectronSetup
-    ElectronSetup(process, isMC, doDebug=doDebug, reverseIsoCut=reverseIsoCut, metType=eleMetType, mvaCut=eleMVACut)
+    ElectronSetup(process, isMC, doDebug=doDebug, reverseIsoCut=reverseIsoCut, metType=eleMetType, mvaCut=eleMVACut, electronPt=electronPt)
 
     process.goodSignalLeptons = cms.EDProducer(
          'CandRefCombiner',
@@ -120,7 +121,8 @@ def SingleTopStep2(isMC,
                     ["Pt", "pt"],
                     ["Eta", "eta"],
                     ["Phi", "phi"],
-                    ["relIso", "userFloat('deltaBetaCorrRelIso')"],
+                    ["relIso", "userFloat('%s')" % muonIsoType],
+                    ["Charge", "charge"],
                 ]
                 )
             )
@@ -131,11 +133,12 @@ def SingleTopStep2(isMC,
             treeCollection(
                 cms.untracked.InputTag("goodSignalElectrons"), 1,
                 [
-                    ["Pt", "pt"],
+                    ["Pt", "%s" % electronPt],
                     ["Eta", "eta"],
                     ["Phi", "phi"],
                     ["relIso", "userFloat('rhoCorrRelIso')"],
                     ["mvaID", "electronID('mvaTrigV0')"],
+                    ["Charge", "charge"],
                 ]
                 )
             )
