@@ -1,7 +1,11 @@
 import FWCore.ParameterSet.Config as cms
 
 def JetSetup(process, isMC, doDebug, bTag="combinedSecondaryVertexMVABJetTags", bTagCut=0.679, nJets=2, nBTags=1, cutJets=True):
-    print "Using %d jets, %d tags" % (nJets, nBTags)
+    if cutJets:
+        print "CUT\tJets: Using %d jets, %d tags" % (nJets, nBTags)
+    else:
+        print "CUT\tJets: keeping all events with >=1 jet and >=0 btag"
+        
     if isMC:
         jetCut = 'userFloat("pt_smear") > 40.'
     else:
