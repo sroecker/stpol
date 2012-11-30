@@ -9,7 +9,15 @@ doDebug - enable various debugging printout modules
 metType - choose either between 'MtW' for the W transverse mass or 'MET' for a simple MET cut
 reverseIsoCut - 'True' to choose the anti-isolated leptons, 'False' to choose isolated leptons
 """
-def ElectronSetup(process, isMC, mvaCut=0.1, doDebug=False, metType="MtW", reverseIsoCut=False, applyMVA=True):
+def ElectronSetup(
+	process,
+	isMC,
+	mvaCut=0.1,
+	doDebug=False,
+	metType="MtW",
+	reverseIsoCut=False,
+	applyMVA=True
+	):
 
 
 	goodElectronCut = "pt>30"
