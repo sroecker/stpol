@@ -11,10 +11,10 @@ def SingleTopStep2(isMC,
     channel="sig",
     nJets=2, nBTags=1,
     reverseIsoCut=False,
-    muonIsoType="rhoCorrRelIso",
+    muonIsoType="deltaBetaCorrRelIso",
     eleMetType="MtW",
     cutJets=True,
-    eleMVACut=0.0
+    eleMVACut=0.1
     ):
     
     process = cms.Process("STPOLSEL2")
@@ -72,7 +72,7 @@ def SingleTopStep2(isMC,
       'ElectronIsolationProducer',
       leptonSrc = cms.InputTag("electronsWithID"),
       rhoSrc = cms.InputTag("kt6PFJets", "rho"),
-      dR = cms.double(0.4)
+      dR = cms.double(0.3)
     )
 
     from SingleTopPolarization.Analysis.muons_step2_cfi import MuonSetup
