@@ -62,8 +62,7 @@ filled_N_dt = tree_dt.Draw('%s>>hist_dt'%args.var, '{0}=={0}'.format(args.var), 
 print 'Filled data events:  %8d' % filled_N_dt
 
 # MC scaling
-effective_lumi = totalLuminosity*float(N_dt)/float(totalDataEvents)
-#effective_lumi = totalLuminosity
+effective_lumi = totalLuminosity*float(tree_dt.GetEntries())/float(totalDataEvents)
 expectedEvents = ttbarCrossSection*effective_lumi
 scale_factor = float(expectedEvents)/float(N_mc)
 hist_mc.Scale(scale_factor)
