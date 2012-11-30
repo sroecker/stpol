@@ -9,7 +9,6 @@ ttbarCrossSection = 136.3 # pb, from PREP
 
 # Extra parameters from arguments:
 parser = argparse.ArgumentParser(description='Plots MC and Data for some variable.')
-parser.add_argument('tree')
 parser.add_argument('var')
 parser.add_argument('mc') # MC root file
 parser.add_argument('data') # DATA root file
@@ -32,16 +31,25 @@ elif args.b and args.save is None:
 	exit(-1)
 
 # Open root files and get respective trees:
-def openTree(fname, treename):
-	print 'Open: from file `%s` tree `%s`.'%(fname, treename)
+def openTree(fname):
+	print 'Open file: `%s`'%(fname)
 	tfile = TFile(fname)
 	if tfile.IsZombie():
 		raise Exception('Error opening file "%s"!'%fname)
-	tree = tfile.Get(treename).Get('eventTree')
+	
+	# We'll load all the trees
+	keys = [x.GetName() for x in tfile.GetListOfKeys()]
+	tree_names = filter(lambda x: x.startswith("trees"), keys)
+	trees = [tfile.Get(k).Get("eventTree") for k in tree_names]
+	for t in trees[1:]:
+		trees[0].AddFriend(t)
+	tree = trees[0]
+	
+	# Get the total number of events and return
 	N = tfile.Get('efficiencyAnalyzerMu').Get('muPath').GetBinContent(1)
 	return (tree, tfile, N)
-(tree_mc, tfile_mc, N_mc) = openTree(args.mc, args.tree)
-(tree_dt, tfile_dt, N_dt) = openTree(args.data, args.tree)
+(tree_mc, tfile_mc, N_mc) = openTree(args.mc)
+(tree_dt, tfile_dt, N_dt) = openTree(args.data)
 
 print 'Drawing variable `%s`' % args.var
 
@@ -51,7 +59,7 @@ hist_min = min(tree_mc.GetMinimum(args.var), tree_dt.GetMinimum(args.var)) if ar
 hist_max = max(tree_mc.GetMaximum(args.var), tree_dt.GetMaximum(args.var)) if args.hist is None else args.hist[1]
 
 # Histograms
-title = '%s.%s' % (args.tree, args.var)
+title = '%s' % (args.var)
 
 hist_mc   = TH1F('hist_mc', title, hist_bins, hist_min, hist_max)
 filled_N_mc = tree_mc.Draw('%s>>hist_mc'%args.var, '{0}=={0}'.format(args.var), 'goff')
