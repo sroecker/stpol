@@ -15,7 +15,17 @@ from HLTrigger.HLTfilters.hltHighLevel_cfi import *
 from PhysicsTools.PatAlgos.selectionLayer1.jetSelector_cfi import *
 
 
-def SingleTopStep1(process, isMC, doDebug=False, doSkimming=True, doSlimming=True, doMuon=True, doElectron=True, onGrid=False, maxLeptonIso=0.2):
+def SingleTopStep1(
+  process,
+  isMC,
+  doDebug=False, 
+  doSkimming=True,
+  doSlimming=True,
+  doMuon=True,
+  doElectron=True,
+  onGrid=False,
+  maxLeptonIso=0.2
+  ):
 
   if doDebug:
       process.load("FWCore.MessageLogger.MessageLogger_cfi")
