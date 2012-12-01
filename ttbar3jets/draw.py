@@ -1,6 +1,15 @@
 import argparse
 import ROOT
-from ROOT import TH1F,TFile,TCanvas,TLegend
+from ROOT import TH1F,TFile,TCanvas,TLegend,TText
+
+def th_sep(i, sep=','):
+	i = abs(int(i))
+	o = []
+	while i > 0:
+		o.append(i%1000)
+		i /= 1000
+	o.reverse()
+	return str(sep).join([str(o[0])] + map(lambda x: '%03d'%x, o[1:]))
 
 # Data parameters
 totalDataEvents = 5363303 # from DAS
@@ -19,6 +28,8 @@ parser.add_argument('--hist', type=float,
                     help='min and max boundary values for the histogram')
 parser.add_argument('--bins', type=int, default=16,
                     help='number of histogram bins')
+parser.add_argument('-i', '--info', action='store_true',
+                    help='create another pad with important values and variables')
 parser.add_argument('--save', help='save the histogram to a file')
 parser.add_argument('-b', action='store_true',
                     help='run in batch mode. Requires --save.')
@@ -113,9 +124,35 @@ ymax = int(1.1 * max(hist_mc.GetMaximum(), hist_dt.GetMaximum()))
 hist_mc.SetMaximum(ymax)
 hist_dt.SetMaximum(ymax)
 
-canvas = TCanvas()
-hist_mc.Draw('')
-hist_dt.Draw('E1 SAME')
+# Remove statistics boxes from histograms
+hist_mc.SetStats(False)
+hist_dt.SetStats(False)
+
+# Drawing
+if args.info:
+	canvas = TCanvas('canvas', 'Plot of `%s`'%args.var, 700, 800)
+	canvas.Divide(1,2)
+
+	canvas.cd(1)
+	hist_mc.Draw('')
+	hist_dt.Draw('E1 SAME')
+
+	canvas.cd(2)
+	texts = [
+		TText(0.0, 0.95, 'Variable: %s' % (args.var)),
+		TText(0.0, 0.90, 'Lumi / cr.sec / exp.ev = %.2f / %.2f / %.2f' % (totalLuminosity, ttbarCrossSection, expectedEvents)),
+		TText(0.0, 0.85, 'Total events (mc / data): %s / %s' % (th_sep(N_mc), th_sep(N_dt))),
+		TText(0.0, 0.80, 'Filled events (mc / data): %d / %d' % (filled_N_mc, filled_N_dt)),
+		TText(0.0, 0.75, 'MC scaling factor / scaled events: %.5f / %.2f' % (scale_factor, scale_factor*filled_N_mc)),
+		TText(0.0, 0.70, 'Cuts:'),
+		TText(0.0, 0.65, cuts_str)
+	]
+	for t in texts:
+		t.Draw()
+else:
+	canvas = TCanvas('canvas', 'Plot of `%s`'%args.var)
+	hist_mc.Draw('')
+	hist_dt.Draw('E1 SAME')
 
 # Save the canvas:
 if args.save is not None:
