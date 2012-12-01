@@ -12,6 +12,8 @@ parser = argparse.ArgumentParser(description='Plots MC and Data for some variabl
 parser.add_argument('var')
 parser.add_argument('mc') # MC root file
 parser.add_argument('data') # DATA root file
+parser.add_argument('-c', '--cut', action='append', default=[],
+                    help='additional cuts')
 parser.add_argument('--hist', type=float,
                     nargs=2, metavar=('min', 'max'),
                     help='min and max boundary values for the histogram')
@@ -61,13 +63,21 @@ hist_max = max(tree_mc.GetMaximum(args.var), tree_dt.GetMaximum(args.var)) if ar
 # Histograms
 title = '%s' % (args.var)
 
+# Additional cuts applied
+cuts = ['_topCount==1'] + args.cut
+cuts_str = '&&'.join(map(lambda s: '('+str(s)+')', cuts))
+print 'Cuts applied:'
+for c in cuts:
+	print '>', c
+print 'Cuts string: `%s`' % cuts_str
+print
+
+# Creating the histograms
 hist_mc   = TH1F('hist_mc', title, hist_bins, hist_min, hist_max)
-filled_N_mc = tree_mc.Draw('%s>>hist_mc'%args.var, '{0}=={0}'.format(args.var), 'goff')
-print 'Filled MC events:    %8d' % filled_N_mc
+filled_N_mc = tree_mc.Draw('%s>>hist_mc'%args.var, cuts_str, 'goff')
 
 hist_dt   = TH1F('hist_dt', title, hist_bins, hist_min, hist_max)
-filled_N_dt = tree_dt.Draw('%s>>hist_dt'%args.var, '{0}=={0}'.format(args.var), 'goff')
-print 'Filled data events:  %8d' % filled_N_dt
+filled_N_dt = tree_dt.Draw('%s>>hist_dt'%args.var, cuts_str, 'goff')
 
 # MC scaling
 effective_lumi = totalLuminosity*float(tree_dt.GetEntries())/float(totalDataEvents)
@@ -75,15 +85,24 @@ expectedEvents = ttbarCrossSection*effective_lumi
 scale_factor = float(expectedEvents)/float(N_mc)
 hist_mc.Scale(scale_factor)
 
-print 'Initial MC events:   %8d' % N_mc
-print 'Initial data events: %8d' % N_dt
-print 'Total data events:   %8d' % totalDataEvents
+# Some verbosity...
+print 'Filled MC events:      %8d' % filled_N_mc
+print 'Filled data events:    %8d' % filled_N_dt
+print 'Initial MC events:     %8d' % N_mc
+print 'Initial data events:   %8d' % N_dt
+print 'Events with top (MC):  %8d' % tree_mc.GetEntries('_topCount==1')
+print 'Events with top (DT):  %8d' % tree_dt.GetEntries('_topCount==1')
+print 'Events with cuts (MC): %8d' % tree_mc.GetEntries(cuts_str)
+print 'Events with cuts (DT): %8d' % tree_dt.GetEntries(cuts_str)
+print 'Total data events:     %8d' % totalDataEvents
+print
 
-print 'Luminosity:      %8.2f' % totalLuminosity
-print 'Eff, luminosity: %8.2f' % effective_lumi
-print 'Expected events:     %8d' % expectedEvents
-print 'Cross section:   %8.2f' % ttbarCrossSection
-print 'Scaling factor:  %f' % scale_factor
+print 'Luminosity:            %8.2f' % totalLuminosity
+print 'Eff, luminosity:       %8.2f' % effective_lumi
+print 'Expected events:       %8d' % expectedEvents
+print 'Cross section:         %8.2f' % ttbarCrossSection
+print 'Scaling factor:        %f' % scale_factor
+print
 
 hist_dt.SetMarkerStyle(20)
 hist_mc.SetFillColor(ROOT.kOrange + 7)
