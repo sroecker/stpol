@@ -6,6 +6,7 @@ def TopRecoSetup(process, leptonSource="goodSignal", bTagSource="highestBTagJet"
 	eleSource = leptonSource + "Electrons"
 	muSource = leptonSource + "Muons"
 
+	#Combine the neutrino collections produced in the electron and muon paths, taking exactly 1 neutrino per event
 	process.recoNu = cms.EDProducer(
 		 'CandRefCombiner',
 		 sources=cms.untracked.vstring(["recoNuProducerMu", "recoNuProducerEle"]),

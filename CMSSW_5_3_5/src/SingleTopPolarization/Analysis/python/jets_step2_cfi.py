@@ -70,12 +70,19 @@ def JetSetup(process, isMC, doDebug, bTag="combinedSecondaryVertexMVABJetTags", 
         maxNumber = cms.uint32(1)
     )
 
-    if bTag == "combinedSecondaryVertexMVABJetTags":
-        process.highestBTagJet = cms.EDFilter(
-            'LargestCSVDiscriminatorJetViewProducer',
-            src = cms.InputTag("btaggedJets"),
-            maxNumber = cms.uint32(1)
-        )
+    process.highestBTagJet = cms.EDFilter(
+        'LargestBDiscriminatorJetViewProducer',
+        src = cms.InputTag("btaggedJets"),
+        maxNumber = cms.uint32(1),
+        bDiscriminator = cms.string(bTag),
+        reverse = cms.bool(False)
+    )
+
+    #Take the jet with the lowest overall b-discriminator value as the light jet
+    process.lowestBTagJet = process.highestBTagJet.clone(
+        src = cms.InputTag("untaggedJets"),
+        reverse = cms.bool(True)
+    )
 
     #Require exactly N jets if cutting on jets, otherwise 1...4 jets
     process.nJets = cms.EDFilter(
@@ -101,7 +108,8 @@ def JetSetup(process, isMC, doDebug, bTag="combinedSecondaryVertexMVABJetTags", 
       process.bJetCount *
       process.lightJetCount *
       process.fwdMostLightJet *
-      process.highestBTagJet
+      process.highestBTagJet * 
+      process.lowestBTagJet
     )
 
     if isMC:

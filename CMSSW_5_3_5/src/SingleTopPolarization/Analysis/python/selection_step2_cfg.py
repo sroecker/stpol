@@ -94,7 +94,7 @@ def SingleTopStep2(isMC,
     #-----------------------------------------------
 
     from SingleTopPolarization.Analysis.top_step2_cfi import TopRecoSetup
-    TopRecoSetup(process, untaggedSource="fwdMostLightJet")
+    TopRecoSetup(process, untaggedSource="lowestBTagJet")
 
     #-----------------------------------------------
     # Treemaking
@@ -145,8 +145,9 @@ def SingleTopStep2(isMC,
     )
     process.treesJets = cms.EDAnalyzer('JetCandViewTreemakerAnalyzer',
             collections = cms.untracked.VPSet(
+            #all the selected jets in events, passing the reference selection cuts, ordered pt-descending
             treeCollection(
-                cms.untracked.InputTag("untaggedJets"), nJets-nBTags,
+                cms.untracked.InputTag("goodJets"), 5,
                 [
                     ["Pt", "pt"],
                     ["Eta", "eta"],
@@ -156,17 +157,19 @@ def SingleTopStep2(isMC,
                     ["rms", "userFloat('rms')"]
                 ]
             ),
-            treeCollection(
-                cms.untracked.InputTag("fwdMostLightJet"), 1,
-                [
-                    ["Pt", "pt"],
-                    ["Eta", "eta"],
-                    ["Phi", "phi"],
-                    ["Mass", "mass"],
-                    ["bDiscriminator", "bDiscriminator('combinedSecondaryVertexBJetTags')"],
-                    ["rms", "userFloat('rms')"]
-                ]
-            ),
+            # treeCollection(
+            #     cms.untracked.InputTag("fwdMostLightJet"), 1,
+            #     [
+            #         ["Pt", "pt"],
+            #         ["Eta", "eta"],
+            #         ["Phi", "phi"],
+            #         ["Mass", "mass"],
+            #         ["bDiscriminator", "bDiscriminator('combinedSecondaryVertexBJetTags')"],
+            #         ["rms", "userFloat('rms')"]
+            #     ]
+            # ),
+            
+            #the tagged jet with the highest b-discriminator value (== THE b-jet)
             treeCollection(
                 cms.untracked.InputTag("highestBTagJet"), 1,
                 [
@@ -178,8 +181,10 @@ def SingleTopStep2(isMC,
                     ["rms", "userFloat('rms')"]
                 ]
             ),
+
+            #The jet with the lowest b-discriminator value (== THE light jet)
             treeCollection(
-                cms.untracked.InputTag("btaggedJets"), nBTags,
+                cms.untracked.InputTag("lowestBTagJet"), 1,
                 [
                     ["Pt", "pt"],
                     ["Eta", "eta"],
@@ -188,7 +193,18 @@ def SingleTopStep2(isMC,
                     ["bDiscriminator", "bDiscriminator('combinedSecondaryVertexBJetTags')"],
                     ["rms", "userFloat('rms')"]
                 ]
-            )
+            ),
+            # treeCollection(
+            #     cms.untracked.InputTag("btaggedJets"), nBTags,
+            #     [
+            #         ["Pt", "pt"],
+            #         ["Eta", "eta"],
+            #         ["Phi", "phi"],
+            #         ["Mass", "mass"],
+            #         ["bDiscriminator", "bDiscriminator('combinedSecondaryVertexBJetTags')"],
+            #         ["rms", "userFloat('rms')"]
+            #     ]
+            # )
         )
     )
 
