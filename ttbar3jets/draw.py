@@ -131,24 +131,36 @@ hist_dt.SetStats(False)
 # Drawing
 if args.info:
 	canvas = TCanvas('canvas', 'Plot of `%s`'%args.var, 700, 800)
-	canvas.Divide(1,2)
+	upperPad = ROOT.TPad('graph', '', 0.005, 0.420, 0.995, 0.995)
+	upperPad.Draw()
+	lowerPad = ROOT.TPad('text',  '', 0.020, 0.005, 0.995, 0.420)
+	lowerPad.Draw()
 
-	canvas.cd(1)
+	upperPad.cd()
 	hist_mc.Draw('')
 	hist_dt.Draw('E1 SAME')
 
-	canvas.cd(2)
+	lowerPad.cd()
 	texts = [
 		TText(0.0, 0.95, 'Variable: %s' % (args.var)),
 		TText(0.0, 0.90, 'Lumi / cr.sec / exp.ev = %.2f / %.2f / %.2f' % (totalLuminosity, ttbarCrossSection, expectedEvents)),
 		TText(0.0, 0.85, 'Total events (mc / data): %s / %s' % (th_sep(N_mc), th_sep(N_dt))),
 		TText(0.0, 0.80, 'Filled events (mc / data): %d / %d' % (filled_N_mc, filled_N_dt)),
 		TText(0.0, 0.75, 'MC scaling factor / scaled events: %.5f / %.2f' % (scale_factor, scale_factor*filled_N_mc)),
-		TText(0.0, 0.70, 'Cuts:'),
-		TText(0.0, 0.65, cuts_str)
+		TText(0.0, 0.65, 'Cuts (&&-ed together):')
 	]
+	
+	y=0.60; dy=-0.05
+	for s in cuts:
+		texts.append(TText(0.0, y, '       ' + s))
+		y += dy
+	
 	for t in texts:
 		t.Draw()
+	
+	lowerPad.Modify()
+	upperPad.Modify()
+	canvas.Update()
 else:
 	canvas = TCanvas('canvas', 'Plot of `%s`'%args.var)
 	hist_mc.Draw('')
