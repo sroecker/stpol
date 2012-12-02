@@ -1,12 +1,16 @@
 #/bin/bash
-file_mc="stpol_TTbar_3J1T_numEvent2000000_trees.root"
-file_dt="stpol_Data_3J1T_numEvent10000000_trees.root"
+file_mc="trees/stpol_ttbar_3J1T.root"
+file_dt="trees/stpol_data_3J1T.root"
 
-cuts="--cut _fwdMostLightJet_0_Pt>60 --cut _fwdMostLightJet_0_rms<0.025"
+cuts="--cut _goodJets_0_Pt>60 --cut _goodJets_1_Pt>60"
 flags="--info"
 
-echo ">>> Plotting: Forward Most Light Jet Eta <<<"
-python draw.py $flags _fwdMostLightJet_0_Eta $file_mc $file_dt --hist -6.28 6.28 $cuts -b --save plot_jeteta_cuts.png
+echo ">>> Plotting: Light Jet Eta <<<"
+python draw.py $flags "_lowestBTagJet_0_Eta" $file_mc $file_dt --hist -5 5 $cuts -b --save plot_jeteta_cuts.png
+echo
+
+echo ">>> Plotting: Abs of Light Jet Eta <<<"
+python draw.py $flags "abs(_lowestBTagJet_0_Eta)" $file_mc $file_dt --hist 0 4.5 $cuts -b --save plot_jeteta_cuts.png
 echo
 
 echo ">>> Plotting: Top mass <<<"

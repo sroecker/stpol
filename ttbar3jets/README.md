@@ -16,6 +16,11 @@ The file lists used:
 *	For MC: `/fileLists/TTBar.txt`
 *	For data: `/fileLists/SingleMu1.txt`
 
+`util/bcmsRun` (parallelised version of `cmsRun`) can be used to create
+TTrees more quickly.
+
+Example:
+> `. ../../util/bcmsRun ../../runconfs/step2_cfg.py ../../fileLists/TTBar.txt ttbar nJ=3 nB=1 mc hlt mu`
 
 Drawing the graphs
 ------------------
@@ -60,3 +65,11 @@ Information about ROOT files
 ----------------------------
 `working.py` gives a quick overview of some of the parameters of
 a particular ROOT file.
+
+
+Structure of step2 root files
+-----------------------------
+All jets are stored in the decreasing order of Pt as
+`_goodJets_n_*`, where `n=0,1,2,...`.
+
+Light jet is `_lowestBTagJet_0_*` (previously `_fwdMostLightJet_0_`)
