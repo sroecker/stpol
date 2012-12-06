@@ -9,10 +9,19 @@ doDebug - enable various debugging printout modules
 metType - choose either between 'MtW' for the W transverse mass or 'MET' for a simple MET cut
 reverseIsoCut - 'True' to choose the anti-isolated leptons, 'False' to choose isolated leptons
 """
-def ElectronSetup(process, isMC, mvaCut=0.1, doDebug=False, metType="MtW", reverseIsoCut=False, applyMVA=True):
+def ElectronSetup(
+	process,
+	isMC,
+	mvaCut=0.1,
+	doDebug=False,
+	metType="MtW",
+	reverseIsoCut=False,
+	applyMVA=True,
+	electronPt="ecalDrivenMomentum.Pt()"
+	):
 
 
-	goodElectronCut = "pt>30"
+	goodElectronCut = "%s>30" % electronPt
 	goodElectronCut += "&& abs(eta)<2.5"
 	goodElectronCut += "&& !(1.4442 < abs(superCluster.eta) < 1.5660)"
 	goodElectronCut += "&& passConversionVeto()"
@@ -35,7 +44,7 @@ def ElectronSetup(process, isMC, mvaCut=0.1, doDebug=False, metType="MtW", rever
 	# goodQCDElectronCut += '&& userFloat("rhoCorrRelIso") > 0.2'
 	# goodQCDElectronCut += '&& userFloat("rhoCorrRelIso") < 0.5'
 
-	looseVetoElectronCut = "pt > 20"
+	looseVetoElectronCut = "%s > 20" % electronPt
 	looseVetoElectronCut += "&& abs(eta) < 2.5"
 	#looseVetoElectronCut += "&& (0.0 < electronID('mvaTrigV0') < 1.0)"
 	looseVetoElectronCut += "&& electronID('mvaTrigV0') > %f" % 0.1
@@ -132,6 +141,7 @@ def ElectronPath(process, isMC, channel, doDebug=False):
 	process.efficiencyAnalyzerEle = cms.EDAnalyzer('EfficiencyAnalyzer'
 	, histogrammableCounters = cms.untracked.vstring(["elePath"])
 	, elePath = cms.untracked.vstring([
+		"PATTotalEventsProcessedCount",
 		"singleTopPathStep1ElePreCount",
 		"singleTopPathStep1ElePostCount",
 		"elePathPreCount",

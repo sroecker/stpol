@@ -39,7 +39,7 @@ def MuonSetup(process,
 	looseVetoMuonCut += "&& (isGlobalMuon | isTrackerMuon)"
 	looseVetoMuonCut += "&& pt > 10"
 	looseVetoMuonCut += "&& abs(eta)<2.5"
-	looseVetoMuonCut += ' && userFloat("rhoCorrRelIso") < 0.2'  # Delta beta corrections (factor 0.5)
+	looseVetoMuonCut += ' && userFloat("%s") < 0.2' % isoType  # Delta beta corrections (factor 0.5)
 
 	goodSignalMuonCut = goodMuonCut
 	#Choose anti-isolated region
@@ -58,10 +58,6 @@ def MuonSetup(process,
 	  src=cms.InputTag(muonSrc), cut=cms.string(goodSignalMuonCut)
 	)
 
-	# process.goodQCDMuons = cms.EDFilter("CandViewSelector",
-	#   src=cms.InputTag(muonSrc), cut=cms.string(goodQCDMuonCut)
-	# )
-
 	process.looseVetoMuons = cms.EDFilter("CandViewSelector",
 	  src=cms.InputTag(muonSrc), cut=cms.string(looseVetoMuonCut)
 	)
@@ -79,10 +75,12 @@ def MuonSetup(process,
 	)
 
 	#in mu path we must have 1 loose muon (== THE isolated muon)
+	#in the isolated region the signal muons and the loose veto muons overlap, thus we must have exactly 1 loose veto muon
+	#in the anti-isolated region the signal muons are anti-isolated while the veto muons are isolated, thus there must be no loose veto muons 
 	process.looseMuVetoMu = cms.EDFilter(
 		"PATCandViewCountFilter",
 		src=cms.InputTag("looseVetoMuons"),
-		minNumber=cms.uint32(0),
+		minNumber=cms.uint32(1 if not reverseIsoCut else 0),
 		maxNumber=cms.uint32(1 if not reverseIsoCut else 0),
 	)
 
@@ -97,7 +95,7 @@ def MuonSetup(process,
 	
 
 	#Either use MET cut or MtW cut
-	if metType == "MtW":
+	if metType == "MET":
 		process.goodMETs = cms.EDFilter("CandViewSelector",
 		  src=cms.InputTag("patMETs"), cut=cms.string("pt>35")
 		)
@@ -110,7 +108,8 @@ def MuonSetup(process,
 			process.goodMETs *
 			process.hasMET
 		)
-	elif metType == "MET":
+	elif metType == "MtW":
+		#produce the muon and MET invariant transverse mass
 		process.muAndMETMT = cms.EDProducer('CandTransverseMassProducer',
 			collections=cms.untracked.vstring(["patMETs", "goodSignalMuons"])
 		)
@@ -134,11 +133,17 @@ def MuonSetup(process,
 	)
 
 def MuonPath(process, isMC, channel="sig"):
+
+	print "muon path"
+	print "CUT\tgoodSignalMuons=%s" % str(process.goodSignalMuons.cut)
+	print "CUT\tlooseVetoMuons=%s" % str(process.looseVetoMuons.cut)
+	print "CUT\tlooseVetoElectrons=%s" % str(process.looseVetoElectrons.cut)
 	process.muPathPreCount = cms.EDProducer("EventCountProducer")
 
 	process.efficiencyAnalyzerMu = cms.EDAnalyzer('EfficiencyAnalyzer'
 	, histogrammableCounters = cms.untracked.vstring(["muPath"])
 	, muPath = cms.untracked.vstring([
+		"PATTotalEventsProcessedCount",
 		"singleTopPathStep1MuPreCount",
 		"singleTopPathStep1MuPostCount",
 		"muPathPreCount",

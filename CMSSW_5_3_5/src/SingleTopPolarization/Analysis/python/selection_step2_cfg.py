@@ -1,7 +1,24 @@
 import FWCore.ParameterSet.Config as cms
 import SingleTopPolarization.Analysis.eventCounting as eventCounting
 
-def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False, doDebug=False, doMuon=True, doElectron=True, channel="sig", nJets=2, nBTags=1, reverseIsoCut=False, cutJets=True):
+def SingleTopStep2(isMC,
+    skipPatTupleOutput=True,
+    onGrid=False,
+    filterHLT=False,
+    doDebug=False,
+    doMuon=True,
+    doElectron=True,
+    channel="sig",
+    nJets=2, nBTags=1,
+    reverseIsoCut=False,
+    muonIsoType="deltaBetaCorrRelIso",
+    eleMetType="MtW",
+    cutJets=True,
+    eleMVACut=0.1,
+    electronPt="ecalDrivenMomentum.Pt()",
+    bTagType="combinedSecondaryVertexMVABJetTags"
+    ):
+    
     process = cms.Process("STPOLSEL2")
     eventCounting.countProcessed(process)
 
@@ -40,7 +57,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
     #-------------------------------------------------
 
     from SingleTopPolarization.Analysis.jets_step2_cfi import JetSetup
-    JetSetup(process, isMC, doDebug, nJets=nJets, nBTags=nBTags, cutJets=cutJets)
+    JetSetup(process, isMC, doDebug, nJets=nJets, nBTags=nBTags, cutJets=cutJets, bTagType=bTagType)
 
     #-------------------------------------------------
     # Leptons
@@ -57,14 +74,14 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
       'ElectronIsolationProducer',
       leptonSrc = cms.InputTag("electronsWithID"),
       rhoSrc = cms.InputTag("kt6PFJets", "rho"),
-      dR = cms.double(0.4)
+      dR = cms.double(0.3)
     )
 
     from SingleTopPolarization.Analysis.muons_step2_cfi import MuonSetup
-    MuonSetup(process, isMC, doDebug=doDebug, reverseIsoCut=reverseIsoCut)
+    MuonSetup(process, isMC, doDebug=doDebug, reverseIsoCut=reverseIsoCut, isoType=muonIsoType)
 
     from SingleTopPolarization.Analysis.electrons_step2_cfi import ElectronSetup
-    ElectronSetup(process, isMC, doDebug=doDebug, reverseIsoCut=reverseIsoCut)
+    ElectronSetup(process, isMC, doDebug=doDebug, reverseIsoCut=reverseIsoCut, metType=eleMetType, mvaCut=eleMVACut, electronPt=electronPt)
 
     process.goodSignalLeptons = cms.EDProducer(
          'CandRefCombiner',
@@ -78,7 +95,7 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
     #-----------------------------------------------
 
     from SingleTopPolarization.Analysis.top_step2_cfi import TopRecoSetup
-    TopRecoSetup(process, untaggedSource="fwdMostLightJet")
+    TopRecoSetup(process, untaggedSource="lowestBTagJet")
 
     #-----------------------------------------------
     # Treemaking
@@ -105,7 +122,9 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
                     ["Pt", "pt"],
                     ["Eta", "eta"],
                     ["Phi", "phi"],
-                    ["relIso", "userFloat('deltaBetaCorrRelIso')"],
+                    ["relIso", "userFloat('%s')" % muonIsoType],
+                    ["Charge", "charge"],
+                    ["genPdgId", "? genParticlesSize() > 0 ? genParticle(0).pdgId() : 0"],
                 ]
                 )
             )
@@ -116,39 +135,43 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
             treeCollection(
                 cms.untracked.InputTag("goodSignalElectrons"), 1,
                 [
-                    ["Pt", "pt"],
+                    ["Pt", "%s" % electronPt],
                     ["Eta", "eta"],
                     ["Phi", "phi"],
                     ["relIso", "userFloat('rhoCorrRelIso')"],
                     ["mvaID", "electronID('mvaTrigV0')"],
+                    ["Charge", "charge"],
                 ]
                 )
             )
     )
     process.treesJets = cms.EDAnalyzer('JetCandViewTreemakerAnalyzer',
             collections = cms.untracked.VPSet(
+            #all the selected jets in events, passing the reference selection cuts, ordered pt-descending
             treeCollection(
-                cms.untracked.InputTag("untaggedJets"), nJets-nBTags,
+                cms.untracked.InputTag("goodJets"), 5,
                 [
                     ["Pt", "pt"],
                     ["Eta", "eta"],
                     ["Phi", "phi"],
                     ["Mass", "mass"],
-                    ["bDiscriminator", "bDiscriminator('combinedSecondaryVertexBJetTags')"],
+                    ["bDiscriminator", "bDiscriminator('%s')" % bTagType],
                     ["rms", "userFloat('rms')"]
                 ]
             ),
-            treeCollection(
-                cms.untracked.InputTag("fwdMostLightJet"), 1,
-                [
-                    ["Pt", "pt"],
-                    ["Eta", "eta"],
-                    ["Phi", "phi"],
-                    ["Mass", "mass"],
-                    ["bDiscriminator", "bDiscriminator('combinedSecondaryVertexBJetTags')"],
-                    ["rms", "userFloat('rms')"]
-                ]
-            ),
+            # treeCollection(
+            #     cms.untracked.InputTag("fwdMostLightJet"), 1,
+            #     [
+            #         ["Pt", "pt"],
+            #         ["Eta", "eta"],
+            #         ["Phi", "phi"],
+            #         ["Mass", "mass"],
+            #         ["bDiscriminator", "bDiscriminator('combinedSecondaryVertexBJetTags')"],
+            #         ["rms", "userFloat('rms')"]
+            #     ]
+            # ),
+            
+            #the tagged jet with the highest b-discriminator value (== THE b-jet)
             treeCollection(
                 cms.untracked.InputTag("highestBTagJet"), 1,
                 [
@@ -156,10 +179,25 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
                     ["Eta", "eta"],
                     ["Phi", "phi"],
                     ["Mass", "mass"],
-                    ["bDiscriminator", "bDiscriminator('combinedSecondaryVertexBJetTags')"],
+                    ["bDiscriminator", "bDiscriminator('%s')" % bTagType],
                     ["rms", "userFloat('rms')"]
                 ]
             ),
+
+            #The jet with the lowest b-discriminator value (== THE light jet)
+            treeCollection(
+                cms.untracked.InputTag("lowestBTagJet"), 1,
+                [
+                    ["Pt", "pt"],
+                    ["Eta", "eta"],
+                    ["Phi", "phi"],
+                    ["Mass", "mass"],
+                    ["bDiscriminator", "bDiscriminator('%s')" % bTagType],
+                    ["rms", "userFloat('rms')"]
+                ]
+            ),
+
+	    #all the b-tagged jets in the event, ordered pt-descending
             treeCollection(
                 cms.untracked.InputTag("btaggedJets"), nBTags,
                 [
@@ -167,7 +205,18 @@ def SingleTopStep2(isMC, skipPatTupleOutput=True, onGrid=False, filterHLT=False,
                     ["Eta", "eta"],
                     ["Phi", "phi"],
                     ["Mass", "mass"],
-                    ["bDiscriminator", "bDiscriminator('combinedSecondaryVertexBJetTags')"],
+                    ["bDiscriminator", "bDiscriminator('%s')" % bTagType],
+                    ["rms", "userFloat('rms')"]
+                ]
+            ),
+            treeCollection(
+                cms.untracked.InputTag("untaggedJets"), nJets-nBTags,
+                [
+                    ["Pt", "pt"],
+                    ["Eta", "eta"],
+                    ["Phi", "phi"],
+                    ["Mass", "mass"],
+                    ["bDiscriminator", "bDiscriminator('%s')" % bTagType],
                     ["rms", "userFloat('rms')"]
                 ]
             )

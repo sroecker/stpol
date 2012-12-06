@@ -15,7 +15,17 @@ from HLTrigger.HLTfilters.hltHighLevel_cfi import *
 from PhysicsTools.PatAlgos.selectionLayer1.jetSelector_cfi import *
 
 
-def SingleTopStep1(process, isMC, doDebug=False, doSkimming=True, doSlimming=True, doMuon=True, doElectron=True, onGrid=False):
+def SingleTopStep1(
+  process,
+  isMC,
+  doDebug=False, 
+  doSkimming=True,
+  doSlimming=True,
+  doMuon=True,
+  doElectron=True,
+  onGrid=False,
+  maxLeptonIso=0.2
+  ):
 
   if doDebug:
       process.load("FWCore.MessageLogger.MessageLogger_cfi")
@@ -92,7 +102,7 @@ def SingleTopStep1(process, isMC, doDebug=False, doSkimming=True, doSlimming=Tru
   #-------------------------------------------------
 
   #process.pfIsolatedMuons.doDeltaBetaCorrection = False
-  process.pfIsolatedMuons.isolationCut = 0.5
+  process.pfIsolatedMuons.isolationCut = maxLeptonIso
 
   # muon ID production (essentially track count embedding) must be here
   # because tracks get dropped from the collection after this step, resulting
@@ -135,7 +145,15 @@ def SingleTopStep1(process, isMC, doDebug=False, doSkimming=True, doSlimming=Tru
     electronSrc = cms.InputTag("selectedPatElectrons"),
     primaryVertexSource = cms.InputTag("goodOfflinePrimaryVertices")
   )
-  process.pfIsolatedElectrons.isolationCut = 0.5
+  process.pfIsolatedElectrons.isolationCut = maxLeptonIso
+  #electron dR=0.3
+  process.pfElectrons.isolationValueMapsCharged = cms.VInputTag(cms.InputTag("elPFIsoValueCharged03PFId"))
+  process.pfElectrons.deltaBetaIsolationValueMap = cms.InputTag("elPFIsoValuePU03PFId")
+  process.pfElectrons.isolationValueMapsNeutral = cms.VInputTag(cms.InputTag("elPFIsoValueNeutral03PFId"), cms.InputTag("elPFIsoValueGamma03PFId"))
+  
+  process.pfIsolatedElectrons.isolationValueMapsCharged = cms.VInputTag(cms.InputTag("elPFIsoValueCharged03PFId"))
+  process.pfIsolatedElectrons.deltaBetaIsolationValueMap = cms.InputTag("elPFIsoValuePU03PFId")
+  process.pfIsolatedElectrons.isolationValueMapsNeutral = cms.VInputTag(cms.InputTag("elPFIsoValueNeutral03PFId"), cms.InputTag("elPFIsoValueGamma03PFId"))
 
 
   #-------------------------------------------------
@@ -288,9 +306,12 @@ def SingleTopStep1(process, isMC, doDebug=False, doSkimming=True, doSlimming=Tru
     process.out.fileName.setValue(process.out.fileName.value().replace(".root", "_Skim.root"))
   else:
     process.out.fileName.setValue(process.out.fileName.value().replace(".root", "_noSkim.root"))
-
+  print 80*"-"
   print "Output file is %s" % process.out.fileName
   print "isMC: %s" % str(isMC)
+  print "ele path: " + str(process.singleTopPathStep1Ele)
+  print "mu path: " + str(process.singleTopPathStep1Mu)
+  print "outputCommands: " + str(process.out.outputCommands) 
 
   if not doSlimming:
     process.out.fileName.setValue(process.out.fileName.value().replace(".root", "_noSlim.root"))
