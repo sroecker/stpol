@@ -5,7 +5,7 @@
 // 
 /**\class LeptonIsolationProducer<T> LeptonIsolationProducer<T>.cc SingleTopPolarization/LeptonIsolationProducer<T>/src/LeptonIsolationProducer<T>.cc
 
- Description: [one line class summary]
+ Description: Adds the delta beta corrected and rho corrected relative isolations to the leptons
 
  Implementation:
      [Notes on implementation]
@@ -63,6 +63,7 @@ class LeptonIsolationProducer : public edm::EDProducer {
       virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
 
       double effectiveArea(const reco::Candidate& lepton);
+      void addPtEtaCorr(reco::Candidate& lepton);
 
       const edm::InputTag leptonSource;
       const edm::InputTag rhoSource;
@@ -140,7 +141,8 @@ double LeptonIsolationProducer<pat::Electron>::effectiveArea(const reco::Candida
   LogDebug("effectiveArea()") << "Calculating electron effective area";
 
   const pat::Electron& _lepton = (const pat::Electron&)lepton;
-  const double eta = fabs(_lepton.superCluster()->eta());
+  //const double eta = fabs(_lepton.superCluster()->eta());
+  const double eta = _lepton.userFloat("etaCorr");
 
   return ElectronEffectiveArea::GetElectronEffectiveArea(
     ElectronEffectiveArea::ElectronEffectiveAreaType::kEleGammaAndNeutralHadronIso03,
@@ -149,7 +151,22 @@ double LeptonIsolationProducer<pat::Electron>::effectiveArea(const reco::Candida
 
 }
 
-// ------------ method called to produce the data  ------------
+template <>
+void
+LeptonIsolationProducer<pat::Electron>::addPtEtaCorr(reco::Candidate& lepton) {
+  pat::Electron& ele = (pat::Electron&)lepton;
+  ele.addUserFloat("ptCorr", ele.ecalDrivenMomentum().Pt());
+  ele.addUserFloat("etaCorr", ele.superCluster()->eta());
+}
+
+template <>
+void
+LeptonIsolationProducer<pat::Muon>::addPtEtaCorr(reco::Candidate& lepton) {
+  pat::Muon& mu = (pat::Muon&)lepton;
+  mu.addUserFloat("ptCorr", mu.pt());
+  mu.addUserFloat("etaCorr", mu.eta());
+}
+
 template <typename T>
 void
 LeptonIsolationProducer<T>::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
@@ -165,12 +182,15 @@ LeptonIsolationProducer<T>::produce(edm::Event& iEvent, const edm::EventSetup& i
   std::auto_ptr<std::vector<T> > outLeptons(new std::vector<T>(*leptons));
 
   for (auto& lepton : *outLeptons) {
+    //Set the correted pt and eta
+    addPtEtaCorr(lepton);
+
     //Calculate the delta-beta corrected relative isolation
-    float dbc_iso = (lepton.chargedHadronIso() + std::max(0., lepton.neutralHadronIso() + lepton.photonIso() - 0.5*lepton.puChargedHadronIso()))/lepton.et();
+    float dbc_iso = (lepton.chargedHadronIso() + std::max(0., lepton.neutralHadronIso() + lepton.photonIso() - 0.5*lepton.puChargedHadronIso()))/lepton.userFloat("ptCorr");
 
     //Calculate the rho-corrected relative isolation
     double ea = effectiveArea(lepton);
-    float rc_iso = (lepton.chargedHadronIso() + std::max(0., lepton.neutralHadronIso() + lepton.photonIso() - ea*(*rho)))/lepton.et();
+    float rc_iso = (lepton.chargedHadronIso() + std::max(0., lepton.neutralHadronIso() + lepton.photonIso() - ea*(*rho)))/lepton.userFloat("ptCorr");
 
     //Calculate the uncorrected relative isolation
     float uncorr_iso = (lepton.chargedHadronIso() + std::max((float)0.0, lepton.neutralHadronIso() + lepton.photonIso()))/lepton.et();
