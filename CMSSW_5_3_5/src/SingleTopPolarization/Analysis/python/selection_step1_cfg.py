@@ -306,9 +306,12 @@ def SingleTopStep1(
     process.out.fileName.setValue(process.out.fileName.value().replace(".root", "_Skim.root"))
   else:
     process.out.fileName.setValue(process.out.fileName.value().replace(".root", "_noSkim.root"))
-
+  print 80*"-"
   print "Output file is %s" % process.out.fileName
   print "isMC: %s" % str(isMC)
+  print "ele path: " + str(process.singleTopPathStep1Ele)
+  print "mu path: " + str(process.singleTopPathStep1Mu)
+  print "outputCommands: " + str(process.out.outputCommands) 
 
   if not doSlimming:
     process.out.fileName.setValue(process.out.fileName.value().replace(".root", "_noSlim.root"))
