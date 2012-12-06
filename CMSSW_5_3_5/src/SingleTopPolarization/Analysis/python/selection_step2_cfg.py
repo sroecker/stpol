@@ -124,6 +124,7 @@ def SingleTopStep2(isMC,
                     ["Phi", "phi"],
                     ["relIso", "userFloat('%s')" % muonIsoType],
                     ["Charge", "charge"],
+                    ["genPdgId", "? genParticlesSize() > 0 ? genParticle(0).pdgId() : 0"],
                 ]
                 )
             )
@@ -199,6 +200,17 @@ def SingleTopStep2(isMC,
 	    #all the b-tagged jets in the event, ordered pt-descending
             treeCollection(
                 cms.untracked.InputTag("btaggedJets"), nBTags,
+                [
+                    ["Pt", "pt"],
+                    ["Eta", "eta"],
+                    ["Phi", "phi"],
+                    ["Mass", "mass"],
+                    ["bDiscriminator", "bDiscriminator('%s')" % bTagType],
+                    ["rms", "userFloat('rms')"]
+                ]
+            ),
+            treeCollection(
+                cms.untracked.InputTag("untaggedJets"), nJets-nBTags,
                 [
                     ["Pt", "pt"],
                     ["Eta", "eta"],
