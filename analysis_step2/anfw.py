@@ -2,6 +2,9 @@ import ROOT
 import sys
 import string
 import random
+from cross_sections import xs
+
+lumi = 20000
 
 class Files:
     outFile = ROOT.TFile("outFile.root", "RECREATE")
@@ -33,8 +36,10 @@ class Cuts:
     jetPt = Cut("jetPt", "_goodJets_0_Pt>60 && _goodJets_1_Pt>60")
     jetEta = Cut("jetEta", "abs(_lowestBTagJet_0_Eta)<4.5 && abs(_highestBTagJet_0_Eta)<4.5")
     jetRMS = Cut("jetRMS", "_lowestBTagJet_0_rms < 0.025")
-    met = Cut("jetRMS", "_muAndMETMT > 50 | _eleAndMETMT > 50")
+    met = Cut("met", "_muAndMETMT > 50 | _eleAndMETMT > 50")
     Orso = mlnu + jets_2J1T + jetPt + jetRMS + met + jetEta
+    finalMu = mu + recoFState + Orso
+    finalEle = ele + recoFState + Orso
 
 class Channel:
     def __init__(self, channelName, fileName, crossSection, color=None):
@@ -82,7 +87,7 @@ class Channel:
             h.SetFillColor(self.color)
 
         if weight is None:
-            weight = self.xsWeight
+            weight = lumi*self.xsWeight
 
         self.tree.Draw("{2}({0})>>{1}".format(varName, histName, fn), "%f*(%s)" % (weight, cut.cutStr))
         return h
@@ -99,11 +104,17 @@ class Channel:
 
 
 channels = {
-    "T_t": Channel("T_t", "../trees/T_t.root", 56.4, color=ROOT.kOrange),
-    "Tbar_t": Channel("Tbar_t", "../trees/Tbar_t.root", 30.7, color=ROOT.kBlue),
-    "TTBar": Channel("TTBar", "../trees/TTBar.root", 234, color=ROOT.kRed),
-    "WJets": Channel("WJets'", "../trees/WJets.root", 36257.2, color=ROOT.kGreen),
-#    "QCDMu": Channel("QCDMu'", "../trees/QCDMu.root", 134680, color=ROOT.kGray)
+    "T_t": Channel("T_t", "../trees/T_t.root", xs["T_t"], color=ROOT.kRed),
+    "Tbar_t": Channel("Tbar_t", "../trees/Tbar_t.root", xs["Tbar_t"], color=ROOT.kRed),
+    "T_s": Channel("T_s", "../trees/T_s.root", xs["T_s"], color=ROOT.kYellow),
+    "Tbar_s": Channel("Tbar_s", "../trees/Tbar_s.root", xs["Tbar_s"], color=ROOT.kYellow),
+    "T_tW": Channel("T_tW", "../trees/T_tW.root", xs["T_tW"], color=ROOT.kYellow+4),
+    "Tbar_tW": Channel("Tbar_tW", "../trees/Tbar_tW.root", xs["Tbar_tW"], color=ROOT.kYellow+4),
+    "TTBar": Channel("TTBar", "../trees/Tbar_tW.root", xs["TTBar"], color=ROOT.kOrange),
+    #"Tbar_tW": Channel("Tbar_tW", "../trees/Tbar_tW.root", xs["Tbar_tW"], color=ROOT.Yellow+4),
+    #"TTBar": Channel("TTBar", "../trees/TTBar.root", xs["TTBar"], color=ROOT.kRed),
+    "WJets": Channel("WJets'", "../trees/WJets.root", xs["WJets"], color=ROOT.kGreen),
+    "QCDMu": Channel("QCDMu'", "../trees/QCDMu.root", xs["QCDMu"], color=ROOT.kGray)
 }
 
 
@@ -160,7 +171,7 @@ def varNamePretty(varName):
 
 def channelComp(variable, cuts=None, fn="", r=[20,None, None], doStack=False, doNormalize=False, legPos="R"):
     hists = dict()
-    title = varNamePretty(variable) + " in " + cuts.cutName + " norm. to 1/pb"
+    title = varNamePretty(variable) + " in " + cuts.cutName + (" norm. to %.2f/fb" % (lumi))
     for name, channel in channels.items():
         hists[name] = channel.plot1D(variable, cut=cuts, fn=fn, r=r)
         if doNormalize:
