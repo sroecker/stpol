@@ -158,6 +158,8 @@ def MuonPath(process, isMC, channel="sig"):
 	))
 
 	process.muPath = cms.Path(
+		process.efficiencyAnalyzerMu *
+		
 		process.muonsWithIso *
 		process.elesWithIso *
 
@@ -186,9 +188,7 @@ def MuonPath(process, isMC, channel="sig"):
 		process.mBTags *
 
 		#Reconstruct the neutrino, the top quark and calculate the cosTheta* variable
-		process.topRecoSequenceMu *
-
-		process.efficiencyAnalyzerMu
+		process.topRecoSequenceMu
 	)
 	#if isMC:
 	#	process.muPath.insert(process.muPath.index(process.noPUJets)+1, process.smearedJets)
