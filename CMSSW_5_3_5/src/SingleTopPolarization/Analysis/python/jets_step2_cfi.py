@@ -5,7 +5,7 @@ def JetSetup(process, isMC, doDebug, bTagType="combinedSecondaryVertexMVABJetTag
         print "CUT\tJets: Using %d jets, %d tags" % (nJets, nBTags)
     else:
         print "CUT\tJets: keeping all events with >=1 jet and >=0 btag"
-        
+
     if isMC:
         jetCut = 'userFloat("pt_smear") > 40.'
     else:
@@ -49,7 +49,7 @@ def JetSetup(process, isMC, doDebug, bTagType="combinedSecondaryVertexMVABJetTag
     process.bJetCount = cms.EDProducer(
         "CollectionSizeProducer<reco::Candidate>",
         src = cms.InputTag("btaggedJets")
-    )    
+    )
 
     #invert the b-tag cut
     process.untaggedJets = cms.EDFilter(
@@ -61,7 +61,7 @@ def JetSetup(process, isMC, doDebug, bTagType="combinedSecondaryVertexMVABJetTag
     process.lightJetCount = cms.EDProducer(
         "CollectionSizeProducer<reco::Candidate>",
         src = cms.InputTag("untaggedJets")
-    ) 
+    )
 
     #Select the most forward untagged jet by absolute eta
     process.fwdMostLightJet = cms.EDFilter(
@@ -108,7 +108,7 @@ def JetSetup(process, isMC, doDebug, bTagType="combinedSecondaryVertexMVABJetTag
       process.bJetCount *
       process.lightJetCount *
       process.fwdMostLightJet *
-      process.highestBTagJet * 
+      process.highestBTagJet *
       process.lowestBTagJet
     )
 
