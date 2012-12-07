@@ -28,11 +28,11 @@ class Cuts:
     realSol = Cut("realSol", "solType_recoNuProducerMu==0")
     cplxSol = Cut("cplxSol", "solType_recoNuProducerMu==1")
     mlnu = Cut("ml#nu", "_recoTop_0_Mass>130&&_recoTop_0_Mass<220")
-    etaLJ = Cut("#eta_{lj}", "abs(_fwdMostLightJet_0_Eta)>2.5")
+    etaLJ = Cut("#eta_{lj}", "abs(_lowestBTagJet_0_Eta)>2.5")
     sidebandRegion = Cut("!ml#nu", "!(_recoTop_0_Mass>130&&_recoTop_0_Mass<220)")
-    jetPt = Cut("jetPt", "_fwdMostLightJet_0_Pt > 60 && _highestBTagJet_0_Pt>60")
-    jetEta = Cut("jetEta", "abs(_fwdMostLightJet_0_Eta) < 4.5 && abs(_highestBTagJet_0_Eta) < 4.5")
-    jetRMS = Cut("jetRMS", "_fwdMostLightJet_0_rms < 0.025")
+    jetPt = Cut("jetPt", "_goodJets_0_Pt>60 && _goodJets_1_Pt>60")
+    jetEta = Cut("jetEta", "abs(_lowestBTagJet_0_Eta)<4.5 && abs(_highestBTagJet_0_Eta)<4.5")
+    jetRMS = Cut("jetRMS", "_lowestBTagJet_0_rms < 0.025")
     met = Cut("jetRMS", "_muAndMETMT > 50 | _eleAndMETMT > 50")
     Orso = mlnu + jets_2J1T + jetPt + jetRMS + met + jetEta
 
@@ -64,7 +64,7 @@ class Channel:
             for n in range(1, h.GetNbinsX()+1):
                 print "%s: %d" % (h.GetXaxis().GetBinLabel(n), int(h.GetBinContent(n)))
 
-    def plot1D(self, var, r=[100, None, None], cut=None, fn="", weight=None):
+    def plot1D(self, var, r=[100, None, None], cut=None, fn="", weight=None, varName=None):
         c = ROOT.TCanvas()
         c.SetBatch(True)
         if r[1] is None:
@@ -73,6 +73,8 @@ class Channel:
             r[2] = self.tree.GetMaximum(varName)
         if cut is None:
             cut = Cut("", "1==1")
+        if varName is None:
+            varName = var
         histName = self.channelName + "_" + varName + "_" + cut.cutName + "_" + fn + "_hist"
         h = ROOT.TH1F(histName, varName, r[0], r[1], r[2])
         if not self.color is None:
@@ -97,11 +99,11 @@ class Channel:
 
 
 channels = {
-    "T_t": Channel("T_t", "../trees/T_t.root", 47.0, color=ROOT.kOrange),
-    "Tbar_t": Channel("Tbar_t", "../trees/Tbar_t.root", 25.0, color=ROOT.kBlue),
-    "TTBar": Channel("TTBar", "../trees/TTBar.root", 136.3, color=ROOT.kRed),
-    "WJets/1000": Channel("WJets'", "../trees/TTBar.root", 30400.0/1000, color=ROOT.kGreen),
-    "QCDMu": Channel("QCDMu'", "../trees/QCDMu.root", 1, color=ROOT.kGray)
+    "T_t": Channel("T_t", "../trees/T_t.root", 56.4, color=ROOT.kOrange),
+    "Tbar_t": Channel("Tbar_t", "../trees/Tbar_t.root", 30.7, color=ROOT.kBlue),
+    "TTBar": Channel("TTBar", "../trees/TTBar.root", 234, color=ROOT.kRed),
+    "WJets": Channel("WJets'", "../trees/WJets.root", 36257.2, color=ROOT.kGreen),
+#    "QCDMu": Channel("QCDMu'", "../trees/QCDMu.root", 134680, color=ROOT.kGray)
 }
 
 
