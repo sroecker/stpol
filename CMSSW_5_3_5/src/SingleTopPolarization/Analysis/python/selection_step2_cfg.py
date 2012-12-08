@@ -1,6 +1,30 @@
 import FWCore.ParameterSet.Config as cms
 import SingleTopPolarization.Analysis.eventCounting as eventCounting
 
+"""
+Configures the reference selection + top reconstruction steps.
+Output is to patTuple and/or flat TTree. The parameters are the following:
+skipPatTupleOutput: True - no patTuple output
+onGrid:             True - run on grid (don't load command line parsing utilities)
+filterHLT:          True - run the HLT filtering modules.
+doDebug:            print out debugging information, LogDebug level messages
+doMuon:             True - run the muon sequences
+doElectron:         True - run the electron sequences
+channel:            'sig' - run the MC gen-particle sequence that is defined only for T(bar)_t;
+                    'bkg' - disable MC gen-particle sequences
+nJets:              if cutJets=True, then keep only events having nJets good jets.
+                    Also marks how many jets are written to the TTree.
+nBTags:             if cutJets=True, then keep only events having nBJets idenfitied b-jets.
+                    Also specifies the number of b-jets and light jets to be written to the TTree
+reverseIsoCut:      True - reverse the lepton isolation range, for QCD studies
+muonIsoType:        'deltaBetaCorrRelIso' or 'rhoCorrRelIso'
+eleMetType:         'MtW' or 'MET'
+cutJets:            True - discard events not having the specified number of jets/b-tags
+                    False - keep all events
+eleMVACut:          the cut value on the electron MVA
+electronPt:         specifies the electron pt to be used
+bTagType:           "Specified the b-tag type to be used
+"""
 def SingleTopStep2(isMC,
     skipPatTupleOutput=True,
     onGrid=False,
@@ -63,6 +87,7 @@ def SingleTopStep2(isMC,
     # Leptons
     #-------------------------------------------------
 
+    #Embed the corrected isolations to the leptons
     process.muonsWithIso = cms.EDProducer(
       'MuonIsolationProducer',
       leptonSrc = cms.InputTag("muonsWithID"),
@@ -83,6 +108,7 @@ def SingleTopStep2(isMC,
     from SingleTopPolarization.Analysis.electrons_step2_cfi import ElectronSetup
     ElectronSetup(process, isMC, doDebug=doDebug, reverseIsoCut=reverseIsoCut, metType=eleMetType, mvaCut=eleMVACut, electronPt=electronPt)
 
+    #Combine the found electron/muon to a single collection
     process.goodSignalLeptons = cms.EDProducer(
          'CandRefCombiner',
          sources=cms.untracked.vstring(["goodSignalMuons", "goodSignalElectrons"]),
