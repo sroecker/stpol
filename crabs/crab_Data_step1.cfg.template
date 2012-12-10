@@ -1,8 +1,8 @@
 [CMSSW]
 number_of_jobs = 1000
 total_number_of_lumis = -1
-lumi_mask = LUMIFILE
-pset = ../runconfs/step1_cfg.py
+lumi_mask = /home/joosep/singletop/stpol/crabs/lumis/LUMIFILE
+pset = /home/joosep/singletop/stpol/crabs/runconfs/step1_cfg.py
 datasetpath = DATASET
 pycfg_params = mu ele skim grid noprint
 get_edm_output = 1
