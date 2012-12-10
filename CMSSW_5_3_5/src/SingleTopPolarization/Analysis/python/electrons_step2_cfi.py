@@ -156,7 +156,6 @@ def ElectronPath(process, isMC, channel, doDebug=False):
 	))
 
 	process.elePath = cms.Path(
-
 		process.muonsWithIso *
 		process.elesWithIso *
 
@@ -182,7 +181,6 @@ def ElectronPath(process, isMC, channel, doDebug=False):
 		process.mBTags *
 
 		process.topRecoSequenceEle *
-
 		process.efficiencyAnalyzerEle
 	)
 

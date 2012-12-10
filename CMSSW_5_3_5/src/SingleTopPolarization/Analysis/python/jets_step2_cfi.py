@@ -96,7 +96,7 @@ def JetSetup(process, isMC, doDebug, bTagType="combinedSecondaryVertexMVABJetTag
     process.mBTags = cms.EDFilter(
         "PATCandViewCountFilter",
         src=cms.InputTag("btaggedJets"),
-        minNumber=cms.uint32(nBTags if cutJets else 0),
+        minNumber=cms.uint32(nBTags if cutJets else 1),
         maxNumber=cms.uint32(nBTags if cutJets else 3),
     )
 

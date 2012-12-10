@@ -10,7 +10,7 @@ muonSrc:		what collection to use for the initial pat::Muon-s
 isoType:		'rhoCorrRelIso' - use the rho corrected relative isolation
 				'deltaBetaCorrRelIso' - use delta beta corrected relative isolation
 metType:		'MtW' - use the W transverse mass cut
-				'MET' - use a simple MET cut 
+				'MET' - use a simple MET cut
 doDebug:		'True/False' - enable/disable debbuging modules with printout
 reverseIsoCut:	'True' - choose anti-isolated leptons for QCD estimation
 				'False' - choose isolated leptons for QCD estimation (default)
@@ -76,7 +76,7 @@ def MuonSetup(process,
 
 	#in mu path we must have 1 loose muon (== THE isolated muon)
 	#in the isolated region the signal muons and the loose veto muons overlap, thus we must have exactly 1 loose veto muon
-	#in the anti-isolated region the signal muons are anti-isolated while the veto muons are isolated, thus there must be no loose veto muons 
+	#in the anti-isolated region the signal muons are anti-isolated while the veto muons are isolated, thus there must be no loose veto muons
 	process.looseMuVetoMu = cms.EDFilter(
 		"PATCandViewCountFilter",
 		src=cms.InputTag("looseVetoMuons"),
@@ -92,7 +92,7 @@ def MuonSetup(process,
 		maxNumber=cms.uint32(0),
 	)
 
-	
+
 
 	#Either use MET cut or MtW cut
 	if metType == "MET":
@@ -158,6 +158,7 @@ def MuonPath(process, isMC, channel="sig"):
 	))
 
 	process.muPath = cms.Path(
+
 		process.muonsWithIso *
 		process.elesWithIso *
 
@@ -187,7 +188,6 @@ def MuonPath(process, isMC, channel="sig"):
 
 		#Reconstruct the neutrino, the top quark and calculate the cosTheta* variable
 		process.topRecoSequenceMu *
-
 		process.efficiencyAnalyzerMu
 	)
 	#if isMC:
