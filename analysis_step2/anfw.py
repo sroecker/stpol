@@ -90,6 +90,11 @@ class Channel:
             weight = lumi*self.xsWeight
 
         self.tree.Draw("{2}({0})>>{1}".format(varName, histName, fn), "%f*(%s)" % (weight, cut.cutStr))
+        nEntries = int(self.tree.GetEntries(cut.cutStr))
+        print "%s %s entries=%d" % (self.channelName, cut.cutName, nEntries)
+        if nEntries<50:
+            print "Histogram with very few entries, smoothing"
+            h.Smooth(5)
         return h
 
     def plot2D(self, var1, var2, cut=None):
@@ -173,7 +178,7 @@ def varNamePretty(varName):
 
 def channelComp(variable, cuts=None, fn="", r=[20,None, None], doStack=False, doNormalize=False, legPos="R"):
     hists = dict()
-    title = varNamePretty(variable) + " in " + cuts.cutName + (" norm. to %.2f/fb" % (lumi))
+    title = varNamePretty(variable) + " in " + cuts.cutName + (" norm. to %.2f/fb" % (lumi/1000.0))
     for name, channel in channels.items():
         hists[name] = channel.plot1D(variable, cut=cuts, fn=fn, r=r)
         if doNormalize:
