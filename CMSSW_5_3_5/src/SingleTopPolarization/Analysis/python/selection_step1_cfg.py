@@ -10,7 +10,7 @@ from PhysicsTools.PatAlgos.tools.pfTools import *
 
 from SingleTopPolarization.Analysis.eventCounting import *
 
-from HLTrigger.HLTfilters.hltHighLevel_cfi import *
+#from HLTrigger.HLTfilters.hltHighLevel_cfi import *
 
 from PhysicsTools.PatAlgos.selectionLayer1.jetSelector_cfi import *
 
@@ -24,23 +24,17 @@ def SingleTopStep1(
   doMuon=True,
   doElectron=True,
   onGrid=False,
-  maxLeptonIso=0.2
+  maxLeptonIso=0.2,
+  globalTag="START53_V7F"
   ):
 
   if doDebug:
       process.load("FWCore.MessageLogger.MessageLogger_cfi")
       process.MessageLogger = cms.Service("MessageLogger",
-             destinations=cms.untracked.vstring(
-                                                    'cout',
-                                                    'debug'
-                          ),
+             destinations=cms.untracked.vstring('cout', 'debug'),
              debugModules=cms.untracked.vstring('*'),
-             cout=cms.untracked.PSet(
-              threshold=cms.untracked.string('INFO')
-              ),
-             debug=cms.untracked.PSet(
-              threshold=cms.untracked.string('DEBUG')
-              ),
+             cout=cms.untracked.PSet(threshold=cms.untracked.string('INFO')),
+             debug=cms.untracked.PSet(threshold=cms.untracked.string('DEBUG')),
       )
   else:
       process.load("FWCore.MessageService.MessageLogger_cfi")
@@ -50,34 +44,13 @@ def SingleTopStep1(
   usePF2PAT(process, runPF2PAT=True, jetAlgo='AK5', runOnMC=isMC, postfix=postfix,
     jetCorrections=('AK5PFchs', ['L1FastJet', 'L2Relative', 'L3Absolute']),
     pvCollection=cms.InputTag('goodOfflinePrimaryVertices'),
-    typeIMetCorrections = True #FIXME: Does this automatically add type1 corrections completely and consistently?
+    #typeIMetCorrections = True #FIXME: Does this automatically add type1 corrections completely and consistently?
+    typeIMetCorrections = False #Type1 MET now applied later using runMETUncertainties
   )
   
   # https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections#JetEnCorPFnoPU2012
   process.pfPileUp.Enable = True
   process.pfPileUp.checkClosestZVertex = False
-
-  # process.load("JetMETCorrections.Type1MET.pfMETCorrections_cff")
-  # process.patPF2PATSequence.insert(-1, process.producePFMETCorrections)
-
-
-  #process.patMuons.usePV = False
-
-  #-------------------------------------------------
-  # selection step 1: trigger
-  # Based on
-  # https://twiki.cern.ch/twiki/bin/view/CMS/TWikiTopRefEventSel#Triggers
-  # Section Monte Carlo Summer12 with CMSSW_5_2_X and GT START52_V9
-  #-------------------------------------------------
-
-  # process.step1_HLT = hltHighLevel.clone(
-  #   TriggerResultsTag = "TriggerResults::HLT"
-  # , HLTPaths = [
-  #     "HLT_IsoMu17_eta2p1_TriCentralPFJet30_v2"
-  #   , "HLT_IsoMu20_eta2p1_TriCentralPFNoPUJet30_v2"
-  #   ]
-  # , andOr = True
-  # )
 
   #-------------------------------------------------
   # selection step 2: vertex filter
@@ -101,7 +74,6 @@ def SingleTopStep1(
   # Muons
   #-------------------------------------------------
 
-  #process.pfIsolatedMuons.doDeltaBetaCorrection = False
   process.pfIsolatedMuons.isolationCut = maxLeptonIso
 
   # muon ID production (essentially track count embedding) must be here
@@ -112,23 +84,6 @@ def SingleTopStep1(
     muonSrc = cms.InputTag("selectedPatMuons"),
     primaryVertexSource = cms.InputTag("goodOfflinePrimaryVertices")
   )
-
-  # process.muSequence = cms.Sequence(
-  #   process.goodSignalMuons
-  #   * process.goodQCDMuons
-  #   * process.looseVetoMuons
-  # )
-
-  #process.patMuons.userData.userFunctions = cms.vstring('((chargedHadronIso()+max(0.0,neutralHadronIso()+photonIso()-0.5*puChargedHadronIso()))/pt())')
-  #process.patMuons.userData.userFunctionLabels = cms.vstring('pfRelIso04')
-
-  #process.goodSignalMuons = process.selectedPatMuons.clone(
-  #  src=cms.InputTag("goodMuons"), cut=goodSignalMuonCut
-  #)
-  #
-  #process.goodQCDMuons = process.selectedPatMuons.clone(
-  #  src=cms.InputTag("goodMuons"), cut=goodQCDMuonCut
-  #)
 
   #-------------------------------------------------
   # Electrons
@@ -168,16 +123,6 @@ def SingleTopStep1(
   process.load("CMGTools.External.pujetidsequence_cff")
   process.patPF2PATSequence.insert(-1, process.puJetIdSqeuence)
 
-
-  #-------------------------------------------------
-  # Object counters
-  #-------------------------------------------------
-
-  #from PhysicsTools.PatAlgos.selectionLayer1.muonCountFilter_cfi import *
-  #process.step_isoMu1 = process.countPatMuons.clone(src = 'goodMuons', minNumber = 1, maxNumber = 99)
-  # process.step_Jets = process.countPatJets.clone(src = 'goodJets', minNumber =
-  # 2, maxNumber = 2)
-
   #-------------------------------------------------
   # Paths
   #-------------------------------------------------
@@ -206,7 +151,7 @@ def SingleTopStep1(
 
   #Throw away events before particle flow?
   if doSkimming:
-      from SingleTopPolarization.Analysis.step_eventSkim_cfg import skimFilters
+      from SingleTopPolarization.Analysis.eventSkimming import skimFilters
       skimFilters(process)
 
       if doMuon:
@@ -277,16 +222,16 @@ def SingleTopStep1(
   if isMC:
     process.GlobalTag.globaltag = cms.string('START53_V7F::All')
   else:
-    process.GlobalTag.globaltag = 'FT_R_53_V6::All' #FT_53_V6_AN2
+    process.GlobalTag.globaltag = cms.string(globalTag) #FT_53_V6_AN2
     process.load('RecoMET.METFilters.ecalLaserCorrFilter_cfi')
     process.ecalLaserCorrFilter.taggingMode=True
 
     # https://twiki.cern.ch/twiki/bin/viewauth/CMS/TWikiTopRefEventSel#Cleaning_Filters
     process.scrapingFilter = cms.EDFilter("FilterOutScraping"
-      , applyfilter = cms.untracked.bool( True )
-      , debugOn = cms.untracked.bool( False )
-      , numtrack = cms.untracked.uint32( 10 )
-      , thresh = cms.untracked.double( 0.25 )
+      , applyfilter = cms.untracked.bool(True)
+      , debugOn = cms.untracked.bool(False)
+      , numtrack = cms.untracked.uint32(10)
+      , thresh = cms.untracked.double(0.25)
     )
 
     if doElectron:
