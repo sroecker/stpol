@@ -14,7 +14,7 @@ def th_sep(i, sep=','):
 # Data parameters
 totalDataEvents = 5363303 # from DAS
 totalLuminosity = 808.472 # 1/pb, from TWiki
-ttbarCrossSection = 136.3 # pb, from PREP
+ttbarCrossSection = 234 # pb, from AN
 
 # Extra parameters from arguments:
 parser = argparse.ArgumentParser(description='Plots MC and Data for some variable.')
