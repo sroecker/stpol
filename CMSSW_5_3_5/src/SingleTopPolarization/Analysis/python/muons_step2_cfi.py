@@ -39,7 +39,7 @@ def MuonSetup(process,
 	looseVetoMuonCut += "&& (isGlobalMuon | isTrackerMuon)"
 	looseVetoMuonCut += "&& pt > 10"
 	looseVetoMuonCut += "&& abs(eta)<2.5"
-	looseVetoMuonCut += ' && userFloat("%s") < 0.2' % isoType  # Delta beta corrections (factor 0.5)
+	looseVetoMuonCut += ' && userFloat("%s") < 0.2' % isoType
 
 	goodSignalMuonCut = goodMuonCut
 	#Choose anti-isolated region

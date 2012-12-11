@@ -80,7 +80,7 @@ def ElectronSetup(
 	process.looseEleVetoEle = cms.EDFilter(
 		"PATCandViewCountFilter",
 		src=cms.InputTag("looseVetoElectrons"),
-		minNumber=cms.uint32(0),
+		minNumber=cms.uint32(1 if not reverseIsoCut else 0),
 		maxNumber=cms.uint32(1 if not reverseIsoCut else 0),
 	)
 	process.looseMuVetoEle = cms.EDFilter(
