@@ -37,27 +37,29 @@ class DS:
         return out
 
 class DS_Data(DS):
-    def __init__(self, name, ds, lumi):
+    def __init__(self, name, ds, lumi, globalTag):
         DS.__init__(self, name, ds)
         self.lumi = lumi
+        self.globalTag = globalTag
 
     def parseTemplate(self, template, tag):
-        out = DS.parseTemplate(self, template, tag)
         out = out.replace("LUMIFILE", lumis[self.lumi].fname)
+        out = out.replace("GLOBALTAG", self.globalTag)
+        out = DS.parseTemplate(self, template, tag)
         return out
 
 step1_data = [
-    DS_Data("SingleMu_RunA", "/SingleMu/Run2012A-13Jul2012-v1/AOD", "13JulReReco")
-    , DS_Data("SingleMu_Run2012B", "/SingleMu/Run2012B-13Jul2012-v1/AOD", "13JulReReco")
-    , DS_Data("SingleMu_Run2012C_v1", "/SingleMu/Run2012C-PromptReco-v1/AOD", "PromptReco")
-    , DS_Data("SingleMu_Run2012C_v2", "/SingleMu/Run2012C-PromptReco-v2/AOD", "PromptReco")
+    DS_Data("SingleMu_RunA", "/SingleMu/Run2012A-13Jul2012-v1/AOD", "13JulReReco", "FT_53_V6_AN3")
+    , DS_Data("SingleMu_Run2012B", "/SingleMu/Run2012B-13Jul2012-v1/AOD", "13JulReReco", "FT_53_V6_AN3")
+    , DS_Data("SingleMu_Run2012C_v1", "/SingleMu/Run2012C-PromptReco-v1/AOD", "PromptReco", "FT_P_V42C_AN3")
+    , DS_Data("SingleMu_Run2012C_v2", "/SingleMu/Run2012C-PromptReco-v2/AOD", "PromptReco", "FT_P_V42C_AN3")
 
-    , DS_Data("SingleElectron_Run2012A", "/SingleElectron/Run2012A-13Jul2012-v1/AOD", "13JulReReco")
-    , DS_Data("SingleElectron_Run2012B", "/SingleElectron/Run2012B-13Jul2012-v1/AOD", "13JulReReco")
-    , DS_Data("SingleElectron_Run2012C_24AugReReco", "/SingleElectron/Run2012C-24Aug2012-v1/AOD", "24AugReReco")
-    , DS_Data("SingleElectron_Run2012C_v1", "/SingleElectron/Run2012C-PromptReco-v1/AOD", "PromptReco")
-    , DS_Data("SingleElectron_Run2012C_v2","/SingleElectron/Run2012C-PromptReco-v2/AOD", "PromptReco")
-    , DS_Data("SingleElectron_Run2012A_06AugReReco","/SingleElectron/Run2012A-recover-06Aug2012-v1/AOD", "06AugReReco")
+    , DS_Data("SingleElectron_Run2012A", "/SingleElectron/Run2012A-13Jul2012-v1/AOD", "13JulReReco", "FT_53_V6_AN3")
+    , DS_Data("SingleElectron_Run2012B", "/SingleElectron/Run2012B-13Jul2012-v1/AOD", "13JulReReco", "FT_53_V6_AN3")
+    , DS_Data("SingleElectron_Run2012C_24AugReReco", "/SingleElectron/Run2012C-24Aug2012-v1/AOD", "24AugReReco", "FT_53_V10_AN3")
+    , DS_Data("SingleElectron_Run2012C_v1", "/SingleElectron/Run2012C-PromptReco-v1/AOD", "PromptReco", "FT_P_V42C_AN3")
+    , DS_Data("SingleElectron_Run2012C_v2","/SingleElectron/Run2012C-PromptReco-v2/AOD", "PromptReco", "FT_P_V42C_AN3")
+    , DS_Data("SingleElectron_Run2012A_06AugReReco","/SingleElectron/Run2012A-recover-06Aug2012-v1/AOD", "06AugReReco", "FT_53_V6C_AN3")
 
 ]
 

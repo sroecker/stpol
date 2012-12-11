@@ -17,9 +17,9 @@ def ElectronSetup(
 	metType="MtW",
 	reverseIsoCut=False,
 	applyMVA=True,
-	electronPt="ecalDrivenMomentum.Pt()"
+	electronPt="ecalDrivenMomentum.Pt()",
+	applyIso=True
 	):
-
 
 	goodElectronCut = "%s>30" % electronPt
 	goodElectronCut += "&& abs(eta)<2.5"
@@ -28,35 +28,29 @@ def ElectronSetup(
 	#goodElectronCut += "&& (0.0 < electronID('mvaTrigV0') < 1.0)"
 	if applyMVA:
 		goodElectronCut += "&& electronID('mvaTrigV0') > %f" % mvaCut
-
 	goodSignalElectronCut = goodElectronCut
 	goodSignalElectronCut += '&& abs(userFloat("dxy")) < 0.02'
 	goodSignalElectronCut += '&& userInt("gsfTrack_trackerExpectedHitsInner_numberOfHits") <= 0'
 
 	#Choose anti-isolated region
-	if reverseIsoCut:
-		goodSignalElectronCut += '&& userFloat("rhoCorrRelIso") > 0.1 && userFloat("rhoCorrRelIso") < 0.5 '
-	#Choose isolated region
-	else:
-		goodSignalElectronCut += '&& userFloat("rhoCorrRelIso") < 0.1'
-
-	# goodQCDElectronCut = goodElectronCut
-	# goodQCDElectronCut += '&& userFloat("rhoCorrRelIso") > 0.2'
-	# goodQCDElectronCut += '&& userFloat("rhoCorrRelIso") < 0.5'
+	if applyIso:
+		if reverseIsoCut:
+			goodSignalElectronCut += '&& userFloat("rhoCorrRelIso") > 0.1 && userFloat("rhoCorrRelIso") < 0.5 '
+		#Choose isolated region
+		else:
+			goodSignalElectronCut += '&& userFloat("rhoCorrRelIso") < 0.1'
 
 	looseVetoElectronCut = "%s > 20" % electronPt
 	looseVetoElectronCut += "&& abs(eta) < 2.5"
-	#looseVetoElectronCut += "&& (0.0 < electronID('mvaTrigV0') < 1.0)"
 	looseVetoElectronCut += "&& electronID('mvaTrigV0') > %f" % 0.1
 	looseVetoElectronCut += '&& userFloat("rhoCorrRelIso") < 0.3'
+
+	#Loose veto electrons must not overlap with good signal electrons
+	looseVetoElectronCut += "&& !(%s)" % goodSignalElectronCut
 
 	process.goodSignalElectrons = cms.EDFilter("CandViewSelector",
 	  src=cms.InputTag("elesWithIso"), cut=cms.string(goodSignalElectronCut)
 	)
-
-	# process.goodQCDElectrons = cms.EDFilter("CandViewSelector",
-	#   src=cms.InputTag("elesWithIso"), cut=cms.string(goodQCDElectronCut)
-	# )
 
 	process.looseVetoElectrons = cms.EDFilter("CandViewSelector",
 	  src=cms.InputTag("elesWithIso"), cut=cms.string(looseVetoElectronCut)
@@ -74,14 +68,12 @@ def ElectronSetup(
 		src = cms.InputTag("goodSignalElectrons")
 	)
 
-	#Loose veto electrons are always (semi)isolated.
-	#In the isolated region we need exactly 0...1 loose veto ele AND 0 loose veto mu.
-	#In the ANTI-isolated region, we must have 0 loose veto ele AND 0 loose veto mu.
+	#If loose veto electrons don't have any overlap with signal electrons, there must be none
 	process.looseEleVetoEle = cms.EDFilter(
 		"PATCandViewCountFilter",
 		src=cms.InputTag("looseVetoElectrons"),
-		minNumber=cms.uint32(1 if not reverseIsoCut else 0),
-		maxNumber=cms.uint32(1 if not reverseIsoCut else 0),
+		minNumber=cms.uint32(0),
+		maxNumber=cms.uint32(0),
 	)
 	process.looseMuVetoEle = cms.EDFilter(
 		"PATCandViewCountFilter",
@@ -113,7 +105,7 @@ def ElectronSetup(
 		)
 		process.metEleSequence = cms.Sequence(process.eleAndMETMT * process.hasEleMETMT)
 	else:
-		print "WARNING: MET type not recognized in electron channel"
+		print "WARNING: MET type not specified in electron channel"
 
 	process.recoNuProducerEle = cms.EDProducer('ClassicReconstructedNeutrinoProducer',
 		leptonSrc=cms.InputTag("goodSignalLeptons"),

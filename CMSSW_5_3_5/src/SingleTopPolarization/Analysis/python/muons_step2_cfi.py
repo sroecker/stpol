@@ -21,7 +21,11 @@ def MuonSetup(process,
 	isoType="rhoCorrRelIso",
 	metType="MtW",
 	doDebug=False,
-	reverseIsoCut=False):
+	reverseIsoCut=False,
+	applyIso=True,
+	applyMET=False,
+	met_cut=35
+	):
 
 	goodMuonCut = 'isPFMuon'																	   # general reconstruction property
 	goodMuonCut += ' && isGlobalMuon'																   # general reconstruction property
@@ -34,25 +38,23 @@ def MuonSetup(process,
 	goodMuonCut += ' && userFloat("innerTrack_hitPattern_numberOfValidPixelHits") > 0'							   # tracker reconstruction
 	goodMuonCut += ' && numberOfMatchedStations > 1'													# muon chamber reconstruction
 	goodMuonCut += ' && abs(userFloat("dz")) < 0.5'
+    goodSignalMuonCut = goodMuonCut
 
 	looseVetoMuonCut = "isPFMuon"
 	looseVetoMuonCut += "&& (isGlobalMuon | isTrackerMuon)"
 	looseVetoMuonCut += "&& pt > 10"
 	looseVetoMuonCut += "&& abs(eta)<2.5"
-	looseVetoMuonCut += ' && userFloat("%s") < 0.2' % isoType
+	looseVetoMuonCut += ' && userFloat("%s") < 0.2' % isoType  # Delta beta corrections (factor 0.5)
+	looseVetoMuons += "&& !(%s)" % goodSignalMuonCut
 
-	goodSignalMuonCut = goodMuonCut
 	#Choose anti-isolated region
-	if reverseIsoCut:
-		goodSignalMuonCut += ' && userFloat("{0}") > 0.3 && userFloat("{0}") < 0.5'.format(isoType)
-	#Choose isolated region
-	else:
-		goodSignalMuonCut += ' && userFloat("{0}") < 0.12'.format(isoType)
 
-	# #anti-isolated region
-	# goodQCDMuonCut = goodMuonCut
-	# goodQCDMuonCut += '&& userFloat("%s") < 0.5' % isoType
-	# goodQCDMuonCut += '&& userFloat("%s") > 0.3' % isoType
+	if applyIso:
+		if reverseIsoCut:
+			goodSignalMuonCut += ' && userFloat("{0}") > 0.3 && userFloat("{0}") < 0.5'.format(isoType)
+		#Choose isolated region
+		else:
+			goodSignalMuonCut += ' && userFloat("{0}") < 0.12'.format(isoType)
 
 	process.goodSignalMuons = cms.EDFilter("CandViewSelector",
 	  src=cms.InputTag(muonSrc), cut=cms.string(goodSignalMuonCut)
@@ -96,33 +98,44 @@ def MuonSetup(process,
 
 	#Either use MET cut or MtW cut
 	if metType == "MET":
+		met_cut=35
 		process.goodMETs = cms.EDFilter("CandViewSelector",
-		  src=cms.InputTag("patMETs"), cut=cms.string("pt>35")
+		  src=cms.InputTag("patMETs"), cut=cms.string("pt>%f" % met_cut)
 		)
-		process.hasMET = cms.EDFilter("PATCandViewCountFilter",
-			src = cms.InputTag("goodMETs"),
-			minNumber = cms.uint32(1),
-			maxNumber = cms.uint32(1)
-		)
+
 		process.metMuSequence = cms.Sequence(
-			process.goodMETs *
-			process.hasMET
+			process.goodMETs
 		)
+
+		if applyMET:
+			process.hasMET = cms.EDFilter("PATCandViewCountFilter",
+				src = cms.InputTag("goodMETs"),
+				minNumber = cms.uint32(1),
+				maxNumber = cms.uint32(1)
+			)
+			process.metMuSequence.insert(-1, process.hasMET)
+			print "CUT\t applying MET cut %s" % mt_cut
+
 	elif metType == "MtW":
+		mt_cut=40
+
 		#produce the muon and MET invariant transverse mass
 		process.muAndMETMT = cms.EDProducer('CandTransverseMassProducer',
 			collections=cms.untracked.vstring(["patMETs", "goodSignalMuons"])
 		)
 
-		process.hasMuMETMT = cms.EDFilter('EventDoubleFilter',
-			src=cms.InputTag("muAndMETMT"),
-			min=cms.double(40),
-			max=cms.double(9999)
-		)
 		process.metMuSequence = cms.Sequence(
-			process.muAndMETMT *
-			process.hasMuMETMT
+			process.muAndMETMT
 		)
+
+		if applyMET:
+			process.hasMuMETMT = cms.EDFilter('EventDoubleFilter',
+				src=cms.InputTag("muAndMETMT"),
+				min=cms.double(mt_cut),
+				max=cms.double(9999999)
+			)
+			process.metMuSequence.insert(-1, process.hasMuMETMT)
+			print "CUT\t applying MT cut %f" % mt_cut
 	else:
 		print "WARNING: MET type not specified!"
 
