@@ -1,7 +1,18 @@
 # Run with python -i working.py [<filenames>, ...]
 import sys
 import ROOT
-from ROOT import TH1F,THStack,TFile,TBrowser,TColor,TCanvas,TLegend
+from ROOT import TFile
+
+def th_sep(i, sep=','):
+	i = abs(int(i))
+	if i == 0:
+		return '0'
+	o = []
+	while i > 0:
+		o.append(i%1000)
+		i /= 1000
+	o.reverse()
+	return str(sep).join([str(o[0])] + map(lambda x: '%03d'%x, o[1:]))
 
 for fname in sys.argv[1:]:
 	tfile = TFile(fname)
@@ -9,10 +20,29 @@ for fname in sys.argv[1:]:
 		print 'Error opening file "%s"'%fname
 		continue
 	hist = tfile.Get('efficiencyAnalyzerMu').Get('muPath')
-	tree = tfile.Get('treesCands').Get('eventTree')
+	#tree = tfile.Get('treesCands').Get('eventTree')
+	#tree.AddFriend(tfile.Get('treesJets').Get('eventTree'))
+	#tree.AddFriend(tfile.Get('treesJets').Get('eventTree'))
+	
+	# We'll load all the trees
+	keys = [x.GetName() for x in tfile.GetListOfKeys()]
+	tree_names = filter(lambda x: x.startswith("trees"), keys)
+	trees = [tfile.Get(k).Get("eventTree") for k in tree_names]
+	for t in trees[1:]:
+		trees[0].AddFriend(t)
+	tree = trees[0]
 
 	print 'File: ', fname
-	for i in range(1,11):
-		print "%2i: %f"%(i, hist.GetBinContent(i))
-	print "Valid events:", tree.GetEntries('_recoTop_0_Mass==_recoTop_0_Mass')
+	print 'Number of bins:', hist.GetSize()
+	for i in range(1,hist.GetSize()):
+		print "%2i: %s"%(i, th_sep(hist.GetBinContent(i)))
+	
+	print 'Event total:', th_sep(tree.GetEntries())
+	print 'Events with _recoTop_0_Mass:', th_sep(tree.GetEntries('_recoTop_0_Mass==_recoTop_0_Mass'))
+	print 'Events where _topCount==1:', th_sep(tree.GetEntries('_topCount==1'))
+	print "_muonCount:", th_sep(tree.GetEntries('_topCount==1 && _muonCount==1'))
+	print "_bJetCount:", th_sep(tree.GetEntries('_topCount==1 && _bJetCount==1'))
+	print "_lightJetCount:", th_sep(tree.GetEntries('_topCount==1 && _lightJetCount==2'))
+	print "_electronCount:", th_sep(tree.GetEntries('_electronCount == 1'))
+	print "_electronCount && _topCount:", th_sep(tree.GetEntries('_electronCount == 1 && _topCount == 1'))
 	print
