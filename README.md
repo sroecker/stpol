@@ -58,3 +58,7 @@ The goal is to select a ttbar enriched region and compare the distribution of so
 >cmsRun runconfs/step2_cfg.py mc hlt mu ele nJets=3 nBTags=1 inputFiles_load=fileLists/TTBar.txt maxEvents=10000 outputFile=stpol_TTBar_3J1T.root
 
 This will give you *stpol_TTBar_3J1T_trees.root* which contain the trees for the ttbar-enriched region.
+
+##Sync
+https://twiki.cern.ch/twiki/bin/view/CMS/SyncSingleTopLeptonJets2012
+>cmsRun runconfs/step1_sync_cfg.py inputFiles=/store/mc/Summer12_DR53X/T_t-channel_TuneZ2star_8TeV-powheg-tauola/AODSIM/PU_S10_START53_V7A-v1/0000/0059C6F3-7CDC-E111-B4CB-001A92811726.root outputFile=sync_step1/sync_T_t_lepIso02_newIso.root &> log1
