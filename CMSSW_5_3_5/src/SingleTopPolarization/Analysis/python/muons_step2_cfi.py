@@ -40,13 +40,6 @@ def MuonSetup(process,
     goodMuonCut += ' && abs(userFloat("dz")) < 0.5'
     goodSignalMuonCut = goodMuonCut
 
-    looseVetoMuonCut = "isPFMuon"
-    looseVetoMuonCut += "&& (isGlobalMuon | isTrackerMuon)"
-    looseVetoMuonCut += "&& pt > 10"
-    looseVetoMuonCut += "&& abs(eta)<2.5"
-    looseVetoMuonCut += ' && userFloat("%s") < 0.2' % isoType  # Delta beta corrections (factor 0.5)
-    looseVetoMuonCut += "&& !(%s)" % goodSignalMuonCut
-
     #Choose anti-isolated region
 
     if applyIso:
@@ -55,6 +48,13 @@ def MuonSetup(process,
         #Choose isolated region
         else:
             goodSignalMuonCut += ' && userFloat("{0}") < 0.12'.format(isoType)
+
+    looseVetoMuonCut = "isPFMuon"
+    looseVetoMuonCut += "&& (isGlobalMuon | isTrackerMuon)"
+    looseVetoMuonCut += "&& pt > 10"
+    looseVetoMuonCut += "&& abs(eta)<2.5"
+    looseVetoMuonCut += ' && userFloat("%s") < 0.2' % isoType  # Delta beta corrections (factor 0.5)
+    looseVetoMuonCut += "&& !(%s)" % goodSignalMuonCut
 
     process.goodSignalMuons = cms.EDFilter("CandViewSelector",
       src=cms.InputTag(muonSrc), cut=cms.string(goodSignalMuonCut)
@@ -82,8 +82,8 @@ def MuonSetup(process,
     process.looseMuVetoMu = cms.EDFilter(
         "PATCandViewCountFilter",
         src=cms.InputTag("looseVetoMuons"),
-        minNumber=cms.uint32(1 if not reverseIsoCut else 0),
-        maxNumber=cms.uint32(1 if not reverseIsoCut else 0),
+        minNumber=cms.uint32(0),
+        maxNumber=cms.uint32(0)
     )
 
     #In Muon path we must have 0 loose electrons
