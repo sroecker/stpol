@@ -45,4 +45,5 @@ for fname in sys.argv[1:]:
 	print "_lightJetCount:", th_sep(tree.GetEntries('_topCount==1 && _lightJetCount==2'))
 	print "_electronCount:", th_sep(tree.GetEntries('_electronCount == 1'))
 	print "_electronCount && _topCount:", th_sep(tree.GetEntries('_electronCount == 1 && _topCount == 1'))
+	print "PU cuts:", th_sep(tree.GetEntries('(_topCount == 1)&&(_goodJets_0_Pt>60)&&(_goodJets_1_Pt>60)&&(_muAndMETMT>50)'))
 	print
