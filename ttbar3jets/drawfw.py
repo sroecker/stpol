@@ -28,8 +28,11 @@ class DrawCreator:
 		return '&&'.join(map(lambda s: '('+str(s)+')', self._cuts))
 	
 	def addMC(self, fname, crsec, name, color=None):
-		newmc = _MCChannel(fname, crsec, name, color)
-		self._mcs.append(newmc)
+		try:
+			newmc = _MCChannel(fname, crsec, name, color)
+			self._mcs.append(newmc)
+		except IOError as e:
+			print e
 	
 	def setData(self, fname, luminosity):
 		self._data = _DataChannel(fname, luminosity)
@@ -98,7 +101,7 @@ class _TTree(object):
 		self.tfile = TFile(self.fname)
 		
 		if self.tfile.IsZombie():
-			raise Exception('Error opening file "%s"!'%fname)
+			raise IOError('Error: file `%s` not found!'%fname)
 		
 		# We'll load all the trees
 		keys = [x.GetName() for x in self.tfile.GetListOfKeys()]
