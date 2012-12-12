@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-def JetSetup(process, isMC, doDebug, bTagType="combinedSecondaryVertexMVABJetTags", bTagCut=0.679, nJets=2, nBTags=1, cutJets=True):
+def JetSetup(process, isMC, doDebug, bTagType, bTagWP, nJets, nBTags, cutJets):
     if cutJets:
         print "CUT\tJets: Using %d jets, %d tags" % (nJets, nBTags)
     else:
@@ -38,7 +38,7 @@ def JetSetup(process, isMC, doDebug, bTagType="combinedSecondaryVertexMVABJetTag
         cut=cms.string(jetCut)
     )
 
-    bTagCutStr = 'bDiscriminator("%s") >= %f' % (bTagType, bTagCut)
+    bTagCutStr = 'bDiscriminator("%s") >= %f' % (bTagType, bTagWP)
 
     process.btaggedJets = cms.EDFilter(
         "CandViewSelector",

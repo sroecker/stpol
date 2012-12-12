@@ -1,6 +1,20 @@
 import FWCore.ParameterSet.Config as cms
 import SingleTopPolarization.Analysis.eventCounting as eventCounting
 
+#BTag working points from https://twiki.cern.ch/twiki/bin/viewauth/CMS/BTagPerformanceOP#B_tagging_Operating_Points_for_5
+#TODO: place in proper class
+#TrackCountingHighPur     TCHPT   3.41
+#JetProbability   JPL     0.275
+#JetProbability   JPM     0.545
+#JetProbability   JPT     0.790
+#CombinedSecondaryVertex  CSVL    0.244
+#CombinedSecondaryVertex  CSVM    0.679
+#CombinedSecondaryVertex  CSVT    0.898
+
+#BTag tagger names
+#trackCountingHighPurBJetTags
+#combinedSecondaryVertexMVABJetTags
+
 """
 Configures the reference selection + top reconstruction steps.
 Output is to patTuple and/or flat TTree. The parameters are the following:
@@ -23,7 +37,8 @@ cutJets:            True - discard events not having the specified number of jet
                     False - keep all events
 eleMVACut:          the cut value on the electron MVA
 electronPt:         specifies the electron pt to be used
-bTagType:           "Specified the b-tag type to be used
+bTagType:           specifies the b-tag type to be used
+bTagWP:             specifies the b-tag working point
 """
 def SingleTopStep2(isMC,
     skipPatTupleOutput=True,
@@ -40,9 +55,10 @@ def SingleTopStep2(isMC,
     cutJets=True,
     eleMVACut=0.1,
     electronPt="ecalDrivenMomentum.Pt()",
-    bTagType="combinedSecondaryVertexMVABJetTags"
+    bTagType="trackCountingHighPurBJetTags",
+    bTagWP=3.41
     ):
-    
+
     process = cms.Process("STPOLSEL2")
     eventCounting.countProcessed(process)
 
@@ -81,7 +97,7 @@ def SingleTopStep2(isMC,
     #-------------------------------------------------
 
     from SingleTopPolarization.Analysis.jets_step2_cfi import JetSetup
-    JetSetup(process, isMC, doDebug, nJets=nJets, nBTags=nBTags, cutJets=cutJets, bTagType=bTagType)
+    JetSetup(process, isMC, doDebug, bTagType, bTagWP, nJets, nBTags, cutJets)
 
     #-------------------------------------------------
     # Leptons
@@ -196,7 +212,7 @@ def SingleTopStep2(isMC,
             #         ["rms", "userFloat('rms')"]
             #     ]
             # ),
-            
+
             #the tagged jet with the highest b-discriminator value (== THE b-jet)
             treeCollection(
                 cms.untracked.InputTag("highestBTagJet"), 1,
