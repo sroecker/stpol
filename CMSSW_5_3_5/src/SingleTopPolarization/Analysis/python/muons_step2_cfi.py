@@ -38,7 +38,7 @@ def MuonSetup(process,
 	goodMuonCut += ' && userFloat("innerTrack_hitPattern_numberOfValidPixelHits") > 0'							   # tracker reconstruction
 	goodMuonCut += ' && numberOfMatchedStations > 1'													# muon chamber reconstruction
 	goodMuonCut += ' && abs(userFloat("dz")) < 0.5'
-    goodSignalMuonCut = goodMuonCut
+	goodSignalMuonCut = goodMuonCut
 
 	looseVetoMuonCut = "isPFMuon"
 	looseVetoMuonCut += "&& (isGlobalMuon | isTrackerMuon)"
