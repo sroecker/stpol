@@ -13,10 +13,11 @@ def th_sep(i, sep=','):
 	return str(sep).join([str(o[0])] + map(lambda x: '%03d'%x, o[1:]))
 
 class DrawCreator:
-	def __init__(self):
+	def __init__(self, chstring = None):
 		self._mcs = []
 		self._cuts = []
 		self._data = None
+		self.chstring = chstring
 	
 	def addCut(self, cut):
 		self._cuts.append(cut)
@@ -46,7 +47,7 @@ class DrawCreator:
 		print 'Cut string:', cut_string
 		
 		# Create the legend
-		p.legend = TLegend(0.80, 0.75, 1, 1, 'Legend (' + plotname + ')')
+		p.legend = TLegend(0.80, 0.65, 1.00, 0.90)
 		
 		# Create histograms
 		p.dt_hist = TH1F('hist_data', '', hbins, hmin, hmax)
@@ -80,8 +81,10 @@ class DrawCreator:
 			p.legend.AddEntry(mc_hist, mc.name, 'F')
 		
 		# Stacking the histograms
-		#p.stack = THStack('stack_%s'%plotname, '%s (%s);Xax;Yax'%(var, plotname))
-		p.stack = THStack('stack_%s'%plotname, '%s (%s)'%(var, plotname))
+		plot_title = '%s (%s)'%(var, plotname)
+		if self.chstring is not None:
+			plot_title += ' [' + str(self.chstring) + ']'
+		p.stack = THStack('stack_%s'%plotname, plot_title)
 		
 		for ht in p.mc_hists:
 			p.stack.Add(ht)
