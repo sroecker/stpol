@@ -37,7 +37,7 @@ try:
 	if args.data == 'A':
 		dc.setData(prefix+'dataA'+suffix, 808.472)
 	elif args.data == 'AB':
-		dc.setData(prefix+'dataAB'+suffix, 808.472)
+		dc.setData(prefix+'dataAB'+suffix, 5238) # from TWiki
 	else:
 		print 'Bad value: args.data=`%s`'%args.data
 		print 'Exiting!'
