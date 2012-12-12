@@ -138,8 +138,8 @@ class Plot:
 		self.dt_hist.Draw('E1 SAME')
 		self.legend.Draw('SAME')
 	
-	def save(self, fout):
+	def save(self, fout, w=550, h=400):
 		print 'Saving as:', fout
-		cvs = TCanvas()
+		cvs = TCanvas('', '', w, h)
 		self.draw()
 		cvs.SaveAs(fout)
