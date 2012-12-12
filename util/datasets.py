@@ -43,9 +43,10 @@ class DS_Data(DS):
         self.globalTag = globalTag
 
     def parseTemplate(self, template, tag):
+        out = template
         out = out.replace("LUMIFILE", lumis[self.lumi].fname)
         out = out.replace("GLOBALTAG", self.globalTag)
-        out = DS.parseTemplate(self, template, tag)
+        out = DS.parseTemplate(self, out, tag)
         return out
 
 step1_data = [

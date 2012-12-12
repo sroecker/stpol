@@ -2,9 +2,9 @@
 number_of_jobs = 1000
 total_number_of_lumis = -1
 lumi_mask = /home/joosep/singletop/stpol/crabs/lumis/LUMIFILE
-pset = /home/joosep/singletop/stpol/crabs/runconfs/step1_cfg.py
+pset = /home/joosep/singletop/stpol/runconfs/step1_cfg.py
 datasetpath = DATASET
-pycfg_params = mu ele skim grid noprint
+pycfg_params = mu ele skim grid noprint GT=GLOBALTAG
 get_edm_output = 1
 
 [USER]
