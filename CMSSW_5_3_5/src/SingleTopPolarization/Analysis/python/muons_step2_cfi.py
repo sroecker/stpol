@@ -169,7 +169,6 @@ def MuonPath(process, conf):
         #Select one isolated muon and veto additional loose muon/electron
         process.goodSignalMuons *
         process.muonCount *
-        #process.goodQCDMuons *
         process.looseVetoMuons *
         process.oneIsoMu *
         process.looseMuVetoMu *
