@@ -35,15 +35,12 @@ for fname in sys.argv[1:]:
 	print 'File: ', fname
 	print 'Number of bins:', hist.GetSize()
 	for i in range(1,hist.GetSize()):
-		print "%2i: %s"%(i, th_sep(hist.GetBinContent(i)))
+		print "%2i: %s (%s)"%(i, th_sep(hist.GetBinContent(i)), hist.GetXaxis().GetBinLabel(i))
 	
 	print 'Event total:', th_sep(tree.GetEntries())
-	print 'Events with _recoTop_0_Mass:', th_sep(tree.GetEntries('_recoTop_0_Mass==_recoTop_0_Mass'))
 	print 'Events where _topCount==1:', th_sep(tree.GetEntries('_topCount==1'))
 	print "_muonCount:", th_sep(tree.GetEntries('_topCount==1 && _muonCount==1'))
 	print "_bJetCount:", th_sep(tree.GetEntries('_topCount==1 && _bJetCount==1'))
 	print "_lightJetCount:", th_sep(tree.GetEntries('_topCount==1 && _lightJetCount==2'))
-	print "_electronCount:", th_sep(tree.GetEntries('_electronCount == 1'))
-	print "_electronCount && _topCount:", th_sep(tree.GetEntries('_electronCount == 1 && _topCount == 1'))
-	print "PU cuts:", th_sep(tree.GetEntries('(_topCount == 1)&&(_goodJets_0_Pt>60)&&(_goodJets_1_Pt>60)&&(_muAndMETMT>50)'))
+	print "PU cuts:", th_sep(tree.GetEntries('(_topCount == 1)&&(_goodJets_0_Pt>60)&&(_goodJets_1_Pt>60)&&(_muAndMETMT>50)&&(_untaggedJets_0_rms<0.025)'))
 	print
