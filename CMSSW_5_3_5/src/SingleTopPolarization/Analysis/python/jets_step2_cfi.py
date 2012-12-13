@@ -39,7 +39,7 @@ def JetSetup(process, conf):
         cut=cms.string(jetCut)
     )
 
-    bTagCutStr = 'bDiscriminator("%s") >= %f' % (conf.Jets.bTagDiscriminant, conf.Jets.bTagWorkingPointVal())
+    bTagCutStr = 'bDiscriminator("%s") >= %f' % (conf.Jets.bTagDiscriminant, conf.Jets.BTagWorkingPointVal())
 
     process.btaggedJets = cms.EDFilter(
         "CandViewSelector",

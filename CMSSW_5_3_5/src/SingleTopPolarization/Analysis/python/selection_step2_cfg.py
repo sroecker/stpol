@@ -1,56 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 import SingleTopPolarization.Analysis.eventCounting as eventCounting
-
-
-class Config:
-    class Channel:
-        signal = "signal"
-        background = "background"
-
-    channel = Channel.background
-    doMuon = True
-    doElectron = True
-    filterHLT = True
-    isMC = True
-    doDebug = False
-
-    class Jets:
-        cutJets = False
-        nJets = 2
-        nBTags = 1
-        ptCut = 40
-        etaCut = 4.7
-
-        class BTagDiscriminant:
-            TCHP = "trackCountingHighPurBJetTags"
-            CSV_MVA = "combinedSecondaryVertexMVABJetTags"
-        class BTagWorkingPoint:
-            TCHPT = "TCHPT"
-            CSVT = "CSVT"
-            CSVM = "CSVM"
-
-            WP = {"TCHPT":3.41, "CSVT":0.898, "CSVM":0.679}
-
-        bTagDiscriminant = BTagDiscriminant.TCHP
-        bTagWorkingPoint = BTagWorkingPoint.TCHPT
-
-        @classmethod
-        def bTagWorkingPointVal(c):
-            return c.BTagWorkingPoint.WP[c.bTagWorkingPoint]
-
-        @classmethod
-        def toStr(c):
-            s = "Jet config:"
-            s += "\ncutJets = %s" % Config.Jets.cutJets
-            s += "\nnJets = %d, nBTags=%d" % (Config.Jets.nJets, Config.Jets.nBTags)
-            s += "\nbTagDiscriminant = %s, WP = %s" % (Config.Jets.bTagDiscriminant, Config.Jets.bTagWorkingPoint)
-            return s
-
-    @classmethod
-    def toStr(c):
-        s = "channel = %s" % Config.channel
-        s += "\n" + Config.Jets.toStr()
-        return s
+from SingleTopPolarization.Analysis.config_step2_cfg import Config
 
 #BTag working points from https://twiki.cern.ch/twiki/bin/viewauth/CMS/BTagPerformanceOP#B_tagging_Operating_Points_for_5
 #TODO: place in proper class
@@ -172,7 +122,7 @@ def SingleTopStep2(isMC,
     )
 
     from SingleTopPolarization.Analysis.muons_step2_cfi import MuonSetup
-    MuonSetup(process, isMC, doDebug=doDebug, reverseIsoCut=reverseIsoCut, isoType=muonIsoType)
+    MuonSetup(process, Config)
 
     from SingleTopPolarization.Analysis.electrons_step2_cfi import ElectronSetup
     ElectronSetup(process, isMC, doDebug=doDebug, reverseIsoCut=reverseIsoCut, metType=eleMetType, mvaCut=eleMVACut, electronPt=electronPt)
@@ -459,7 +409,7 @@ def SingleTopStep2(isMC,
 
     if Config.doMuon:
         from SingleTopPolarization.Analysis.muons_step2_cfi import MuonPath
-        MuonPath(process, isMC, channel)
+        MuonPath(process, Config)
         process.muPath.insert(process.muPath.index(process.oneIsoMu)+1, process.goodSignalLeptons)
 
     if Config.doElectron:
