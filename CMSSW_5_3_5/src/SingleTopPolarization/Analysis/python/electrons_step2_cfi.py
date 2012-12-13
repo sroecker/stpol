@@ -9,25 +9,14 @@ doDebug - enable various debugging printout modules
 metType - choose either between 'MtW' for the W transverse mass or 'MET' for a simple MET cut
 reverseIsoCut - 'True' to choose the anti-isolated leptons, 'False' to choose isolated leptons
 """
-def ElectronSetup(
-	process,
-	isMC,
-	mvaCut=0.1,
-	doDebug=False,
-	metType="MtW",
-	reverseIsoCut=False,
-	applyMVA=True,
-	electronPt="ecalDrivenMomentum.Pt()",
-	applyIso=True,
-	conf
-	):
+def ElectronSetup(process, conf):
 
 	goodElectronCut = "%s>30" % conf.Electrons.pt
 	goodElectronCut += "&& abs(eta)<2.5"
 	goodElectronCut += "&& !(1.4442 < abs(superCluster.eta) < 1.5660)"
 	goodElectronCut += "&& passConversionVeto()"
 	#goodElectronCut += "&& (0.0 < electronID('mvaTrigV0') < 1.0)"
-	if applyMVA:
+	if conf.Electrons.cutOnMVA:
 		goodElectronCut += "&& electronID('mvaTrigV0') > %f" % conf.Electrons.mvaCut
 	goodSignalElectronCut = goodElectronCut
 	goodSignalElectronCut += '&& abs(userFloat("dxy")) < 0.02'
@@ -38,15 +27,15 @@ def ElectronSetup(
 	    #Choose anti-isolated region
 	        goodSignalElectronCut += ' && userFloat("{0}") > {1} && userFloat("{0}") < {1}'.format(
 	            conf.Electrons.relIsoType,
-	            conf.Electrons.relIsoRangeAntiIsolatedRegion[0],
-	            conf.Electrons.relIsoRangeAntiIsolatedRegion[1]
+	            conf.Electrons.relIsoCutRangeAntiIsolatedRegion[0],
+	            conf.Electrons.relIsoCutRangeAntiIsolatedRegion[1]
 	            )
 	    #Choose isolated region
 	    else:
 	        goodSignalElectronCut += ' && userFloat("{0}") > {1} && userFloat("{0}") < {2}'.format(
 	            conf.Electrons.relIsoType,
-	            conf.Electrons.relIsoRangeIsolatedRegion[0],
-	            conf.Electrons.relIsoRangeIsolatedRegion[1]
+	            conf.Electrons.relIsoCutRangeIsolatedRegion[0],
+	            conf.Electrons.relIsoCutRangeIsolatedRegion[1]
 	        )
 
 

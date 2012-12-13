@@ -8,7 +8,7 @@ def JetSetup(process, conf):
 #        print "CUT\tJets: keeping all events with >=1 jet and >=0 btag"
 #
     if conf.isMC:
-        jetCut = 'userFloat("pt_smear") > %f.' % conf.Jets.ptCut
+        jetCut = 'userFloat("pt_smear") > %f' % conf.Jets.ptCut
     else:
         jetCut = 'pt > %f' % conf.Jets.ptCut
 

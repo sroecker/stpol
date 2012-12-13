@@ -18,7 +18,7 @@ from SingleTopPolarization.Analysis.config_step2_cfg import Config
 
 def SingleTopStep2():
 
-    print Config.toStr()
+    print Config._toStr()
 
     process = cms.Process("STPOLSEL2")
     eventCounting.countProcessed(process)
@@ -117,7 +117,7 @@ def SingleTopStep2():
                     ["Pt", "pt"],
                     ["Eta", "eta"],
                     ["Phi", "phi"],
-                    ["relIso", "userFloat('%s')" % muonIsoType],
+                    ["relIso", "userFloat('%s')" % Config.Muons.relIsoType],
                     ["Charge", "charge"],
                     ["genPdgId", "? genParticlesSize() > 0 ? genParticle(0).pdgId() : 0"],
                 ]
@@ -130,10 +130,10 @@ def SingleTopStep2():
             treeCollection(
                 cms.untracked.InputTag("goodSignalElectrons"), 1,
                 [
-                    ["Pt", "%s" % electronPt],
+                    ["Pt", "%s" % Config.Electrons.pt],
                     ["Eta", "eta"],
                     ["Phi", "phi"],
-                    ["relIso", "userFloat('rhoCorrRelIso')"],
+                    ["relIso", "userFloat('%s')" % Config.Electrons.relIsoType],
                     ["mvaID", "electronID('mvaTrigV0')"],
                     ["Charge", "charge"],
                 ]
@@ -144,13 +144,13 @@ def SingleTopStep2():
             collections = cms.untracked.VPSet(
             #all the selected jets in events, passing the reference selection cuts, ordered pt-descending
             treeCollection(
-                cms.untracked.InputTag("goodJets"), 5,
+                cms.untracked.InputTag("goodJets"), Config.Jets.nJets,
                 [
                     ["Pt", "pt"],
                     ["Eta", "eta"],
                     ["Phi", "phi"],
                     ["Mass", "mass"],
-                    ["bDiscriminator", "bDiscriminator('%s')" % bTagType],
+                    ["bDiscriminator", "bDiscriminator('%s')" % Config.Jets.bTagDiscriminant],
                     ["rms", "userFloat('rms')"]
                 ]
             ),
@@ -174,7 +174,7 @@ def SingleTopStep2():
                     ["Eta", "eta"],
                     ["Phi", "phi"],
                     ["Mass", "mass"],
-                    ["bDiscriminator", "bDiscriminator('%s')" % bTagType],
+                    ["bDiscriminator", "bDiscriminator('%s')" % Config.Jets.bTagDiscriminant],
                     ["rms", "userFloat('rms')"]
                 ]
             ),
@@ -187,31 +187,31 @@ def SingleTopStep2():
                     ["Eta", "eta"],
                     ["Phi", "phi"],
                     ["Mass", "mass"],
-                    ["bDiscriminator", "bDiscriminator('%s')" % bTagType],
+                    ["bDiscriminator", "bDiscriminator('%s')" % Config.Jets.bTagDiscriminant],
                     ["rms", "userFloat('rms')"]
                 ]
             ),
 
 	    #all the b-tagged jets in the event, ordered pt-descending
             treeCollection(
-                cms.untracked.InputTag("btaggedJets"), nBTags,
+                cms.untracked.InputTag("btaggedJets"), Config.Jets.nBTags,
                 [
                     ["Pt", "pt"],
                     ["Eta", "eta"],
                     ["Phi", "phi"],
                     ["Mass", "mass"],
-                    ["bDiscriminator", "bDiscriminator('%s')" % bTagType],
+                    ["bDiscriminator", "bDiscriminator('%s')" % Config.Jets.bTagDiscriminant],
                     ["rms", "userFloat('rms')"]
                 ]
             ),
             treeCollection(
-                cms.untracked.InputTag("untaggedJets"), nJets-nBTags,
+                cms.untracked.InputTag("untaggedJets"), Config.Jets.nJets-Config.Jets.nBTags,
                 [
                     ["Pt", "pt"],
                     ["Eta", "eta"],
                     ["Phi", "phi"],
                     ["Mass", "mass"],
-                    ["bDiscriminator", "bDiscriminator('%s')" % bTagType],
+                    ["bDiscriminator", "bDiscriminator('%s')" % Config.Jets.bTagDiscriminant],
                     ["rms", "userFloat('rms')"]
                 ]
             )
@@ -348,7 +348,7 @@ def SingleTopStep2():
     from SingleTopPolarization.Analysis.hlt_step2_cfi import HLTSetup
     HLTSetup(process, Config)
 
-    if Config.isMC and Config.channel==Config.channel.signal:
+    if Config.isMC and Config.channel==Config.Channel.signal:
         from SingleTopPolarization.Analysis.partonStudy_step2_cfi import PartonStudySetup
         PartonStudySetup(process)
         process.partonPath = cms.Path(process.partonStudyTrueSequence)
@@ -364,7 +364,7 @@ def SingleTopStep2():
 
     if Config.doElectron:
         from SingleTopPolarization.Analysis.electrons_step2_cfi import ElectronPath
-        ElectronPath(process, isMC, channel, doDebug=doDebug)
+        ElectronPath(process, Config)
         process.elePath.insert(process.elePath.index(process.oneIsoEle)+1, process.goodSignalLeptons)
 
     process.treePath = cms.Path(process.treeSequence)
@@ -399,7 +399,7 @@ def SingleTopStep2():
     #-----------------------------------------------
 
     #Command-line arguments
-    if not onGrid:
+    if not Config.onGrid:
         from SingleTopPolarization.Analysis.cmdlineParsing import enableCommandLineArguments
         (inFiles, outFile) = enableCommandLineArguments(process)
     else:
@@ -409,18 +409,6 @@ def SingleTopStep2():
         "TFileService",
         fileName=cms.string(outFile.replace(".root", "_trees.root")),
     )
-    print "isMC: %s" % str(isMC)
-
-    print "onGrid: %s" % str(onGrid)
-    print "channel: %s" % channel
-
-    print "lepton antiIso: %s" % reverseIsoCut
-
-    print ""
-    print "Running paths: %s" % str(process.paths.list)
-    for p in process.paths.list:
-        print "%s -> %s" % (p, process.paths.get(p))
-    print ""
 
     print "Output trees: %s" % process.TFileService.fileName.value()
     if hasattr(process, "out"):

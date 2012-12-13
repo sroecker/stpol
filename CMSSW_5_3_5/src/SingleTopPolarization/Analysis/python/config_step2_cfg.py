@@ -23,6 +23,7 @@ class Config(C):
     isMC = True
     doDebug = False
     skipPatTupleOutput = False
+    onGrid = False
 
     class Jets(C):
         cutJets = False

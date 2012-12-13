@@ -35,15 +35,15 @@ def MuonSetup(process, conf = None):
         #Choose anti-isolated region
             goodSignalMuonCut += ' && userFloat("{0}") > {1} && userFloat("{0}") < {1}'.format(
                 conf.Muons.relIsoType,
-                conf.Muons.relIsoRangeAntiIsolatedRegion[0],
-                conf.Muons.relIsoRangeAntiIsolatedRegion[1]
+                conf.Muons.relIsoCutRangeAntiIsolatedRegion[0],
+                conf.Muons.relIsoCutRangeAntiIsolatedRegion[1]
                 )
         #Choose isolated region
         else:
             goodSignalMuonCut += ' && userFloat("{0}") > {1} && userFloat("{0}") < {2}'.format(
                 conf.Muons.relIsoType,
-                conf.Muons.relIsoRangeIsolatedRegion[0],
-                conf.Muons.relIsoRangeIsolatedRegion[1]
+                conf.Muons.relIsoCutRangeIsolatedRegion[0],
+                conf.Muons.relIsoCutRangeIsolatedRegion[1]
             )
 
     looseVetoMuonCut = "isPFMuon"
@@ -54,11 +54,11 @@ def MuonSetup(process, conf = None):
     looseVetoMuonCut += "&& !(%s)" % goodSignalMuonCut #Remove 'good signal muons from the veto collection'
 
     process.goodSignalMuons = cms.EDFilter("CandViewSelector",
-      src=cms.InputTag(muonSrc), cut=cms.string(goodSignalMuonCut)
+      src=cms.InputTag("muonsWithIso"), cut=cms.string(goodSignalMuonCut)
     )
 
     process.looseVetoMuons = cms.EDFilter("CandViewSelector",
-      src=cms.InputTag(muonSrc), cut=cms.string(looseVetoMuonCut)
+      src=cms.InputTag("muonsWithIso"), cut=cms.string(looseVetoMuonCut)
     )
 
     process.oneIsoMu = cms.EDFilter(
