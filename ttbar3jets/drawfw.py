@@ -38,7 +38,7 @@ class DrawCreator:
 	def setData(self, fname, luminosity):
 		self._data = _DataChannel(fname, luminosity)
 	
-	def plot(self, var, hmin, hmax, hbins, plotname):
+	def plot(self, var, hmin, hmax, hbins, plotname, intsc=False):
 		print 'Plotting %s'%var
 		print 'Histogram: %f - %f (%d)'%(hmin, hmax, hbins)
 		p = Plot()
@@ -53,6 +53,8 @@ class DrawCreator:
 		p.dt_hist = TH1F('hist_data', '', hbins, hmin, hmax)
 		p.dt_hist.SetMarkerStyle(20)
 		print 'Filled (data):', self._data.tree.Draw('%s>>hist_data'%var, cut_string, 'goff')
+		dt_int = p.dt_hist.Integral()
+		print 'int (data):', dt_int
 		
 		#effective_lumi = self._data.luminosity*float(self._data.tree.GetEntries())/float(self._data.getTotalEvents())
 		# TODO: implement effectice luminosity
@@ -60,6 +62,7 @@ class DrawCreator:
 		
 		maxy = p.dt_hist.GetMaximum()
 		
+		mc_int = 0
 		p.mc_hists = []
 		for mc in self._mcs:
 			hist_name = 'hist_%s_mc_%s'%(plotname, mc.name)
@@ -73,12 +76,23 @@ class DrawCreator:
 			
 			# MC scaling
 			expected_events = mc.crsec*effective_lumi
-			scale_factor = float(expected_events)/float(mc.getTotalEvents())
+			total_events = mc.getTotalEvents()
+			scale_factor = float(expected_events)/float(total_events)
 			mc_hist.Scale(scale_factor)
 			
 			maxy = max(maxy, mc_hist.GetMaximum())
 			
 			p.legend.AddEntry(mc_hist, mc.name, 'F')
+			
+			mc_int += mc_hist.Integral()
+			print 'totev (%s):'%mc.name, total_events
+			print 'expev (%s):'%mc.name, expected_events
+			print 'scf (%s):'%mc.name, scale_factor
+			print 'int (%s):'%mc.name, mc_int
+		
+		if intsc:
+			for mc_hist in p.mc_hists:
+				mc_hist.Scale(dt_int/mc_int)
 		
 		# Kolmorogov test
 		basemc = TH1F('hist_mc_ktbase', '', hbins, hmin, hmax)
