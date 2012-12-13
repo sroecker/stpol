@@ -1,5 +1,6 @@
 import ROOT
 from ROOT import TFile,TH1F,THStack,TPad,TCanvas,TLegend,TText
+from plotlog import PlotLog
 
 def th_sep(i, sep=','):
 	i = abs(int(i))
@@ -39,32 +40,43 @@ class DrawCreator:
 		self._data = _DataChannel(fname, luminosity)
 	
 	def plot(self, var, hmin, hmax, hbins, plotname, intsc=False):
-		print 'Plotting %s'%var
-		print 'Histogram: %f - %f (%d)'%(hmin, hmax, hbins)
 		p = Plot()
+		p.log.addParam('Variable', var)
+		p.log.addParam('HT min', hmin)
+		p.log.addParam('HT max', hmax)
+		p.log.addParam('HT bins', hbins)
+		p.log.addParam('Integrated scaling', str(intsc))
 		
 		cut_string = self._getCutString()
-		print 'Cut string:', cut_string
+		p.log.setCuts(self._cuts, cut_string)
 		
 		# Create the legend
 		p.legend = TLegend(0.80, 0.65, 1.00, 0.90)
 		
+		# Create log variables
+		p.log.addVariable('filled')
+		
 		# Create histograms
+		p.log.addProcess('data', self._data.luminosity, self._data.fname, ismc=False)
 		p.dt_hist = TH1F('hist_data', '', hbins, hmin, hmax)
 		p.dt_hist.SetMarkerStyle(20)
-		print 'Filled (data):', self._data.tree.Draw('%s>>hist_data'%var, cut_string, 'goff')
+		p.log.setVariable('data', 'filled', self._data.tree.Draw('%s>>hist_data'%var, cut_string, 'goff'))
 		dt_int = p.dt_hist.Integral()
-		print 'int (data):', dt_int
+		p.log.setVariable('data', 'int', dt_int)
 		
 		#effective_lumi = self._data.luminosity*float(self._data.tree.GetEntries())/float(self._data.getTotalEvents())
 		# TODO: implement effectice luminosity
 		effective_lumi = self._data.luminosity
+		p.log.addParam('Luminosity', self._data.luminosity)
+		p.log.addParam('Effective luminosity', effective_lumi)
 		
 		data_max = p.dt_hist.GetMaximum()
+		p.log.addParam('Data binmax', data_max)
 		
 		mc_int = 0
 		p.mc_hists = []
 		for mc in self._mcs:
+			p.log.addProcess(mc.name, mc.crsec, mc.fname)
 			hist_name = 'hist_%s_mc_%s'%(plotname, mc.name)
 			
 			mc_hist = TH1F(hist_name, '', hbins, hmin, hmax)
@@ -72,7 +84,7 @@ class DrawCreator:
 			mc_hist.SetLineWidth(0)
 			p.mc_hists.append(mc_hist)
 			
-			print 'Filled (%s):'%hist_name, mc.tree.Draw('%s>>%s'%(var,hist_name), cut_string, 'goff')
+			p.log.setVariable(mc.name, 'filled', mc.tree.Draw('%s>>%s'%(var,hist_name), cut_string, 'goff'))
 			
 			# MC scaling
 			expected_events = mc.crsec*effective_lumi
@@ -83,10 +95,11 @@ class DrawCreator:
 			p.legend.AddEntry(mc_hist, mc.name, 'F')
 			
 			mc_int += mc_hist.Integral()
-			print 'totev (%s):'%mc.name, total_events
-			print 'expev (%s):'%mc.name, expected_events
-			print 'scf (%s):'%mc.name, scale_factor
-			print 'int (%s):'%mc.name, mc_int
+			
+			p.log.setVariable(mc.name, 'totev', total_events)
+			p.log.setVariable(mc.name, 'expev', expected_events)
+			p.log.setVariable(mc.name, 'scf', scale_factor)
+			p.log.setVariable(mc.name, 'int', mc_int)
 		
 		if intsc:
 			for mc_hist in p.mc_hists:
@@ -96,9 +109,11 @@ class DrawCreator:
 		basemc = TH1F('hist_mc_ktbase', '', hbins, hmin, hmax)
 		for mc_hist in p.mc_hists:
 			basemc.Add(mc_hist)
-		print 'Kolmogorov test:', p.dt_hist.KolmogorovTest(basemc)
 		
 		mc_max = basemc.GetMaximum()
+		p.log.addParam('MC binmax', mc_max)
+		
+		p.log.addParam('Kolmogorov test', p.dt_hist.KolmogorovTest(basemc))
 		
 		# Stacking the histograms
 		plot_title = '%s (%s)'%(var, plotname)
@@ -157,15 +172,18 @@ class _DataChannel(_TTree):
  
 class Plot:
 	def __init__(self):
-		pass
+		self.log = PlotLog()
 	
 	def draw(self):
 		self.stack.Draw('')
 		self.dt_hist.Draw('E1 SAME')
 		self.legend.Draw('SAME')
 	
-	def save(self, fout, w=550, h=400):
-		print 'Saving as:', fout
+	def save(self, fout, w=550, h=400, log=True, fmt='png'):
+		print 'Saving as:', fout+'.'+fmt
 		cvs = TCanvas('', '', w, h)
 		self.draw()
-		cvs.SaveAs(fout)
+		cvs.SaveAs(fout+'.'+fmt)
+		
+		if log:
+			self.log.save(fout+'.pylog')
