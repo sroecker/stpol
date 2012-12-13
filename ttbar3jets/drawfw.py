@@ -89,7 +89,7 @@ class DrawCreator:
 		for ht in p.mc_hists:
 			p.stack.Add(ht)
 			
-		p.stack.SetMaximum(maxy)
+		p.stack.SetMaximum(1.1*maxy)
 		#p.stack.GetXaxis().SetTitle('This is the x-axis title. (GeV)')
 		#p.stack.GetYaxis().SetTitle('This is the Y-axis title. (GeV)')
 		
