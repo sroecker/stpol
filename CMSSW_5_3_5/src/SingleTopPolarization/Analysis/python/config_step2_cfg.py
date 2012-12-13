@@ -1,3 +1,4 @@
+
 class C(object):
     @classmethod
     def _toStr(cls):
@@ -10,21 +11,49 @@ class C(object):
         #         s += c.toStr()
         return s
 
+"""
+This is the single global static (singleton type) configuration class, that is read by the SingleTopStep2 code.
+"""
 class Config(C):
+
+    """
+    An enum for choosing the channel.
+    signal - run over T_t or Tbar_t
+    background - run over anything else (or data)
+    """
     class Channel:
         signal = "signal"
         background = "background"
 
     channel = Channel.background
+
+    #Whether to run the muon channel
     doMuon = True
+
+    #Whether to run the electron channel
     doElectron = True
+
+    #Whether to filter the HLT
     filterHLT = True
+
+    #Whether to use the cross-strigger or the single lepton trigger
     useXTrigger = False
+
+    #Either running over MC or Data
     isMC = True
+
+    #Enable debugging modules
     doDebug = False
+
+    #Whether to output CMSSW-specific trees
     skipPatTupleOutput = False
+
+    #Whether to run over grid (without command-line arguments)
     onGrid = False
 
+    """
+    Specifies the jet configuration.
+    """
     class Jets(C):
         cutJets = False
         nJets = 2
