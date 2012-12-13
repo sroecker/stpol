@@ -80,6 +80,12 @@ class DrawCreator:
 			
 			p.legend.AddEntry(mc_hist, mc.name, 'F')
 		
+		# Kolmorogov test
+		basemc = TH1F('hist_mc_ktbase', '', hbins, hmin, hmax)
+		for mc_hist in p.mc_hists:
+			basemc.Add(mc_hist)
+		print 'Kolmogorov test:', p.dt_hist.KolmogorovTest(basemc)
+		
 		# Stacking the histograms
 		plot_title = '%s (%s)'%(var, plotname)
 		if self.chstring is not None:
