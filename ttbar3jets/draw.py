@@ -5,6 +5,7 @@ import argparse
 parser = argparse.ArgumentParser(description='Creates plots of a dataset.')
 parser.add_argument('-p', '--proc', default='test', choices=['3J1T', '3J2T', 'test'])
 parser.add_argument('-t', '--optag', default=None)
+parser.add_argument('-c', '--ctag', default=None, choices=[None,'TCHP'])
 parser.add_argument('-d', '--data', default='A', choices=['A', 'AB'])
 
 args = parser.parse_args() # with bad arguments the script stops here
@@ -16,6 +17,8 @@ print 'Running `%s` with optag %s'%(args.proc, args.optag)
 chstring = 'p:%s, dt:%s'%(args.proc, args.data)
 if args.optag is not None:
 	chstring+= ', ot:%s'%args.optag
+if args.ctag is not None:
+	chstring+= ', ct:%s'%args.ctag
 
 dc = drawfw.DrawCreator(chstring)
 
@@ -25,12 +28,17 @@ dc.addCut('_goodJets_1_Pt>60')
 dc.addCut('_muAndMETMT>50')
 
 # Add data and MC
+ctagstring = '_%s'%args.ctag if args.ctag is not None else ''
+
 if args.proc == '3J1T':
-	prefix='trees/stpol_'; suffix='_3J1T.root' # 3J1T
+	prefix='trees/stpol_'
+	suffix='_3J1T.root' # 3J1T
 elif args.proc == '3J2T':
-	prefix='trees/stp_3J2T_'; suffix='.root' # 3J2T
-else:
-	prefix='trees/stpol_'; suffix='_3J1T.root' # otherwise take 3J1T
+	prefix='trees/stp%s_3J2T_'%ctagstring
+	suffix='.root' # 3J2T
+else: # otherwise take 3J1T
+	prefix='trees/stpol_'
+	suffix='_3J1T.root'
 
 # Data
 try:
@@ -51,18 +59,18 @@ except IOError as e:
 dc.addMC(prefix+'QCD'+suffix, 134.680, 'QCD', drawfw.ROOT.kGray)
 
 dc.addMC(prefix+'wjets'+suffix, 36257.2, 'wjets', drawfw.ROOT.kGreen+3)
-dc.addMC(prefix+'zjets'+suffix, 3503.71, 'zjets', drawfw.ROOT.kOrange+7)
-dc.addMC(prefix+'WW'+suffix, 54.838, 'WW', drawfw.ROOT.kBlue)
-dc.addMC(prefix+'WZ'+suffix, 32.3161, 'WZ', drawfw.ROOT.kBlue)
-dc.addMC(prefix+'ZZ'+suffix, 8.059, 'ZZ', drawfw.ROOT.kBlue)
+dc.addMC(prefix+'zjets'+suffix, 3503.71, 'zjets', drawfw.ROOT.kBlue+4)
+dc.addMC(prefix+'WW'+suffix, 54.838, 'WW', drawfw.ROOT.kBlue+1)
+dc.addMC(prefix+'WZ'+suffix, 32.3161, 'WZ', drawfw.ROOT.kBlue+1)
+dc.addMC(prefix+'ZZ'+suffix, 8.059, 'ZZ', drawfw.ROOT.kBlue+1)
 dc.addMC(prefix+'ttbar'+suffix, 234, 'ttbar', drawfw.ROOT.kOrange+7)
 
+dc.addMC(prefix+'T_tW'+suffix, 11.1, 'T_tW', drawfw.ROOT.kYellow-6)
+dc.addMC(prefix+'Tbar_tW'+suffix, 11.1, 'Tbar_tW', drawfw.ROOT.kYellow-6)
+dc.addMC(prefix+'T_s'+suffix, 3.79, 'T_s', drawfw.ROOT.kYellow)
+dc.addMC(prefix+'Tbar_s'+suffix, 1.76, 'Tbar_s', drawfw.ROOT.kYellow)
 dc.addMC(prefix+'T_t'+suffix, 56.4, 'T_t', drawfw.ROOT.kRed)
 dc.addMC(prefix+'Tbar_t'+suffix, 30.7, 'Tbar_t', drawfw.ROOT.kRed)
-dc.addMC(prefix+'T_s'+suffix, 3.79, 'T_s', drawfw.ROOT.kRed)
-dc.addMC(prefix+'Tbar_s'+suffix, 1.76, 'Tbar_s', drawfw.ROOT.kRed)
-dc.addMC(prefix+'T_tW'+suffix, 11.1, 'T_tW', drawfw.ROOT.kRed)
-dc.addMC(prefix+'Tbar_tW'+suffix, 11.1, 'Tbar_tW', drawfw.ROOT.kRed)
 
 # Plotting
 if args.proc == 'test':
