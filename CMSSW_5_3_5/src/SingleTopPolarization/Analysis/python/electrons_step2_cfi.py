@@ -25,14 +25,14 @@ def ElectronSetup(process, conf):
 	if conf.Electrons.cutOnIso:
 	    if conf.Electrons.reverseIsoCut:
 	    #Choose anti-isolated region
-	        goodSignalElectronCut += ' && userFloat("{0}") > {1} && userFloat("{0}") < {1}'.format(
+	        goodSignalElectronCut += ' && userFloat("{0}") >= {1} && userFloat("{0}") < {1}'.format(
 	            conf.Electrons.relIsoType,
 	            conf.Electrons.relIsoCutRangeAntiIsolatedRegion[0],
 	            conf.Electrons.relIsoCutRangeAntiIsolatedRegion[1]
 	            )
 	    #Choose isolated region
 	    else:
-	        goodSignalElectronCut += ' && userFloat("{0}") > {1} && userFloat("{0}") < {2}'.format(
+	        goodSignalElectronCut += ' && userFloat("{0}") >= {1} && userFloat("{0}") < {2}'.format(
 	            conf.Electrons.relIsoType,
 	            conf.Electrons.relIsoCutRangeIsolatedRegion[0],
 	            conf.Electrons.relIsoCutRangeIsolatedRegion[1]

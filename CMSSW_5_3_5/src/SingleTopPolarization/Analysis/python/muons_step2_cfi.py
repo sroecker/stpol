@@ -33,14 +33,14 @@ def MuonSetup(process, conf = None):
     if conf.Muons.cutOnIso:
         if conf.Muons.reverseIsoCut:
         #Choose anti-isolated region
-            goodSignalMuonCut += ' && userFloat("{0}") > {1} && userFloat("{0}") < {1}'.format(
+            goodSignalMuonCut += ' && userFloat("{0}") >= {1} && userFloat("{0}") < {1}'.format(
                 conf.Muons.relIsoType,
                 conf.Muons.relIsoCutRangeAntiIsolatedRegion[0],
                 conf.Muons.relIsoCutRangeAntiIsolatedRegion[1]
                 )
         #Choose isolated region
         else:
-            goodSignalMuonCut += ' && userFloat("{0}") > {1} && userFloat("{0}") < {2}'.format(
+            goodSignalMuonCut += ' && userFloat("{0}") >= {1} && userFloat("{0}") < {2}'.format(
                 conf.Muons.relIsoType,
                 conf.Muons.relIsoCutRangeIsolatedRegion[0],
                 conf.Muons.relIsoCutRangeIsolatedRegion[1]
