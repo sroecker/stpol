@@ -26,6 +26,7 @@ dc.addCut('_topCount == 1')
 dc.addCut('_goodJets_0_Pt>60')
 dc.addCut('_goodJets_1_Pt>60')
 dc.addCut('_muAndMETMT>50')
+dc.addCut('_untaggedJets_0_rms<0.025')
 
 # Add data and MC
 ctagstring = '_%s'%args.ctag if args.ctag is not None else ''
@@ -89,7 +90,22 @@ else:
 		postfix += '_'+args.optag
 	postfix += '.png'
 	
-	dc.plot('_recoTop_0_Mass', 50, 650, 16, 'topmass').save(prefix+'topmass'+postfix)
-	dc.plot('_lowestBTagJet_0_Eta', -5, 5, 16, 'jeteta').save(prefix+'jeteta'+postfix)
-	dc.plot('abs(_lowestBTagJet_0_Eta)', 0, 4.5, 16, 'abseta').save(prefix+'abseta'+postfix)
-	dc.plot('_recoTop_0_Pt', 0, 500, 16, 'toppt').save(prefix+'toppt'+postfix)
+	#dc.plot('_recoTop_0_Mass', 50, 650, 16, 'topmass').save(prefix+'topmass'+postfix)
+	#dc.plot('_lowestBTagJet_0_Eta', -5, 5, 16, 'jeteta').save(prefix+'jeteta'+postfix)
+	#dc.plot('abs(_lowestBTagJet_0_Eta)', 0, 4.5, 16, 'abseta').save(prefix+'abseta'+postfix)
+	#dc.plot('_recoTop_0_Pt', 0, 500, 16, 'toppt').save(prefix+'toppt'+postfix)
+	
+	#dc.plot('_goodJets_0_Pt', 60, 500, 16, 'L0Pt').save(prefix+'L0Pt'+postfix)
+	#dc.plot('abs(_goodJets_0_Eta)', 0, 5, 16, 'L0Eta').save(prefix+'L0Eta'+postfix)
+	#dc.plot('_goodJets_0_rms', 0, 0.03, 16, 'L0rms').save(prefix+'L0rms'+postfix)
+	
+	#dc.plot('_goodJets_1_Pt', 60, 500, 16, 'L1Pt').save(prefix+'L1Pt'+postfix)
+	#dc.plot('abs(_goodJets_1_Eta)', 0, 5, 16, 'L1Eta').save(prefix+'L1Eta'+postfix)
+	#dc.plot('_goodJets_1_rms', 0, 0.03, 16, 'L1rms').save(prefix+'L1rms'+postfix)
+	
+	#dc.plot('_goodJets_2_Pt', 0, 500, 16, 'L2Pt').save(prefix+'L2Pt'+postfix)
+	#dc.plot('abs(_goodJets_2_Eta)', 0, 5, 16, 'L2Eta').save(prefix+'L2Eta'+postfix)
+	#dc.plot('_goodJets_2_rms', 0, 0.03, 16, 'L2rms').save(prefix+'L2rms'+postfix)
+	
+	#dc.plot('cosThetaLightJet_cosTheta', -1, 1, 16, 'costheta').save(prefix+'costheta'+postfix)
+	#dc.plot('cosThetaLightJet_cosTheta', -1, 1, 16, 'costheta_fx', True).save(prefix+'costheta_fx'+postfix)
