@@ -1,10 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 
-def TopRecoSetup(process, leptonSource="goodSignal", bTagSource="highestBTagJet", untaggedSource="untaggedJets", nuSource="recoNuProducer"):
+def TopRecoSetup(process, leptonSource="goodSignalLeptons", bTagSource="highestBTagJet", untaggedJetSource="lowestBTagJet"):
 	#Reconstruct the 4-momentum of the top quark by adding the momenta of the b-jet, the neutrino and the charged lepton
-
-	eleSource = leptonSource + "Electrons"
-	muSource = leptonSource + "Muons"
 
 	#Combine the neutrino collections produced in the electron and muon paths, taking exactly 1 neutrino per event
 	process.recoNu = cms.EDProducer(
@@ -15,7 +12,7 @@ def TopRecoSetup(process, leptonSource="goodSignal", bTagSource="highestBTagJet"
 	)
 
 	process.recoTop = cms.EDProducer('SimpleCompositeCandProducer',
-		sources=cms.VInputTag(["recoNu", bTagSource, "goodSignalLeptons"])
+		sources=cms.VInputTag(["recoNu", bTagSource, leptonSource])
 	)
 
 	process.topCount = cms.EDProducer('CollectionSizeProducer<reco::Candidate>',
@@ -24,7 +21,7 @@ def TopRecoSetup(process, leptonSource="goodSignal", bTagSource="highestBTagJet"
 
 	process.cosTheta = cms.EDProducer('CosThetaProducer',
 		topSrc=cms.InputTag("recoTop"),
-		jetSrc=cms.InputTag(untaggedSource),
+		jetSrc=cms.InputTag(untaggedJetSource),
 		leptonSrc=cms.InputTag("goodSignalLeptons")
 	)
 
