@@ -18,32 +18,42 @@ def ElectronSetup(
 	reverseIsoCut=False,
 	applyMVA=True,
 	electronPt="ecalDrivenMomentum.Pt()",
-	applyIso=True
+	applyIso=True,
+	conf
 	):
 
-	goodElectronCut = "%s>30" % electronPt
+	goodElectronCut = "%s>30" % conf.Electrons.pt
 	goodElectronCut += "&& abs(eta)<2.5"
 	goodElectronCut += "&& !(1.4442 < abs(superCluster.eta) < 1.5660)"
 	goodElectronCut += "&& passConversionVeto()"
 	#goodElectronCut += "&& (0.0 < electronID('mvaTrigV0') < 1.0)"
 	if applyMVA:
-		goodElectronCut += "&& electronID('mvaTrigV0') > %f" % mvaCut
+		goodElectronCut += "&& electronID('mvaTrigV0') > %f" % conf.Electrons.mvaCut
 	goodSignalElectronCut = goodElectronCut
 	goodSignalElectronCut += '&& abs(userFloat("dxy")) < 0.02'
 	goodSignalElectronCut += '&& userInt("gsfTrack_trackerExpectedHitsInner_numberOfHits") <= 0'
 
-	#Choose anti-isolated region
-	if applyIso:
-		if reverseIsoCut:
-			goodSignalElectronCut += '&& userFloat("rhoCorrRelIso") > 0.1 && userFloat("rhoCorrRelIso") < 0.5 '
-		#Choose isolated region
-		else:
-			goodSignalElectronCut += '&& userFloat("rhoCorrRelIso") < 0.1'
+	if conf.Electrons.cutOnIso:
+	    if conf.Electrons.reverseIsoCut:
+	    #Choose anti-isolated region
+	        goodSignalElectronCut += ' && userFloat("{0}") > {1} && userFloat("{0}") < {1}'.format(
+	            conf.Electrons.relIsoType,
+	            conf.Electrons.relIsoRangeAntiIsolatedRegion[0],
+	            conf.Electrons.relIsoRangeAntiIsolatedRegion[1]
+	            )
+	    #Choose isolated region
+	    else:
+	        goodSignalElectronCut += ' && userFloat("{0}") > {1} && userFloat("{0}") < {2}'.format(
+	            conf.Electrons.relIsoType,
+	            conf.Electrons.relIsoRangeIsolatedRegion[0],
+	            conf.Electrons.relIsoRangeIsolatedRegion[1]
+	        )
 
-	looseVetoElectronCut = "%s > 20" % electronPt
+
+	looseVetoElectronCut = "%s > 20" % conf.Electrons.pt
 	looseVetoElectronCut += "&& abs(eta) < 2.5"
 	looseVetoElectronCut += "&& electronID('mvaTrigV0') > %f" % 0.1
-	looseVetoElectronCut += '&& userFloat("rhoCorrRelIso") < 0.3'
+	looseVetoElectronCut += '&& userFloat("{0}") < {1}'.format(conf.Electrons.relIsoType, conf.Electrons.looseVetoRelIsoCut)
 
 	#Loose veto electrons must not overlap with good signal electrons
 	looseVetoElectronCut += "&& !(%s)" % goodSignalElectronCut
@@ -82,38 +92,81 @@ def ElectronSetup(
 		maxNumber=cms.uint32(0),
 	)
 
-	if metType == "MET":
-		process.goodMETs = cms.EDFilter("CandViewSelector",
-		  src=cms.InputTag("patMETs"),
-		  cut=cms.string("pt>35")
-		)
-		process.hasMET = cms.EDFilter(
-			"PATCandViewCountFilter",
-			src=cms.InputTag("goodMETs"),
-			minNumber=cms.uint32(1),
-			maxNumber=cms.uint32(1),
-		)
-		process.metEleSequence = cms.Sequence(process.goodMETs*process.hasMET)
-	elif metType == "MtW":
-		process.eleAndMETMT = cms.EDProducer('CandTransverseMassProducer',
-			collections=cms.untracked.vstring(["patMETs", "goodSignalElectrons"])
-		)
-		process.hasEleMETMT = cms.EDFilter('EventDoubleFilter',
-			src=cms.InputTag("eleAndMETMT"),
-			min=cms.double(40),
-			max=cms.double(9999999)
-		)
-		process.metEleSequence = cms.Sequence(process.eleAndMETMT * process.hasEleMETMT)
-	else:
-		print "WARNING: MET type not specified in electron channel"
+	#####################
+	# MET/MtW cutting   #
+	#####################
+	#Either use MET cut or MtW cut
+	if conf.Electrons.transverseMassType == conf.Leptons.WTransverseMassType.MET:
+	    process.goodMETsEle = cms.EDFilter("CandViewSelector",
+	      src=cms.InputTag("patMETs"), cut=cms.string("pt>%f" % conf.Electrons.transverseMassCut)
+	    )
+
+	    process.metEleSequence = cms.Sequence(
+	        process.goodMETsEle
+	    )
+
+	    if conf.Leptons.cutOnTransverseMass:
+	        process.hasMETEle = cms.EDFilter("PATCandViewCountFilter",
+	            src = cms.InputTag("goodMETsEle"),
+	            minNumber = cms.uint32(1),
+	            maxNumber = cms.uint32(1)
+	        )
+	        process.metMuSequence.insert(-1, process.hasMETEle)
+
+	elif conf.Electrons.transverseMassType == conf.Leptons.WTransverseMassType.MtW:
+
+	    #produce the muon and MET invariant transverse mass
+	    process.eleAndMETMT = cms.EDProducer('CandTransverseMassProducer',
+	        collections=cms.untracked.vstring(["patMETs", "goodSignalElectrons"])
+	    )
+
+	    process.metEleSequence = cms.Sequence(
+	        process.eleAndMETMT
+	    )
+
+	    if conf.Leptons.cutOnTransverseMass:
+	        process.hasEleMETMT = cms.EDFilter('EventDoubleFilter',
+	            src=cms.InputTag("eleAndMETMT"),
+	            min=cms.double(conf.Electrons.transverseMassCut),
+	            max=cms.double(9999999)
+	        )
+	        process.metEleSequence.insert(-1, process.hasEleMETMT)
+
+
+	# if metType == "MET":
+	# 	process.goodMETs = cms.EDFilter("CandViewSelector",
+	# 	  src=cms.InputTag("patMETs"),
+	# 	  cut=cms.string("pt>35")
+	# 	)
+	# 	process.hasMET = cms.EDFilter(
+	# 		"PATCandViewCountFilter",
+	# 		src=cms.InputTag("goodMETs"),
+	# 		minNumber=cms.uint32(1),
+	# 		maxNumber=cms.uint32(1),
+	# 	)
+	# 	process.metEleSequence = cms.Sequence(process.goodMETs*process.hasMET)
+	# elif metType == "MtW":
+	# 	process.eleAndMETMT = cms.EDProducer('CandTransverseMassProducer',
+	# 		collections=cms.untracked.vstring(["patMETs", "goodSignalElectrons"])
+	# 	)
+	# 	process.hasEleMETMT = cms.EDFilter('EventDoubleFilter',
+	# 		src=cms.InputTag("eleAndMETMT"),
+	# 		min=cms.double(40),
+	# 		max=cms.double(9999999)
+	# 	)
+	# 	process.metEleSequence = cms.Sequence(process.eleAndMETMT * process.hasEleMETMT)
+	# else:
+	# 	print "WARNING: MET type not specified in electron channel"
 
 	process.recoNuProducerEle = cms.EDProducer('ClassicReconstructedNeutrinoProducer',
 		leptonSrc=cms.InputTag("goodSignalLeptons"),
 		bjetSrc=cms.InputTag("btaggedJets"),
-		metSrc=cms.InputTag("goodMETs" if metType=="MET" else "patMETs"), #either patMETs if cutting on ele + MET transverse mass or goodMETs if cutting on patMETs->goodMets pt
+
+		#either patMETs if cutting on ele + MET transverse mass or goodMETs if cutting on patMETs->goodMets pt
+		metSrc=cms.InputTag("goodMETs" if conf.Electrons.transverseMassType == conf.Leptons.WTransverseMassType.MET else "patMETs"),
 	)
 
-	if doDebug:
+	if conf.doDebug:
 		process.oneIsoEleIDs = cms.EDAnalyzer('EventIDAnalyzer', name=cms.untracked.string("IDoneIsoEle"))
 		process.eleVetoIDs = cms.EDAnalyzer('EventIDAnalyzer', name=cms.untracked.string("IDeleVeto"))
 		process.metIDS = cms.EDAnalyzer('EventIDAnalyzer', name=cms.untracked.string("MET"))
@@ -127,7 +180,7 @@ Configures the electron path with full selection.
 channel:	'sig' - runs on signal (t-channel or tbar channel). Generator level comparisons are turned on.
 			'bkg' - runs on background (anything else). Generator level comparisons turned off.
 """
-def ElectronPath(process, isMC, channel, doDebug=False):
+def ElectronPath(process, conf):
 	process.elePathPreCount = cms.EDProducer("EventCountProducer")
 
 	process.efficiencyAnalyzerEle = cms.EDAnalyzer('EfficiencyAnalyzer'
@@ -177,7 +230,7 @@ def ElectronPath(process, isMC, channel, doDebug=False):
 	)
 
 	#Insert debugging modules for printout
-	if doDebug:
+	if conf.doDebug:
 		process.elePath.insert(
 			process.elePath.index(process.oneIsoEle)+1,
 			process.oneIsoEleIDs
@@ -208,7 +261,7 @@ def ElectronPath(process, isMC, channel, doDebug=False):
 		)
 
 
-	if isMC and channel=="sig":
+	if conf.isMC and conf.channel == conf.Channel.signal:
 		#Put the parton level study after the top reco sequence.
 		process.elePath.insert(
 			process.elePath.index(process.topRecoSequenceEle)+1,

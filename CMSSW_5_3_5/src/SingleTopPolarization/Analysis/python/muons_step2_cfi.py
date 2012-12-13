@@ -103,7 +103,7 @@ def MuonSetup(process, conf = None):
             process.goodMETs
         )
 
-        if conf.Muons.cutOnTransverseMass:
+        if conf.Leptons.cutOnTransverseMass:
             process.hasMET = cms.EDFilter("PATCandViewCountFilter",
                 src = cms.InputTag("goodMETs"),
                 minNumber = cms.uint32(1),
@@ -122,7 +122,7 @@ def MuonSetup(process, conf = None):
             process.muAndMETMT
         )
 
-        if conf.Muons.cutOnTransverseMass:
+        if conf.Leptons.cutOnTransverseMass:
             process.hasMuMETMT = cms.EDFilter('EventDoubleFilter',
                 src=cms.InputTag("muAndMETMT"),
                 min=cms.double(conf.Muons.transverseMassCut),
