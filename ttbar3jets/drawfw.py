@@ -60,7 +60,7 @@ class DrawCreator:
 		# TODO: implement effectice luminosity
 		effective_lumi = self._data.luminosity
 		
-		maxy = p.dt_hist.GetMaximum()
+		data_max = p.dt_hist.GetMaximum()
 		
 		mc_int = 0
 		p.mc_hists = []
@@ -80,8 +80,6 @@ class DrawCreator:
 			scale_factor = float(expected_events)/float(total_events)
 			mc_hist.Scale(scale_factor)
 			
-			maxy = max(maxy, mc_hist.GetMaximum())
-			
 			p.legend.AddEntry(mc_hist, mc.name, 'F')
 			
 			mc_int += mc_hist.Integral()
@@ -100,6 +98,8 @@ class DrawCreator:
 			basemc.Add(mc_hist)
 		print 'Kolmogorov test:', p.dt_hist.KolmogorovTest(basemc)
 		
+		mc_max = basemc.GetMaximum()
+		
 		# Stacking the histograms
 		plot_title = '%s (%s)'%(var, plotname)
 		if self.chstring is not None:
@@ -109,7 +109,7 @@ class DrawCreator:
 		for ht in p.mc_hists:
 			p.stack.Add(ht)
 			
-		p.stack.SetMaximum(1.1*maxy)
+		p.stack.SetMaximum(1.1*max(data_max, mc_max))
 		#p.stack.GetXaxis().SetTitle('This is the x-axis title. (GeV)')
 		#p.stack.GetYaxis().SetTitle('This is the Y-axis title. (GeV)')
 		
