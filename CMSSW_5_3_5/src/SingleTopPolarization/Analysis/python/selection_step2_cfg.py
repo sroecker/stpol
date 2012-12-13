@@ -1,6 +1,57 @@
 import FWCore.ParameterSet.Config as cms
 import SingleTopPolarization.Analysis.eventCounting as eventCounting
 
+
+class Config:
+    class Channel:
+        signal = "signal"
+        background = "background"
+
+    channel = Channel.background
+    doMuon = True
+    doElectron = True
+    filterHLT = True
+    isMC = True
+    doDebug = False
+
+    class Jets:
+        cutJets = False
+        nJets = 2
+        nBTags = 1
+        ptCut = 40
+        etaCut = 4.7
+
+        class BTagDiscriminant:
+            TCHP = "trackCountingHighPurBJetTags"
+            CSV_MVA = "combinedSecondaryVertexMVABJetTags"
+        class BTagWorkingPoint:
+            TCHPT = "TCHPT"
+            CSVT = "CSVT"
+            CSVM = "CSVM"
+
+            WP = {"TCHPT":3.41, "CSVT":0.898, "CSVM":0.679}
+
+        bTagDiscriminant = BTagDiscriminant.TCHP
+        bTagWorkingPoint = BTagWorkingPoint.TCHPT
+
+        @classmethod
+        def bTagWorkingPointVal(c):
+            return c.BTagWorkingPoint.WP[c.bTagWorkingPoint]
+
+        @classmethod
+        def toStr(c):
+            s = "Jet config:"
+            s += "\ncutJets = %s" % Config.Jets.cutJets
+            s += "\nnJets = %d, nBTags=%d" % (Config.Jets.nJets, Config.Jets.nBTags)
+            s += "\nbTagDiscriminant = %s, WP = %s" % (Config.Jets.bTagDiscriminant, Config.Jets.bTagWorkingPoint)
+            return s
+
+    @classmethod
+    def toStr(c):
+        s = "channel = %s" % Config.channel
+        s += "\n" + Config.Jets.toStr()
+        return s
+
 #BTag working points from https://twiki.cern.ch/twiki/bin/viewauth/CMS/BTagPerformanceOP#B_tagging_Operating_Points_for_5
 #TODO: place in proper class
 #TrackCountingHighPur     TCHPT   3.41
@@ -59,6 +110,8 @@ def SingleTopStep2(isMC,
     bTagWP=3.41
     ):
 
+    print Config.toStr()
+
     process = cms.Process("STPOLSEL2")
     eventCounting.countProcessed(process)
 
@@ -97,7 +150,7 @@ def SingleTopStep2(isMC,
     #-------------------------------------------------
 
     from SingleTopPolarization.Analysis.jets_step2_cfi import JetSetup
-    JetSetup(process, isMC, doDebug, bTagType, bTagWP, nJets, nBTags, cutJets)
+    JetSetup(process, Config)
 
     #-------------------------------------------------
     # Leptons
@@ -395,21 +448,21 @@ def SingleTopStep2(isMC,
     from SingleTopPolarization.Analysis.hlt_step2_cfi import HLTSetup
     HLTSetup(process, isMC, filterHLT)
 
-    if isMC and channel=="sig":
+    if Config.isMC and Config.channel==Config.channel.signal:
         from SingleTopPolarization.Analysis.partonStudy_step2_cfi import PartonStudySetup
         PartonStudySetup(process)
         process.partonPath = cms.Path(process.partonStudyTrueSequence)
 
-    if doDebug:
+    if Config.doDebug:
         from SingleTopPolarization.Analysis.debugAnalyzers_step2_cfi import DebugAnalyzerSetup
         DebugAnalyzerSetup(process)
 
-    if doMuon:
+    if Config.doMuon:
         from SingleTopPolarization.Analysis.muons_step2_cfi import MuonPath
         MuonPath(process, isMC, channel)
         process.muPath.insert(process.muPath.index(process.oneIsoMu)+1, process.goodSignalLeptons)
 
-    if doElectron:
+    if Config.doElectron:
         from SingleTopPolarization.Analysis.electrons_step2_cfi import ElectronPath
         ElectronPath(process, isMC, channel, doDebug=doDebug)
         process.elePath.insert(process.elePath.index(process.oneIsoEle)+1, process.goodSignalLeptons)
