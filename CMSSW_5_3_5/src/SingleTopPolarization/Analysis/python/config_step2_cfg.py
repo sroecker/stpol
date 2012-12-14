@@ -2,13 +2,14 @@
 class C(object):
     @classmethod
     def _toStr(cls):
-        s = ""
+        s = "Config: " + cls.__name__ + " {"
         for k in dir(cls):
             if k[0].islower():
-                s += "\n%s = %s" % (k, getattr(cls, k))
+                s += "\n\t%s = %s" % (k, getattr(cls, k))
         # for c in cls.__bases__:
         #     if hasattr(c, "toStr"):
         #         s += c.toStr()
+        s += "\n}"
         return s
 
 """
