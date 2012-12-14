@@ -89,7 +89,7 @@ def JetSetup(process, conf):
     process.nJets = cms.EDFilter(
         "PATCandViewCountFilter",
         src=cms.InputTag("goodJets"),
-        minNumber=cms.uint32(conf.Jets.nJets if conf.Jets.cutJets else 1),
+        minNumber=cms.uint32(conf.Jets.nJets if conf.Jets.cutJets else 2),
         maxNumber=cms.uint32(conf.Jets.nJets if conf.Jets.cutJets else 4),
     )
 
@@ -101,11 +101,20 @@ def JetSetup(process, conf):
         maxNumber=cms.uint32(conf.Jets.nBTags if conf.Jets.cutJets else 3),
     )
 
+    #Require at least 1 untagged jet
+    process.oneUntaggedJet = cms.EDFilter(
+        "PATCandViewCountFilter",
+        src=cms.InputTag("untaggedJets"),
+        minNumber=cms.uint32(1),
+        maxNumber=cms.uint32(9999999),
+    )
+
     process.jetSequence = cms.Sequence(
       process.noPUJets *
       process.goodJets *
       process.btaggedJets *
       process.untaggedJets *
+      process.oneUntaggedJet *
       process.bJetCount *
       process.lightJetCount *
       process.fwdMostLightJet *
@@ -117,3 +126,6 @@ def JetSetup(process, conf):
 
     if conf.isMC:
         process.jetSequence.insert(process.jetSequence.index(process.noPUJets)+1, process.smearedJets)
+    if conf.doDebug:
+        process.lowestBTagJetAnalyzer = cms.EDAnalyzer("SimpleJetAnalyzer", interestingCollections=cms.untracked.VInputTag("goodJets", "lowestBTagJet"))
+        process.jetSequence.insert(process.jetSequence.index(process.lowestBTagJet)+1, process.lowestBTagJetAnalyzer)
