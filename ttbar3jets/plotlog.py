@@ -21,13 +21,11 @@ class PlotLog:
 				print '>', c
 			print 'Generated cutstring:', self.cutstring
 	
-	def addProcess(self, name, crsec, fname, title=None, ismc=True):
+	def addProcess(self, name, title=None, ismc=True):
 		if name in self._processes:
 			print 'Warning: Process `%s` already exists!'%var
 		else:
 			self._processes[name] = {
-				'crsec': crsec,
-				'fname': fname,
 				'title': title if title is not None else name,
 				'ismc': bool(ismc),
 				'vars': {}

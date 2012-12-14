@@ -54,10 +54,13 @@ class DrawCreator:
 		p.legend = TLegend(0.80, 0.65, 1.00, 0.90)
 		
 		# Create log variables
-		p.log.addVariable('filled')
+		p.log.addVariable('filled', 'Events filled')
+		p.log.addVariable('int', 'Integrated events')
 		
 		# Create histograms
-		p.log.addProcess('data', self._data.luminosity, self._data.fname, ismc=False)
+		p.log.addProcess('data', ismc=False)
+		p.log.setVariable('data', 'crsec', self._data.luminosity)
+		p.log.setVariable('data', 'fname', self._data.fname)
 		p.dt_hist = TH1F('hist_data', '', hbins, hmin, hmax)
 		p.dt_hist.SetMarkerStyle(20)
 		p.log.setVariable('data', 'filled', self._data.tree.Draw('%s>>hist_data'%var, cut_string, 'goff'))
@@ -76,7 +79,9 @@ class DrawCreator:
 		mc_int = 0
 		p.mc_hists = []
 		for mc in self._mcs:
-			p.log.addProcess(mc.name, mc.crsec, mc.fname)
+			p.log.addProcess(mc.name)
+			p.log.setVariable(mc.name, 'crsec', mc.crsec)
+			p.log.setVariable(mc.name, 'fname', mc.fname)
 			hist_name = 'hist_%s_mc_%s'%(plotname, mc.name)
 			
 			mc_hist = TH1F(hist_name, '', hbins, hmin, hmax)
