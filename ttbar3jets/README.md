@@ -24,36 +24,38 @@ Example:
 
 Drawing the graphs
 ------------------
-`draw.py` can be used to draw the graphs.
+`draw_single.py` can be used to draw the graphs.
 
 For example, to draw the graph of the top mass:
-> `python draw.py --hist 0 800 --bins 20 treesCands _recoTop_0_Mass mc_file.root data_file.root`
+> `python draw_single.py --hist 0 800 --bins 20 _recoTop_0_Mass mc_file.root data_file.root`
 
-Parameters of the `draw.py` script:
+Parameters of the `draw_single.py` script:
 
-	usage: draw.py [-h] [--hist min max] [--bins BINS] [--save SAVE] [-b]
-				   tree var mc data
+	usage: draw_single.py [-h] [-c CUT] [--hist min max] [--bins BINS] [-i]
+						  [--save SAVE] [-b]
+						  var mc data
 
 	Plots MC and Data for some variable.
 
 	positional arguments:
-	  tree
 	  var
 	  mc
 	  data
 
 	optional arguments:
-	  -h, --help      show this help message and exit
-	  --hist min max  min and max boundary values for the histogram
-	  --bins BINS     number of histogram bins
-	  --save SAVE     save the histogram to a file
-	  -b              run in batch mode. Requires --save.
+	  -h, --help         show this help message and exit
+	  -c CUT, --cut CUT  additional cuts
+	  --hist min max     min and max boundary values for the histogram
+	  --bins BINS        number of histogram bins
+	  -i, --info         create another pad with important values and variables
+	  --save SAVE        save the histogram to a file
+	  -b                 run in batch mode. Requires --save.
 
 ### Note on the PyROOT argument parsing ###
 PyROOT also parses command line arguments.
 
 If `-b` is present, X windows etc. are not created.
-In addition to that, `draw.py` also uses that flag to slightly change
+In addition to that, `draw_single.py` also uses that flag to slightly change
 the way it executes.
 
 Similarly, the `-h` gives the PyROOT help, not the help generated

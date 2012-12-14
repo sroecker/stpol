@@ -7,7 +7,8 @@ num_files=22
 
 shift; shift; shift
 flags=$@ # rest of the arguments
-echo "Passed arguments:" $flags
+echo "Running cmsRun in local batch mode"
+echo "Extra arguments to cmsRun:" $flags
 
 if [ -d "$JOBNAME" ]; then
     echo "Directory "$JOBNAME" already exists"
@@ -24,3 +25,4 @@ for file in $JOBNAME/job_*
 do
     cmsRun ${CFGFILE} inputFiles_load=${file} outputFile=${file}_out.root $flags &> ${file}.log &
 done
+echo "Called "$num_files" cmsRun jobs on input file "$SRC" with config "$CFGFILE

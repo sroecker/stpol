@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-def HLTSetup(process, isMC, filterHLT, useXtrigger=False):
+def HLTSetup(process, conf):
     #HLT
     import HLTrigger.HLTfilters.triggerResultsFilter_cfi as HLT
 
@@ -16,8 +16,8 @@ def HLTSetup(process, isMC, filterHLT, useXtrigger=False):
             throw = False
             )
 
-    if filterHLT:
-        if useXtrigger:
+    if conf.filterHLT:
+        if conf.useXTrigger:
             process.stepHLTsyncMu.triggerConditions = ["HLT_IsoMu24_eta2p1_v* OR HLT_IsoMu17_eta2p1_CentralPFNoPUJet30_BTagIPIter_v*"]
             process.stepHLTsyncEle.triggerConditions = ["HLT_Ele27_WP80_v* OR HLT_Ele25_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_CentralPFNoPUJet30_BTagIPIter_v*"]
         else:

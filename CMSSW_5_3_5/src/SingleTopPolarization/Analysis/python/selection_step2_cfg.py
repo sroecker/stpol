@@ -1,41 +1,42 @@
 import FWCore.ParameterSet.Config as cms
 import SingleTopPolarization.Analysis.eventCounting as eventCounting
+from SingleTopPolarization.Analysis.config_step2_cfg import Config
 
-def SingleTopStep2(isMC,
-    skipPatTupleOutput=True,
-    onGrid=False,
-    filterHLT=False,
-    doDebug=False,
-    doMuon=True,
-    doElectron=True,
-    channel="sig",
-    nJets=2, nBTags=1,
-    reverseIsoCut=False,
-    muonIsoType="deltaBetaCorrRelIso",
-    eleMetType="MtW",
-    cutJets=True,
-    eleMVACut=0.1,
-    electronPt="ecalDrivenMomentum.Pt()",
-    bTagType="combinedSecondaryVertexMVABJetTags"
-    ):
-    
+#BTag working points from https://twiki.cern.ch/twiki/bin/viewauth/CMS/BTagPerformanceOP#B_tagging_Operating_Points_for_5
+#TODO: place in proper class
+#TrackCountingHighPur     TCHPT   3.41
+#JetProbability   JPL     0.275
+#JetProbability   JPM     0.545
+#JetProbability   JPT     0.790
+#CombinedSecondaryVertex  CSVL    0.244
+#CombinedSecondaryVertex  CSVM    0.679
+#CombinedSecondaryVertex  CSVT    0.898
+
+#BTag tagger names
+#trackCountingHighPurBJetTags
+#combinedSecondaryVertexMVABJetTags
+
+def SingleTopStep2():
+
+
+    print "Configuration"
+    print Config._toStr()
+
+    print Config.Jets._toStr()
+    print Config.Muons._toStr()
+    print Config.Electrons._toStr()
+    print ""
+
     process = cms.Process("STPOLSEL2")
     eventCounting.countProcessed(process)
 
-    if doDebug:
+    if Config.doDebug:
         process.load("FWCore.MessageLogger.MessageLogger_cfi")
         process.MessageLogger = cms.Service("MessageLogger",
-               destinations=cms.untracked.vstring(
-                                                      'cout',
-                                                      'debug'
-                            ),
+               destinations=cms.untracked.vstring('cout', 'debug'),
                debugModules=cms.untracked.vstring('*'),
-               cout=cms.untracked.PSet(
-                threshold=cms.untracked.string('INFO')
-                ),
-               debug=cms.untracked.PSet(
-                threshold=cms.untracked.string('DEBUG')
-                ),
+               cout=cms.untracked.PSet(threshold=cms.untracked.string('INFO')),
+               debug=cms.untracked.PSet(threshold=cms.untracked.string('DEBUG')),
         )
     else:
         process.load("FWCore.MessageService.MessageLogger_cfi")
@@ -48,8 +49,7 @@ def SingleTopStep2(isMC,
 
     process.source = cms.Source("PoolSource",
         # replace 'myfile.root' with the source file you want to use
-        fileNames=cms.untracked.vstring(""
-        )
+        fileNames=cms.untracked.vstring("")
     )
 
     #-------------------------------------------------
@@ -57,12 +57,13 @@ def SingleTopStep2(isMC,
     #-------------------------------------------------
 
     from SingleTopPolarization.Analysis.jets_step2_cfi import JetSetup
-    JetSetup(process, isMC, doDebug, nJets=nJets, nBTags=nBTags, cutJets=cutJets, bTagType=bTagType)
+    JetSetup(process, Config)
 
     #-------------------------------------------------
     # Leptons
     #-------------------------------------------------
 
+    #Embed the corrected isolations to the leptons
     process.muonsWithIso = cms.EDProducer(
       'MuonIsolationProducer',
       leptonSrc = cms.InputTag("muonsWithID"),
@@ -78,11 +79,12 @@ def SingleTopStep2(isMC,
     )
 
     from SingleTopPolarization.Analysis.muons_step2_cfi import MuonSetup
-    MuonSetup(process, isMC, doDebug=doDebug, reverseIsoCut=reverseIsoCut, isoType=muonIsoType)
+    MuonSetup(process, Config)
 
     from SingleTopPolarization.Analysis.electrons_step2_cfi import ElectronSetup
-    ElectronSetup(process, isMC, doDebug=doDebug, reverseIsoCut=reverseIsoCut, metType=eleMetType, mvaCut=eleMVACut, electronPt=electronPt)
+    ElectronSetup(process, Config)
 
+    #Combine the found electron/muon to a single collection
     process.goodSignalLeptons = cms.EDProducer(
          'CandRefCombiner',
          sources=cms.untracked.vstring(["goodSignalMuons", "goodSignalElectrons"]),
@@ -95,7 +97,7 @@ def SingleTopStep2(isMC,
     #-----------------------------------------------
 
     from SingleTopPolarization.Analysis.top_step2_cfi import TopRecoSetup
-    TopRecoSetup(process, untaggedSource="lowestBTagJet")
+    TopRecoSetup(process)
 
     #-----------------------------------------------
     # Treemaking
@@ -122,7 +124,7 @@ def SingleTopStep2(isMC,
                     ["Pt", "pt"],
                     ["Eta", "eta"],
                     ["Phi", "phi"],
-                    ["relIso", "userFloat('%s')" % muonIsoType],
+                    ["relIso", "userFloat('%s')" % Config.Muons.relIsoType],
                     ["Charge", "charge"],
                     ["genPdgId", "? genParticlesSize() > 0 ? genParticle(0).pdgId() : 0"],
                 ]
@@ -135,10 +137,10 @@ def SingleTopStep2(isMC,
             treeCollection(
                 cms.untracked.InputTag("goodSignalElectrons"), 1,
                 [
-                    ["Pt", "%s" % electronPt],
+                    ["Pt", "%s" % Config.Electrons.pt],
                     ["Eta", "eta"],
                     ["Phi", "phi"],
-                    ["relIso", "userFloat('rhoCorrRelIso')"],
+                    ["relIso", "userFloat('%s')" % Config.Electrons.relIsoType],
                     ["mvaID", "electronID('mvaTrigV0')"],
                     ["Charge", "charge"],
                 ]
@@ -149,13 +151,13 @@ def SingleTopStep2(isMC,
             collections = cms.untracked.VPSet(
             #all the selected jets in events, passing the reference selection cuts, ordered pt-descending
             treeCollection(
-                cms.untracked.InputTag("goodJets"), 5,
+                cms.untracked.InputTag("goodJets"), Config.Jets.nJets,
                 [
                     ["Pt", "pt"],
                     ["Eta", "eta"],
                     ["Phi", "phi"],
                     ["Mass", "mass"],
-                    ["bDiscriminator", "bDiscriminator('%s')" % bTagType],
+                    ["bDiscriminator", "bDiscriminator('%s')" % Config.Jets.bTagDiscriminant],
                     ["rms", "userFloat('rms')"]
                 ]
             ),
@@ -170,7 +172,7 @@ def SingleTopStep2(isMC,
             #         ["rms", "userFloat('rms')"]
             #     ]
             # ),
-            
+
             #the tagged jet with the highest b-discriminator value (== THE b-jet)
             treeCollection(
                 cms.untracked.InputTag("highestBTagJet"), 1,
@@ -179,7 +181,7 @@ def SingleTopStep2(isMC,
                     ["Eta", "eta"],
                     ["Phi", "phi"],
                     ["Mass", "mass"],
-                    ["bDiscriminator", "bDiscriminator('%s')" % bTagType],
+                    ["bDiscriminator", "bDiscriminator('%s')" % Config.Jets.bTagDiscriminant],
                     ["rms", "userFloat('rms')"]
                 ]
             ),
@@ -192,31 +194,31 @@ def SingleTopStep2(isMC,
                     ["Eta", "eta"],
                     ["Phi", "phi"],
                     ["Mass", "mass"],
-                    ["bDiscriminator", "bDiscriminator('%s')" % bTagType],
+                    ["bDiscriminator", "bDiscriminator('%s')" % Config.Jets.bTagDiscriminant],
                     ["rms", "userFloat('rms')"]
                 ]
             ),
 
 	    #all the b-tagged jets in the event, ordered pt-descending
             treeCollection(
-                cms.untracked.InputTag("btaggedJets"), nBTags,
+                cms.untracked.InputTag("btaggedJets"), Config.Jets.nBTags,
                 [
                     ["Pt", "pt"],
                     ["Eta", "eta"],
                     ["Phi", "phi"],
                     ["Mass", "mass"],
-                    ["bDiscriminator", "bDiscriminator('%s')" % bTagType],
+                    ["bDiscriminator", "bDiscriminator('%s')" % Config.Jets.bTagDiscriminant],
                     ["rms", "userFloat('rms')"]
                 ]
             ),
             treeCollection(
-                cms.untracked.InputTag("untaggedJets"), nJets-nBTags,
+                cms.untracked.InputTag("untaggedJets"), Config.Jets.nJets-Config.Jets.nBTags,
                 [
                     ["Pt", "pt"],
                     ["Eta", "eta"],
                     ["Phi", "phi"],
                     ["Mass", "mass"],
-                    ["bDiscriminator", "bDiscriminator('%s')" % bTagType],
+                    ["bDiscriminator", "bDiscriminator('%s')" % Config.Jets.bTagDiscriminant],
                     ["rms", "userFloat('rms')"]
                 ]
             )
@@ -319,8 +321,8 @@ def SingleTopStep2(isMC,
             cms.InputTag("eleAndMETMT", ""),
 
             #Some debugging data
-            cms.InputTag("kt6PFJets", "rho", "RECO"),
-            cms.InputTag("recoNu", "Delta"),
+            #cms.InputTag("kt6PFJets", "rho", "RECO"),
+            #cms.InputTag("recoNu", "Delta"),
         )
     )
 
@@ -333,8 +335,8 @@ def SingleTopStep2(isMC,
     process.treesInt = cms.EDAnalyzer("IntTreemakerAnalyzer",
         collections = cms.VInputTag(
             [
-            cms.InputTag("recoNuProducerMu", "solType"),
-            cms.InputTag("recoNuProducerEle ", "solType"),
+            #cms.InputTag("recoNuProducerMu", "solType"),
+            #cms.InputTag("recoNuProducerEle ", "solType"),
             cms.InputTag("muonCount"),
             cms.InputTag("electronCount"),
             cms.InputTag("topCount"),
@@ -347,56 +349,68 @@ def SingleTopStep2(isMC,
     process.treeSequence = cms.Sequence(process.treesMu*process.treesEle*process.treesDouble*process.treesBool*process.treesCands*process.treesJets*process.treesInt)
 
     #-----------------------------------------------
+    # Flavour analyzer
+    #-----------------------------------------------
+
+    process.flavourAnalyzer = cms.EDAnalyzer('FlavourAnalyzer',
+        genParticles = cms.InputTag('genParticles'),
+        generator = cms.InputTag('generator'),
+        genJets = cms.InputTag('selectedPatJets', 'genJets'),
+        saveGenJets = cms.bool(False)
+    )
+
+
+    #-----------------------------------------------
     # Paths
     #-----------------------------------------------
 
     from SingleTopPolarization.Analysis.hlt_step2_cfi import HLTSetup
-    HLTSetup(process, isMC, filterHLT)
+    HLTSetup(process, Config)
 
-    if isMC and channel=="sig":
+    if Config.isMC and Config.channel==Config.Channel.signal:
         from SingleTopPolarization.Analysis.partonStudy_step2_cfi import PartonStudySetup
         PartonStudySetup(process)
         process.partonPath = cms.Path(process.partonStudyTrueSequence)
 
-    if doDebug:
+    if Config.doDebug:
         from SingleTopPolarization.Analysis.debugAnalyzers_step2_cfi import DebugAnalyzerSetup
         DebugAnalyzerSetup(process)
 
-    if doMuon:
+    if Config.doMuon:
         from SingleTopPolarization.Analysis.muons_step2_cfi import MuonPath
-        MuonPath(process, isMC, channel)
+        MuonPath(process, Config)
         process.muPath.insert(process.muPath.index(process.oneIsoMu)+1, process.goodSignalLeptons)
 
-    if doElectron:
+    if Config.doElectron:
         from SingleTopPolarization.Analysis.electrons_step2_cfi import ElectronPath
-        ElectronPath(process, isMC, channel, doDebug=doDebug)
+        ElectronPath(process, Config)
         process.elePath.insert(process.elePath.index(process.oneIsoEle)+1, process.goodSignalLeptons)
 
-    process.treePath = cms.Path(process.treeSequence)
+    process.treePath = cms.Path(process.treeSequence*process.flavourAnalyzer)
 
     #-----------------------------------------------
     # Outpath
     #-----------------------------------------------
-    if not skipPatTupleOutput:
+    if not Config.skipPatTupleOutput:
         process.out = cms.OutputModule("PoolOutputModule",
             fileName=cms.untracked.string('out_step2.root'),
              SelectEvents=cms.untracked.PSet(
                  SelectEvents=cms.vstring([])
              ),
             outputCommands=cms.untracked.vstring(
-                'keep *',
-                #'drop patElectrons_looseVetoElectrons__PAT',
-                #'drop patMuons_looseVetoMuons__PAT',
-                #'drop *_recoNuProducerEle_*_*',
-                #'drop *_recoNuProducerMu_*_*',
-                #'drop *_topsFromMu_*_*',
-                #'drop *_topsFromEle_*_*',
+                'drop *',
+                'keep *_recoTop_*_*',
+                'keep *_goodSignalMuons_*_*',
+                'keep *_goodSignalElectrons_*_*',
+                'keep *_goodJets_*_*',
+                'keep *_bTaggedJets_*_*',
+                'keep *_untaggedJets_*_*',
             )
         )
         process.outpath = cms.EndPath(process.out)
-        if doElectron:
+        if Config.doElectron:
             process.out.SelectEvents.SelectEvents.append("elePath")
-        if doMuon:
+        if Config.doMuon:
             process.out.SelectEvents.SelectEvents.append("muPath")
 
     #-----------------------------------------------
@@ -404,7 +418,7 @@ def SingleTopStep2(isMC,
     #-----------------------------------------------
 
     #Command-line arguments
-    if not onGrid:
+    if not Config.onGrid:
         from SingleTopPolarization.Analysis.cmdlineParsing import enableCommandLineArguments
         (inFiles, outFile) = enableCommandLineArguments(process)
     else:
@@ -414,18 +428,6 @@ def SingleTopStep2(isMC,
         "TFileService",
         fileName=cms.string(outFile.replace(".root", "_trees.root")),
     )
-    print "isMC: %s" % str(isMC)
-
-    print "onGrid: %s" % str(onGrid)
-    print "channel: %s" % channel
-
-    print "lepton antiIso: %s" % reverseIsoCut
-
-    print ""
-    print "Running paths: %s" % str(process.paths.list)
-    for p in process.paths.list:
-        print "%s -> %s" % (p, process.paths.get(p))
-    print ""
 
     print "Output trees: %s" % process.TFileService.fileName.value()
     if hasattr(process, "out"):
