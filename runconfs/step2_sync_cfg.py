@@ -3,6 +3,6 @@ from SingleTopPolarization.Analysis.selection_step2_cfg import SingleTopStep2, C
 
 Config.channel = Config.Channel.signal
 Config.filterHLT = False
-Config.doElectron = False
+Config.doDebug = False
 
 process = SingleTopStep2()
