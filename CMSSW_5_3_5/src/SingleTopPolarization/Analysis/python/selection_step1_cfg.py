@@ -24,7 +24,7 @@ def SingleTopStep1(
   doMuon=True,
   doElectron=True,
   onGrid=False,
-  maxLeptonIso=1.0,
+  maxLeptonIso=0.2,
   globalTag="START53_V7F"
   ):
 
@@ -84,8 +84,8 @@ def SingleTopStep1(
     muonSrc = cms.InputTag("selectedPatMuons"),
     primaryVertexSource = cms.InputTag("goodOfflinePrimaryVertices")
   )
-  process.patMuons.pfMuonSource = cms.InputTag("pfMuons")
-  process.muonMatch.src = cms.InputTag("pfMuons")
+  # process.patMuons.pfMuonSource = cms.InputTag("pfMuons")
+  # process.muonMatch.src = cms.InputTag("pfMuons")
 
   #-------------------------------------------------
   # Electrons
@@ -103,8 +103,8 @@ def SingleTopStep1(
     primaryVertexSource = cms.InputTag("goodOfflinePrimaryVertices")
   )
   process.pfIsolatedElectrons.isolationCut = maxLeptonIso
-  process.patElectrons.pfElectronSource = cms.InputTag("pfElectrons")
-  process.electronMatch.src = cms.InputTag("pfElectrons")
+  # process.patElectrons.pfElectronSource = cms.InputTag("pfElectrons")
+  # process.electronMatch.src = cms.InputTag("pfElectrons")
 
   #electron dR=0.3
   process.pfElectrons.isolationValueMapsCharged = cms.VInputTag(cms.InputTag("elPFIsoValueCharged03PFId"))
@@ -159,7 +159,10 @@ def SingleTopStep1(
           'keep patMETs_patMETs__PAT',
 
           #ECAL laser corr filter
-          'keep bool_ecalLaserCorrFilter__PAT'
+          'keep bool_ecalLaserCorrFilter__PAT',
+
+          #For flavour analyzer
+          'keep GenEventInfoProduct_generator__SIM'
       ])
   #from PhysicsTools.PatUtils.tools.metUncertaintyTools import runMEtUncertainties
   #runMEtUncertainties(process,
