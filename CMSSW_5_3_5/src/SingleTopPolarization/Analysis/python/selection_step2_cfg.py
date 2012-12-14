@@ -342,6 +342,18 @@ def SingleTopStep2():
     process.treeSequence = cms.Sequence(process.treesMu*process.treesEle*process.treesDouble*process.treesBool*process.treesCands*process.treesJets*process.treesInt)
 
     #-----------------------------------------------
+    # Flavour analyzer
+    #-----------------------------------------------
+
+    process.flavourAnalyzer = cms.EDAnalyzer('FlavourAnalyzer',
+        genParticles = cms.InputTag('genParticles'),
+        generator = cms.InputTag('generator'),
+        genJets = cms.InputTag('selectedPatJets', 'genJets'),
+        saveGenJets = cms.bool(False)
+    )
+
+
+    #-----------------------------------------------
     # Paths
     #-----------------------------------------------
 
@@ -361,11 +373,13 @@ def SingleTopStep2():
         from SingleTopPolarization.Analysis.muons_step2_cfi import MuonPath
         MuonPath(process, Config)
         process.muPath.insert(process.muPath.index(process.oneIsoMu)+1, process.goodSignalLeptons)
+        process.muPath.insert(1, process.flavourAnalyzer)
 
     if Config.doElectron:
         from SingleTopPolarization.Analysis.electrons_step2_cfi import ElectronPath
         ElectronPath(process, Config)
         process.elePath.insert(process.elePath.index(process.oneIsoEle)+1, process.goodSignalLeptons)
+        process.elePath.insert(1, process.flavourAnalyzer)
 
     process.treePath = cms.Path(process.treeSequence)
 

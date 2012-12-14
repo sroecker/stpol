@@ -247,7 +247,7 @@ def SingleTopStep1(
 
   #Throw away events before particle flow?
   if doSkimming:
-      from SingleTopPolarization.Analysis.eventSkimming import skimFilters
+      from SingleTopPolarization.Analysis.eventSkimming_cfg import skimFilters
       skimFilters(process)
 
       if doMuon:

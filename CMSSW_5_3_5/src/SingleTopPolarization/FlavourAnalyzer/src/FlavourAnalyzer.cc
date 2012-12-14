@@ -4,8 +4,8 @@
  * Description: see the header file.
  */
 
-#include <TopQuarkAnalysis/SingleTop/interface/FlavourAnalyzer.h>
-#include <TopQuarkAnalysis/SingleTop/interface/HFClass.h>
+#include <SingleTopPolarization/FlavourAnalyzer/interface/FlavourAnalyzer.h>
+#include <SingleTopPolarization/FlavourAnalyzer/interface/HFClass.h>
 
 #include <DataFormats/HepMCCandidate/interface/GenParticle.h>
 #include <SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h>
