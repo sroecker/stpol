@@ -18,7 +18,14 @@ from SingleTopPolarization.Analysis.config_step2_cfg import Config
 
 def SingleTopStep2():
 
+
+    print "Configuration"
     print Config._toStr()
+
+    print Config.Jets._toStr()
+    print Config.Muons._toStr()
+    print Config.Electrons._toStr()
+    print ""
 
     process = cms.Process("STPOLSEL2")
     eventCounting.countProcessed(process)
@@ -314,8 +321,8 @@ def SingleTopStep2():
             cms.InputTag("eleAndMETMT", ""),
 
             #Some debugging data
-            cms.InputTag("kt6PFJets", "rho", "RECO"),
-            cms.InputTag("recoNu", "Delta"),
+            #cms.InputTag("kt6PFJets", "rho", "RECO"),
+            #cms.InputTag("recoNu", "Delta"),
         )
     )
 
@@ -328,8 +335,8 @@ def SingleTopStep2():
     process.treesInt = cms.EDAnalyzer("IntTreemakerAnalyzer",
         collections = cms.VInputTag(
             [
-            cms.InputTag("recoNuProducerMu", "solType"),
-            cms.InputTag("recoNuProducerEle ", "solType"),
+            #cms.InputTag("recoNuProducerMu", "solType"),
+            #cms.InputTag("recoNuProducerEle ", "solType"),
             cms.InputTag("muonCount"),
             cms.InputTag("electronCount"),
             cms.InputTag("topCount"),
@@ -373,15 +380,13 @@ def SingleTopStep2():
         from SingleTopPolarization.Analysis.muons_step2_cfi import MuonPath
         MuonPath(process, Config)
         process.muPath.insert(process.muPath.index(process.oneIsoMu)+1, process.goodSignalLeptons)
-        process.muPath.insert(1, process.flavourAnalyzer)
 
     if Config.doElectron:
         from SingleTopPolarization.Analysis.electrons_step2_cfi import ElectronPath
         ElectronPath(process, Config)
         process.elePath.insert(process.elePath.index(process.oneIsoEle)+1, process.goodSignalLeptons)
-        process.elePath.insert(1, process.flavourAnalyzer)
 
-    process.treePath = cms.Path(process.treeSequence)
+    process.treePath = cms.Path(process.treeSequence*process.flavourAnalyzer)
 
     #-----------------------------------------------
     # Outpath
