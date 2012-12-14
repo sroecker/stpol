@@ -114,12 +114,13 @@ SimpleJetAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     " eta: " << obj.eta() <<
     " phi: " << obj.phi() << 
     " et: " << obj.et() <<
+    " bTag('TCHP'): " << obj.bDiscriminator("trackCountingHighPurBJetTags") <<
     " numberOfDaughters: " << obj.numberOfDaughters() << 
     " neutralHadronEnergyFraction: " << obj.neutralHadronEnergyFraction() << 
     " neutralEmEnergyFraction: " << obj.neutralEmEnergyFraction() << 
     " chargedEmEnergyFraction: " << obj.chargedEmEnergyFraction() <<
     " isJet: " << obj.isJet() <<
-    "smearedJet " << obj.genJet();
+    " smearedJet " << obj.genJet();
     i++;
     if(obj.genJet()!=0) {
       edm::LogInfo("analyze()") <<
