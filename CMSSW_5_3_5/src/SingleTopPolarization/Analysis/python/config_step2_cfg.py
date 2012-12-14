@@ -107,7 +107,7 @@ class Config(C):
 
     class Electrons(Leptons):
         pt = "ecalDrivenMomentum.Pt()"
-        mvaCut = 0.9
+        mvaCut = 0.98
         cutOnMVA = True
         relIsoCutRangeIsolatedRegion = [0.0, 0.1]
         relIsoCutRangeAntiIsolatedRegion = [0.1, 0.5]
