@@ -128,7 +128,7 @@ def MuonSetup(process, conf = None):
                 min=cms.double(conf.Muons.transverseMassCut),
                 max=cms.double(9999999)
             )
-            process.metMuSequence.insert(-1, process.hasMuMETMT)
+            process.metMuSequence += process.hasMuMETMT
 
     process.recoNuProducerMu = cms.EDProducer('ClassicReconstructedNeutrinoProducer',
         leptonSrc=cms.InputTag("goodSignalLeptons"),
