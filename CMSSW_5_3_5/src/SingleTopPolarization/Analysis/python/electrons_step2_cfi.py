@@ -119,7 +119,7 @@ def ElectronSetup(process, conf):
 	            min=cms.double(conf.Electrons.transverseMassCut),
 	            max=cms.double(9999999)
 	        )
-	        process.metEleSequence.insert(-1, process.hasEleMETMT)
+	        process.metEleSequence += process.hasEleMETMT
 
 
 	# if metType == "MET":
