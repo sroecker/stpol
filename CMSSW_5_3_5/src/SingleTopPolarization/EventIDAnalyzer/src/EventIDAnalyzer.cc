@@ -29,9 +29,7 @@
 #include "FWCore/Framework/interface/MakerMacros.h"
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
-//
-// class declaration
-//
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 class EventIDAnalyzer : public edm::EDAnalyzer {
    public:
@@ -95,7 +93,7 @@ EventIDAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 {
    using namespace edm;
 
-   std::cout << name << " ID event: " << iEvent.id().event() << " lumi: " << iEvent.id().luminosityBlock() << " run: " << iEvent.id().run() << std::endl;
+   edm::LogInfo("analyze") << name << " ID event: " << iEvent.id().event() << " lumi: " << iEvent.id().luminosityBlock() << " run: " << iEvent.id().run();
 }
 
 

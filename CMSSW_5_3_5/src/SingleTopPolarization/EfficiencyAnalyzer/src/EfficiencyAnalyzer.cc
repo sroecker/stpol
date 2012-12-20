@@ -205,7 +205,9 @@ EfficiencyAnalyzer::endLuminosityBlock(const edm::LuminosityBlock& lumi, edm::Ev
     for(const std::string& s : trackedCounters)
     {
         lumi.getByLabel(s, counter);
-        countMap[s] += (unsigned long)(counter->value);
+        if(counter.isValid()) {
+          countMap[s] += (unsigned long)(counter->value);
+        }
     }
 }
 

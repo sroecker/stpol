@@ -33,7 +33,7 @@ def MuonSetup(process, conf = None):
     if conf.Muons.cutOnIso:
         if conf.Muons.reverseIsoCut:
         #Choose anti-isolated region
-            goodSignalMuonCut += ' && userFloat("{0}") >= {1} && userFloat("{0}") < {1}'.format(
+            goodSignalMuonCut += ' && userFloat("{0}") >= {1} && userFloat("{0}") < {2}'.format(
                 conf.Muons.relIsoType,
                 conf.Muons.relIsoCutRangeAntiIsolatedRegion[0],
                 conf.Muons.relIsoCutRangeAntiIsolatedRegion[1]
@@ -45,6 +45,7 @@ def MuonSetup(process, conf = None):
                 conf.Muons.relIsoCutRangeIsolatedRegion[0],
                 conf.Muons.relIsoCutRangeIsolatedRegion[1]
             )
+    print "goodSignalMuonCut = %s" % goodSignalMuonCut
 
     looseVetoMuonCut = "isPFMuon"
     looseVetoMuonCut += "&& (isGlobalMuon | isTrackerMuon)"
@@ -109,7 +110,7 @@ def MuonSetup(process, conf = None):
                 minNumber = cms.uint32(1),
                 maxNumber = cms.uint32(1)
             )
-            process.metMuSequence.insert(-1, process.hasMET)
+            process.metMuSequence += process.hasMET
 
     elif conf.Muons.transverseMassType == conf.Leptons.WTransverseMassType.MtW:
 
@@ -194,6 +195,22 @@ def MuonPath(process, conf):
         process.muPath.insert(
             process.muPath.index(process.topRecoSequenceMu)+1,
             process.partonStudyCompareSequence
+        )
+    if conf.doDebug:
+        process.goodSignalMuAnalyzer = cms.EDAnalyzer("SimpleMuonAnalyzer", interestingCollections=cms.untracked.VInputTag("goodSignalMuons"))
+        process.muPath.insert(
+            process.muPath.index(process.goodSignalMuons)+1,
+            process.goodSignalMuAnalyzer
+        )
+        process.oneIsoMuID = cms.EDAnalyzer("EventIDAnalyzer", name=cms.untracked.string("oneIsoMuID"))
+        process.muPath.insert(
+            process.muPath.index(process.oneIsoMu)+1,
+            process.oneIsoMuID
+        )
+        process.nJetID = cms.EDAnalyzer("EventIDAnalyzer", name=cms.untracked.string("nJetID"))
+        process.muPath.insert(
+            process.muPath.index(process.nJets)+1,
+            process.nJetID
         )
 
     #Count number of events passing the selection filters
