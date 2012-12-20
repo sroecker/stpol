@@ -398,7 +398,8 @@ def SingleTopStep2():
                  SelectEvents=cms.vstring([])
              ),
             outputCommands=cms.untracked.vstring(
-                'drop *',
+                #'drop *',
+                'keep *',
                 'keep *_recoTop_*_*',
                 'keep *_goodSignalMuons_*_*',
                 'keep *_goodSignalElectrons_*_*',
