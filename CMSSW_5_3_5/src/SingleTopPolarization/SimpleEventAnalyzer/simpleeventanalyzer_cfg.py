@@ -24,9 +24,14 @@ process.source = cms.Source("PoolSource",
 from SingleTopPolarization.Analysis.cmdlineParsing import enableCommandLineArguments
 enableCommandLineArguments(process)
 
+#process.simpleAnalyzer = cms.EDAnalyzer(
+#	'SimpleMuonAnalyzer',
+#	interestingCollections = cms.untracked.VInputTag(["muonsWithID", "shiftedMuonsWithIDenDown"])
+#)
+
 process.simpleAnalyzer = cms.EDAnalyzer(
-	'SimpleEventAnalyzer',
-	interestingCollections = cms.untracked.VInputTag(["goodJets"])
+	'SimpleJetAnalyzer',
+	interestingCollections = cms.untracked.VInputTag(["selectedPatJets", "smearedPatJets"])
 )
 
 
