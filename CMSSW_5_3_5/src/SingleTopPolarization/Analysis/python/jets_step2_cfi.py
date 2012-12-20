@@ -7,10 +7,11 @@ def JetSetup(process, conf):
 #    else:
 #        print "CUT\tJets: keeping all events with >=1 jet and >=0 btag"
 #
-    if conf.isMC:
-        jetCut = 'userFloat("pt_smear") > %f' % conf.Jets.ptCut
-    else:
-        jetCut = 'pt > %f' % conf.Jets.ptCut
+#    if conf.isMC:
+#        jetCut = 'userFloat("pt_smear") > %f' % conf.Jets.ptCut
+#    else:
+
+    jetCut = 'pt > %f' % conf.Jets.ptCut
 
     jetCut += ' && abs(eta) < %f' % conf.Jets.etaCut
     jetCut += ' && numberOfDaughters > 1'
@@ -20,22 +21,26 @@ def JetSetup(process, conf):
     jetCut += ' && (chargedHadronEnergyFraction > 0. || abs(eta) >= 2.4)'
     jetCut += ' && (chargedMultiplicity > 0 || abs(eta) >= 2.4)'
 
+#    process.skimJets = cms.EDFilter("CandViewSelector",
+#        src=cms.InputTag(conf.Jets.source),
+#        cut=cms.string('pt>15')
+#    )
 
     process.noPUJets = cms.EDProducer('CleanNoPUJetProducer',
-        jetSrc = cms.InputTag("selectedPatJets"),
+        jetSrc = cms.InputTag(conf.Jets.source),
         PUidMVA = cms.InputTag("puJetMva", "fullDiscriminant", "PAT"),
         PUidFlag = cms.InputTag("puJetMva", "fullId", "PAT"),
         PUidVars = cms.InputTag("puJetId", "", "PAT"),
     )
 
-    if conf.isMC:
-        process.smearedJets = cms.EDProducer('JetMCSmearProducer',
-            src=cms.InputTag("noPUJets"),
-            reportMissingGenJet=cms.untracked.bool(conf.doDebug)
-        )
+#    if conf.isMC:
+#        process.smearedJets = cms.EDProducer('JetMCSmearProducer',
+#            src=cms.InputTag("noPUJets"),
+#            reportMissingGenJet=cms.untracked.bool(conf.doDebug)
+#        )
 
     process.goodJets = cms.EDFilter("CandViewSelector",
-        src=cms.InputTag("smearedJets" if conf.isMC else 'noPUJets'),
+        src=cms.InputTag("noPUJets"),
         cut=cms.string(jetCut)
     )
 
@@ -110,6 +115,7 @@ def JetSetup(process, conf):
     )
 
     process.jetSequence = cms.Sequence(
+      #process.skimJets *
       process.noPUJets *
       process.goodJets *
       process.btaggedJets *
@@ -124,8 +130,12 @@ def JetSetup(process, conf):
     print "goodJets cut = %s" % process.goodJets.cut
     print "btaggedJets cut = %s" % process.btaggedJets.cut
 
-    if conf.isMC:
-        process.jetSequence.insert(process.jetSequence.index(process.noPUJets)+1, process.smearedJets)
+    #if conf.isMC:
+    #    process.jetSequence.insert(process.jetSequence.index(process.noPUJets)+1, process.smearedJets)
     if conf.doDebug:
-        process.lowestBTagJetAnalyzer = cms.EDAnalyzer("SimpleJetAnalyzer", interestingCollections=cms.untracked.VInputTag("goodJets", "lowestBTagJet"))
-        process.jetSequence.insert(process.jetSequence.index(process.lowestBTagJet)+1, process.lowestBTagJetAnalyzer)
+        process.sourceJetAnalyzer = cms.EDAnalyzer("SimpleJetAnalyzer", interestingCollections=cms.untracked.VInputTag(conf.Jets.source))
+        process.jetSequence.insert(0, process.sourceJetAnalyzer)
+        process.jetAnalyzer = cms.EDAnalyzer("SimpleJetAnalyzer", interestingCollections=cms.untracked.VInputTag(conf.Jets.source, "goodJets"))
+        process.jetSequence += process.jetAnalyzer
+
+    print process.jetSequence
