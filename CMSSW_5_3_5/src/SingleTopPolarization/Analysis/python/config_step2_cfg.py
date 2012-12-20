@@ -62,6 +62,8 @@ class Config(C):
         ptCut = 40
         etaCut = 4.7
 
+        source = "selectedPatJets"
+
         class BTagDiscriminant:
             TCHP = "trackCountingHighPurBJetTags"
             CSV_MVA = "combinedSecondaryVertexMVABJetTags"
