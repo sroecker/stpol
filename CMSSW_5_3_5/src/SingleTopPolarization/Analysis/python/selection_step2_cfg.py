@@ -87,7 +87,7 @@ def SingleTopStep2():
     #Combine the found electron/muon to a single collection
     process.goodSignalLeptons = cms.EDProducer(
          'CandRefCombiner',
-         sources=cms.untracked.vstring(["goodSignalMuons", "goodSignalElectrons"]),
+         sources=cms.untracked.vstring(["singleIsoMu", "singleIsoEle"]),
              maxOut=cms.untracked.uint32(1),
              minOut=cms.untracked.uint32(1)
     )
@@ -341,6 +341,10 @@ def SingleTopStep2():
             cms.InputTag("electronCount"),
             cms.InputTag("topCount"),
             cms.InputTag("bJetCount"),
+
+            cms.InputTag("btaggedTrueBJetCount"),
+            cms.InputTag("trueBJetCount"),
+
             cms.InputTag("lightJetCount")
             ]
         )
@@ -379,12 +383,12 @@ def SingleTopStep2():
     if Config.doMuon:
         from SingleTopPolarization.Analysis.muons_step2_cfi import MuonPath
         MuonPath(process, Config)
-        process.muPath.insert(process.muPath.index(process.oneIsoMu)+1, process.goodSignalLeptons)
+        process.muPath.insert(process.muPath.index(process.singleIsoMu)+1, process.goodSignalLeptons)
 
     if Config.doElectron:
         from SingleTopPolarization.Analysis.electrons_step2_cfi import ElectronPath
         ElectronPath(process, Config)
-        process.elePath.insert(process.elePath.index(process.oneIsoEle)+1, process.goodSignalLeptons)
+        process.elePath.insert(process.elePath.index(process.singleIsoEle)+1, process.goodSignalLeptons)
 
     process.treePath = cms.Path(process.treeSequence*process.flavourAnalyzer)
 
