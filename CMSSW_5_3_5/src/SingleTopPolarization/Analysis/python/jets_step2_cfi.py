@@ -39,12 +39,96 @@ def JetSetup(process, conf):
 #            reportMissingGenJet=cms.untracked.bool(conf.doDebug)
 #        )
 
+    bTagCutStr = 'bDiscriminator("%s") >= %f' % (conf.Jets.bTagDiscriminant, conf.Jets.BTagWorkingPointVal())
+
     process.goodJets = cms.EDFilter("CandViewSelector",
         src=cms.InputTag("noPUJets"),
         cut=cms.string(jetCut)
     )
 
-    bTagCutStr = 'bDiscriminator("%s") >= %f' % (conf.Jets.bTagDiscriminant, conf.Jets.BTagWorkingPointVal())
+    #B-tagging efficiencies
+
+    #B-jet b-tagging efficiency
+    process.trueBJets = cms.EDFilter("CandViewSelector",
+        src=cms.InputTag("goodJets"),
+        cut=cms.string("abs(partonFlavour()) == 5")
+    )
+    process.btaggedTrueBJets = cms.EDFilter(
+        "CandViewSelector",
+        src=cms.InputTag("trueBJets"),
+        cut=cms.string(bTagCutStr)
+    )
+    process.trueBJetCount = cms.EDProducer(
+        "CollectionSizeProducer<reco::Candidate>",
+        src = cms.InputTag("trueBJets")
+    )
+    process.btaggedTrueBJetCount = cms.EDProducer(
+        "CollectionSizeProducer<reco::Candidate>",
+        src = cms.InputTag("btaggedTrueBJets")
+    )
+    process.bJetBTagEffSequence = cms.Sequence(
+        process.trueBJets *
+        process.btaggedTrueBJets *
+        process.trueBJetCount *
+        process.btaggedTrueBJetCount
+    )
+
+    #C-jet b-tagging efficiency
+    process.trueCJets = cms.EDFilter("CandViewSelector",
+        src=cms.InputTag("goodJets"),
+        cut=cms.string("abs(partonFlavour()) == 4")
+    )
+    process.btaggedTrueCJets = cms.EDFilter(
+        "CandViewSelector",
+        src=cms.InputTag("trueCJets"),
+        cut=cms.string(bTagCutStr)
+    )
+    process.trueCJetCount = cms.EDProducer(
+        "CollectionSizeProducer<reco::Candidate>",
+        src = cms.InputTag("trueCJets")
+    )
+    process.btaggedTrueCJetCount = cms.EDProducer(
+        "CollectionSizeProducer<reco::Candidate>",
+        src = cms.InputTag("btaggedTrueCJets")
+    )
+    process.cJetBTagEffSequence = cms.Sequence(
+        process.trueCJets *
+        process.btaggedTrueCJets *
+        process.trueCJetCount *
+        process.btaggedTrueCJetCount
+    )
+
+    #light-jet b-tagging efficiency
+    process.trueLJets = cms.EDFilter("CandViewSelector",
+        src=cms.InputTag("goodJets"),
+        cut=cms.string("abs(partonFlavour()) <= 3")
+    )
+    process.btaggedTrueLJets = cms.EDFilter(
+        "CandViewSelector",
+        src=cms.InputTag("trueLJets"),
+        cut=cms.string(bTagCutStr)
+    )
+    process.trueLJetCount = cms.EDProducer(
+        "CollectionSizeProducer<reco::Candidate>",
+        src = cms.InputTag("trueLJets")
+    )
+    process.btaggedTrueLJetCount = cms.EDProducer(
+        "CollectionSizeProducer<reco::Candidate>",
+        src = cms.InputTag("btaggedTrueLJets")
+    )
+    process.lightJetBTagEffSequence = cms.Sequence(
+        process.trueLJets *
+        process.btaggedTrueLJets *
+        process.trueLJetCount *
+        process.btaggedTrueLJetCount
+    )
+
+
+    process.trueLJets = cms.EDFilter("CandViewSelector",
+        src=cms.InputTag("goodJets"),
+        cut=cms.string("abs(partonFlavour()) <= 3")
+    )
+
 
     process.btaggedJets = cms.EDFilter(
         "CandViewSelector",
@@ -118,6 +202,12 @@ def JetSetup(process, conf):
       #process.skimJets *
       process.noPUJets *
       process.goodJets *
+
+      #B-jet efficiency counters
+      process.bJetBTagEffSequence *
+      process.cJetBTagEffSequence *
+      process.lightJetBTagEffSequence *
+
       process.btaggedJets *
       process.untaggedJets *
       process.oneUntaggedJet *
