@@ -68,6 +68,7 @@ def MuonSetup(process, conf = None):
         minNumber=cms.uint32(1),
         maxNumber=cms.uint32(1),
     )
+    process.singleIsoMu = cms.EDFilter("CandViewSelector", src=cms.InputTag("goodSignalMuons"), cut=cms.string(""))
 
     process.muonCount = cms.EDProducer(
         "CollectionSizeProducer<reco::Candidate>",
@@ -132,7 +133,7 @@ def MuonSetup(process, conf = None):
             process.metMuSequence += process.hasMuMETMT
 
     process.recoNuProducerMu = cms.EDProducer('ClassicReconstructedNeutrinoProducer',
-        leptonSrc=cms.InputTag("goodSignalLeptons"),
+        leptonSrc=cms.InputTag("singleIsoMu"),
         bjetSrc=cms.InputTag("btaggedJets"),
         metSrc=cms.InputTag("goodMETs" if conf.Muons.transverseMassType == conf.Leptons.WTransverseMassType.MET else "patMETs"),
     )
@@ -172,6 +173,8 @@ def MuonPath(process, conf):
         process.muonCount *
         process.looseVetoMuons *
         process.oneIsoMu *
+        process.singleIsoMu *
+
         process.looseMuVetoMu *
         process.looseVetoElectrons *
         process.looseEleVetoMu *
