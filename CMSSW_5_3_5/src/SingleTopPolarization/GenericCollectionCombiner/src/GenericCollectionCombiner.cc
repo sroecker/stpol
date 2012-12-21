@@ -125,10 +125,11 @@ GenericCollectionCombiner<T>::produce(edm::Event& iEvent, const edm::EventSetup&
    }
    if((uint)(pOut->size()) < minOut) {
     LogError("produce()") << "Output collection has too few items: " << pOut->size() << "<" << minOut;
-
+    iEvent.put(new std::vector<T>());
    }
    else if( (uint)(pOut->size()) > maxOut) {
     LogError("produce()") << "Output collection has too many items: " << pOut->size() << ">" << maxOut;
+    iEvent.put(new std::vector<T>());
    }
    else {
     iEvent.put(pOut);
