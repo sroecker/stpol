@@ -34,6 +34,7 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include <TFormula.h>
+#include <TH1D.h>
 
 
 //
@@ -62,8 +63,9 @@ class BTagSystematicsWeightProducer : public edm::EDProducer {
 
       void combinations(const unsigned int n, const unsigned int k, Combinations& combs);
       
+      
       const std::unique_ptr<std::map<const char*, TFormula>> SFs; 
-      const std::unique_ptr<std::map<const char*, TFormula>> SFs; 
+      const std::unique_ptr<std::map<const char*, TH1D>> SFErrs; 
       const std::unique_ptr<std::map<const char*, double>> effs; 
       const edm::InputTag jetSrc;
       const unsigned int nJets, nTags; 
@@ -80,13 +82,31 @@ class BTagSystematicsWeightProducer : public edm::EDProducer {
 //
 // static data member definitions
 //
+TH1D prepareErrHist(const char* name, std::vector<Double_t> bins, std::vector<Double_t> errs) {
+   assert(bins.size() == errs.size()+1);
+   TH1D h(name, name, bins.size()-1, &bins[0]);
+   for(unsigned int i=0;i<errs.size();i++) {
+     h.SetBinContent(i, errs[i]); 
+   }
 
+   {
+       std::stringstream os;
+       os << "(";
+       for(int i=1;i<=h.GetNbinsX();i++) {
+         os << i << ":" << "{" << h.GetBinLowEdge(i) << "," << h.GetBinContent(i) << "}, "; 
+       }
+       os << ")";
+       LogDebug("constructor") << name << " error histogram:" << os.str();
+   }
+   return h;   
+}
 //
 // constructors and destructor
 //
 BTagSystematicsWeightProducer::BTagSystematicsWeightProducer(const edm::ParameterSet& iConfig)
 : SFs(new std::map<const char*, TFormula>())
 , effs(new std::map<const char*, double>())
+, SFErrs(new std::map<const char*, TH1D>())
 , jetSrc(iConfig.getParameter<edm::InputTag>("src"))
 , nJets(iConfig.getParameter<unsigned int>("nJets"))
 , nTags(iConfig.getParameter<unsigned int>("nTags"))
@@ -94,26 +114,32 @@ BTagSystematicsWeightProducer::BTagSystematicsWeightProducer(const edm::Paramete
    (*SFs)["b"] = TFormula("SFb", iConfig.getParameter<std::string>("SFb").c_str()); 
    (*SFs)["c"] = TFormula("SFc", iConfig.getParameter<std::string>("SFc").c_str()); 
    (*SFs)["l"] = TFormula("SFl", iConfig.getParameter<std::string>("SFl").c_str()); 
+  
+   (*SFErrs)["c"] = prepareErrHist("SFcErr",
+                                   iConfig.getParameter<std::vector<double>>("SFcErrBinsX"),
+                                   iConfig.getParameter<std::vector<double>>("SFcErrBinsY")
+   ); 
+   (*SFErrs)["b"] = prepareErrHist("SFbErr",
+                                   iConfig.getParameter<std::vector<double>>("SFbErrBinsX"),
+                                   iConfig.getParameter<std::vector<double>>("SFbErrBinsY")
+   ); 
+   (*SFErrs)["l"] = prepareErrHist("SFlErr",
+                                   iConfig.getParameter<std::vector<double>>("SFlErrBinsX"),
+                                   iConfig.getParameter<std::vector<double>>("SFlErrBinsY")
+   ); 
    
-   (*SFsUp)["b"] = TFormula("SFbUp", iConfig.getParameter<std::string>("SFbUp").c_str()); 
-   (*SFsUp)["c"] = TFormula("SFcUp", iConfig.getParameter<std::string>("SFcUp").c_str()); 
-   (*SFsUp)["l"] = TFormula("SFlUp", iConfig.getParameter<std::string>("SFlUp").c_str()); 
-   (*SFsDown)["b"] = TFormula("SFbDown", iConfig.getParameter<std::string>("SFbDown").c_str()); 
-   (*SFsDown)["c"] = TFormula("SFcDown", iConfig.getParameter<std::string>("SFcDown").c_str()); 
-   (*SFsDown)["l"] = TFormula("SFlDown", iConfig.getParameter<std::string>("SFlDown").c_str()); 
-   
-   (*effs)["b"] = iConfig.getParameter<double>("eff_b"); 
-   (*effs)["c"] = iConfig.getParameter<double>("eff_c"); 
-   (*effs)["l"] = iConfig.getParameter<double>("eff_l"); 
+   (*effs)["b"] = iConfig.getParameter<double>("Effb"); 
+   (*effs)["c"] = iConfig.getParameter<double>("Effc"); 
+   (*effs)["l"] = iConfig.getParameter<double>("Effl"); 
 
    //Precalculate the tagging combinations 
    combinations(nJets, nTags, combs);
  
-   produces<float>("bTagWeight");
-   produces<float>("bTagWeightSystBCUp");
-   produces<float>("bTagWeightSystBCDown");
-   produces<float>("bTagWeightSystLUp");
-   produces<float>("bTagWeightSystLDown");
+   produces<double>("bTagWeight");
+   produces<double>("bTagWeightSystBCUp");
+   produces<double>("bTagWeightSystBCDown");
+   produces<double>("bTagWeightSystLUp");
+   produces<double>("bTagWeightSystLDown");
 }
 
 void BTagSystematicsWeightProducer::combinations(const unsigned int n, const unsigned int k, Combinations& combs) {
@@ -146,20 +172,31 @@ void
 BTagSystematicsWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
    using namespace edm;
-   Handle<View<pat::Jet> > jets;
+   Handle<View<reco::Candidate>> jets;
    iEvent.getByLabel(jetSrc, jets);
 
+   //std::vector<pat::Jet> interestingJets(jets.begin(),jets.begin() + nJets);
    LogDebug("produce") << "This event has " << jets->size() << " jets";
    
    double P_mc = 0.0; 
    double P_data = 0.0;
 
    for(std::vector<unsigned int>& comb : combs) {
+       
+       std::stringstream os; for(auto& v : comb) { os << " " << v; };
 
+       LogDebug("produce") << " considering jets:" << os.str() << " as b-tags";
+      
        unsigned int jetIdx = 0; 
        double p_mc = 1.0; 
-       double p_data = 1.0; 
-       for (const pat::Jet& jet : *jets) {
+       double p_data = 1.0;
+
+
+
+       for (const auto& jet_ : *jets) {
+           
+           pat::Jet& jet = (pat::Jet&)jet_;
+
            bool inComb = std::find(comb.begin(), comb.end(), jetIdx) != comb.end();
            //bool inComb = false; 
            
@@ -170,7 +207,7 @@ BTagSystematicsWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup
                };
                
                p_mc = p_mc * eff( ((*effs)[type]), inComb);
-               p_data = p_data * eff( (*SFs)[type].Eval(jet.pt(), jet.eta())*((*effs)[type]), inComb);
+               p_data = p_data * eff( (*SFs)[type].Eval(jet.pt())*((*effs)[type]), inComb);
            };
  
            if(abs(jet.partonFlavour()) == 5) { //b-jet
@@ -182,6 +219,7 @@ BTagSystematicsWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup
            else if(abs(jet.partonFlavour())==21 || abs(jet.partonFlavour())<=3) { //light jet
                prob("l"); 
            }
+           LogDebug("produce") << "comb probs: p_mc=" << p_mc << " p_data=" << p_data;
 
            jetIdx++;
        }
@@ -192,9 +230,9 @@ BTagSystematicsWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup
 
    }
    double w = P_data/P_mc;
-   std::auto_ptr<double> outW(new double(w));
-
-   iEvent.put(outW, "bTagWeight");
+ //  std::auto_ptr<double> outW(new double(w));
+   LogDebug("produce") << "event prob: P_mc=" << P_mc << " P_data=" << P_data << " w=" << w;
+   iEvent.put(std::auto_ptr<double>(new double(w)), "bTagWeight");
  
 }
 
