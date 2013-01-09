@@ -199,14 +199,13 @@ def SingleTopStep1(
       muonCollection=cms.InputTag("muonsWithID"),
       tauCollection=cms.InputTag("selectedPatTaus"),
       jetCollection=cms.InputTag("selectedPatJets"),
-      #jetCorrPayloadName="AK5PFchs",
+      jetCorrPayloadName="AK5PFchs",
       #dRjetCleaning=0.5,
-      #jetCorrLabel="L3Absolute" if isMC else "L2L3Residual",
+      jetCorrLabel="L3Absolute" if isMC else "L2L3Residual",
       addToPatDefaultSequence=False
   )
   process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatJets)+1, process.metUncertaintySequence)
 
-  #process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatElectrons) + 1, process.elesWithIso)
   process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatMuons) + 1, process.muonsWithID)
   process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatElectrons) + 1, process.electronsWithID)
 
