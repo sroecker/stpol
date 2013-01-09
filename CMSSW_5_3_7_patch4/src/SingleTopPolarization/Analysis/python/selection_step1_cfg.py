@@ -86,8 +86,8 @@ def SingleTopStep1(
     primaryVertexSource = cms.InputTag("goodOfflinePrimaryVertices")
   )
 
-  process.patMuons.pfMuonSource = cms.InputTag("pfMuons")
-  process.muonMatch.src = cms.InputTag("pfMuons")
+  #process.patMuons.pfMuonSource = cms.InputTag("pfMuons")
+  #process.muonMatch.src = cms.InputTag("pfMuons")
 
   #-------------------------------------------------
   # Electrons
@@ -108,8 +108,8 @@ def SingleTopStep1(
   #if not maxLeptonIso is None:
   #    process.pfIsolatedElectrons.isolationCut = maxLeptonIso
 
-  process.patElectrons.pfElectronSource = cms.InputTag("pfElectrons")
-  process.electronMatch.src = cms.InputTag("pfElectrons")
+  #process.patElectrons.pfElectronSource = cms.InputTag("pfElectrons")
+  #process.electronMatch.src = cms.InputTag("pfElectrons")
 
   #electron dR=0.3
   process.pfElectrons.isolationValueMapsCharged = cms.VInputTag(cms.InputTag("elPFIsoValueCharged03PFId"))
@@ -199,11 +199,12 @@ def SingleTopStep1(
       muonCollection=cms.InputTag("muonsWithID"),
       tauCollection=cms.InputTag("selectedPatTaus"),
       jetCollection=cms.InputTag("selectedPatJets"),
-      jetCorrPayloadName="AK5PFchs",
-      dRjetCleaning=0.0,
-      jetCorrLabel="L3Absolute" if isMC else "L2L3Residual",
+      #jetCorrPayloadName="AK5PFchs",
+      #dRjetCleaning=0.5,
+      #jetCorrLabel="L3Absolute" if isMC else "L2L3Residual",
       addToPatDefaultSequence=False
   )
+  process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatJets)+1, process.metUncertaintySequence)
 
   #process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatElectrons) + 1, process.elesWithIso)
   process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatMuons) + 1, process.muonsWithID)
@@ -215,15 +216,14 @@ def SingleTopStep1(
     process.singleTopPathStep1Mu = cms.Path(
       process.goodOfflinePrimaryVertices
       * process.patPF2PATSequence
-      * process.metUncertaintySequence
     )
 
   if doElectron:
     process.singleTopPathStep1Ele = cms.Path(
       process.goodOfflinePrimaryVertices
       * process.patPF2PATSequence
-      * process.metUncertaintySequence
     )
+
   if doMuon:
     process.out.SelectEvents.SelectEvents.append("singleTopPathStep1Mu")
   if doElectron:
