@@ -74,8 +74,8 @@ def SingleTopStep1(
   # Muons
   #-------------------------------------------------
 
-  #if not maxLeptonIso is None:
-  #    process.pfIsolatedMuons.isolationCut = maxLeptonIso
+  if not maxLeptonIso is None:
+      process.pfIsolatedMuons.isolationCut = maxLeptonIso
 
   # muon ID production (essentially track count embedding) must be here
   # because tracks get dropped from the collection after this step, resulting
@@ -93,6 +93,10 @@ def SingleTopStep1(
   # Electrons
   # Implemented as in https://indico.cern.ch/getFile.py/access?contribId=1&resId=0&materialId=slides&confId=208765
   #-------------------------------------------------
+
+
+  if not maxLeptonIso is None:
+      process.pfIsolatedElectrons.isolationCut = maxLeptonIso
 
   process.load('EGamma.EGammaAnalysisTools.electronIdMVAProducer_cfi')
   process.mvaID = cms.Sequence(process.mvaTrigV0 + process.mvaNonTrigV0)
@@ -139,7 +143,12 @@ def SingleTopStep1(
 
   #process.selectedPatJets.cut = cms.string("pt>30")
   process.load("CMGTools.External.pujetidsequence_cff")
-  process.patPF2PATSequence.insert(-1, process.puJetIdSqeuence)
+  process.patPF2PATSequence += process.puJetIdSqeuence
+
+  def clonePuJetID(jetSrc):
+    
+    pass
+
   #-----------------------------------------------
   # Slimming
   #-----------------------------------------------
