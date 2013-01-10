@@ -320,6 +320,14 @@ def SingleTopStep2():
             cms.InputTag("muAndMETMT", ""),
             cms.InputTag("eleAndMETMT", ""),
 
+            #B-tag systematics
+            cms.InputTag("bTagWeightProducer", "bTagWeight"),
+            cms.InputTag("bTagWeightProducer", "bTagWeightSystBCUp"),
+            cms.InputTag("bTagWeightProducer", "bTagWeightSystBCDown"),
+            cms.InputTag("bTagWeightProducer", "bTagWeightSystLUp"),
+            cms.InputTag("bTagWeightProducer", "bTagWeightSystLDown"),
+
+
             #Some debugging data
             #cms.InputTag("kt6PFJets", "rho", "RECO"),
             #cms.InputTag("recoNu", "Delta"),
@@ -344,6 +352,10 @@ def SingleTopStep2():
 
             cms.InputTag("btaggedTrueBJetCount"),
             cms.InputTag("trueBJetCount"),
+            cms.InputTag("btaggedTrueCJetCount"),
+            cms.InputTag("trueCJetCount"),
+            cms.InputTag("btaggedTrueLJetCount"),
+            cms.InputTag("trueLJetCount"),
 
             cms.InputTag("lightJetCount")
             ]
