@@ -28,9 +28,9 @@ def PartonStudySetup(process, untaggedSrc="fwdMostLightJet"):
              && abs((mother().pdgId()))==24" #The first mother is the "oldest" particle. In our case, we are looking for a top quark
         )
     )
-	process.genLeptonsTCount = cms.EDProducer('CollectionSizeProducer<reco::Candidate>',
-		src = cms.InputTag('process.genLeptonsT')
-	)
+    process.genLeptonsTCount = cms.EDProducer('CollectionSizeProducer<reco::Candidate>',
+        src = cms.InputTag('genLeptonsT')
+    )
 
     #Select the generated top quark, light jet and charged lepton
     process.genParticleSelector = cms.EDProducer('GenParticleSelector',
@@ -73,12 +73,17 @@ def PartonStudySetup(process, untaggedSrc="fwdMostLightJet"):
         maxMass=cms.untracked.double(300.)
     )
 
+    #This parton-study module is run for all samples in MC
+    process.commonPartonSequence = cms.Sequence(
+        process.genLeptonsT *
+        process.genLeptonsTCount
+    )
+
+    #these parton-study samples are run only for t-channel MC
     process.partonStudyTrueSequence = cms.Sequence(
         process.genParticleSelector *
         process.hasGenLepton *
-        process.cosThetaProducerTrueAll *
-        process.genLeptonsT *
-        process.genLeptonsTCount
+        process.cosThetaProducerTrueAll
     )
 
     process.partonStudyCompareSequence = cms.Sequence(

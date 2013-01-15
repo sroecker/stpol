@@ -357,7 +357,9 @@ def SingleTopStep2():
             cms.InputTag("btaggedTrueLJetCount"),
             cms.InputTag("trueLJetCount"),
 
-            cms.InputTag("lightJetCount")
+            cms.InputTag("lightJetCount"),
+
+            cms.InputTag("genLeptonsTCount")
             ]
         )
     )
@@ -383,10 +385,12 @@ def SingleTopStep2():
     from SingleTopPolarization.Analysis.hlt_step2_cfi import HLTSetup
     HLTSetup(process, Config)
 
-    if Config.isMC and Config.channel==Config.Channel.signal:
+    if Config.isMC:
         from SingleTopPolarization.Analysis.partonStudy_step2_cfi import PartonStudySetup
         PartonStudySetup(process)
-        process.partonPath = cms.Path(process.partonStudyTrueSequence)
+        process.partonPath = cms.Path(process.commonPartonSequence)
+        if Config.channel==Config.Channel.signal:
+            process.partonPath += process.partonStudyTrueSequence
 
     if Config.doDebug:
         from SingleTopPolarization.Analysis.debugAnalyzers_step2_cfi import DebugAnalyzerSetup
