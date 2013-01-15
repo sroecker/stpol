@@ -26,12 +26,14 @@ def JetSetup(process, conf):
 #        cut=cms.string('pt>15')
 #    )
 
-    process.noPUJets = cms.EDProducer('CleanNoPUJetProducer',
-        jetSrc = cms.InputTag(conf.Jets.source),
-        PUidMVA = cms.InputTag("puJetMva", "fullDiscriminant", "PAT"),
-        PUidFlag = cms.InputTag("puJetMva", "fullId", "PAT"),
-        PUidVars = cms.InputTag("puJetId", "", "PAT"),
-    )
+    if(conf.Jets.source == "selectedPatJets"):
+        process.noPUJets = cms.EDProducer('CleanNoPUJetProducer',
+            jetSrc = cms.InputTag(conf.Jets.source),
+            PUidMVA = cms.InputTag("puJetMva", "fullDiscriminant", "PAT"),
+            PUidFlag = cms.InputTag("puJetMva", "fullId", "PAT"),
+            PUidVars = cms.InputTag("puJetId", "", "PAT"),
+        )
+
 
 #    if conf.isMC:
 #        process.smearedJets = cms.EDProducer('JetMCSmearProducer',
@@ -42,7 +44,7 @@ def JetSetup(process, conf):
     bTagCutStr = 'bDiscriminator("%s") >= %f' % (conf.Jets.bTagDiscriminant, conf.Jets.BTagWorkingPointVal())
 
     process.goodJets = cms.EDFilter("CandViewSelector",
-        src=cms.InputTag("noPUJets"),
+        src=cms.InputTag("noPUJets" if conf.Jets.source == "selectedPatJets" else conf.Jets.source),
         cut=cms.string(jetCut)
     )
 
@@ -198,9 +200,19 @@ def JetSetup(process, conf):
         maxNumber=cms.uint32(9999999),
     )
 
+    process.bTagWeightProducer = cms.EDProducer('BTagSystematicsWeightProducer',
+        src=cms.InputTag("goodJets"),
+        nJets=cms.uint32(conf.Jets.nJets),
+        nTags=cms.uint32(conf.Jets.nBTags),
+        effB=cms.double(0.9),
+        effC=cms.double(0.2),
+        effL=cms.double(0.1)
+    )
+
+
     process.jetSequence = cms.Sequence(
       #process.skimJets *
-      process.noPUJets *
+      #process.noPUJets *
       process.goodJets *
 
       #B-jet efficiency counters
@@ -215,8 +227,13 @@ def JetSetup(process, conf):
       process.lightJetCount *
       process.fwdMostLightJet *
       process.highestBTagJet *
-      process.lowestBTagJet
+      process.lowestBTagJet *
+      process.bTagWeightProducer
     )
+
+    if conf.Jets.source == "selectedPatJets":
+        process.jetSequence.insert(0, process.noPUJets)
+
     print "goodJets cut = %s" % process.goodJets.cut
     print "btaggedJets cut = %s" % process.btaggedJets.cut
 
