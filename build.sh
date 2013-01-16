@@ -7,6 +7,9 @@
 #  joosep.pata@cern.ch
 #
 
+echo "CMSSW remote build script - local end"
+echo "Arguments: $@"
+
 #Check branch
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 if [ "$BRANCH" != "build" ]; then
@@ -23,11 +26,11 @@ fi
 
 echo "Pushing"
 git push ssh://joosep@ied.hep.kbfi.ee/home/joosep/singletop/stpol/ build
-if [ $? -ne 0]; then
+if [ $? -ne 0 ]; then
+    echo "Failed to push changes, exiting"
     exit $?
 fi
 
 echo "Building..."
 ssh ied.hep.kbfi.ee "sh /home/joosep/singletop/stpol/build_scram.sh"
-echo "Done building!"
 exit $?
