@@ -112,13 +112,13 @@ class Channel:
 
 channels = OrderedDict()
 
-channels["T_t"] = Channel("T_t", "../data/T_t.root", xs["T_t"], color=ROOT.kRed)
+channels["T_t"] = Channel("T_t", "../trees/T_t.root", xs["T_t"], color=ROOT.kRed)
 # channels["Tbar_t"] = Channel("Tbar_t", "../trees/Tbar_t.root", xs["Tbar_t"], color=ROOT.kRed)
 # channels["T_s"] = Channel("T_s", "../trees/T_s.root", xs["T_s"], color=ROOT.kYellow)
 # channels["Tbar_s"] = Channel("Tbar_s", "../trees/Tbar_s.root", xs["Tbar_s"], color=ROOT.kYellow)
 # channels["T_tW"] = Channel("T_tW", "../trees/T_tW.root", xs["T_tW"], color=ROOT.kYellow+4)
 # channels["Tbar_tW"] = Channel("Tbar_tW", "../trees/Tbar_tW.root", xs["Tbar_tW"], color=ROOT.kYellow+4)
-# channels["TTBar"] = Channel("TTBar", "../trees/Tbar_tW.root", xs["TTBar"], color=ROOT.kOrange)
+channels["TTBar"] = Channel("TTBar", "../trees/TTBar.root", xs["TTBar"], color=ROOT.kOrange)
 # channels["WW"] = Channel("WW", "../trees/WW.root", xs["WW"], color=ROOT.kBlue)
 # channels["WZ"] = Channel("WZ", "../trees/WZ.root", xs["WZ"], color=ROOT.kBlue)
 # channels["ZZ"] = Channel("ZZ", "../trees/ZZ.root", xs["ZZ"], color=ROOT.kBlue)

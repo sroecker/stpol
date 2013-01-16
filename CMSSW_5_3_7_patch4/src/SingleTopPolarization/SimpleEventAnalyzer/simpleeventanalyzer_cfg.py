@@ -14,7 +14,7 @@ process.MessageLogger = cms.Service("MessageLogger",
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring(""
+    fileNames = cms.untracked.vstring("patTuple_PF2PAT.root"
 #        'file:/home/joosep/singletop/stpol/patTuple_slim_numEvent100.root'
 #        'file:/hdfs/local/stpol/joosep/FEFF01BD-87DC-E111-BC9E-003048678F8E.root'
     )
@@ -31,7 +31,7 @@ enableCommandLineArguments(process)
 
 process.simpleAnalyzer = cms.EDAnalyzer(
 	'SimpleJetAnalyzer',
-	interestingCollections = cms.untracked.VInputTag(["selectedPatJets", "smearedPatJets"])
+	interestingCollections = cms.untracked.VInputTag(["selectedPatJets", "selectedPatJetsForMETtype2Corr"])
 )
 
 
