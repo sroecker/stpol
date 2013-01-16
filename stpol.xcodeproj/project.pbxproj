@@ -155,8 +155,19 @@
 		A76CFA4016A6B2FF00DC8250 /* step2_Data_antiIso_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = step2_Data_antiIso_cfg.py; sourceTree = "<group>"; };
 		A76CFA4116A6B2FF00DC8250 /* step2_MC_BKG_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = step2_MC_BKG_cfg.py; sourceTree = "<group>"; };
 		A76CFA4216A6B2FF00DC8250 /* step2_sync_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = step2_sync_cfg.py; sourceTree = "<group>"; };
-		A76CFA4916A6C5A200DC8250 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		A76CFA4916A6C5A200DC8250 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.simpleColoring; };
 		A76CFA4A16A6C5A200DC8250 /* setup.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = setup.sh; sourceTree = "<group>"; };
+		A76CFA4D16A6C62200DC8250 /* step1_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = step1_cfg.py; sourceTree = "<group>"; };
+		A76CFA4E16A6C62200DC8250 /* step1_grid_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = step1_grid_cfg.py; sourceTree = "<group>"; };
+		A76CFA4F16A6C62200DC8250 /* step1_MC_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = step1_MC_cfg.py; sourceTree = "<group>"; };
+		A76CFA5016A6C62200DC8250 /* step1_sync_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = step1_sync_cfg.py; sourceTree = "<group>"; };
+		A76CFA5116A6C62200DC8250 /* step2_allJets_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = step2_allJets_cfg.py; sourceTree = "<group>"; };
+		A76CFA5216A6C62200DC8250 /* step2_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = step2_cfg.py; sourceTree = "<group>"; };
+		A76CFA5316A6C62200DC8250 /* step2_Data_antiIso_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = step2_Data_antiIso_cfg.py; sourceTree = "<group>"; };
+		A76CFA5416A6C62200DC8250 /* step2_MC_BKG_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = step2_MC_BKG_cfg.py; sourceTree = "<group>"; };
+		A76CFA5516A6C62200DC8250 /* step2_MC_QCD.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = step2_MC_QCD.py; sourceTree = "<group>"; };
+		A76CFA5616A6C62200DC8250 /* step2_MC_SIG_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = step2_MC_SIG_cfg.py; sourceTree = "<group>"; };
+		A76CFA5716A6C62200DC8250 /* step2_sync_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = step2_sync_cfg.py; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -247,6 +258,7 @@
 				A76CF93516A6B2BE00DC8250 /* muons_step2_cfi.py */,
 				A76CF93616A6B2BE00DC8250 /* partonStudy_step2_cfi.py */,
 				A76CF93716A6B2BE00DC8250 /* selection_step1_cfg.py */,
+				A76CFA4C16A6C62200DC8250 /* runconfs */,
 				A76CF93816A6B2BE00DC8250 /* selection_step2_cfg.py */,
 				A76CF93916A6B2BE00DC8250 /* stepMetrics.py */,
 				A76CF93A16A6B2BE00DC8250 /* top_step2_cfi.py */,
@@ -947,6 +959,24 @@
 			);
 			path = runconfs;
 			sourceTree = "<group>";
+		};
+		A76CFA4C16A6C62200DC8250 /* runconfs */ = {
+			isa = PBXGroup;
+			children = (
+				A76CFA4D16A6C62200DC8250 /* step1_cfg.py */,
+				A76CFA4E16A6C62200DC8250 /* step1_grid_cfg.py */,
+				A76CFA4F16A6C62200DC8250 /* step1_MC_cfg.py */,
+				A76CFA5016A6C62200DC8250 /* step1_sync_cfg.py */,
+				A76CFA5116A6C62200DC8250 /* step2_allJets_cfg.py */,
+				A76CFA5216A6C62200DC8250 /* step2_cfg.py */,
+				A76CFA5316A6C62200DC8250 /* step2_Data_antiIso_cfg.py */,
+				A76CFA5416A6C62200DC8250 /* step2_MC_BKG_cfg.py */,
+				A76CFA5516A6C62200DC8250 /* step2_MC_QCD.py */,
+				A76CFA5616A6C62200DC8250 /* step2_MC_SIG_cfg.py */,
+				A76CFA5716A6C62200DC8250 /* step2_sync_cfg.py */,
+			);
+			path = runconfs;
+			sourceTree = SOURCE_ROOT;
 		};
 /* End PBXGroup section */
 
