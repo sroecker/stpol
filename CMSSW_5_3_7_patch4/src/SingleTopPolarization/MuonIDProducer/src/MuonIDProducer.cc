@@ -5,13 +5,13 @@
 // 
 /**\class MuonIDProducer MuonIDProducer.cc SingleTopPolarization/MuonIDProducer/src/MuonIDProducer.cc
 
- Description: [one line class summary]
+ Description: This class produces the muon/primary vertex dz and dxy the track counts as userFloats.
 
  Implementation:
      [Notes on implementation]
 */
 //
-// Original Author:  
+// Original Author:  Joosep Pata joosep.pata@cern.ch
 //         Created:  Thu Sep 27 14:36:33 EEST 2012
 // $Id$
 //
