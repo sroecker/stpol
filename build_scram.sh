@@ -24,5 +24,5 @@ else
 fi
 source setenv.sh
 cd CMSSW_5_3_7_patch4
-scram b -j 7
+scram b -j 7 | grep -v ">>"
 git checkout master
