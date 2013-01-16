@@ -1,0 +1,1000 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXFileReference section */
+		A76CF92716A6B2BE00DC8250 /* analysis_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = analysis_cfg.py; sourceTree = "<group>"; };
+		A76CF92816A6B2BE00DC8250 /* BuildFile.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
+		A76CF92A16A6B2BE00DC8250 /* analysis_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = analysis_cfi.py; sourceTree = "<group>"; };
+		A76CF92B16A6B2BE00DC8250 /* args.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = args.py; sourceTree = "<group>"; };
+		A76CF92C16A6B2BE00DC8250 /* cmdlineParsing.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = cmdlineParsing.py; sourceTree = "<group>"; };
+		A76CF92D16A6B2BE00DC8250 /* config_step2_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = config_step2_cfg.py; sourceTree = "<group>"; };
+		A76CF92E16A6B2BE00DC8250 /* debugAnalyzers_step2_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = debugAnalyzers_step2_cfi.py; sourceTree = "<group>"; };
+		A76CF92F16A6B2BE00DC8250 /* efficiency_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = efficiency_cfg.py; sourceTree = "<group>"; };
+		A76CF93016A6B2BE00DC8250 /* electrons_step2_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = electrons_step2_cfi.py; sourceTree = "<group>"; };
+		A76CF93116A6B2BE00DC8250 /* eventCounting.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = eventCounting.py; sourceTree = "<group>"; };
+		A76CF93216A6B2BE00DC8250 /* eventSkimming_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = eventSkimming_cfg.py; sourceTree = "<group>"; };
+		A76CF93316A6B2BE00DC8250 /* hlt_step2_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = hlt_step2_cfi.py; sourceTree = "<group>"; };
+		A76CF93416A6B2BE00DC8250 /* jets_step2_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = jets_step2_cfi.py; sourceTree = "<group>"; };
+		A76CF93516A6B2BE00DC8250 /* muons_step2_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = muons_step2_cfi.py; sourceTree = "<group>"; };
+		A76CF93616A6B2BE00DC8250 /* partonStudy_step2_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = partonStudy_step2_cfi.py; sourceTree = "<group>"; };
+		A76CF93716A6B2BE00DC8250 /* selection_step1_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = selection_step1_cfg.py; sourceTree = "<group>"; };
+		A76CF93816A6B2BE00DC8250 /* selection_step2_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = selection_step2_cfg.py; sourceTree = "<group>"; };
+		A76CF93916A6B2BE00DC8250 /* stepMetrics.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = stepMetrics.py; sourceTree = "<group>"; };
+		A76CF93A16A6B2BE00DC8250 /* top_step2_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = top_step2_cfi.py; sourceTree = "<group>"; };
+		A76CF93B16A6B2BE00DC8250 /* treemaker_step3_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = treemaker_step3_cfg.py; sourceTree = "<group>"; };
+		A76CF93D16A6B2BE00DC8250 /* LargestAbsEtaCandViewProducer.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = LargestAbsEtaCandViewProducer.cc; sourceTree = "<group>"; };
+		A76CF93E16A6B2BE00DC8250 /* LargestByCSVDiscriminator.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = LargestByCSVDiscriminator.cc; sourceTree = "<group>"; };
+		A76CF94016A6B2BE00DC8250 /* BuildFile.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
+		A76CF94116A6B2BE00DC8250 /* candtransversemassproducer_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = candtransversemassproducer_cfg.py; sourceTree = "<group>"; };
+		A76CF94316A6B2BE00DC8250 /* candtransversemassproducer_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = candtransversemassproducer_cfi.py; sourceTree = "<group>"; };
+		A76CF94516A6B2BE00DC8250 /* CandTransverseMassProducer.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CandTransverseMassProducer.cc; sourceTree = "<group>"; };
+		A76CF94716A6B2BE00DC8250 /* BuildFile.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
+		A76CF94816A6B2BE00DC8250 /* candviewtreemakeranalyzer_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = candviewtreemakeranalyzer_cfg.py; sourceTree = "<group>"; };
+		A76CF94A16A6B2BE00DC8250 /* candviewtreemakeranalyzer_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = candviewtreemakeranalyzer_cfi.py; sourceTree = "<group>"; };
+		A76CF94C16A6B2BE00DC8250 /* CandViewTreemakerAnalyzer.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CandViewTreemakerAnalyzer.cc; sourceTree = "<group>"; };
+		A76CF94D16A6B2BE00DC8250 /* GenericTreemakerAnalyzer.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GenericTreemakerAnalyzer.cc; sourceTree = "<group>"; };
+		A76CF94F16A6B2BE00DC8250 /* BuildFile.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
+		A76CF95016A6B2BE00DC8250 /* cleannopujetproducer_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = cleannopujetproducer_cfg.py; sourceTree = "<group>"; };
+		A76CF95216A6B2BE00DC8250 /* cleannopujetproducer_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = cleannopujetproducer_cfi.py; sourceTree = "<group>"; };
+		A76CF95416A6B2BE00DC8250 /* CleanNoPUJetProducer.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CleanNoPUJetProducer.cc; sourceTree = "<group>"; };
+		A76CF95616A6B2BE00DC8250 /* BuildFile.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
+		A76CF95716A6B2BE00DC8250 /* collectionsizeproducer_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = collectionsizeproducer_cfg.py; sourceTree = "<group>"; };
+		A76CF95916A6B2BE00DC8250 /* collectionsizeproducer_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = collectionsizeproducer_cfi.py; sourceTree = "<group>"; };
+		A76CF95A16A6B2BE00DC8250 /* runtest.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = runtest.sh; sourceTree = "<group>"; };
+		A76CF95C16A6B2BE00DC8250 /* CollectionSizeProducer.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CollectionSizeProducer.cc; sourceTree = "<group>"; };
+		A76CF95E16A6B2BE00DC8250 /* BuildFile.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
+		A76CF95F16A6B2BE00DC8250 /* costhetaproducer_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = costhetaproducer_cfg.py; sourceTree = "<group>"; };
+		A76CF96116A6B2BE00DC8250 /* costhetaproducer_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = costhetaproducer_cfi.py; sourceTree = "<group>"; };
+		A76CF96316A6B2BE00DC8250 /* CosThetaProducer.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CosThetaProducer.cc; sourceTree = "<group>"; };
+		A76CF96516A6B2BE00DC8250 /* BuildFile.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
+		A76CF96616A6B2BE00DC8250 /* efficiencyanalyzer_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = efficiencyanalyzer_cfg.py; sourceTree = "<group>"; };
+		A76CF96816A6B2BE00DC8250 /* efficiencyanalyzer_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = efficiencyanalyzer_cfi.py; sourceTree = "<group>"; };
+		A76CF96A16A6B2BE00DC8250 /* EfficiencyAnalyzer.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = EfficiencyAnalyzer.cc; sourceTree = "<group>"; };
+		A76CF96C16A6B2BE00DC8250 /* BuildFile.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
+		A76CF96D16A6B2BE00DC8250 /* electronidproducer_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = electronidproducer_cfg.py; sourceTree = "<group>"; };
+		A76CF96F16A6B2BE00DC8250 /* electronidproducer_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = electronidproducer_cfi.py; sourceTree = "<group>"; };
+		A76CF97116A6B2BE00DC8250 /* ElectronIDProducer.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ElectronIDProducer.cc; sourceTree = "<group>"; };
+		A76CF97316A6B2BE00DC8250 /* BuildFile.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
+		A76CF97416A6B2BE00DC8250 /* eventdoublefilter_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = eventdoublefilter_cfg.py; sourceTree = "<group>"; };
+		A76CF97616A6B2BE00DC8250 /* EventDoubleFilter.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = EventDoubleFilter.cc; sourceTree = "<group>"; };
+		A76CF97816A6B2BE00DC8250 /* BuildFile.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
+		A76CF97916A6B2BE00DC8250 /* eventidanalyzer_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = eventidanalyzer_cfg.py; sourceTree = "<group>"; };
+		A76CF97B16A6B2BE00DC8250 /* eventidanalyzer_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = eventidanalyzer_cfi.py; sourceTree = "<group>"; };
+		A76CF97D16A6B2BE00DC8250 /* EventIDAnalyzer.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = EventIDAnalyzer.cc; sourceTree = "<group>"; };
+		A76CF97F16A6B2BE00DC8250 /* BuildFile.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
+		A76CF98116A6B2BE00DC8250 /* FlavourAnalyzer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FlavourAnalyzer.h; sourceTree = "<group>"; };
+		A76CF98216A6B2BE00DC8250 /* HFClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HFClass.h; sourceTree = "<group>"; };
+		A76CF98416A6B2BE00DC8250 /* FlavourAnalyzer.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = FlavourAnalyzer.cc; sourceTree = "<group>"; };
+		A76CF98616A6B2BE00DC8250 /* BuildFile.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
+		A76CF98716A6B2BE00DC8250 /* genericcollectioncombiner_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = genericcollectioncombiner_cfg.py; sourceTree = "<group>"; };
+		A76CF98916A6B2BE00DC8250 /* genericcollectioncombiner_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = genericcollectioncombiner_cfi.py; sourceTree = "<group>"; };
+		A76CF98B16A6B2BE00DC8250 /* GenericCollectionCombiner.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GenericCollectionCombiner.cc; sourceTree = "<group>"; };
+		A76CF98D16A6B2BE00DC8250 /* BuildFile.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
+		A76CF98E16A6B2BE00DC8250 /* genericownvectoranalyzer_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = genericownvectoranalyzer_cfg.py; sourceTree = "<group>"; };
+		A76CF99016A6B2BE00DC8250 /* simpleeventanalyzer_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = simpleeventanalyzer_cfi.py; sourceTree = "<group>"; };
+		A76CF99216A6B2BE00DC8250 /* GenericOwnVectorAnalyzer.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GenericOwnVectorAnalyzer.cc; sourceTree = "<group>"; };
+		A76CF99416A6B2BE00DC8250 /* BuildFile.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
+		A76CF99516A6B2BE00DC8250 /* genericpointercombiner_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = genericpointercombiner_cfg.py; sourceTree = "<group>"; };
+		A76CF99716A6B2BE00DC8250 /* genericcollectioncombiner_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = genericcollectioncombiner_cfi.py; sourceTree = "<group>"; };
+		A76CF99916A6B2BE00DC8250 /* GenericPointerCombiner.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GenericPointerCombiner.cc; sourceTree = "<group>"; };
+		A76CF99B16A6B2BE00DC8250 /* BuildFile.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
+		A76CF99C16A6B2BE00DC8250 /* genparticleselector_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = genparticleselector_cfg.py; sourceTree = "<group>"; };
+		A76CF99E16A6B2BE00DC8250 /* genparticleselector_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = genparticleselector_cfi.py; sourceTree = "<group>"; };
+		A76CF9A016A6B2BE00DC8250 /* GenParticleSelector.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GenParticleSelector.cc; sourceTree = "<group>"; };
+		A76CF9A216A6B2BE00DC8250 /* BuildFile.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
+		A76CF9A316A6B2BE00DC8250 /* jetmcsmearproducer_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = jetmcsmearproducer_cfg.py; sourceTree = "<group>"; };
+		A76CF9A516A6B2BE00DC8250 /* jetmcsmearproducer_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = jetmcsmearproducer_cfi.py; sourceTree = "<group>"; };
+		A76CF9A716A6B2BE00DC8250 /* JetMCSmearProducer.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = JetMCSmearProducer.cc; sourceTree = "<group>"; };
+		A76CF9A916A6B2BE00DC8250 /* BuildFile.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
+		A76CF9AA16A6B2BE00DC8250 /* leptonisolationproducer_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = leptonisolationproducer_cfg.py; sourceTree = "<group>"; };
+		A76CF9AC16A6B2BE00DC8250 /* leptonisolationproducer_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = leptonisolationproducer_cfi.py; sourceTree = "<group>"; };
+		A76CF9AE16A6B2BE00DC8250 /* LeptonIsolationProducer.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = LeptonIsolationProducer.cc; sourceTree = "<group>"; };
+		A76CF9B016A6B2BE00DC8250 /* BuildFile.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
+		A76CF9B116A6B2BE00DC8250 /* muonidproducer_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = muonidproducer_cfg.py; sourceTree = "<group>"; };
+		A76CF9B316A6B2BE00DC8250 /* muonidproducer_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = muonidproducer_cfi.py; sourceTree = "<group>"; };
+		A76CF9B516A6B2BE00DC8250 /* MuonIDProducer.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MuonIDProducer.cc; sourceTree = "<group>"; };
+		A76CF9B716A6B2BE00DC8250 /* BuildFile.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
+		A76CF9B816A6B2BE00DC8250 /* particlecomparer_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = particlecomparer_cfg.py; sourceTree = "<group>"; };
+		A76CF9BA16A6B2BE00DC8250 /* particlecomparer_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = particlecomparer_cfi.py; sourceTree = "<group>"; };
+		A76CF9BC16A6B2BE00DC8250 /* ParticleComparer.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ParticleComparer.cc; sourceTree = "<group>"; };
+		A76CF9BE16A6B2BE00DC8250 /* BuildFile.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
+		A76CF9C016A6B2BE00DC8250 /* SingleTopRecoFilter.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SingleTopRecoFilter.cc; sourceTree = "<group>"; };
+		A76CF9C216A6B2BE00DC8250 /* testRECOFilter_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = testRECOFilter_cfg.py; sourceTree = "<group>"; };
+		A76CF9C416A6B2BE00DC8250 /* BuildFile.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
+		A76CF9C616A6B2BE00DC8250 /* reconstructedneutrinoproducer_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = reconstructedneutrinoproducer_cfi.py; sourceTree = "<group>"; };
+		A76CF9C716A6B2BE00DC8250 /* reconstructedneutrinoproducer_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = reconstructedneutrinoproducer_cfg.py; sourceTree = "<group>"; };
+		A76CF9C916A6B2BE00DC8250 /* ReconstructedNeutrinoProducer.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ReconstructedNeutrinoProducer.cc; sourceTree = "<group>"; };
+		A76CF9CB16A6B2BE00DC8250 /* BuildFile.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
+		A76CF9CD16A6B2BE00DC8250 /* simplecompositecandproducer_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = simplecompositecandproducer_cfi.py; sourceTree = "<group>"; };
+		A76CF9CE16A6B2BE00DC8250 /* simplecompositecandproducer_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = simplecompositecandproducer_cfg.py; sourceTree = "<group>"; };
+		A76CF9D016A6B2BE00DC8250 /* SimpleCompositeCandProducer.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SimpleCompositeCandProducer.cc; sourceTree = "<group>"; };
+		A76CF9D216A6B2BE00DC8250 /* BuildFile.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
+		A76CF9D416A6B2BE00DC8250 /* simpleeventanalyzer_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = simpleeventanalyzer_cfi.py; sourceTree = "<group>"; };
+		A76CF9D516A6B2BE00DC8250 /* simpleeventanalyzer_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = simpleeventanalyzer_cfg.py; sourceTree = "<group>"; };
+		A76CF9D716A6B2BE00DC8250 /* SimpleElectronAnalyzer.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SimpleElectronAnalyzer.cc; sourceTree = "<group>"; };
+		A76CF9D816A6B2BE00DC8250 /* SimpleEventAnalyzer.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SimpleEventAnalyzer.cc; sourceTree = "<group>"; };
+		A76CF9D916A6B2BE00DC8250 /* SimpleJetAnalyzer.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SimpleJetAnalyzer.cc; sourceTree = "<group>"; };
+		A76CF9DA16A6B2BE00DC8250 /* SimpleMETAnalyzer.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SimpleMETAnalyzer.cc; sourceTree = "<group>"; };
+		A76CF9DB16A6B2BE00DC8250 /* SimpleMuonAnalyzer.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SimpleMuonAnalyzer.cc; sourceTree = "<group>"; };
+		A76CF9DD16A6B2BE00DC8250 /* BuildFile.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
+		A76CF9DF16A6B2BE00DC8250 /* testprod_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = testprod_cfi.py; sourceTree = "<group>"; };
+		A76CF9E116A6B2BE00DC8250 /* TestProd.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TestProd.cc; sourceTree = "<group>"; };
+		A76CF9E216A6B2BE00DC8250 /* testprod_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = testprod_cfg.py; sourceTree = "<group>"; };
+		A76CF9E416A6B2BE00DC8250 /* BuildFile.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
+		A76CF9E616A6B2BE00DC8250 /* transfermatrixcreator_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = transfermatrixcreator_cfi.py; sourceTree = "<group>"; };
+		A76CF9E816A6B2BE00DC8250 /* TransferMatrixCreator.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TransferMatrixCreator.cc; sourceTree = "<group>"; };
+		A76CF9E916A6B2BE00DC8250 /* transfermatrixcreator_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = transfermatrixcreator_cfg.py; sourceTree = "<group>"; };
+		A76CFA1816A6B2F000DC8250 /* analysis.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = analysis.py; sourceTree = "<group>"; };
+		A76CFA1A16A6B2F000DC8250 /* anfw.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = anfw.py; sourceTree = "<group>"; };
+		A76CFA1C16A6B2F000DC8250 /* binContent.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = binContent.py; sourceTree = "<group>"; };
+		A76CFA1D16A6B2F000DC8250 /* bTaggingSensitivity.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = bTaggingSensitivity.py; sourceTree = "<group>"; };
+		A76CFA1E16A6B2F000DC8250 /* calculateGTaggingEffs.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = calculateGTaggingEffs.py; sourceTree = "<group>"; };
+		A76CFA1F16A6B2F000DC8250 /* cosTheta_phaseSpaceBias.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = cosTheta_phaseSpaceBias.py; sourceTree = "<group>"; };
+		A76CFA2016A6B2F000DC8250 /* costheta_recobias.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = costheta_recobias.py; sourceTree = "<group>"; };
+		A76CFA2116A6B2F000DC8250 /* cosTheta_solBias.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = cosTheta_solBias.py; sourceTree = "<group>"; };
+		A76CFA2216A6B2F000DC8250 /* cosThetaResol.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = cosThetaResol.py; sourceTree = "<group>"; };
+		A76CFA2316A6B2F000DC8250 /* cross_sections.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = cross_sections.py; sourceTree = "<group>"; };
+		A76CFA2516A6B2F000DC8250 /* cutflow.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = cutflow.py; sourceTree = "<group>"; };
+		A76CFA2616A6B2F000DC8250 /* ecalEff.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = ecalEff.py; sourceTree = "<group>"; };
+		A76CFA2716A6B2F000DC8250 /* etaCut_bias.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = etaCut_bias.py; sourceTree = "<group>"; };
+		A76CFA2816A6B2F000DC8250 /* etajCut.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = etajCut.py; sourceTree = "<group>"; };
+		A76CFA2916A6B2F000DC8250 /* finalPlots.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = finalPlots.py; sourceTree = "<group>"; };
+		A76CFA2F16A6B2F000DC8250 /* misreco.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = misreco.py; sourceTree = "<group>"; };
+		A76CFA3016A6B2F000DC8250 /* mtwComparison.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = mtwComparison.py; sourceTree = "<group>"; };
+		A76CFA3516A6B2F000DC8250 /* reco_correlations.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = reco_correlations.py; sourceTree = "<group>"; };
+		A76CFA3916A6B2F000DC8250 /* transferMatrix.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = transferMatrix.py; sourceTree = "<group>"; };
+		A76CFA3A16A6B2F000DC8250 /* unfolding.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = unfolding.py; sourceTree = "<group>"; };
+		A76CFA3B16A6B2F000DC8250 /* weightedComparison.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = weightedComparison.py; sourceTree = "<group>"; };
+		A76CFA3D16A6B2FF00DC8250 /* step1_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = step1_cfg.py; sourceTree = "<group>"; };
+		A76CFA3E16A6B2FF00DC8250 /* step1_grid_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = step1_grid_cfg.py; sourceTree = "<group>"; };
+		A76CFA3F16A6B2FF00DC8250 /* step2_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = step2_cfg.py; sourceTree = "<group>"; };
+		A76CFA4016A6B2FF00DC8250 /* step2_Data_antiIso_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = step2_Data_antiIso_cfg.py; sourceTree = "<group>"; };
+		A76CFA4116A6B2FF00DC8250 /* step2_MC_BKG_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = step2_MC_BKG_cfg.py; sourceTree = "<group>"; };
+		A76CFA4216A6B2FF00DC8250 /* step2_sync_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = step2_sync_cfg.py; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		A76CF91716A6B29200DC8250 = {
+			isa = PBXGroup;
+			children = (
+				A76CFA3C16A6B2FF00DC8250 /* runconfs */,
+				A76CFA1716A6B2F000DC8250 /* analysis_step2 */,
+				A76CF92316A6B2BE00DC8250 /* CMSSW_5_3_7_patch4 */,
+			);
+			sourceTree = "<group>";
+		};
+		A76CF92316A6B2BE00DC8250 /* CMSSW_5_3_7_patch4 */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF92416A6B2BE00DC8250 /* src */,
+			);
+			path = CMSSW_5_3_7_patch4;
+			sourceTree = "<group>";
+		};
+		A76CF92416A6B2BE00DC8250 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF92516A6B2BE00DC8250 /* SingleTopPolarization */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		A76CF92516A6B2BE00DC8250 /* SingleTopPolarization */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF92616A6B2BE00DC8250 /* Analysis */,
+				A76CF93F16A6B2BE00DC8250 /* CandTransverseMassProducer */,
+				A76CF94616A6B2BE00DC8250 /* CandViewTreemakerAnalyzer */,
+				A76CF94E16A6B2BE00DC8250 /* CleanNoPUJetProducer */,
+				A76CF95516A6B2BE00DC8250 /* CollectionSizeProducer */,
+				A76CF95D16A6B2BE00DC8250 /* CosThetaProducer */,
+				A76CF96416A6B2BE00DC8250 /* EfficiencyAnalyzer */,
+				A76CF96B16A6B2BE00DC8250 /* ElectronIDProducer */,
+				A76CF97216A6B2BE00DC8250 /* EventDoubleFilter */,
+				A76CF97716A6B2BE00DC8250 /* EventIDAnalyzer */,
+				A76CF97E16A6B2BE00DC8250 /* FlavourAnalyzer */,
+				A76CF98516A6B2BE00DC8250 /* GenericCollectionCombiner */,
+				A76CF98C16A6B2BE00DC8250 /* GenericOwnVectorAnalyzer */,
+				A76CF99316A6B2BE00DC8250 /* GenericPointerCombiner */,
+				A76CF99A16A6B2BE00DC8250 /* GenParticleSelector */,
+				A76CF9A116A6B2BE00DC8250 /* JetMCSmearProducer */,
+				A76CF9A816A6B2BE00DC8250 /* LeptonIsolationProducer */,
+				A76CF9AF16A6B2BE00DC8250 /* MuonIDProducer */,
+				A76CF9B616A6B2BE00DC8250 /* ParticleComparer */,
+				A76CF9BD16A6B2BE00DC8250 /* RecoFilter */,
+				A76CF9C316A6B2BE00DC8250 /* ReconstructedNeutrinoProducer */,
+				A76CF9CA16A6B2BE00DC8250 /* SimpleCompositeCandProducer */,
+				A76CF9D116A6B2BE00DC8250 /* SimpleEventAnalyzer */,
+				A76CF9DC16A6B2BE00DC8250 /* TestProd */,
+				A76CF9E316A6B2BE00DC8250 /* TransferMatrixCreator */,
+			);
+			path = SingleTopPolarization;
+			sourceTree = "<group>";
+		};
+		A76CF92616A6B2BE00DC8250 /* Analysis */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF92716A6B2BE00DC8250 /* analysis_cfg.py */,
+				A76CF92816A6B2BE00DC8250 /* BuildFile.xml */,
+				A76CF92916A6B2BE00DC8250 /* python */,
+				A76CF93C16A6B2BE00DC8250 /* src */,
+			);
+			path = Analysis;
+			sourceTree = "<group>";
+		};
+		A76CF92916A6B2BE00DC8250 /* python */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF92A16A6B2BE00DC8250 /* analysis_cfi.py */,
+				A76CF92B16A6B2BE00DC8250 /* args.py */,
+				A76CF92C16A6B2BE00DC8250 /* cmdlineParsing.py */,
+				A76CF92D16A6B2BE00DC8250 /* config_step2_cfg.py */,
+				A76CF92E16A6B2BE00DC8250 /* debugAnalyzers_step2_cfi.py */,
+				A76CF92F16A6B2BE00DC8250 /* efficiency_cfg.py */,
+				A76CF93016A6B2BE00DC8250 /* electrons_step2_cfi.py */,
+				A76CF93116A6B2BE00DC8250 /* eventCounting.py */,
+				A76CF93216A6B2BE00DC8250 /* eventSkimming_cfg.py */,
+				A76CF93316A6B2BE00DC8250 /* hlt_step2_cfi.py */,
+				A76CF93416A6B2BE00DC8250 /* jets_step2_cfi.py */,
+				A76CF93516A6B2BE00DC8250 /* muons_step2_cfi.py */,
+				A76CF93616A6B2BE00DC8250 /* partonStudy_step2_cfi.py */,
+				A76CF93716A6B2BE00DC8250 /* selection_step1_cfg.py */,
+				A76CF93816A6B2BE00DC8250 /* selection_step2_cfg.py */,
+				A76CF93916A6B2BE00DC8250 /* stepMetrics.py */,
+				A76CF93A16A6B2BE00DC8250 /* top_step2_cfi.py */,
+				A76CF93B16A6B2BE00DC8250 /* treemaker_step3_cfg.py */,
+			);
+			path = python;
+			sourceTree = "<group>";
+		};
+		A76CF93C16A6B2BE00DC8250 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF93D16A6B2BE00DC8250 /* LargestAbsEtaCandViewProducer.cc */,
+				A76CF93E16A6B2BE00DC8250 /* LargestByCSVDiscriminator.cc */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		A76CF93F16A6B2BE00DC8250 /* CandTransverseMassProducer */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF94016A6B2BE00DC8250 /* BuildFile.xml */,
+				A76CF94116A6B2BE00DC8250 /* candtransversemassproducer_cfg.py */,
+				A76CF94216A6B2BE00DC8250 /* python */,
+				A76CF94416A6B2BE00DC8250 /* src */,
+			);
+			path = CandTransverseMassProducer;
+			sourceTree = "<group>";
+		};
+		A76CF94216A6B2BE00DC8250 /* python */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF94316A6B2BE00DC8250 /* candtransversemassproducer_cfi.py */,
+			);
+			path = python;
+			sourceTree = "<group>";
+		};
+		A76CF94416A6B2BE00DC8250 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF94516A6B2BE00DC8250 /* CandTransverseMassProducer.cc */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		A76CF94616A6B2BE00DC8250 /* CandViewTreemakerAnalyzer */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF94716A6B2BE00DC8250 /* BuildFile.xml */,
+				A76CF94816A6B2BE00DC8250 /* candviewtreemakeranalyzer_cfg.py */,
+				A76CF94916A6B2BE00DC8250 /* python */,
+				A76CF94B16A6B2BE00DC8250 /* src */,
+			);
+			path = CandViewTreemakerAnalyzer;
+			sourceTree = "<group>";
+		};
+		A76CF94916A6B2BE00DC8250 /* python */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF94A16A6B2BE00DC8250 /* candviewtreemakeranalyzer_cfi.py */,
+			);
+			path = python;
+			sourceTree = "<group>";
+		};
+		A76CF94B16A6B2BE00DC8250 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF94C16A6B2BE00DC8250 /* CandViewTreemakerAnalyzer.cc */,
+				A76CF94D16A6B2BE00DC8250 /* GenericTreemakerAnalyzer.cc */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		A76CF94E16A6B2BE00DC8250 /* CleanNoPUJetProducer */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF94F16A6B2BE00DC8250 /* BuildFile.xml */,
+				A76CF95016A6B2BE00DC8250 /* cleannopujetproducer_cfg.py */,
+				A76CF95116A6B2BE00DC8250 /* python */,
+				A76CF95316A6B2BE00DC8250 /* src */,
+			);
+			path = CleanNoPUJetProducer;
+			sourceTree = "<group>";
+		};
+		A76CF95116A6B2BE00DC8250 /* python */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF95216A6B2BE00DC8250 /* cleannopujetproducer_cfi.py */,
+			);
+			path = python;
+			sourceTree = "<group>";
+		};
+		A76CF95316A6B2BE00DC8250 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF95416A6B2BE00DC8250 /* CleanNoPUJetProducer.cc */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		A76CF95516A6B2BE00DC8250 /* CollectionSizeProducer */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF95616A6B2BE00DC8250 /* BuildFile.xml */,
+				A76CF95716A6B2BE00DC8250 /* collectionsizeproducer_cfg.py */,
+				A76CF95816A6B2BE00DC8250 /* python */,
+				A76CF95A16A6B2BE00DC8250 /* runtest.sh */,
+				A76CF95B16A6B2BE00DC8250 /* src */,
+			);
+			path = CollectionSizeProducer;
+			sourceTree = "<group>";
+		};
+		A76CF95816A6B2BE00DC8250 /* python */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF95916A6B2BE00DC8250 /* collectionsizeproducer_cfi.py */,
+			);
+			path = python;
+			sourceTree = "<group>";
+		};
+		A76CF95B16A6B2BE00DC8250 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF95C16A6B2BE00DC8250 /* CollectionSizeProducer.cc */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		A76CF95D16A6B2BE00DC8250 /* CosThetaProducer */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF95E16A6B2BE00DC8250 /* BuildFile.xml */,
+				A76CF95F16A6B2BE00DC8250 /* costhetaproducer_cfg.py */,
+				A76CF96016A6B2BE00DC8250 /* python */,
+				A76CF96216A6B2BE00DC8250 /* src */,
+			);
+			path = CosThetaProducer;
+			sourceTree = "<group>";
+		};
+		A76CF96016A6B2BE00DC8250 /* python */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF96116A6B2BE00DC8250 /* costhetaproducer_cfi.py */,
+			);
+			path = python;
+			sourceTree = "<group>";
+		};
+		A76CF96216A6B2BE00DC8250 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF96316A6B2BE00DC8250 /* CosThetaProducer.cc */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		A76CF96416A6B2BE00DC8250 /* EfficiencyAnalyzer */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF96516A6B2BE00DC8250 /* BuildFile.xml */,
+				A76CF96616A6B2BE00DC8250 /* efficiencyanalyzer_cfg.py */,
+				A76CF96716A6B2BE00DC8250 /* python */,
+				A76CF96916A6B2BE00DC8250 /* src */,
+			);
+			path = EfficiencyAnalyzer;
+			sourceTree = "<group>";
+		};
+		A76CF96716A6B2BE00DC8250 /* python */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF96816A6B2BE00DC8250 /* efficiencyanalyzer_cfi.py */,
+			);
+			path = python;
+			sourceTree = "<group>";
+		};
+		A76CF96916A6B2BE00DC8250 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF96A16A6B2BE00DC8250 /* EfficiencyAnalyzer.cc */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		A76CF96B16A6B2BE00DC8250 /* ElectronIDProducer */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF96C16A6B2BE00DC8250 /* BuildFile.xml */,
+				A76CF96D16A6B2BE00DC8250 /* electronidproducer_cfg.py */,
+				A76CF96E16A6B2BE00DC8250 /* python */,
+				A76CF97016A6B2BE00DC8250 /* src */,
+			);
+			path = ElectronIDProducer;
+			sourceTree = "<group>";
+		};
+		A76CF96E16A6B2BE00DC8250 /* python */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF96F16A6B2BE00DC8250 /* electronidproducer_cfi.py */,
+			);
+			path = python;
+			sourceTree = "<group>";
+		};
+		A76CF97016A6B2BE00DC8250 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF97116A6B2BE00DC8250 /* ElectronIDProducer.cc */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		A76CF97216A6B2BE00DC8250 /* EventDoubleFilter */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF97316A6B2BE00DC8250 /* BuildFile.xml */,
+				A76CF97416A6B2BE00DC8250 /* eventdoublefilter_cfg.py */,
+				A76CF97516A6B2BE00DC8250 /* src */,
+			);
+			path = EventDoubleFilter;
+			sourceTree = "<group>";
+		};
+		A76CF97516A6B2BE00DC8250 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF97616A6B2BE00DC8250 /* EventDoubleFilter.cc */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		A76CF97716A6B2BE00DC8250 /* EventIDAnalyzer */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF97816A6B2BE00DC8250 /* BuildFile.xml */,
+				A76CF97916A6B2BE00DC8250 /* eventidanalyzer_cfg.py */,
+				A76CF97A16A6B2BE00DC8250 /* python */,
+				A76CF97C16A6B2BE00DC8250 /* src */,
+			);
+			path = EventIDAnalyzer;
+			sourceTree = "<group>";
+		};
+		A76CF97A16A6B2BE00DC8250 /* python */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF97B16A6B2BE00DC8250 /* eventidanalyzer_cfi.py */,
+			);
+			path = python;
+			sourceTree = "<group>";
+		};
+		A76CF97C16A6B2BE00DC8250 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF97D16A6B2BE00DC8250 /* EventIDAnalyzer.cc */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		A76CF97E16A6B2BE00DC8250 /* FlavourAnalyzer */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF97F16A6B2BE00DC8250 /* BuildFile.xml */,
+				A76CF98016A6B2BE00DC8250 /* interface */,
+				A76CF98316A6B2BE00DC8250 /* src */,
+			);
+			path = FlavourAnalyzer;
+			sourceTree = "<group>";
+		};
+		A76CF98016A6B2BE00DC8250 /* interface */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF98116A6B2BE00DC8250 /* FlavourAnalyzer.h */,
+				A76CF98216A6B2BE00DC8250 /* HFClass.h */,
+			);
+			path = interface;
+			sourceTree = "<group>";
+		};
+		A76CF98316A6B2BE00DC8250 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF98416A6B2BE00DC8250 /* FlavourAnalyzer.cc */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		A76CF98516A6B2BE00DC8250 /* GenericCollectionCombiner */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF98616A6B2BE00DC8250 /* BuildFile.xml */,
+				A76CF98716A6B2BE00DC8250 /* genericcollectioncombiner_cfg.py */,
+				A76CF98816A6B2BE00DC8250 /* python */,
+				A76CF98A16A6B2BE00DC8250 /* src */,
+			);
+			path = GenericCollectionCombiner;
+			sourceTree = "<group>";
+		};
+		A76CF98816A6B2BE00DC8250 /* python */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF98916A6B2BE00DC8250 /* genericcollectioncombiner_cfi.py */,
+			);
+			path = python;
+			sourceTree = "<group>";
+		};
+		A76CF98A16A6B2BE00DC8250 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF98B16A6B2BE00DC8250 /* GenericCollectionCombiner.cc */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		A76CF98C16A6B2BE00DC8250 /* GenericOwnVectorAnalyzer */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF98D16A6B2BE00DC8250 /* BuildFile.xml */,
+				A76CF98E16A6B2BE00DC8250 /* genericownvectoranalyzer_cfg.py */,
+				A76CF98F16A6B2BE00DC8250 /* python */,
+				A76CF99116A6B2BE00DC8250 /* src */,
+			);
+			path = GenericOwnVectorAnalyzer;
+			sourceTree = "<group>";
+		};
+		A76CF98F16A6B2BE00DC8250 /* python */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF99016A6B2BE00DC8250 /* simpleeventanalyzer_cfi.py */,
+			);
+			path = python;
+			sourceTree = "<group>";
+		};
+		A76CF99116A6B2BE00DC8250 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF99216A6B2BE00DC8250 /* GenericOwnVectorAnalyzer.cc */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		A76CF99316A6B2BE00DC8250 /* GenericPointerCombiner */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF99416A6B2BE00DC8250 /* BuildFile.xml */,
+				A76CF99516A6B2BE00DC8250 /* genericpointercombiner_cfg.py */,
+				A76CF99616A6B2BE00DC8250 /* python */,
+				A76CF99816A6B2BE00DC8250 /* src */,
+			);
+			path = GenericPointerCombiner;
+			sourceTree = "<group>";
+		};
+		A76CF99616A6B2BE00DC8250 /* python */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF99716A6B2BE00DC8250 /* genericcollectioncombiner_cfi.py */,
+			);
+			path = python;
+			sourceTree = "<group>";
+		};
+		A76CF99816A6B2BE00DC8250 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF99916A6B2BE00DC8250 /* GenericPointerCombiner.cc */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		A76CF99A16A6B2BE00DC8250 /* GenParticleSelector */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF99B16A6B2BE00DC8250 /* BuildFile.xml */,
+				A76CF99C16A6B2BE00DC8250 /* genparticleselector_cfg.py */,
+				A76CF99D16A6B2BE00DC8250 /* python */,
+				A76CF99F16A6B2BE00DC8250 /* src */,
+			);
+			path = GenParticleSelector;
+			sourceTree = "<group>";
+		};
+		A76CF99D16A6B2BE00DC8250 /* python */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF99E16A6B2BE00DC8250 /* genparticleselector_cfi.py */,
+			);
+			path = python;
+			sourceTree = "<group>";
+		};
+		A76CF99F16A6B2BE00DC8250 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF9A016A6B2BE00DC8250 /* GenParticleSelector.cc */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		A76CF9A116A6B2BE00DC8250 /* JetMCSmearProducer */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF9A216A6B2BE00DC8250 /* BuildFile.xml */,
+				A76CF9A316A6B2BE00DC8250 /* jetmcsmearproducer_cfg.py */,
+				A76CF9A416A6B2BE00DC8250 /* python */,
+				A76CF9A616A6B2BE00DC8250 /* src */,
+			);
+			path = JetMCSmearProducer;
+			sourceTree = "<group>";
+		};
+		A76CF9A416A6B2BE00DC8250 /* python */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF9A516A6B2BE00DC8250 /* jetmcsmearproducer_cfi.py */,
+			);
+			path = python;
+			sourceTree = "<group>";
+		};
+		A76CF9A616A6B2BE00DC8250 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF9A716A6B2BE00DC8250 /* JetMCSmearProducer.cc */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		A76CF9A816A6B2BE00DC8250 /* LeptonIsolationProducer */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF9A916A6B2BE00DC8250 /* BuildFile.xml */,
+				A76CF9AA16A6B2BE00DC8250 /* leptonisolationproducer_cfg.py */,
+				A76CF9AB16A6B2BE00DC8250 /* python */,
+				A76CF9AD16A6B2BE00DC8250 /* src */,
+			);
+			path = LeptonIsolationProducer;
+			sourceTree = "<group>";
+		};
+		A76CF9AB16A6B2BE00DC8250 /* python */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF9AC16A6B2BE00DC8250 /* leptonisolationproducer_cfi.py */,
+			);
+			path = python;
+			sourceTree = "<group>";
+		};
+		A76CF9AD16A6B2BE00DC8250 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF9AE16A6B2BE00DC8250 /* LeptonIsolationProducer.cc */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		A76CF9AF16A6B2BE00DC8250 /* MuonIDProducer */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF9B016A6B2BE00DC8250 /* BuildFile.xml */,
+				A76CF9B116A6B2BE00DC8250 /* muonidproducer_cfg.py */,
+				A76CF9B216A6B2BE00DC8250 /* python */,
+				A76CF9B416A6B2BE00DC8250 /* src */,
+			);
+			path = MuonIDProducer;
+			sourceTree = "<group>";
+		};
+		A76CF9B216A6B2BE00DC8250 /* python */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF9B316A6B2BE00DC8250 /* muonidproducer_cfi.py */,
+			);
+			path = python;
+			sourceTree = "<group>";
+		};
+		A76CF9B416A6B2BE00DC8250 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF9B516A6B2BE00DC8250 /* MuonIDProducer.cc */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		A76CF9B616A6B2BE00DC8250 /* ParticleComparer */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF9B716A6B2BE00DC8250 /* BuildFile.xml */,
+				A76CF9B816A6B2BE00DC8250 /* particlecomparer_cfg.py */,
+				A76CF9B916A6B2BE00DC8250 /* python */,
+				A76CF9BB16A6B2BE00DC8250 /* src */,
+			);
+			path = ParticleComparer;
+			sourceTree = "<group>";
+		};
+		A76CF9B916A6B2BE00DC8250 /* python */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF9BA16A6B2BE00DC8250 /* particlecomparer_cfi.py */,
+			);
+			path = python;
+			sourceTree = "<group>";
+		};
+		A76CF9BB16A6B2BE00DC8250 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF9BC16A6B2BE00DC8250 /* ParticleComparer.cc */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		A76CF9BD16A6B2BE00DC8250 /* RecoFilter */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF9BE16A6B2BE00DC8250 /* BuildFile.xml */,
+				A76CF9BF16A6B2BE00DC8250 /* src */,
+				A76CF9C116A6B2BE00DC8250 /* test */,
+			);
+			path = RecoFilter;
+			sourceTree = "<group>";
+		};
+		A76CF9BF16A6B2BE00DC8250 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF9C016A6B2BE00DC8250 /* SingleTopRecoFilter.cc */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		A76CF9C116A6B2BE00DC8250 /* test */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF9C216A6B2BE00DC8250 /* testRECOFilter_cfg.py */,
+			);
+			path = test;
+			sourceTree = "<group>";
+		};
+		A76CF9C316A6B2BE00DC8250 /* ReconstructedNeutrinoProducer */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF9C416A6B2BE00DC8250 /* BuildFile.xml */,
+				A76CF9C516A6B2BE00DC8250 /* python */,
+				A76CF9C716A6B2BE00DC8250 /* reconstructedneutrinoproducer_cfg.py */,
+				A76CF9C816A6B2BE00DC8250 /* src */,
+			);
+			path = ReconstructedNeutrinoProducer;
+			sourceTree = "<group>";
+		};
+		A76CF9C516A6B2BE00DC8250 /* python */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF9C616A6B2BE00DC8250 /* reconstructedneutrinoproducer_cfi.py */,
+			);
+			path = python;
+			sourceTree = "<group>";
+		};
+		A76CF9C816A6B2BE00DC8250 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF9C916A6B2BE00DC8250 /* ReconstructedNeutrinoProducer.cc */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		A76CF9CA16A6B2BE00DC8250 /* SimpleCompositeCandProducer */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF9CB16A6B2BE00DC8250 /* BuildFile.xml */,
+				A76CF9CC16A6B2BE00DC8250 /* python */,
+				A76CF9CE16A6B2BE00DC8250 /* simplecompositecandproducer_cfg.py */,
+				A76CF9CF16A6B2BE00DC8250 /* src */,
+			);
+			path = SimpleCompositeCandProducer;
+			sourceTree = "<group>";
+		};
+		A76CF9CC16A6B2BE00DC8250 /* python */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF9CD16A6B2BE00DC8250 /* simplecompositecandproducer_cfi.py */,
+			);
+			path = python;
+			sourceTree = "<group>";
+		};
+		A76CF9CF16A6B2BE00DC8250 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF9D016A6B2BE00DC8250 /* SimpleCompositeCandProducer.cc */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		A76CF9D116A6B2BE00DC8250 /* SimpleEventAnalyzer */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF9D216A6B2BE00DC8250 /* BuildFile.xml */,
+				A76CF9D316A6B2BE00DC8250 /* python */,
+				A76CF9D516A6B2BE00DC8250 /* simpleeventanalyzer_cfg.py */,
+				A76CF9D616A6B2BE00DC8250 /* src */,
+			);
+			path = SimpleEventAnalyzer;
+			sourceTree = "<group>";
+		};
+		A76CF9D316A6B2BE00DC8250 /* python */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF9D416A6B2BE00DC8250 /* simpleeventanalyzer_cfi.py */,
+			);
+			path = python;
+			sourceTree = "<group>";
+		};
+		A76CF9D616A6B2BE00DC8250 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF9D716A6B2BE00DC8250 /* SimpleElectronAnalyzer.cc */,
+				A76CF9D816A6B2BE00DC8250 /* SimpleEventAnalyzer.cc */,
+				A76CF9D916A6B2BE00DC8250 /* SimpleJetAnalyzer.cc */,
+				A76CF9DA16A6B2BE00DC8250 /* SimpleMETAnalyzer.cc */,
+				A76CF9DB16A6B2BE00DC8250 /* SimpleMuonAnalyzer.cc */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		A76CF9DC16A6B2BE00DC8250 /* TestProd */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF9DD16A6B2BE00DC8250 /* BuildFile.xml */,
+				A76CF9DE16A6B2BE00DC8250 /* python */,
+				A76CF9E016A6B2BE00DC8250 /* src */,
+				A76CF9E216A6B2BE00DC8250 /* testprod_cfg.py */,
+			);
+			path = TestProd;
+			sourceTree = "<group>";
+		};
+		A76CF9DE16A6B2BE00DC8250 /* python */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF9DF16A6B2BE00DC8250 /* testprod_cfi.py */,
+			);
+			path = python;
+			sourceTree = "<group>";
+		};
+		A76CF9E016A6B2BE00DC8250 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF9E116A6B2BE00DC8250 /* TestProd.cc */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		A76CF9E316A6B2BE00DC8250 /* TransferMatrixCreator */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF9E416A6B2BE00DC8250 /* BuildFile.xml */,
+				A76CF9E516A6B2BE00DC8250 /* python */,
+				A76CF9E716A6B2BE00DC8250 /* src */,
+				A76CF9E916A6B2BE00DC8250 /* transfermatrixcreator_cfg.py */,
+			);
+			path = TransferMatrixCreator;
+			sourceTree = "<group>";
+		};
+		A76CF9E516A6B2BE00DC8250 /* python */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF9E616A6B2BE00DC8250 /* transfermatrixcreator_cfi.py */,
+			);
+			path = python;
+			sourceTree = "<group>";
+		};
+		A76CF9E716A6B2BE00DC8250 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A76CF9E816A6B2BE00DC8250 /* TransferMatrixCreator.cc */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		A76CFA1716A6B2F000DC8250 /* analysis_step2 */ = {
+			isa = PBXGroup;
+			children = (
+				A76CFA1816A6B2F000DC8250 /* analysis.py */,
+				A76CFA1A16A6B2F000DC8250 /* anfw.py */,
+				A76CFA1C16A6B2F000DC8250 /* binContent.py */,
+				A76CFA1D16A6B2F000DC8250 /* bTaggingSensitivity.py */,
+				A76CFA1E16A6B2F000DC8250 /* calculateGTaggingEffs.py */,
+				A76CFA1F16A6B2F000DC8250 /* cosTheta_phaseSpaceBias.py */,
+				A76CFA2016A6B2F000DC8250 /* costheta_recobias.py */,
+				A76CFA2116A6B2F000DC8250 /* cosTheta_solBias.py */,
+				A76CFA2216A6B2F000DC8250 /* cosThetaResol.py */,
+				A76CFA2316A6B2F000DC8250 /* cross_sections.py */,
+				A76CFA2516A6B2F000DC8250 /* cutflow.py */,
+				A76CFA2616A6B2F000DC8250 /* ecalEff.py */,
+				A76CFA2716A6B2F000DC8250 /* etaCut_bias.py */,
+				A76CFA2816A6B2F000DC8250 /* etajCut.py */,
+				A76CFA2916A6B2F000DC8250 /* finalPlots.py */,
+				A76CFA2F16A6B2F000DC8250 /* misreco.py */,
+				A76CFA3016A6B2F000DC8250 /* mtwComparison.py */,
+				A76CFA3516A6B2F000DC8250 /* reco_correlations.py */,
+				A76CFA3916A6B2F000DC8250 /* transferMatrix.py */,
+				A76CFA3A16A6B2F000DC8250 /* unfolding.py */,
+				A76CFA3B16A6B2F000DC8250 /* weightedComparison.py */,
+			);
+			path = analysis_step2;
+			sourceTree = "<group>";
+		};
+		A76CFA3C16A6B2FF00DC8250 /* runconfs */ = {
+			isa = PBXGroup;
+			children = (
+				A76CFA3D16A6B2FF00DC8250 /* step1_cfg.py */,
+				A76CFA3E16A6B2FF00DC8250 /* step1_grid_cfg.py */,
+				A76CFA3F16A6B2FF00DC8250 /* step2_cfg.py */,
+				A76CFA4016A6B2FF00DC8250 /* step2_Data_antiIso_cfg.py */,
+				A76CFA4116A6B2FF00DC8250 /* step2_MC_BKG_cfg.py */,
+				A76CFA4216A6B2FF00DC8250 /* step2_sync_cfg.py */,
+			);
+			path = runconfs;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXProject section */
+		A76CF91916A6B29200DC8250 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0450;
+			};
+			buildConfigurationList = A76CF91C16A6B29200DC8250 /* Build configuration list for PBXProject "stpol" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = A76CF91716A6B29200DC8250;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		A76CF91E16A6B29200DC8250 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		A76CF91F16A6B29200DC8250 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A76CF91C16A6B29200DC8250 /* Build configuration list for PBXProject "stpol" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A76CF91E16A6B29200DC8250 /* Debug */,
+				A76CF91F16A6B29200DC8250 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A76CF91916A6B29200DC8250 /* Project object */;
+}
