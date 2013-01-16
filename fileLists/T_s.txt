@@ -1,0 +1,6 @@
+/store/user/jpata/T_s-channel_TuneZ2star_8TeV-powheg-tauola/stpol_v3_1/33f82354a36574c1158b3181d92c6119/step1_Skim_6_1_TVu.root
+/store/user/jpata/T_s-channel_TuneZ2star_8TeV-powheg-tauola/stpol_v3_1/33f82354a36574c1158b3181d92c6119/step1_Skim_1_1_VIc.root
+/store/user/jpata/T_s-channel_TuneZ2star_8TeV-powheg-tauola/stpol_v3_1/33f82354a36574c1158b3181d92c6119/step1_Skim_2_1_PnP.root
+/store/user/jpata/T_s-channel_TuneZ2star_8TeV-powheg-tauola/stpol_v3_1/33f82354a36574c1158b3181d92c6119/step1_Skim_3_1_I7f.root
+/store/user/jpata/T_s-channel_TuneZ2star_8TeV-powheg-tauola/stpol_v3_1/33f82354a36574c1158b3181d92c6119/step1_Skim_5_1_5qV.root
+/store/user/jpata/T_s-channel_TuneZ2star_8TeV-powheg-tauola/stpol_v3_1/33f82354a36574c1158b3181d92c6119/step1_Skim_4_1_Qn1.root
