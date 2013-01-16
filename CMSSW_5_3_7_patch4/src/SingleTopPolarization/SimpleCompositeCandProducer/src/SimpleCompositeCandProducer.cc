@@ -5,13 +5,13 @@
 // 
 /**\class SimpleCompositeCandProducer SimpleCompositeCandProducer.cc SingleTopPolarization/SimpleCompositeCandProducer/src/SimpleCompositeCandProducer.cc
 
- Description: [one line class summary]
+ Description: Creates a new particle, the 4-momentum of which is the vector sum of the momenta of the input particles.
 
  Implementation:
      [Notes on implementation]
 */
 //
-// Original Author:  
+// Original Author: Joosep Pata joosep.pata@cern.ch
 //         Created:  Tue Oct  2 17:44:39 EEST 2012
 // $Id$
 //
@@ -121,6 +121,10 @@ SimpleCompositeCandProducer::produce(edm::Event& iEvent, const edm::EventSetup& 
    LogDebug("produce()") << "Adding 4-momenta of daughters";
    AddFourMomenta adder;
    adder.set(*outCand);
+   
+   //Set the p4 manually
+   //const math::PtEtaPhiMLorentzVectorD p4(0.0, 0.0, 0.0, 0.0);
+   //outCand->setP4(p4);
    LogDebug("produce()") << "Particle 4-momentum: " << ") pt (" << outCand->p4().Pt() << ") eta(" << outCand->p4().Eta() << ") phi(" << outCand->p4().Phi() << ") Et" << outCand->p4().Et();
    
    pOut->push_back(*outCand);
