@@ -21,3 +21,6 @@
 
 #Logs
 *.log
+
+#Xcode files
+*.xcworkspace
