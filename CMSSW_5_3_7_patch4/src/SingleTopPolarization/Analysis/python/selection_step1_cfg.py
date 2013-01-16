@@ -29,15 +29,15 @@ def SingleTopStep1(
   ):
 
   if doDebug:
-      process.load("FWCore.MessageLogger.MessageLogger_cfi")
-      process.MessageLogger = cms.Service("MessageLogger",
-             destinations=cms.untracked.vstring('cout', 'debug'),
-             debugModules=cms.untracked.vstring('*'),
-             cout=cms.untracked.PSet(threshold=cms.untracked.string('INFO')),
-             debug=cms.untracked.PSet(threshold=cms.untracked.string('DEBUG')),
-      )
+    process.load("FWCore.MessageLogger.MessageLogger_cfi")
+    process.MessageLogger = cms.Service("MessageLogger",
+      destinations=cms.untracked.vstring('cout', 'debug'),
+      debugModules=cms.untracked.vstring('*'),
+      cout=cms.untracked.PSet(threshold=cms.untracked.string('INFO')),
+      debug=cms.untracked.PSet(threshold=cms.untracked.string('DEBUG')),
+    )
   else:
-      process.load("FWCore.MessageService.MessageLogger_cfi")
+    process.load("FWCore.MessageService.MessageLogger_cfi")
 
   postfix = ""
 
