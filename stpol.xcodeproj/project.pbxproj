@@ -155,12 +155,16 @@
 		A76CFA4016A6B2FF00DC8250 /* step2_Data_antiIso_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = step2_Data_antiIso_cfg.py; sourceTree = "<group>"; };
 		A76CFA4116A6B2FF00DC8250 /* step2_MC_BKG_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = step2_MC_BKG_cfg.py; sourceTree = "<group>"; };
 		A76CFA4216A6B2FF00DC8250 /* step2_sync_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = step2_sync_cfg.py; sourceTree = "<group>"; };
+		A76CFA4916A6C5A200DC8250 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		A76CFA4A16A6C5A200DC8250 /* setup.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = setup.sh; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
 		A76CF91716A6B29200DC8250 = {
 			isa = PBXGroup;
 			children = (
+				A76CFA4916A6C5A200DC8250 /* README.md */,
+				A76CFA4A16A6C5A200DC8250 /* setup.sh */,
 				A76CFA3C16A6B2FF00DC8250 /* runconfs */,
 				A76CFA1716A6B2F000DC8250 /* analysis_step2 */,
 				A76CF92316A6B2BE00DC8250 /* CMSSW_5_3_7_patch4 */,
