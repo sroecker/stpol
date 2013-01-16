@@ -133,7 +133,6 @@
 		A76CFA1A16A6B2F000DC8250 /* anfw.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = anfw.py; sourceTree = "<group>"; };
 		A76CFA1C16A6B2F000DC8250 /* binContent.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = binContent.py; sourceTree = "<group>"; };
 		A76CFA1D16A6B2F000DC8250 /* bTaggingSensitivity.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = bTaggingSensitivity.py; sourceTree = "<group>"; };
-		A76CFA1E16A6B2F000DC8250 /* calculateGTaggingEffs.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = calculateGTaggingEffs.py; sourceTree = "<group>"; };
 		A76CFA1F16A6B2F000DC8250 /* cosTheta_phaseSpaceBias.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = cosTheta_phaseSpaceBias.py; sourceTree = "<group>"; };
 		A76CFA2016A6B2F000DC8250 /* costheta_recobias.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = costheta_recobias.py; sourceTree = "<group>"; };
 		A76CFA2116A6B2F000DC8250 /* cosTheta_solBias.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = cosTheta_solBias.py; sourceTree = "<group>"; };
@@ -912,7 +911,6 @@
 				A76CFA1A16A6B2F000DC8250 /* anfw.py */,
 				A76CFA1C16A6B2F000DC8250 /* binContent.py */,
 				A76CFA1D16A6B2F000DC8250 /* bTaggingSensitivity.py */,
-				A76CFA1E16A6B2F000DC8250 /* calculateGTaggingEffs.py */,
 				A76CFA1F16A6B2F000DC8250 /* cosTheta_phaseSpaceBias.py */,
 				A76CFA2016A6B2F000DC8250 /* costheta_recobias.py */,
 				A76CFA2116A6B2F000DC8250 /* cosTheta_solBias.py */,
