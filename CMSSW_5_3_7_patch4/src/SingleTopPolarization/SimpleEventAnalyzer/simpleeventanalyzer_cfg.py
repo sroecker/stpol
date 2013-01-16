@@ -30,13 +30,23 @@ enableCommandLineArguments(process)
 #)
 
 process.simpleAnalyzer = cms.EDAnalyzer(
-	'SimpleJetAnalyzer',
+	'SimpleEventAnalyzer',
     interestingCollections = cms.untracked.VInputTag([
+
         "selectedPatJets",
-        "shiftedPatJetsEnDownForCorrMEt",
         "smearedPatJets",
-        "smearedPatJetsResUp"
-    ])
+        "smearedPatJetsResUp",
+        "smearedPatJetsResDown",
+
+        "selectedPatMuons",
+        "shiftedPatMuonsEnDown",
+        "shiftedPatMuonsEnUp",
+
+        "selectedPatElectrons",
+        "shiftedPatElectronsEnDown",
+        "shiftedPatElectronsEnUp"
+    ]),
+    maxObjects=cms.untracked.uint32(1)
 )
 
 
