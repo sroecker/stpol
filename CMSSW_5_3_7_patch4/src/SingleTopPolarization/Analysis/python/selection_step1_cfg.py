@@ -74,8 +74,8 @@ def SingleTopStep1(
   # Muons
   #-------------------------------------------------
 
-  if not maxLeptonIso is None:
-      process.pfIsolatedMuons.isolationCut = maxLeptonIso
+  #if not maxLeptonIso is None:
+  #    process.pfIsolatedMuons.isolationCut = maxLeptonIso
 
   # muon ID production (essentially track count embedding) must be here
   # because tracks get dropped from the collection after this step, resulting
@@ -86,8 +86,8 @@ def SingleTopStep1(
     primaryVertexSource = cms.InputTag("goodOfflinePrimaryVertices")
   )
 
-  #process.patMuons.pfMuonSource = cms.InputTag("pfMuons")
-  #process.muonMatch.src = cms.InputTag("pfMuons")
+  process.patMuons.pfMuonSource = cms.InputTag("pfMuons")
+  process.muonMatch.src = cms.InputTag("pfMuons")
 
   #-------------------------------------------------
   # Electrons
@@ -112,7 +112,7 @@ def SingleTopStep1(
   #if not maxLeptonIso is None:
   #    process.pfIsolatedElectrons.isolationCut = maxLeptonIso
 
-  #process.patElectrons.pfElectronSource = cms.InputTag("pfElectrons")
+  process.patElectrons.pfElectronSource = cms.InputTag("pfElectrons")
   #process.electronMatch.src = cms.InputTag("pfElectrons")
 
   #electron dR=0.3
