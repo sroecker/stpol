@@ -191,7 +191,19 @@ def SingleTopStep1(
           'keep GenEventInfoProduct_generator__SIM',
 
           #PU info
-          'keep PileupSummaryInfos_addPileupInfo__HLT'
+          'keep PileupSummaryInfos_addPileupInfo__HLT',
+
+          #PFCandidates
+          'keep recoPFCandidates_*_pfCandidates_PAT',
+          'keep recoPFMETs_pfMET__PAT',
+          'keep recoPFMETs_pfMet__RECO',
+          'keep recoGenMETs_genMetTrue__SIM',
+          'keep recoPFCandidates_particleFlow__RECO',
+          'keep recoConversions_allConversions__RECO',
+          'keep recoVertexCompositeCandidates_generalV0Candidates_*_RECO',
+          'keep recoTracks_generalTracks__RECO',
+          'keep recoBeamSpot_offlineBeamSpot__RECO',
+          'keep recoMuons_muons__RECO',
       ])
 
   #FIXME: is this correct?

@@ -60,8 +60,8 @@ class SimpleEventAnalyzer : public edm::EDAnalyzer {
       virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
       virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
 
-      std::vector<edm::InputTag> objectsOfInterest;
-
+      const std::vector<edm::InputTag> objectsOfInterest;
+      const unsigned int maxObjects;
       // ----------member data ---------------------------
 };
 
@@ -77,9 +77,9 @@ class SimpleEventAnalyzer : public edm::EDAnalyzer {
 // constructors and destructor
 //
 SimpleEventAnalyzer::SimpleEventAnalyzer(const edm::ParameterSet& iConfig)
-
+: objectsOfInterest(iConfig.getUntrackedParameter<std::vector<edm::InputTag> >("interestingCollections"))
+, maxObjects(iConfig.getUntrackedParameter<unsigned int>("maxObjects"))
 {
-  objectsOfInterest = iConfig.getUntrackedParameter<std::vector<edm::InputTag> >("interestingCollections");
 }
 
 
@@ -105,9 +105,11 @@ SimpleEventAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
    iEvent.getByLabel(o, objects);
    //for (edm::View<reco::Candidate>::const_iterator obj = objects->begin(); obj != objects->end(); obj++) {
    edm::LogInfo("analyze()") << "Collection " << o.label() << " has " << objects->size() << " items";
-   int i = 0;
+   unsigned int i = 0;
    for (auto& obj : *objects) {
-    edm::LogInfo("analyze()") << o.label() << "(" << i << "): pt: " << obj.pt() << " eta: " << obj.eta() << " phi: " << obj.phi() << " et: " << obj.et() << std::endl;
+     if (i>maxObjects) break;
+     edm::LogInfo("analyze()") << o.label() << "(" << i << "): pt: " << obj.pt() << " eta: " << obj.eta() << " phi: " << obj.phi() << " et: " << obj.et() << std::endl;
+     i++; 
    }
  }
    
