@@ -1,8 +1,12 @@
-<bin name="Test1" file="">
+<bin name="Test1" file="TestDriver.cpp">
   <flags TEST_RUNNER_ARGS=" /bin/bash SingleTopPolarization/Analysis/test simpleTestSuccess.sh"/>  
-  <use name="cppunit"/>
+  <use name="FWCore/Utilities"/>
 </bin>
-<bin name="Test2" file="">
+<bin name="Test2" file="TestDriver.cpp">
   <flags TEST_RUNNER_ARGS=" /bin/bash SingleTopPolarization/Analysis/test simpleTestFail.sh"/>  
-  <use name="cppunit"/>
+  <use name="FWCore/Utilities"/>
+</bin>
+<bin name="Test3" file="TestDriver.cpp">
+  <flags TEST_RUNNER_ARGS=" /bin/bash SingleTopPolarization/Analysis/test test_cmsRun.sh ../selection_step1_cfg.py"/>  
+  <use name="FWCore/Utilities"/>
 </bin>
