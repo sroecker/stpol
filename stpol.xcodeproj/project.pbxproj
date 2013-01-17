@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
+		A724984316A6E6D300E687C5 /* build_scram.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build_scram.sh; sourceTree = "<group>"; };
 		A76CF92716A6B2BE00DC8250 /* analysis_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = analysis_cfg.py; sourceTree = "<group>"; };
 		A76CF92816A6B2BE00DC8250 /* BuildFile.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
 		A76CF92A16A6B2BE00DC8250 /* analysis_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = analysis_cfi.py; sourceTree = "<group>"; };
@@ -184,12 +185,15 @@
 		A76CFA9A16A6C82F00DC8250 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		A76CFA9B16A6C82F00DC8250 /* run.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = run.sh; sourceTree = "<group>"; };
 		A76CFA9C16A6C82F00DC8250 /* working.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = working.py; sourceTree = "<group>"; };
+		A76CFAAB16A6CA8900DC8250 /* build.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build.sh; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
 		A76CF91716A6B29200DC8250 = {
 			isa = PBXGroup;
 			children = (
+				A76CFAAB16A6CA8900DC8250 /* build.sh */,
+				A724984316A6E6D300E687C5 /* build_scram.sh */,
 				A76CFA9116A6C82F00DC8250 /* ttbar3jets */,
 				A76CFA8516A6C81B00DC8250 /* runconfs */,
 				A76CFA4916A6C5A200DC8250 /* README.md */,
@@ -1020,6 +1024,23 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXLegacyTarget section */
+		A76CFAA616A6CA6C00DC8250 /* stpol-ied */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(ACTION)";
+			buildConfigurationList = A76CFAA916A6CA6C00DC8250 /* Build configuration list for PBXLegacyTarget "stpol-ied" */;
+			buildPhases = (
+			);
+			buildToolPath = ./build.sh;
+			buildWorkingDirectory = "";
+			dependencies = (
+			);
+			name = "stpol-ied";
+			passBuildSettingsInEnvironment = 1;
+			productName = stpol;
+		};
+/* End PBXLegacyTarget section */
+
 /* Begin PBXProject section */
 		A76CF91916A6B29200DC8250 /* Project object */ = {
 			isa = PBXProject;
@@ -1037,6 +1058,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
+				A76CFAA616A6CA6C00DC8250 /* stpol-ied */,
 			);
 		};
 /* End PBXProject section */
@@ -1054,6 +1076,65 @@
 			};
 			name = Release;
 		};
+		A76CFAA716A6CA6C00DC8250 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		A76CFAA816A6CA6C00DC8250 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1062,6 +1143,15 @@
 			buildConfigurations = (
 				A76CF91E16A6B29200DC8250 /* Debug */,
 				A76CF91F16A6B29200DC8250 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A76CFAA916A6CA6C00DC8250 /* Build configuration list for PBXLegacyTarget "stpol-ied" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A76CFAA716A6CA6C00DC8250 /* Debug */,
+				A76CFAA816A6CA6C00DC8250 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
