@@ -6,9 +6,9 @@ BRANCH=$(git rev-parse --abbrev-ref HEAD)
 function uncommitted(){
     git diff --quiet --exit-code
     if [ $? -ne 0 ]; then
-        return $FALSE
-    fi
         return $TRUE
+    fi
+    return $FALSE
 }
 
 if [ "$BRANCH" != "build" ]
