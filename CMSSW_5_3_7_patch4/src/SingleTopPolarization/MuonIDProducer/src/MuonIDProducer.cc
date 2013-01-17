@@ -110,7 +110,7 @@ MuonIDProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
         LogError("produce()") << "Muon collection " << muonSource.label() << " was not valid";
         return;
     }
-    if(! primaryVertices.isValid.isValid()) {
+    if(! primaryVertices.isValid()) {
         LogError("produce()") << "Primary vertex collection " << primaryVertexSource.label() << " was not valid";
         return;
     }    
