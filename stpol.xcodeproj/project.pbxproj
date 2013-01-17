@@ -8,6 +8,7 @@
 
 /* Begin PBXFileReference section */
 		A724984316A6E6D300E687C5 /* build_scram.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build_scram.sh; sourceTree = "<group>"; };
+		A724985D16A8008900E687C5 /* longout.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = longout.sh; sourceTree = "<group>"; };
 		A76CF92716A6B2BE00DC8250 /* analysis_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = analysis_cfg.py; sourceTree = "<group>"; };
 		A76CF92816A6B2BE00DC8250 /* BuildFile.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
 		A76CF92A16A6B2BE00DC8250 /* analysis_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = analysis_cfi.py; sourceTree = "<group>"; };
@@ -192,6 +193,7 @@
 		A76CF91716A6B29200DC8250 = {
 			isa = PBXGroup;
 			children = (
+				A724985D16A8008900E687C5 /* longout.sh */,
 				A76CFAAB16A6CA8900DC8250 /* build.sh */,
 				A724984316A6E6D300E687C5 /* build_scram.sh */,
 				A76CFA9116A6C82F00DC8250 /* ttbar3jets */,
@@ -1031,7 +1033,7 @@
 			buildConfigurationList = A76CFAA916A6CA6C00DC8250 /* Build configuration list for PBXLegacyTarget "stpol-ied" */;
 			buildPhases = (
 			);
-			buildToolPath = ./build.sh;
+			buildToolPath = ./longout.sh;
 			buildWorkingDirectory = "";
 			dependencies = (
 			);
