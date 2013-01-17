@@ -11,9 +11,9 @@ function uncommitted(){
         return $TRUE
 }
 
-if [ "$BRANCH" -ne "build" ]
+if [ "$BRANCH" != "build" ]
 then
-    echo "Not on branch 'master'"
+    echo "Not on branch 'build'"
     if [ uncommitted ]
     then
         echo "Uncommitted changes, exiting"
