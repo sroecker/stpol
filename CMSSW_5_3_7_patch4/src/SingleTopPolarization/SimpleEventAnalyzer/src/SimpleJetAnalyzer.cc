@@ -61,6 +61,7 @@ class SimpleJetAnalyzer : public edm::EDAnalyzer {
       virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
 
       std::vector<edm::InputTag> objectsOfInterest;
+      const unsigned int maxJets;
 
       // ----------member data ---------------------------
 };
@@ -77,7 +78,7 @@ class SimpleJetAnalyzer : public edm::EDAnalyzer {
 // constructors and destructor
 //
 SimpleJetAnalyzer::SimpleJetAnalyzer(const edm::ParameterSet& iConfig)
-
+: maxJets(5)
 {
   objectsOfInterest = iConfig.getUntrackedParameter<std::vector<edm::InputTag> >("interestingCollections");
 }
@@ -105,7 +106,7 @@ SimpleJetAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
    iEvent.getByLabel(o, objects);
    //for (edm::View<reco::Candidate>::const_iterator obj = objects->begin(); obj != objects->end(); obj++) {
    edm::LogInfo("analyze()") << "Collection " << o.label() << " has " << objects->size() << " items";
-   int i = 0;
+   unsigned int i = 0;
    for (auto& pobj : *objects) {
     const pat::Jet& obj = (const pat::Jet& )pobj;
     edm::LogInfo("analyze()") << o.label() << "(" << i << "):" <<
@@ -122,7 +123,7 @@ SimpleJetAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     " isJet: " << obj.isJet() <<
     " smearedJet " << obj.genJet();
     i++;
-    if(obj.genJet()!=0) {
+    if(obj.genJet()!=0 && i<maxJets) {
       edm::LogInfo("analyze()") <<
       " pt_gen: " << obj.genJet()->pt() << 
       " eta_gen: " << obj.genJet()->eta();
