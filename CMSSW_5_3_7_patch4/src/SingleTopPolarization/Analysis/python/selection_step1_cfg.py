@@ -145,10 +145,6 @@ def SingleTopStep1(
   process.load("CMGTools.External.pujetidsequence_cff")
   process.patPF2PATSequence += process.puJetIdSqeuence
 
-  def clonePuJetID(jetSrc):
-
-    pass
-
   #-----------------------------------------------
   # Slimming
   #-----------------------------------------------
@@ -212,20 +208,6 @@ def SingleTopStep1(
   #-------------------------------------------------
   # Paths
   #-------------------------------------------------
-
-  #from PhysicsTools.PatUtils.tools.metUncertaintyTools import runMEtUncertainties
-  #runMEtUncertainties(process,
-  #    electronCollection=cms.InputTag("electronsWithID"),
-  #    photonCollection=None,
-  #    muonCollection=cms.InputTag("muonsWithID"),
-  #    tauCollection=cms.InputTag("selectedPatTaus"),
-  #    jetCollection=cms.InputTag("selectedPatJets"),
-  #    jetCorrPayloadName="AK5PFchs",
-  #    #dRjetCleaning=0.5,
-  #    jetCorrLabel="L3Absolute" if isMC else "L2L3Residual",
-  #    addToPatDefaultSequence=False
-  #)
-  #process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatJets)+1, process.metUncertaintySequence)
 
   process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatMuons) + 1, process.muonsWithID)
   process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatElectrons) + 1, process.electronsWithID)
