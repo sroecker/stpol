@@ -14,6 +14,9 @@
 		A73D462016A83DFB00703EF6 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		A73D462116A83DFB00703EF6 /* run_trees.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = run_trees.sh; sourceTree = "<group>"; };
 		A73D462316A83E0A00703EF6 /* pickEvents_cfg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = pickEvents_cfg.py; sourceTree = "<group>"; };
+		A73D463216A84B1700703EF6 /* BuildFile.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
+		A73D463316A84B1700703EF6 /* simpleTestFail.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = simpleTestFail.sh; sourceTree = "<group>"; };
+		A73D463416A84B1700703EF6 /* simpleTestSuccess.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = simpleTestSuccess.sh; sourceTree = "<group>"; };
 		A76CF92716A6B2BE00DC8250 /* analysis_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = analysis_cfg.py; sourceTree = "<group>"; };
 		A76CF92816A6B2BE00DC8250 /* BuildFile.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
 		A76CF92A16A6B2BE00DC8250 /* analysis_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = analysis_cfi.py; sourceTree = "<group>"; };
@@ -208,6 +211,16 @@
 			path = util;
 			sourceTree = "<group>";
 		};
+		A73D463116A84B1700703EF6 /* test */ = {
+			isa = PBXGroup;
+			children = (
+				A73D463216A84B1700703EF6 /* BuildFile.xml */,
+				A73D463316A84B1700703EF6 /* simpleTestFail.sh */,
+				A73D463416A84B1700703EF6 /* simpleTestSuccess.sh */,
+			);
+			path = test;
+			sourceTree = "<group>";
+		};
 		A76CF91716A6B29200DC8250 = {
 			isa = PBXGroup;
 			children = (
@@ -274,6 +287,7 @@
 		A76CF92616A6B2BE00DC8250 /* Analysis */ = {
 			isa = PBXGroup;
 			children = (
+				A73D463116A84B1700703EF6 /* test */,
 				A76CF92716A6B2BE00DC8250 /* analysis_cfg.py */,
 				A76CF92816A6B2BE00DC8250 /* BuildFile.xml */,
 				A76CF92916A6B2BE00DC8250 /* python */,
