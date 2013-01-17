@@ -77,6 +77,10 @@ def SingleTopStep1(
   #if not maxLeptonIso is None:
   #    process.pfIsolatedMuons.isolationCut = maxLeptonIso
 
+  #Use both isolated and non-isolated muons as a patMuon source
+  process.patMuons.pfMuonSource = cms.InputTag("pfMuons")
+  process.muonMatch.src = cms.InputTag("pfMuons")
+
   # muon ID production (essentially track count embedding) must be here
   # because tracks get dropped from the collection after this step, resulting
   # in null ptrs.
@@ -85,18 +89,19 @@ def SingleTopStep1(
     muonSrc = cms.InputTag("selectedPatMuons"),
     primaryVertexSource = cms.InputTag("goodOfflinePrimaryVertices")
   )
-
-  process.patMuons.pfMuonSource = cms.InputTag("pfMuons")
-  process.muonMatch.src = cms.InputTag("pfMuons")
-
+  
   #-------------------------------------------------
   # Electrons
   # Implemented as in https://indico.cern.ch/getFile.py/access?contribId=1&resId=0&materialId=slides&confId=208765
   #-------------------------------------------------
 
 
-  if not maxLeptonIso is None:
-      process.pfIsolatedElectrons.isolationCut = maxLeptonIso
+  #if not maxLeptonIso is None:
+  #    process.pfIsolatedElectrons.isolationCut = maxLeptonIso
+  #Use both isolated and un-isolated electrons as patElectrons.
+  #NB: no need to change process.electronMatch.src to pfElectrons,
+  #    it's already gsfElectrons, which is a superset of the pfElectrons
+  process.patElectrons.pfElectronSource = cms.InputTag("pfElectrons")
 
   process.load('EGamma.EGammaAnalysisTools.electronIdMVAProducer_cfi')
   process.mvaID = cms.Sequence(process.mvaTrigV0 + process.mvaNonTrigV0)
@@ -111,9 +116,6 @@ def SingleTopStep1(
 
   #if not maxLeptonIso is None:
   #    process.pfIsolatedElectrons.isolationCut = maxLeptonIso
-
-  process.patElectrons.pfElectronSource = cms.InputTag("pfElectrons")
-  #process.electronMatch.src = cms.InputTag("pfElectrons")
 
   #electron dR=0.3
   process.pfElectrons.isolationValueMapsCharged = cms.VInputTag(cms.InputTag("elPFIsoValueCharged03PFId"))
@@ -198,6 +200,7 @@ def SingleTopStep1(
           'keep recoMuons_muons__RECO',
       ])
 
+  #FIXME: is this correct?
   #Keep events that pass either the muon OR the electron path
   process.out.SelectEvents = cms.untracked.PSet(
     SelectEvents = cms.vstring(

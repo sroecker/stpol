@@ -2,6 +2,8 @@ from PhysicsTools.PatAlgos.patTemplate_cfg import *
 process.load("PhysicsTools.PatAlgos.patSequences_cff")
 from PhysicsTools.PatAlgos.tools.pfTools import *
 
+process.options = cms.untracked.PSet(wantSummary=cms.untracked.bool(False))
+
 #No postfix
 postfix = ""
 
@@ -29,4 +31,4 @@ process.out.fileName = 'patTuple_PF2PAT.root'
 process.patMuons.pfMuonSource = cms.InputTag("pfMuons")
 process.muonMatch.src = cms.InputTag("pfMuons")
 process.patElectrons.pfElectronSource = cms.InputTag("pfElectrons")
-process.electronMatch.src = cms.InputTag("pfElectrons")
+#process.electronMatch.src = cms.InputTag("pfElectrons")
