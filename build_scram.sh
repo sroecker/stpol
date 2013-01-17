@@ -3,19 +3,11 @@ cd $DIR
 #git status
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
-function uncommitted(){
+if [ "$BRANCH" != "build" ]
+then
+    echo "Not on branch 'build'"
     git diff --quiet --exit-code
     if [ $? -ne 0 ]; then
-        return $FALSE
-    fi
-        return $TRUE
-}
-
-if [ "$BRANCH" -ne "build" ]
-then
-    echo "Not on branch 'master'"
-    if [ uncommitted ]
-    then
         echo "Uncommitted changes, exiting"
         exit 1
     fi
