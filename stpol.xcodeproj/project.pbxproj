@@ -8,6 +8,12 @@
 
 /* Begin PBXFileReference section */
 		A724984316A6E6D300E687C5 /* build_scram.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build_scram.sh; sourceTree = "<group>"; };
+		A73D461D16A83DFB00703EF6 /* babysit2.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = babysit2.sh; sourceTree = "<group>"; };
+		A73D461E16A83DFB00703EF6 /* bcmsRun */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = bcmsRun; sourceTree = "<group>"; };
+		A73D461F16A83DFB00703EF6 /* datasets.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = datasets.py; sourceTree = "<group>"; };
+		A73D462016A83DFB00703EF6 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		A73D462116A83DFB00703EF6 /* run_trees.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = run_trees.sh; sourceTree = "<group>"; };
+		A73D462316A83E0A00703EF6 /* pickEvents_cfg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = pickEvents_cfg.py; sourceTree = "<group>"; };
 		A76CF92716A6B2BE00DC8250 /* analysis_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = analysis_cfg.py; sourceTree = "<group>"; };
 		A76CF92816A6B2BE00DC8250 /* BuildFile.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
 		A76CF92A16A6B2BE00DC8250 /* analysis_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = analysis_cfi.py; sourceTree = "<group>"; };
@@ -189,9 +195,23 @@
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
+		A73D461C16A83DFB00703EF6 /* util */ = {
+			isa = PBXGroup;
+			children = (
+				A73D461D16A83DFB00703EF6 /* babysit2.sh */,
+				A73D461E16A83DFB00703EF6 /* bcmsRun */,
+				A73D461F16A83DFB00703EF6 /* datasets.py */,
+				A73D462016A83DFB00703EF6 /* README.md */,
+				A73D462116A83DFB00703EF6 /* run_trees.sh */,
+				A73D462316A83E0A00703EF6 /* pickEvents_cfg.py */,
+			);
+			path = util;
+			sourceTree = "<group>";
+		};
 		A76CF91716A6B29200DC8250 = {
 			isa = PBXGroup;
 			children = (
+				A73D461C16A83DFB00703EF6 /* util */,
 				A76CFAAB16A6CA8900DC8250 /* build.sh */,
 				A724984316A6E6D300E687C5 /* build_scram.sh */,
 				A76CFA9116A6C82F00DC8250 /* ttbar3jets */,
