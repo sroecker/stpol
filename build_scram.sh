@@ -15,5 +15,5 @@ then
 fi
 source setenv.sh
 cd CMSSW_5_3_7_patch4
-scram b -j 7 | grep -v ">>"
+scram b -j 7 2>&1 > scram.log
 git checkout "$BRANCH"
