@@ -1051,7 +1051,7 @@
 			buildConfigurationList = A76CFAA916A6CA6C00DC8250 /* Build configuration list for PBXLegacyTarget "stpol-ied" */;
 			buildPhases = (
 			);
-			buildToolPath = ./longout.sh;
+			buildToolPath = ./build.sh;
 			buildWorkingDirectory = "";
 			dependencies = (
 			);
