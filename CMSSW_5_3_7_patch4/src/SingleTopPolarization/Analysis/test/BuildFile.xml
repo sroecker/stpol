@@ -1,4 +1,4 @@
-<bin name="TestStep1" file="">
-  <flags TEST_RUNNER_ARGS=" /bin/bash SingleTopPolarization/Analysys/test simpleTestSuccess.sh"/>  
-  <use name="cppunit"/>
+<bin name="Test1" file="simpleTestSuccess.sh">
+</bin>
+<bin name="Test2" file="simpleTestFail.sh">
 </bin>
