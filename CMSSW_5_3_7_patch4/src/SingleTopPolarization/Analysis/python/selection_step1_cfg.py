@@ -74,8 +74,12 @@ def SingleTopStep1(
   # Muons
   #-------------------------------------------------
 
-  if not maxLeptonIso is None:
-      process.pfIsolatedMuons.isolationCut = maxLeptonIso
+  #if not maxLeptonIso is None:
+  #    process.pfIsolatedMuons.isolationCut = maxLeptonIso
+
+  #Use both isolated and non-isolated muons as a patMuon source
+  process.patMuons.pfMuonSource = cms.InputTag("pfMuons")
+  process.muonMatch.src = cms.InputTag("pfMuons")
 
   # muon ID production (essentially track count embedding) must be here
   # because tracks get dropped from the collection after this step, resulting
@@ -95,8 +99,12 @@ def SingleTopStep1(
   #-------------------------------------------------
 
 
-  if not maxLeptonIso is None:
-      process.pfIsolatedElectrons.isolationCut = maxLeptonIso
+  #if not maxLeptonIso is None:
+  #    process.pfIsolatedElectrons.isolationCut = maxLeptonIso
+  #Use both isolated and un-isolated electrons as patElectrons.
+  #NB: no need to change process.electronMatch.src to pfElectrons,
+  #    it's already gsfElectrons, which is a superset of the pfElectrons
+  process.patElectrons.pfElectronSource = cms.InputTag("pfElectrons")
 
   process.load('EGamma.EGammaAnalysisTools.electronIdMVAProducer_cfi')
   process.mvaID = cms.Sequence(process.mvaTrigV0 + process.mvaNonTrigV0)
@@ -145,10 +153,6 @@ def SingleTopStep1(
   process.load("CMGTools.External.pujetidsequence_cff")
   process.patPF2PATSequence += process.puJetIdSqeuence
 
-  def clonePuJetID(jetSrc):
-    
-    pass
-
   #-----------------------------------------------
   # Slimming
   #-----------------------------------------------
@@ -190,6 +194,7 @@ def SingleTopStep1(
           'keep PileupSummaryInfos_addPileupInfo__HLT'
       ])
 
+  #FIXME: is this correct?
   #Keep events that pass either the muon OR the electron path
   process.out.SelectEvents = cms.untracked.PSet(
     SelectEvents = cms.vstring(
@@ -200,20 +205,6 @@ def SingleTopStep1(
   #-------------------------------------------------
   # Paths
   #-------------------------------------------------
-
-  from PhysicsTools.PatUtils.tools.metUncertaintyTools import runMEtUncertainties
-  runMEtUncertainties(process,
-      electronCollection=cms.InputTag("electronsWithID"),
-      photonCollection=None,
-      muonCollection=cms.InputTag("muonsWithID"),
-      tauCollection=cms.InputTag("selectedPatTaus"),
-      jetCollection=cms.InputTag("selectedPatJets"),
-      jetCorrPayloadName="AK5PFchs",
-      #dRjetCleaning=0.5,
-      jetCorrLabel="L3Absolute" if isMC else "L2L3Residual",
-      addToPatDefaultSequence=False
-  )
-  process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatJets)+1, process.metUncertaintySequence)
 
   process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatMuons) + 1, process.muonsWithID)
   process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatElectrons) + 1, process.electronsWithID)
