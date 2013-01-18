@@ -104,7 +104,7 @@ class Config(C):
 
     class Muons(Leptons):
         relIsoCutRangeIsolatedRegion = [0.0, 0.12]
-        relIsoCutRangeAntiIsolatedRegion = [0.3, 0.5]
+        relIsoCutRangeAntiIsolatedRegion = [0.12, 0.5]
         looseVetoRelIsoCut = 0.2
 
     class Electrons(Leptons):
