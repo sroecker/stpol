@@ -6,7 +6,7 @@ skim = args.inArgs("skim")
 doMuon = args.inArgs("mu")
 doElectron = args.inArgs("ele")
 onGrid = args.inArgs("grid")
-globalTag = args.getArg("GT", default="")
+globalTag = args.getArg("GT", default="", conv=str)
 
 from PhysicsTools.PatAlgos.patTemplate_cfg import *
 from SingleTopPolarization.Analysis.selection_step1_cfg import SingleTopStep1
