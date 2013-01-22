@@ -1,5 +1,8 @@
-#from Configuration.StandardSequences.Geometry_cff import *
-from Configuration.Geometry.GeometryIdeal_cff import *
+#Does primary event skimming and PFBRECO
+#Author: Joosep Pata joosep.pata@cern.ch
+
+from Configuration.StandardSequences.Geometry_cff import *
+#from Configuration.Geometry.GeometryIdeal_cff import *
 from Configuration.StandardSequences.MagneticField_cff import *
 from Configuration.StandardSequences.FrontierConditions_GlobalTag_cff import *
 import FWCore.ParameterSet.Config as cms
@@ -9,8 +12,6 @@ from PhysicsTools.PatAlgos.tools.coreTools import *
 from PhysicsTools.PatAlgos.tools.pfTools import *
 
 from SingleTopPolarization.Analysis.eventCounting import *
-
-#from HLTrigger.HLTfilters.hltHighLevel_cfi import *
 
 from PhysicsTools.PatAlgos.selectionLayer1.jetSelector_cfi import *
 

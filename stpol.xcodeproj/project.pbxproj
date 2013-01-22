@@ -17,6 +17,7 @@
 		A73D463216A84B1700703EF6 /* BuildFile.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
 		A73D463316A84B1700703EF6 /* simpleTestFail.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = simpleTestFail.sh; sourceTree = "<group>"; };
 		A73D463416A84B1700703EF6 /* simpleTestSuccess.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = simpleTestSuccess.sh; sourceTree = "<group>"; };
+		A7500F9416A9A7F100279454 /* calcLumis.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = calcLumis.sh; sourceTree = "<group>"; };
 		A76CF92716A6B2BE00DC8250 /* analysis_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = analysis_cfg.py; sourceTree = "<group>"; };
 		A76CF92816A6B2BE00DC8250 /* BuildFile.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
 		A76CF92A16A6B2BE00DC8250 /* analysis_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = analysis_cfi.py; sourceTree = "<group>"; };
@@ -201,6 +202,7 @@
 		A73D461C16A83DFB00703EF6 /* util */ = {
 			isa = PBXGroup;
 			children = (
+				A7500F9416A9A7F100279454 /* calcLumis.sh */,
 				A73D461D16A83DFB00703EF6 /* babysit2.sh */,
 				A73D461E16A83DFB00703EF6 /* bcmsRun */,
 				A73D461F16A83DFB00703EF6 /* datasets.py */,
