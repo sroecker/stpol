@@ -7,6 +7,8 @@ def calcBTaggingEff(channel):
     elist = ROOT.gROOT.Get("elist")
     print "Number of events in selection: %d" % elist.GetN()
     
+    lepCount = {-1:0, 0: 0, 1:0, 2:0, 3:0}
+    
     sumBTaggedB = 0
     sumTrueB = 0
     
@@ -25,6 +27,7 @@ def calcBTaggingEff(channel):
         ):
             print "Warning: anomalous event"
             continue
+        lepCount[tree._genLeptonsTCount] += 1
     
         sumBTaggedB += tree._btaggedTrueBJetCount
         sumTrueB += tree._trueBJetCount
@@ -38,7 +41,8 @@ def calcBTaggingEff(channel):
     print "B: %d %d" % (sumBTaggedB, sumTrueB)
     print "C: %d %d" % (sumBTaggedC, sumTrueC)
     print "L: %d %d" % (sumBTaggedL, sumTrueL)
-    
+    print "Generated lepton counts: {0}".format(str(lepCount))
+ 
     eff_b = float(sumBTaggedB)/float(sumTrueB)
     eff_c = float(sumBTaggedC)/float(sumTrueC)
     eff_l = float(sumBTaggedL)/float(sumTrueL)
