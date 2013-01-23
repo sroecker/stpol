@@ -5,6 +5,8 @@ class BTaggingEfficiency:
         self.eff_b = eff_b
         self.eff_c = eff_c
         self.eff_l = eff_l
+    def __str__(self):
+        return str(self.__dict__)
 
 eff_ex_WJets = {"eff_b": 0.9545454545454546, "eff_c": 1.0, "eff_l": 0.12307692307692308}
 eff_ex_T_t = {"eff_b": 0.9869394862864606, "eff_c": 0.0, "eff_l": 0.00019790223629527012}
