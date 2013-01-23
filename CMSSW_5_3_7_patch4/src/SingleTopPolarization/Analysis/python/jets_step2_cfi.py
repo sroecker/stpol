@@ -107,7 +107,7 @@ def JetSetup(process, conf):
     #light-jet b-tagging efficiency
     process.trueLJets = cms.EDFilter("CandViewSelector",
         src=cms.InputTag("goodJets"),
-        cut=cms.string("abs(partonFlavour()) <= 3")
+        cut=cms.string("abs(partonFlavour()) <= 3 || abs(partonFlavour()) == 9 || abs(partonFlavour()) == 21") #uds, gluons
     )
     process.btaggedTrueLJets = cms.EDFilter(
         "CandViewSelector",
