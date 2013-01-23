@@ -2,6 +2,8 @@ import FWCore.ParameterSet.Config as cms
 import SingleTopPolarization.Analysis.eventCounting as eventCounting
 from SingleTopPolarization.Analysis.config_step2_cfg import Config
 
+from FWCore.ParameterSet.VarParsing import VarParsing
+
 #BTag working points from https://twiki.cern.ch/twiki/bin/viewauth/CMS/BTagPerformanceOP#B_tagging_Operating_Points_for_5
 #TODO: place in proper class
 #TrackCountingHighPur     TCHPT   3.41
