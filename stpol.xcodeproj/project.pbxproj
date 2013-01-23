@@ -10,6 +10,9 @@
 		A70C271916AFC97600495932 /* calibrations_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = calibrations_cfg.py; sourceTree = "<group>"; };
 		A70C271A16AFCBF500495932 /* calculateBTaggingEffs.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = calculateBTaggingEffs.py; sourceTree = "<group>"; };
 		A70C271E16AFD8FC00495932 /* step2_newCmdLine_cfg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = step2_newCmdLine_cfg.py; sourceTree = "<group>"; };
+		A70C272916AFF53E00495932 /* crab_Data_step1.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = crab_Data_step1.cfg; path = crabs/crab_Data_step1.cfg; sourceTree = "<group>"; };
+		A70C272A16AFF53E00495932 /* crab_MC_step1.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = crab_MC_step1.cfg; path = crabs/crab_MC_step1.cfg; sourceTree = "<group>"; };
+		A70C272B16AFF53E00495932 /* crab_MC_step2.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = crab_MC_step2.cfg; path = crabs/crab_MC_step2.cfg; sourceTree = "<group>"; };
 		A724984316A6E6D300E687C5 /* build_scram.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build_scram.sh; sourceTree = "<group>"; };
 		A73D461D16A83DFB00703EF6 /* babysit2.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = babysit2.sh; sourceTree = "<group>"; };
 		A73D461E16A83DFB00703EF6 /* bcmsRun */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = bcmsRun; sourceTree = "<group>"; };
@@ -202,6 +205,16 @@
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
+		A70C272C16AFF54400495932 /* crabs */ = {
+			isa = PBXGroup;
+			children = (
+				A70C272916AFF53E00495932 /* crab_Data_step1.cfg */,
+				A70C272A16AFF53E00495932 /* crab_MC_step1.cfg */,
+				A70C272B16AFF53E00495932 /* crab_MC_step2.cfg */,
+			);
+			name = crabs;
+			sourceTree = "<group>";
+		};
 		A73D461C16A83DFB00703EF6 /* util */ = {
 			isa = PBXGroup;
 			children = (
@@ -229,6 +242,7 @@
 		A76CF91716A6B29200DC8250 = {
 			isa = PBXGroup;
 			children = (
+				A70C272C16AFF54400495932 /* crabs */,
 				A73D461C16A83DFB00703EF6 /* util */,
 				A76CFAAB16A6CA8900DC8250 /* build.sh */,
 				A724984316A6E6D300E687C5 /* build_scram.sh */,
