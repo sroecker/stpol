@@ -3,7 +3,8 @@ from anfw import *
 def calcBTaggingEff(channel):
     print "Calculating b-tagging efficiencies for channel {0}".format(channel)
     ROOT.gROOT.cd()
-    cut = Cuts.mu + Cuts.recoFState + Cuts.mlnu + Cuts.jets_2J + Cuts.jetRMS + Cuts.MT + Cuts.etaLJ + Cuts.jetEta
+    cut = Cuts.mu + Cuts.jetRMS + Cuts.MT + Cuts.etaLJ + Cuts.jets_1LJ#2J1T #+ Cuts.recoFState
+    print cut
     channels[channel].tree.Draw(">>elist", cut.cutStr)
     elist = ROOT.gROOT.Get("elist")
     print "Number of events in selection: %d" % elist.GetN()
