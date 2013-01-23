@@ -470,7 +470,7 @@ def SingleTopStep2():
         )
         if hasattr(process, "out"):
             process.out.fileName = cms.untracked.string(options.outputFile)
-
+        outFile = options.outputFile
         #from SingleTopPolarization.Analysis.cmdlineParsing import enableCommandLineArguments
         #(inFiles, outFile) = enableCommandLineArguments(process)
     else:
