@@ -8,9 +8,23 @@ class BTaggingEfficiency:
     def __str__(self):
         return str(self.__dict__)
 
-eff_ex_WJets = {"eff_b": 0.9545454545454546, "eff_c": 1.0, "eff_l": 0.12307692307692308}
-eff_ex_T_t = {"eff_b": 0.9869394862864606, "eff_c": 0.0, "eff_l": 0.00019790223629527012}
-eff_ex_TTbar = {"eff_b": 0.7639405204460966, "eff_c": 0.09345794392523364, "eff_l": 0.0027472527472527475}
+eff_ex_WJets = {
+    "eff_b": 0.9545454545454546,
+    "eff_c": 1.0,
+    "eff_l": 0.12307692307692308
+}
+
+eff_ex_T_t = {
+    "eff_b": 0.9885614318395909
+    "eff_c": 0.0,
+    "eff_l": 0.00019327406262079628
+}
+
+eff_ex_TTbar = {
+    "eff_b": 0.8464307138572286,
+    "eff_c": 0.192090395480226,
+    "eff_l": 0.008152173913043478 
+}
 
 
 bTaggingEfficiencies["T_t"] = BTaggingEfficiency(eff_ex_T_t["eff_b"], eff_ex_WJets["eff_c"], eff_ex_T_t["eff_l"])
