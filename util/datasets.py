@@ -70,6 +70,28 @@ class DS_Data(DS):
     def __str__(self):
         return "{0} {1} {2} {3}".format(self.name, self.ds, self.lumi, self.globalTag)
 
+"""
+Represents a step2 MC dataset
+"""
+class DS_S2MC(DS):
+    def __init__(self, name, ds, subchannel):
+        self.name = name
+        self.ds = ds
+        self.subchannel = subchannel
+        if subchannel == "T_t" or subchannel == "Tbar_T":
+            self.channel = "signal"
+        else:
+            self.channel = "background"
+
+    def parseTemplate(self, template, tag):
+        out = template
+        out = out.replace("SUBCHAN", self.subchannel)
+        out = out.replace("CHANNEL", self.channel)
+
+        out = DS.parseTemplate(self, out, tag)
+        return out
+
+
 #Datasets and run ranges come from:
 #https://twiki.cern.ch/twiki/bin/viewauth/CMS/PdmV2012Analysis#Analysis_based_on_CMSSW_5_3_X_re
 #The global tags come from:
@@ -104,8 +126,7 @@ step1_data = [
       "/SingleElectron/Run2012C-PromptReco-v1/AOD", "PromptReco", "FT_P_V42C_AN3", [-1, -1])
       
     , DS_Data("SingleElectron_Run2012C_v2",
-      "/SingleElectron/Run2012C-PromptReco-v2/AOD", "PromptReco", "FT_P_V42C_AN3", [-1, -1]ls
-      )
+      "/SingleElectron/Run2012C-PromptReco-v2/AOD", "PromptReco", "FT_P_V42C_AN3", [-1, -1])
 
 ]
 
@@ -148,15 +169,23 @@ step1_MC = [
     , DS("QCD_EM6", "/QCD_Pt_350_EMEnriched_TuneZ2star_8TeV_pythia6/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM")
 
     , DS("DYJets", "/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM")
+   
+    #From https://indico.cern.ch/getFile.py/access?contribId=1&resId=0&materialId=slides&confId=228739 
+    , DS("TTbar_SemiLept1", "/TTJets_SemiLeptMGDecays_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM")
+    , DS("TTbar_SemiLept2", "/TTJets_SemiLeptMGDecays_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A_ext-v1/AODSIM")
+    , DS("TTbar_FullLept1", "/TTJets_FullLeptMGDecays_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM")
+    , DS("TTbar_FullLept2", "/TTJets_FullLeptMGDecays_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A-v2/AODSIM")
     
-    #From https://indico.cern.ch/getFile.py/access?contribId=1&resId=0&materialId=slides&confId=228739
-    #/TTJets_SemiLeptMGDecays_8TeV-madgraph
-    #/TTJets_FullLeptMGDecays_8TeV-madgraph
-    #/TbarToLeptons_t-channel_TuneZ2star_8TeV-powheg-tauola
-    #/TToLeptons_t-channel_TuneZ2star_8TeV-powheg-tauola
-    #, DS("TTbarSemiLeptonic", "/TTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM")
-    #, DS("TTbar", "/TTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM")
-    
+    #https://cmsweb.cern.ch/das/request?view=list&limit=10&instance=cms_dbs_prod_global&input=dataset+dataset%3D%2FTToLeptons_t-channel_*AODSIM
+    , DS("TToLeptons_t-channel", "/TToLeptons_t-channel_8TeV-powheg-tauola/Summer12-START52_V9_FSIM-v3/AODSIM")
+    #https://cmsweb.cern.ch/das/request?view=list&limit=10&instance=cms_dbs_prod_global&input=dataset+dataset%3D%2FTbarToLeptons_t-channel*AODSIM
+    , DS("TbarToLeptons_t-channel", "/TBarToLeptons_t-channel_8TeV-powheg-tauola/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM")
+]
+
+step2_MC = [
+    DS_S2MC("T_t", "/T_t-channel_TuneZ2star_8TeV-powheg-tauola/jpata-stpol_v3_1-33f82354a36574c1158b3181d92c6119/USER", "T_t"),
+    DS_S2MC("WJets", "/WJetsToLNu_TuneZ2Star_8TeV-madgraph-tarball/jpata-stpol_v3_1-33f82354a36574c1158b3181d92c6119/USER", "WJets"),
+    DS_S2MC("TTbar", "/TTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola/jpata-stpol_v3_1-33f82354a36574c1158b3181d92c6119/USER", "TTbar"),
 ]
 
 """
@@ -164,7 +193,8 @@ Possible dataset sets to process
 """
 possible_ds = {
     "S1D": step1_data,
-    "S1MC": step1_MC
+    "S1MC": step1_MC,
+    "S2MC": step2_MC
     }
 
 parser = argparse.ArgumentParser(description='Creates crab.cfg files based on \
