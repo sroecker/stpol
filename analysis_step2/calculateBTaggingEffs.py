@@ -3,7 +3,7 @@ from anfw import *
 def calcBTaggingEff(channel):
     print "Calculating b-tagging efficiencies for channel {0}".format(channel)
     ROOT.gROOT.cd()
-    cut = Cuts.mu + Cuts.jetRMS + Cuts.MT + Cuts.etaLJ + Cuts.jets_1LJ#2J1T #+ Cuts.recoFState
+    cut = Cuts.mu + Cuts.jetRMS + Cuts.MT + Cuts.etaLJ + Cuts.jets_2J1T + Cuts.mlnu + Cuts.recoFState
     print cut
     channels[channel].tree.Draw(">>elist", cut.cutStr)
     elist = ROOT.gROOT.Get("elist")
