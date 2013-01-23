@@ -54,6 +54,10 @@ class Channel:
         keys = [x.GetName() for x in self.file.GetListOfKeys()]
         treeNames = filter(lambda x: x.startswith("tree"), keys)
         self.trees = [self.file.Get(k).Get("eventTree") for k in treeNames]
+        print keys
+        if "flavourAnalyzer" in keys:
+            self.trees.append(self.file.Get("flavourAnalyzer").Get("FlavorTree"))
+        
         self.branches = []
         for t in self.trees[1:]:
             self.trees[0].AddFriend(t)
