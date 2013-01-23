@@ -201,7 +201,7 @@ def JetSetup(process, conf):
         maxNumber=cms.uint32(9999999),
     )
 
-    sampleBEffs = Calibrations.bTaggingEfficiencies[Config.subChannel]
+    sampleBEffs = Calibrations.bTaggingEfficiencies[conf.subChannel]
     process.bTagWeightProducer = cms.EDProducer('BTagSystematicsWeightProducer',
         src=cms.InputTag("goodJets"),
         nJets=cms.uint32(conf.Jets.nJets),
