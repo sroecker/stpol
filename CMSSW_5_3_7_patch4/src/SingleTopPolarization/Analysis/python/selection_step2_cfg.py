@@ -18,6 +18,28 @@ from SingleTopPolarization.Analysis.config_step2_cfg import Config
 
 def SingleTopStep2():
 
+    if not Config.onGrid:
+        options = VarParsing('analysis')
+        options.register ('subChannel', 'T_t',
+				  VarParsing.multiplicity.singleton,
+				  VarParsing.varType.string,
+				  "The sample that you are running on")
+        options.register ('channel', 'signal',
+				  VarParsing.multiplicity.singleton,
+				  VarParsing.varType.string,
+				  "Signal or Background")
+        options.register ('reverseIsoCut', False,
+				  VarParsing.multiplicity.singleton,
+				  VarParsing.varType.bool,
+				  "Consider anti-isolated region")
+        options.parseArguments()
+    
+        if options.channel.lower() == "signal":
+            Config.channel = Config.Channel.signal
+        elif options.channel.lower() == "background":
+            Config.channel = Config.Channel.background
+        Config.Leptons.reverseIsoCut = options.reverseIsoCut
+
 
     print "Configuration"
     print Config._toStr()
@@ -440,8 +462,15 @@ def SingleTopStep2():
 
     #Command-line arguments
     if not Config.onGrid:
-        from SingleTopPolarization.Analysis.cmdlineParsing import enableCommandLineArguments
-        (inFiles, outFile) = enableCommandLineArguments(process)
+        process.source.fileNames = cms.untracked.vstring(options.inputFiles)
+        process.maxEvents = cms.untracked.PSet(
+          input = cms.untracked.int32(options.maxEvents)
+        )
+        if hasattr(process, "out"):
+            process.out.fileName = cms.untracked.string(options.outputFile)
+
+        #from SingleTopPolarization.Analysis.cmdlineParsing import enableCommandLineArguments
+        #(inFiles, outFile) = enableCommandLineArguments(process)
     else:
         outFile = "step2.root"
 
