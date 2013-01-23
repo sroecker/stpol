@@ -9,6 +9,7 @@
 /* Begin PBXFileReference section */
 		A70C271916AFC97600495932 /* calibrations_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = calibrations_cfg.py; sourceTree = "<group>"; };
 		A70C271A16AFCBF500495932 /* calculateBTaggingEffs.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = calculateBTaggingEffs.py; sourceTree = "<group>"; };
+		A70C271E16AFD8FC00495932 /* step2_newCmdLine_cfg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = step2_newCmdLine_cfg.py; sourceTree = "<group>"; };
 		A724984316A6E6D300E687C5 /* build_scram.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build_scram.sh; sourceTree = "<group>"; };
 		A73D461D16A83DFB00703EF6 /* babysit2.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = babysit2.sh; sourceTree = "<group>"; };
 		A73D461E16A83DFB00703EF6 /* bcmsRun */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = bcmsRun; sourceTree = "<group>"; };
@@ -1035,6 +1036,7 @@
 				A76CFA8916A6C81B00DC8250 /* step1_sync_cfg.py */,
 				A76CFA8A16A6C81B00DC8250 /* step2_allJets_cfg.py */,
 				A76CFA8B16A6C81B00DC8250 /* step2_cfg.py */,
+				A70C271E16AFD8FC00495932 /* step2_newCmdLine_cfg.py */,
 				A76CFA8C16A6C81B00DC8250 /* step2_Data_antiIso_cfg.py */,
 				A76CFA8D16A6C81B00DC8250 /* step2_MC_BKG_cfg.py */,
 				A76CFA8E16A6C81B00DC8250 /* step2_MC_QCD.py */,
