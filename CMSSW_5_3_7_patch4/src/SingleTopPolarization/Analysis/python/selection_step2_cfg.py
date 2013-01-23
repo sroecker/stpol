@@ -35,6 +35,10 @@ def SingleTopStep2():
 				  VarParsing.multiplicity.singleton,
 				  VarParsing.varType.bool,
 				  "Consider anti-isolated region")
+        options.register ('doDebug', False,
+				  VarParsing.multiplicity.singleton,
+				  VarParsing.varType.bool,
+				  "Turn on debugging messages")
         options.parseArguments()
     
         if options.channel.lower() == "signal":
@@ -43,6 +47,7 @@ def SingleTopStep2():
             Config.channel = Config.Channel.background
         Config.Leptons.reverseIsoCut = options.reverseIsoCut
         Config.subChannel = options.subChannel
+        Config.doDebug = options.doDebug
 
 
     print "Configuration"
