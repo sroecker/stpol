@@ -1,5 +1,5 @@
 import FWCore.ParameterSet.Config as cms
-from SingleTopPolarization.Analysis.calibrations_cfg import Calibrations
+import SingleTopPolarization.Analysis.calibrations_cfg as Calibrations
 
 def JetSetup(process, conf):
 

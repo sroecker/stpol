@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXFileReference section */
+		A70C271916AFC97600495932 /* calibrations_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = calibrations_cfg.py; sourceTree = "<group>"; };
+		A70C271A16AFCBF500495932 /* calculateBTaggingEffs.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = calculateBTaggingEffs.py; sourceTree = "<group>"; };
 		A724984316A6E6D300E687C5 /* build_scram.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build_scram.sh; sourceTree = "<group>"; };
 		A73D461D16A83DFB00703EF6 /* babysit2.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = babysit2.sh; sourceTree = "<group>"; };
 		A73D461E16A83DFB00703EF6 /* bcmsRun */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = bcmsRun; sourceTree = "<group>"; };
@@ -320,6 +322,7 @@
 				A76CF93916A6B2BE00DC8250 /* stepMetrics.py */,
 				A76CF93A16A6B2BE00DC8250 /* top_step2_cfi.py */,
 				A76CF93B16A6B2BE00DC8250 /* treemaker_step3_cfg.py */,
+				A70C271916AFC97600495932 /* calibrations_cfg.py */,
 			);
 			path = python;
 			sourceTree = "<group>";
@@ -980,6 +983,7 @@
 		A76CFA1716A6B2F000DC8250 /* analysis_step2 */ = {
 			isa = PBXGroup;
 			children = (
+				A70C271A16AFCBF500495932 /* calculateBTaggingEffs.py */,
 				A76CFA1816A6B2F000DC8250 /* analysis.py */,
 				A76CFA1A16A6B2F000DC8250 /* anfw.py */,
 				A76CFA1C16A6B2F000DC8250 /* binContent.py */,
