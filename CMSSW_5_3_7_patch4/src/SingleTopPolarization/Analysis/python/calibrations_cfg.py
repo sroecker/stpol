@@ -15,7 +15,7 @@ eff_ex_WJets = {
 }
 
 eff_ex_T_t = {
-    "eff_b": 0.9885614318395909
+    "eff_b": 0.9885614318395909,
     "eff_c": 0.0,
     "eff_l": 0.00019327406262079628
 }
@@ -34,6 +34,7 @@ bTaggingEfficiencies["WJets"] = BTaggingEfficiency(eff_ex_T_t["eff_b"], eff_ex_W
 bTaggingEfficiencies["WW"] = BTaggingEfficiency(eff_ex_T_t["eff_b"], eff_ex_WJets["eff_c"], eff_ex_WJets["eff_l"])
 bTaggingEfficiencies["WZ"] = BTaggingEfficiency(eff_ex_T_t["eff_b"], eff_ex_WJets["eff_c"], eff_ex_WJets["eff_l"])
 bTaggingEfficiencies["ZZ"] = BTaggingEfficiency(eff_ex_T_t["eff_b"], eff_ex_WJets["eff_c"], eff_ex_WJets["eff_l"])
+bTaggingEfficiencies["DYJets"] = BTaggingEfficiency(eff_ex_T_t["eff_b"], eff_ex_WJets["eff_c"], eff_ex_WJets["eff_l"])
 
 bTaggingEfficiencies["TTbar"] = BTaggingEfficiency(eff_ex_T_t["eff_b"], eff_ex_WJets["eff_c"], eff_ex_TTbar["eff_l"])
 bTaggingEfficiencies["T_tW"] = BTaggingEfficiency(eff_ex_T_t["eff_b"], eff_ex_WJets["eff_c"], eff_ex_TTbar["eff_l"])
