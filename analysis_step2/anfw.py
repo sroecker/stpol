@@ -32,6 +32,8 @@ class Cuts:
     recoFState = Cut("recoFstate", "_topCount==1")
     mu = Cut("mu", "_muonCount==1") + Cut("muIso", "_goodSignalMuons_0_relIso<0.12")
     ele = Cut("ele", "_electronCount==1") + Cut("eleIso", "_goodSignalElectrons_0_relIso<0.3") + Cut("eleMVA", "_goodSignalElectrons_0_mvaID>0.9")
+    
+    jets_2J = Cut("2J", "_lightJetCount==1")
     jets_2J1T = Cut("2J1T", "_lightJetCount==1 && _bJetCount==1")
     jets_2J0T = Cut("2J0T", "_lightJetCount==1 && _bJetCount==0")
     jets_3J1T = Cut("3J1T", "_lightJetCount==2 && _bJetCount==1")
