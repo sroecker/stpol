@@ -41,6 +41,7 @@ def SingleTopStep2():
         elif options.channel.lower() == "background":
             Config.channel = Config.Channel.background
         Config.Leptons.reverseIsoCut = options.reverseIsoCut
+        Config.subChannel = options.subChannel
 
 
     print "Configuration"

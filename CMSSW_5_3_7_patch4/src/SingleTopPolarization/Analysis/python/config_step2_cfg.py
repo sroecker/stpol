@@ -51,6 +51,9 @@ class Config(C):
 
     #Whether to run over grid (without command-line arguments)
     onGrid = False
+    
+    #A string that gives the MC sample you are running on
+    subChannel = "T_t"
 
     """
     Specifies the jet configuration.

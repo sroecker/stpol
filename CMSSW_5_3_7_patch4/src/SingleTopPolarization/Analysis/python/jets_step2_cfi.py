@@ -1,4 +1,5 @@
 import FWCore.ParameterSet.Config as cms
+from SingleTopPolarization.Analysis.calibrations_cfg import Calibrations
 
 def JetSetup(process, conf):
 
@@ -200,13 +201,14 @@ def JetSetup(process, conf):
         maxNumber=cms.uint32(9999999),
     )
 
+    sampleBEffs = Calibrations.bTaggingEfficiencies[Config.subChannel]
     process.bTagWeightProducer = cms.EDProducer('BTagSystematicsWeightProducer',
         src=cms.InputTag("goodJets"),
         nJets=cms.uint32(conf.Jets.nJets),
         nTags=cms.uint32(conf.Jets.nBTags),
-        effB=cms.double(0.9),
-        effC=cms.double(0.2),
-        effL=cms.double(0.1)
+        effB=cms.double(sampleBEffs.eff_b),
+        effC=cms.double(sampleBEffs.eff_c),
+        effL=cms.double(sampleBEffs.eff_l)
     )
 
 
