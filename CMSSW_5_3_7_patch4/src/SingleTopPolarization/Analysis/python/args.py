@@ -13,10 +13,6 @@ def getArg(argName, default=None, conv=int):
 		return default
 	sys.argv.remove(f[0])
 	argVal = f[0].split("=")[1]
-	try:
-		argVal = conv(argVal)
-		return argVal
-	except:
-		print "error converting %s to %s" % (f[0], conv)
-		return default
+        argVal = conv(argVal)
+	return argVal
 	return default

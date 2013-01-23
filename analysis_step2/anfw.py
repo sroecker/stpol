@@ -5,6 +5,12 @@ import random
 from cross_sections import xs
 from collections import OrderedDict
 import re
+import argparse
+
+parser = argparse.ArgumentParser(description='Process some integers.')
+parser.add_argument("-d", "--datadir", type=str, default="./data/trees",
+                    help="directory for the trees")
+args = parser.parse_args()
 
 lumi = 20000
 
@@ -39,7 +45,8 @@ class Cuts:
     jetEta = Cut("jetEta", "abs(_lowestBTagJet_0_Eta)<4.5 && abs(_highestBTagJet_0_Eta)<4.5")
     jetRMS = Cut("rms_{lj}", "_lowestBTagJet_0_rms < 0.025")
     MT = Cut("MT", "_muAndMETMT > 50 | _eleAndMETMT > 50")
-    Orso = mlnu + jets_2J1T + jetPt + jetRMS + MT + etaLJ#jetEta
+#    Orso = mlnu + jets_2J1T + jetPt + jetRMS + MT + etaLJ#jetEta
+    Orso = mlnu + jets_2J1T + jetRMS + MT + etaLJ#jetEta
     finalMu = mu + recoFState + Orso
     finalEle = ele + recoFState + Orso
 
@@ -116,17 +123,17 @@ class Channel:
 
 channels = OrderedDict()
 
-channels["T_t"] = Channel("T_t", "../trees/T_t.root", xs["T_t"], color=ROOT.kRed)
+channels["T_t"] = Channel("T_t", args.datadir + "/T_t.root", xs["T_t"], color=ROOT.kRed)
 # channels["Tbar_t"] = Channel("Tbar_t", "../trees/Tbar_t.root", xs["Tbar_t"], color=ROOT.kRed)
 # channels["T_s"] = Channel("T_s", "../trees/T_s.root", xs["T_s"], color=ROOT.kYellow)
 # channels["Tbar_s"] = Channel("Tbar_s", "../trees/Tbar_s.root", xs["Tbar_s"], color=ROOT.kYellow)
 # channels["T_tW"] = Channel("T_tW", "../trees/T_tW.root", xs["T_tW"], color=ROOT.kYellow+4)
 # channels["Tbar_tW"] = Channel("Tbar_tW", "../trees/Tbar_tW.root", xs["Tbar_tW"], color=ROOT.kYellow+4)
-channels["TTBar"] = Channel("TTBar", "../trees/TTBar.root", xs["TTBar"], color=ROOT.kOrange)
+channels["TTBar"] = Channel("TTBar", args.datadir + "/TTBar.root", xs["TTBar"], color=ROOT.kOrange)
 # channels["WW"] = Channel("WW", "../trees/WW.root", xs["WW"], color=ROOT.kBlue)
 # channels["WZ"] = Channel("WZ", "../trees/WZ.root", xs["WZ"], color=ROOT.kBlue)
 # channels["ZZ"] = Channel("ZZ", "../trees/ZZ.root", xs["ZZ"], color=ROOT.kBlue)
-# channels["WJets"] = Channel("WJets'", "../trees/WJets.root", xs["WJets"], color=ROOT.kGreen)
+channels["WJets"] = Channel("WJets'", args.datadir + "/WJets.root", xs["WJets"], color=ROOT.kGreen)
 # channels["QCDMu"] = Channel("QCDMu'", "../trees/QCDMu.root", xs["QCDMu"], color=ROOT.kGray)
 # channels["QCD_20_30_EM"] = Channel("QCD_20_30_EM", "../trees/QCD_20_30_EM.root", xs["QCD_20_30_EM"], color=ROOT.kGray)
 # channels["QCD_30_80_EM"] = Channel("QCD_30_80_EM", "../trees/QCD_30_80_EM.root", xs["QCD_30_80_EM"], color=ROOT.kGray)
