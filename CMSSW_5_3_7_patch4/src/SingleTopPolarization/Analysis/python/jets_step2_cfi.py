@@ -167,9 +167,10 @@ def JetSetup(process, conf):
         maxNumber = cms.uint32(1)
     )
 
+    #Gets the b-tagged jet with the highest b discriminator value
     process.highestBTagJet = cms.EDFilter(
         'LargestBDiscriminatorJetViewProducer',
-        src = cms.InputTag("btaggedJets"),
+        src = cms.InputTag("goodJets"),
         maxNumber = cms.uint32(1),
         bDiscriminator = cms.string(conf.Jets.bTagDiscriminant),
         reverse = cms.bool(False)
