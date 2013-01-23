@@ -107,7 +107,8 @@ def JetSetup(process, conf):
     #light-jet b-tagging efficiency
     process.trueLJets = cms.EDFilter("CandViewSelector",
         src=cms.InputTag("goodJets"),
-        cut=cms.string("abs(partonFlavour()) <= 3 || abs(partonFlavour()) == 9 || abs(partonFlavour()) == 21") #uds, gluons
+        #cut=cms.string("abs(partonFlavour()) <= 3 || abs(partonFlavour()) == 9 || abs(partonFlavour()) == 21") #uds, gluons
+        cut=cms.string("abs(partonFlavour()) != 4 && abs(partonFlavour()) != 5") #anything not a b or a c
     )
     process.btaggedTrueLJets = cms.EDFilter(
         "CandViewSelector",
@@ -166,9 +167,10 @@ def JetSetup(process, conf):
         maxNumber = cms.uint32(1)
     )
 
+    #Gets the b-tagged jet with the highest b discriminator value
     process.highestBTagJet = cms.EDFilter(
         'LargestBDiscriminatorJetViewProducer',
-        src = cms.InputTag("btaggedJets"),
+        src = cms.InputTag("goodJets"),
         maxNumber = cms.uint32(1),
         bDiscriminator = cms.string(conf.Jets.bTagDiscriminant),
         reverse = cms.bool(False)
