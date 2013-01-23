@@ -1,6 +1,9 @@
 import FWCore.ParameterSet.Config as cms
 import SingleTopPolarization.Analysis.calibrations_cfg as Calibrations
 
+import logging
+logger = logging.getLogger("JetSetup")
+
 def JetSetup(process, conf):
 
 #    if cutJets:
@@ -202,6 +205,7 @@ def JetSetup(process, conf):
     )
 
     sampleBEffs = Calibrations.bTaggingEfficiencies[conf.subChannel]
+    logger.debug("Using the following calibration coefficients for sample {0}: {1}".format(conf.subChannel, sampleBEffs))
     process.bTagWeightProducer = cms.EDProducer('BTagSystematicsWeightProducer',
         src=cms.InputTag("goodJets"),
         nJets=cms.uint32(conf.Jets.nJets),

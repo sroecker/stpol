@@ -4,6 +4,7 @@ from SingleTopPolarization.Analysis.config_step2_cfg import Config
 
 from FWCore.ParameterSet.VarParsing import VarParsing
 
+import logging
 #BTag working points from https://twiki.cern.ch/twiki/bin/viewauth/CMS/BTagPerformanceOP#B_tagging_Operating_Points_for_5
 #TODO: place in proper class
 #TrackCountingHighPur     TCHPT   3.41
@@ -63,10 +64,12 @@ def SingleTopStep2():
                cout=cms.untracked.PSet(threshold=cms.untracked.string('INFO')),
                debug=cms.untracked.PSet(threshold=cms.untracked.string('DEBUG')),
         )
+        logging.basicConfig(level=logging.DEBUG)
     else:
         process.load("FWCore.MessageService.MessageLogger_cfi")
         process.MessageLogger.cerr.FwkReport.reportEvery = 1000
         process.MessageLogger.cerr.threshold = cms.untracked.string("ERROR")
+        logging.basicConfig(level=logging.ERROR)
 
     process.maxEvents = cms.untracked.PSet(input=cms.untracked.int32(-1))
 
