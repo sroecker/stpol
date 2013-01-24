@@ -67,7 +67,7 @@
 #define ITOA(A) (static_cast<std::ostringstream*>(&(std::ostringstream()<<A) )->str())
 #define D_NAN (std::numeric_limits<double>::quiet_NaN())
 
-template <typename T, typename C>
+template <typename T, typename C, C defaultVal>
 class GenericTreemakerAnalyzer : public edm::EDAnalyzer {
    public:
       explicit GenericTreemakerAnalyzer(const edm::ParameterSet&);
@@ -75,7 +75,7 @@ class GenericTreemakerAnalyzer : public edm::EDAnalyzer {
 
       static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
-      static const C defaultValue;
+      //static const C defaultValue;
 
 
    private:
@@ -117,8 +117,8 @@ class GenericTreemakerAnalyzer : public edm::EDAnalyzer {
 //
 // constructors and destructor
 //
-template <typename T, typename C>
-GenericTreemakerAnalyzer<T, C>::GenericTreemakerAnalyzer(const edm::ParameterSet& iConfig) :
+template <typename T, typename C, C defaultVal>
+GenericTreemakerAnalyzer<T, C, defaultVal>::GenericTreemakerAnalyzer(const edm::ParameterSet& iConfig) :
 reportMissing(iConfig.getUntrackedParameter<bool>("reportMissing", false))
 {
 
@@ -141,8 +141,8 @@ reportMissing(iConfig.getUntrackedParameter<bool>("reportMissing", false))
 }
 
 
-template <typename T, typename C>
-GenericTreemakerAnalyzer<T, C>::~GenericTreemakerAnalyzer()
+template <typename T, typename C, C defaultVal>
+GenericTreemakerAnalyzer<T, C, defaultVal>::~GenericTreemakerAnalyzer()
 {
 }
 
@@ -152,9 +152,9 @@ GenericTreemakerAnalyzer<T, C>::~GenericTreemakerAnalyzer()
 //
 
 // ------------ method called for each event  ------------
-template <typename T, typename C>
+template <typename T, typename C, C defaultVal>
 void
-GenericTreemakerAnalyzer<T, C>::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
+GenericTreemakerAnalyzer<T, C, defaultVal>::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
   //std::cout << "Begin processing event" << std::endl;
 
@@ -163,7 +163,7 @@ GenericTreemakerAnalyzer<T, C>::analyze(const edm::Event& iEvent, const edm::Eve
 
   //Initialize all branch variables
   for (auto& cols : treeValues) {
-    *(cols.second) = (C)defaultValue;
+    *(cols.second) = defaultVal;
   }
 
   for (auto& cols : colNames) {
@@ -237,51 +237,51 @@ GenericTreemakerAnalyzer<T, C>::analyze(const edm::Event& iEvent, const edm::Eve
 
 
 // ------------ method called once each job just before starting event loop  ------------
-template <typename T, typename C>
+template <typename T, typename C, C defaultVal>
 void 
-GenericTreemakerAnalyzer<T, C>::beginJob()
+GenericTreemakerAnalyzer<T, C, defaultVal>::beginJob()
 {
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
-template <typename T, typename C>
+template <typename T, typename C, C defaultVal>
 void 
-GenericTreemakerAnalyzer<T, C>::endJob() 
+GenericTreemakerAnalyzer<T, C, defaultVal>::endJob() 
 {
 }
 
 // ------------ method called when starting to processes a run  ------------
-template <typename T, typename C>
+template <typename T, typename C, C defaultVal>
 void 
-GenericTreemakerAnalyzer<T, C>::beginRun(edm::Run const&, edm::EventSetup const&)
+GenericTreemakerAnalyzer<T, C, defaultVal>::beginRun(edm::Run const&, edm::EventSetup const&)
 {
 }
 
 // ------------ method called when ending the processing of a run  ------------
-template <typename T, typename C>
+template <typename T, typename C, C defaultVal>
 void 
-GenericTreemakerAnalyzer<T, C>::endRun(edm::Run const&, edm::EventSetup const&)
+GenericTreemakerAnalyzer<T, C, defaultVal>::endRun(edm::Run const&, edm::EventSetup const&)
 {
 }
 
 // ------------ method called when starting to processes a luminosity block  ------------
-template <typename T, typename C>
+template <typename T, typename C, C defaultVal>
 void 
-GenericTreemakerAnalyzer<T, C>::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
+GenericTreemakerAnalyzer<T, C, defaultVal>::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
 {
 }
 
 // ------------ method called when ending the processing of a luminosity block  ------------
-template <typename T, typename C>
+template <typename T, typename C, C defaultVal>
 void 
-GenericTreemakerAnalyzer<T, C>::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
+GenericTreemakerAnalyzer<T, C, defaultVal>::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
 {
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
-template <typename T, typename C>
+template <typename T, typename C, C defaultVal>
 void
-GenericTreemakerAnalyzer<T, C>::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
+GenericTreemakerAnalyzer<T, C, defaultVal>::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
   //The following says we do not know what parameters are allowed so do no validation
   // Please change this to state exactly what you do use, even if it is no parameters
   edm::ParameterSetDescription desc;
@@ -295,17 +295,17 @@ GenericTreemakerAnalyzer<T, C>::fillDescriptions(edm::ConfigurationDescriptions&
 
 //typedef SingleObjectSelector< edm::View<pat::Jet>, StringCutObjectSelector<pat::Jet, true>, edm::OwnVector<pat::Jet, edm::ClonePolicy<pat::Jet>> > JetViewSelector;
 
-typedef GenericTreemakerAnalyzer<double, double> DoubleTreemakerAnalyzer;
-template<> const double DoubleTreemakerAnalyzer::defaultValue = TMath::QuietNaN();
+typedef GenericTreemakerAnalyzer<double, double, TMath::QuietNaN()> DoubleTreemakerAnalyzer;
+//template<> const double DoubleTreemakerAnalyzer::defaultValue = TMath::QuietNaN();
 
-typedef GenericTreemakerAnalyzer<double, double> DoubleWeightTreemakerAnalyzer;
-template<> const double DoubleWeightTreemakerAnalyzer::defaultValue = 0;
+typedef GenericTreemakerAnalyzer<double, double, 0> DoubleWeightTreemakerAnalyzer;
+//template<> const double DoubleWeightTreemakerAnalyzer::defaultValue = 0;
 
-typedef GenericTreemakerAnalyzer<bool, int> BoolTreemakerAnalyzer;
-template<> const int BoolTreemakerAnalyzer::defaultValue = -1;
+typedef GenericTreemakerAnalyzer<bool, int, -1> BoolTreemakerAnalyzer;
+//template<> const int BoolTreemakerAnalyzer::defaultValue = -1;
 
-typedef GenericTreemakerAnalyzer<int, int> IntTreemakerAnalyzer;
-template<> const int IntTreemakerAnalyzer::defaultValue = -1;
+typedef GenericTreemakerAnalyzer<int, int, -1> IntTreemakerAnalyzer;
+//template<> const int IntTreemakerAnalyzer::defaultValue = -1;
 
 //define this as a plug-in
 DEFINE_FWK_MODULE(DoubleTreemakerAnalyzer);
