@@ -366,6 +366,17 @@ def SingleTopStep2():
             #cms.InputTag("recoNu", "Delta"),
         )
     )
+    
+        process.treesDoubleWeight = cms.EDAnalyzer("DoubleWeightTreemakerAnalyzer",
+        collections = cms.VInputTag(
+            #B-tag systematics
+            cms.InputTag("bTagWeightProducer", "bTagWeight"),
+            cms.InputTag("bTagWeightProducer", "bTagWeightSystBCUp"),
+            cms.InputTag("bTagWeightProducer", "bTagWeightSystBCDown"),
+            cms.InputTag("bTagWeightProducer", "bTagWeightSystLUp"),
+            cms.InputTag("bTagWeightProducer", "bTagWeightSystLDown"),
+        )
+    )
 
     process.treesBool = cms.EDAnalyzer("BoolTreemakerAnalyzer",
         collections = cms.VInputTag(
@@ -397,7 +408,7 @@ def SingleTopStep2():
         )
     )
 
-    process.treeSequence = cms.Sequence(process.treesMu*process.treesEle*process.treesDouble*process.treesBool*process.treesCands*process.treesJets*process.treesInt)
+    process.treeSequence = cms.Sequence(process.treesMu*process.treesEle*process.treesDouble*process.treesBool*process.treesCands*process.treesJets*process.treesInt*process.treesDoubleWeight)
 
     #-----------------------------------------------
     # Flavour analyzer

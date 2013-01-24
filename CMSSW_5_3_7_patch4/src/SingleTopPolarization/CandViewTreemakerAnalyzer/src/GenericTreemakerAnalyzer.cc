@@ -298,6 +298,9 @@ GenericTreemakerAnalyzer<T, C>::fillDescriptions(edm::ConfigurationDescriptions&
 typedef GenericTreemakerAnalyzer<double, double> DoubleTreemakerAnalyzer;
 template<> const double DoubleTreemakerAnalyzer::defaultValue = TMath::QuietNaN();
 
+typedef GenericTreemakerAnalyzer<double, double> DoubleWeightTreemakerAnalyzer;
+template<> const double DoubleWeightTreemakerAnalyzer::defaultValue = 0;
+
 typedef GenericTreemakerAnalyzer<bool, int> BoolTreemakerAnalyzer;
 template<> const int BoolTreemakerAnalyzer::defaultValue = -1;
 
