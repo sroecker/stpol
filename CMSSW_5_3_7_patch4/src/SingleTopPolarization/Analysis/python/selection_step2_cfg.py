@@ -39,6 +39,10 @@ def SingleTopStep2():
 				  VarParsing.multiplicity.singleton,
 				  VarParsing.varType.bool,
 				  "Turn on debugging messages")
+        options.register ('isMC', False,
+				  VarParsing.multiplicity.singleton,
+				  VarParsing.varType.bool,
+				  "Run on MC")
         options.parseArguments()
     
         if options.channel.lower() == "signal":
@@ -48,6 +52,8 @@ def SingleTopStep2():
         Config.Leptons.reverseIsoCut = options.reverseIsoCut
         Config.subChannel = options.subChannel
         Config.doDebug = options.doDebug
+        Config.isMC = options.isMC
+
 
 
     print "Configuration"
@@ -403,12 +409,13 @@ def SingleTopStep2():
     # Flavour analyzer
     #-----------------------------------------------
 
-    process.flavourAnalyzer = cms.EDAnalyzer('FlavourAnalyzer',
-        genParticles = cms.InputTag('genParticles'),
-        generator = cms.InputTag('generator'),
-        genJets = cms.InputTag('selectedPatJets', 'genJets'),
-        saveGenJets = cms.bool(False)
-    )
+    if Config.isMC:
+        process.flavourAnalyzer = cms.EDAnalyzer('FlavourAnalyzer',
+            genParticles = cms.InputTag('genParticles'),
+            generator = cms.InputTag('generator'),
+            genJets = cms.InputTag('selectedPatJets', 'genJets'),
+            saveGenJets = cms.bool(False)
+        )
 
 
     #-----------------------------------------------
@@ -439,7 +446,9 @@ def SingleTopStep2():
         ElectronPath(process, Config)
         process.elePath.insert(process.elePath.index(process.singleIsoEle)+1, process.goodSignalLeptons)
 
-    process.treePath = cms.Path(process.treeSequence*process.flavourAnalyzer)
+    process.treePath = cms.Path(process.treeSequence)
+    if Config.isMC:
+        process.treePath += process.flavourAnalyzer
 
     #-----------------------------------------------
     # Outpath
