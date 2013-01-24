@@ -369,6 +369,7 @@ def SingleTopStep2():
     
     process.treesDoubleWeight = cms.EDAnalyzer("DoubleTreemakerAnalyzer",
         defaultValue = cms.untracked.double(0),
+        putNaNs = cms.untracked.bool(False),
         collections = cms.VInputTag(
             #B-tag systematics
             cms.InputTag("bTagWeightProducer", "bTagWeight"),
