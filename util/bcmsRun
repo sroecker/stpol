@@ -3,7 +3,7 @@
 CFGFILE=$1
 SRC=$2
 JOBNAME=$3
-num_files=22
+num_files=4
 
 shift; shift; shift
 flags=$@ # rest of the arguments
