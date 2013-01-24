@@ -123,7 +123,7 @@ class GenericTreemakerAnalyzer : public edm::EDAnalyzer {
 template <typename T, typename C>
 GenericTreemakerAnalyzer<T, C>::GenericTreemakerAnalyzer(const edm::ParameterSet& iConfig) :
 reportMissing(iConfig.getUntrackedParameter<bool>("reportMissing", false))
-, ownDefaultValue(iConfig.getUntrackedParameter<C>("defaultValue", GenericTreemakerAnalyzer<T, C>::defaultVal))
+, ownDefaultValue(iConfig.getUntrackedParameter<C>("defaultValue", GenericTreemakerAnalyzer<T, C>::defaultValue))
 {
 
   makeTree = iConfig.getUntrackedParameter<bool>("makeTree", true);

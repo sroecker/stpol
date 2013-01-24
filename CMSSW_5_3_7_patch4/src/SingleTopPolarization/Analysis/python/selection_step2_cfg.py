@@ -24,21 +24,21 @@ def SingleTopStep2():
     if not Config.onGrid:
         options = VarParsing('analysis')
         options.register ('subChannel', 'T_t',
-				  VarParsing.multiplicity.singleton,
-				  VarParsing.varType.string,
-				  "The sample that you are running on")
+                  VarParsing.multiplicity.singleton,
+                  VarParsing.varType.string,
+                  "The sample that you are running on")
         options.register ('channel', 'signal',
-				  VarParsing.multiplicity.singleton,
-				  VarParsing.varType.string,
-				  "Signal or Background")
+                  VarParsing.multiplicity.singleton,
+                  VarParsing.varType.string,
+                  "Signal or Background")
         options.register ('reverseIsoCut', False,
-				  VarParsing.multiplicity.singleton,
-				  VarParsing.varType.bool,
-				  "Consider anti-isolated region")
+                  VarParsing.multiplicity.singleton,
+                  VarParsing.varType.bool,
+                  "Consider anti-isolated region")
         options.register ('doDebug', False,
-				  VarParsing.multiplicity.singleton,
-				  VarParsing.varType.bool,
-				  "Turn on debugging messages")
+                  VarParsing.multiplicity.singleton,
+                  VarParsing.varType.bool,
+                  "Turn on debugging messages")
         options.parseArguments()
     
         if options.channel.lower() == "signal":
@@ -232,7 +232,7 @@ def SingleTopStep2():
                 ]
             ),
 
-	    #all the b-tagged jets in the event, ordered pt-descending
+        #all the b-tagged jets in the event, ordered pt-descending
             treeCollection(
                 cms.untracked.InputTag("btaggedJets"), Config.Jets.nBTags,
                 [
@@ -353,12 +353,12 @@ def SingleTopStep2():
             cms.InputTag("muAndMETMT", ""),
             cms.InputTag("eleAndMETMT", ""),
 
-            #B-tag systematics
-            cms.InputTag("bTagWeightProducer", "bTagWeight"),
-            cms.InputTag("bTagWeightProducer", "bTagWeightSystBCUp"),
-            cms.InputTag("bTagWeightProducer", "bTagWeightSystBCDown"),
-            cms.InputTag("bTagWeightProducer", "bTagWeightSystLUp"),
-            cms.InputTag("bTagWeightProducer", "bTagWeightSystLDown"),
+            ##B-tag systematics
+            #cms.InputTag("bTagWeightProducer", "bTagWeight"),
+            #cms.InputTag("bTagWeightProducer", "bTagWeightSystBCUp"),
+            #cms.InputTag("bTagWeightProducer", "bTagWeightSystBCDown"),
+            #cms.InputTag("bTagWeightProducer", "bTagWeightSystLUp"),
+            #cms.InputTag("bTagWeightProducer", "bTagWeightSystLDown"),
 
 
             #Some debugging data
@@ -367,7 +367,8 @@ def SingleTopStep2():
         )
     )
     
-        process.treesDoubleWeight = cms.EDAnalyzer("DoubleWeightTreemakerAnalyzer",
+    process.treesDoubleWeight = cms.EDAnalyzer("DoubleTreemakerAnalyzer",
+        defaultValue = cms.untracked.double(0),
         collections = cms.VInputTag(
             #B-tag systematics
             cms.InputTag("bTagWeightProducer", "bTagWeight"),
