@@ -6,6 +6,7 @@ from cross_sections import xs
 from collections import OrderedDict
 import re
 import argparse
+import copy
 
 parser = argparse.ArgumentParser(description='Process some integers.')
 parser.add_argument("-d", "--datadir", type=str, default="./data/trees",
@@ -22,15 +23,23 @@ class Cut:
     def __init__(self, cutName, cutStr):
         self.cutName = cutName
         self.cutStr = cutStr
+        self.cutSequence = [copy.deepcopy(self)]
 
     def __add__(self, other):
         cutName = self.cutName + " + " + other.cutName
         cutStr = self.cutStr + " && " + other.cutStr
-        return Cut(cutName, cutStr)
+        newCut = Cut(cutName, cutStr)
+        newCut.cutSequence = self.cutSequence + other.cutSequence
+        return newCut
 
     def __str__(self):
         return self.cutName + ":" + self.cutStr
 
+    def __repr__(self):
+        return self.cutName
+
+
+#Selection applied as in https://indico.cern.ch/getFile.py/access?contribId=1&resId=0&materialId=slides&confId=228739
 class Cuts:
     recoFState = Cut("recoFstate", "_topCount==1")
     mu = Cut("mu", "_muonCount==1") + Cut("muIso", "_goodSignalMuons_0_relIso<0.12")
@@ -46,10 +55,10 @@ class Cuts:
     mlnu = Cut("ml#nu", "_recoTop_0_Mass>130&&_recoTop_0_Mass<220")
     etaLJ = Cut("#eta_{lj}", "abs(_lowestBTagJet_0_Eta)>2.5")
     sidebandRegion = Cut("!ml#nu", "!(_recoTop_0_Mass>130&&_recoTop_0_Mass<220)")
-    jetPt = Cut("jetPt", "_goodJets_0_Pt>60 && _goodJets_1_Pt>60")
+    jetPt = Cut("jetPt", "_goodJets_0_Pt>40 && _goodJets_1_Pt>40")
     jetEta = Cut("jetEta", "abs(_lowestBTagJet_0_Eta)<4.5 && abs(_highestBTagJet_0_Eta)<4.5")
     jetRMS = Cut("rms_{lj}", "_lowestBTagJet_0_rms < 0.025")
-    MT = Cut("MT", "_muAndMETMT > 50 | _eleAndMETMT > 50")
+    MT = Cut("MT", "(_muAndMETMT > 50 | _eleAndMETMT > 45)")
 #    Orso = mlnu + jets_2J1T + jetPt + jetRMS + MT + etaLJ#jetEta
     Orso = mlnu + jets_2J1T + jetPt + jetRMS + MT + etaLJ + jetEta
     finalMu = mu + recoFState + Orso
@@ -79,6 +88,11 @@ class Channel:
         self.tree = self.trees[0]
         if not color is None:
             self.color = color
+
+    def cutFlow(cut):
+        for c in cut.cutSequence:
+            print "{0} ({1}) = {2}".format(c.cutName, c.cutStr, self.tree.GetEntries(c.cutStr))
+        return
 
     def cutFlow(self):
         muHist = self.file.Get("efficiencyAnalyzerMu").Get("muPath")
@@ -129,23 +143,23 @@ class Channel:
 channels = OrderedDict()
 
 channels["T_t"] = Channel("T_t", args.datadir + "/T_t.root", xs["T_t"], color=ROOT.kRed)
-# channels["Tbar_t"] = Channel("Tbar_t", "../trees/Tbar_t.root", xs["Tbar_t"], color=ROOT.kRed)
-# channels["T_s"] = Channel("T_s", "../trees/T_s.root", xs["T_s"], color=ROOT.kYellow)
-# channels["Tbar_s"] = Channel("Tbar_s", "../trees/Tbar_s.root", xs["Tbar_s"], color=ROOT.kYellow)
-# channels["T_tW"] = Channel("T_tW", "../trees/T_tW.root", xs["T_tW"], color=ROOT.kYellow+4)
-# channels["Tbar_tW"] = Channel("Tbar_tW", "../trees/Tbar_tW.root", xs["Tbar_tW"], color=ROOT.kYellow+4)
-# channels["TTBar"] = Channel("TTBar", args.datadir + "/TTBar.root", xs["TTBar"], color=ROOT.kOrange)
-# channels["WW"] = Channel("WW", "../trees/WW.root", xs["WW"], color=ROOT.kBlue)
-# channels["WZ"] = Channel("WZ", "../trees/WZ.root", xs["WZ"], color=ROOT.kBlue)
-# channels["ZZ"] = Channel("ZZ", "../trees/ZZ.root", xs["ZZ"], color=ROOT.kBlue)
-# channels["WJets"] = Channel("WJets'", args.datadir + "/WJets.root", xs["WJets"], color=ROOT.kGreen)
-# channels["QCDMu"] = Channel("QCDMu'", "../trees/QCDMu.root", xs["QCDMu"], color=ROOT.kGray)
-# channels["QCD_20_30_EM"] = Channel("QCD_20_30_EM", "../trees/QCD_20_30_EM.root", xs["QCD_20_30_EM"], color=ROOT.kGray)
-# channels["QCD_30_80_EM"] = Channel("QCD_30_80_EM", "../trees/QCD_30_80_EM.root", xs["QCD_30_80_EM"], color=ROOT.kGray)
-# channels["QCD_80_170_EM"] = Channel("QCD_80_170_EM", "../trees/QCD_80_170_EM.root", xs["QCD_80_170_EM"], color=ROOT.kGray)
-# channels["QCD_170_250_EM"] = Channel("QCD_170_250_EM", "../trees/QCD_170_250_EM.root", xs["QCD_170_250_EM"], color=ROOT.kGray)
-# channels["QCD_250_350_EM"] = Channel("QCD_250_350_EM", "../trees/QCD_250_350_EM.root", xs["QCD_250_350_EM"], color=ROOT.kGray)
-    #"QCD_350_EM": Channel("QCD_350_EM", "../trees/QCD_350_EM.root", xs["QCD_350_EM"], color=ROOT.kGray),
+channels["Tbar_t"] = Channel("Tbar_t", args.datadir + "/Tbar_t.root", xs["Tbar_t"], color=ROOT.kRed)
+channels["T_s"] = Channel("T_s", args.datadir + "/T_s.root", xs["T_s"], color=ROOT.kYellow)
+channels["Tbar_s"] = Channel("Tbar_s", args.datadir + "/Tbar_s.root", xs["Tbar_s"], color=ROOT.kYellow)
+channels["T_tW"] = Channel("T_tW", args.datadir + "/T_tW.root", xs["T_tW"], color=ROOT.kYellow+4)
+channels["Tbar_tW"] = Channel("Tbar_tW", args.datadir + "/Tbar_tW.root", xs["Tbar_tW"], color=ROOT.kYellow+4)
+channels["TTBar"] = Channel("TTBar", args.datadir + "/TTBar.root", xs["TTBar"], color=ROOT.kOrange)
+channels["WW"] = Channel("WW", args.datadir + "/WW.root", xs["WW"], color=ROOT.kBlue)
+channels["WZ"] = Channel("WZ", args.datadir + "/WZ.root", xs["WZ"], color=ROOT.kBlue)
+channels["ZZ"] = Channel("ZZ", args.datadir + "/ZZ.root", xs["ZZ"], color=ROOT.kBlue)
+channels["WJets"] = Channel("WJets'", args.datadir + "/WJets1.root", xs["WJets"], color=ROOT.kGreen)
+#channels["QCDMu"] = Channel("QCDMu'", "/QCDMu.root", xs["QCDMu"], color=ROOT.kGray)
+#channels["QCD_20_30_EM"] = Channel("QCD_20_30_EM", "/QCD_20_30_EM.root", xs["QCD_20_30_EM"], color=ROOT.kGray)
+#channels["QCD_30_80_EM"] = Channel("QCD_30_80_EM", "/QCD_30_80_EM.root", xs["QCD_30_80_EM"], color=ROOT.kGray)
+#channels["QCD_80_170_EM"] = Channel("QCD_80_170_EM", "/QCD_80_170_EM.root", xs["QCD_80_170_EM"], color=ROOT.kGray)
+#channels["QCD_170_250_EM"] = Channel("QCD_170_250_EM", "/QCD_170_250_EM.root", xs["QCD_170_250_EM"], color=ROOT.kGray)
+#channels["QCD_250_350_EM"] = Channel("QCD_250_350_EM", "/QCD_250_350_EM.root", xs["QCD_250_350_EM"], color=ROOT.kGray)
+#    "QCD_350_EM": Channel("QCD_350_EM", "/QCD_350_EM.root", xs["QCD_350_EM"], color=ROOT.kGray),
 
 
 def normalize(h, to=1.0):
