@@ -123,7 +123,7 @@ def JetSetup(process, conf):
             "CollectionSizeProducer<reco::Candidate>",
             src = cms.InputTag("btaggedTrueLJets")
         )
-        process.lightJetBTagEffSequence = cms.Sequence(
+        process.lJetBTagEffSequence = cms.Sequence(
             process.trueLJets *
             process.btaggedTrueLJets *
             process.trueLJetCount *
@@ -220,7 +220,7 @@ def JetSetup(process, conf):
         process.bEffSequence = cms.Sequence(
             process.bJetBTagEffSequence *
             process.cJetBTagEffSequence *
-            process.lJetBTagEffSequence * 
+            process.lJetBTagEffSequence *
             process.bTagWeightProducer
         )
 
@@ -229,7 +229,7 @@ def JetSetup(process, conf):
       #process.skimJets *
       #process.noPUJets *
       process.goodJets *
-      
+
       process.btaggedJets *
       process.untaggedJets *
       process.oneUntaggedJet *
