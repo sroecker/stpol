@@ -9,3 +9,4 @@
 #. ./util/bcmsRun runconfs/step2_newCmdLine_cfg.py fileLists/WW.txt trees/WW channel=background subChannel=WW
 #. ./util/bcmsRun runconfs/step2_newCmdLine_cfg.py fileLists/WZ.txt trees/WZ channel=background subChannel=WZ
 #. ./util/bcmsRun runconfs/step2_newCmdLine_cfg.py fileLists/ZZ.txt trees/ZZ channel=background subChannel=ZZ
+. ./util/bcmsRun runconfs/step2_newCmdLine_cfg.py fileLists/SingleMu1.txt trees/SingleMu isMC=False

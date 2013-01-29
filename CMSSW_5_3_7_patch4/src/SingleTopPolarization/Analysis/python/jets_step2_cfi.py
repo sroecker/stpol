@@ -53,88 +53,88 @@ def JetSetup(process, conf):
     )
 
     #B-tagging efficiencies
+    if conf.isMC:
+        #B-jet b-tagging efficiency
+        process.trueBJets = cms.EDFilter("CandViewSelector",
+            src=cms.InputTag("goodJets"),
+            cut=cms.string("abs(partonFlavour()) == 5")
+        )
+        process.btaggedTrueBJets = cms.EDFilter(
+            "CandViewSelector",
+            src=cms.InputTag("trueBJets"),
+            cut=cms.string(bTagCutStr)
+        )
+        process.trueBJetCount = cms.EDProducer(
+            "CollectionSizeProducer<reco::Candidate>",
+            src = cms.InputTag("trueBJets")
+        )
+        process.btaggedTrueBJetCount = cms.EDProducer(
+            "CollectionSizeProducer<reco::Candidate>",
+            src = cms.InputTag("btaggedTrueBJets")
+        )
+        process.bJetBTagEffSequence = cms.Sequence(
+            process.trueBJets *
+            process.btaggedTrueBJets *
+            process.trueBJetCount *
+            process.btaggedTrueBJetCount
+        )
 
-    #B-jet b-tagging efficiency
-    process.trueBJets = cms.EDFilter("CandViewSelector",
-        src=cms.InputTag("goodJets"),
-        cut=cms.string("abs(partonFlavour()) == 5")
-    )
-    process.btaggedTrueBJets = cms.EDFilter(
-        "CandViewSelector",
-        src=cms.InputTag("trueBJets"),
-        cut=cms.string(bTagCutStr)
-    )
-    process.trueBJetCount = cms.EDProducer(
-        "CollectionSizeProducer<reco::Candidate>",
-        src = cms.InputTag("trueBJets")
-    )
-    process.btaggedTrueBJetCount = cms.EDProducer(
-        "CollectionSizeProducer<reco::Candidate>",
-        src = cms.InputTag("btaggedTrueBJets")
-    )
-    process.bJetBTagEffSequence = cms.Sequence(
-        process.trueBJets *
-        process.btaggedTrueBJets *
-        process.trueBJetCount *
-        process.btaggedTrueBJetCount
-    )
+        #C-jet b-tagging efficiency
+        process.trueCJets = cms.EDFilter("CandViewSelector",
+            src=cms.InputTag("goodJets"),
+            cut=cms.string("abs(partonFlavour()) == 4")
+        )
+        process.btaggedTrueCJets = cms.EDFilter(
+            "CandViewSelector",
+            src=cms.InputTag("trueCJets"),
+            cut=cms.string(bTagCutStr)
+        )
+        process.trueCJetCount = cms.EDProducer(
+            "CollectionSizeProducer<reco::Candidate>",
+            src = cms.InputTag("trueCJets")
+        )
+        process.btaggedTrueCJetCount = cms.EDProducer(
+            "CollectionSizeProducer<reco::Candidate>",
+            src = cms.InputTag("btaggedTrueCJets")
+        )
+        process.cJetBTagEffSequence = cms.Sequence(
+            process.trueCJets *
+            process.btaggedTrueCJets *
+            process.trueCJetCount *
+            process.btaggedTrueCJetCount
+        )
 
-    #C-jet b-tagging efficiency
-    process.trueCJets = cms.EDFilter("CandViewSelector",
-        src=cms.InputTag("goodJets"),
-        cut=cms.string("abs(partonFlavour()) == 4")
-    )
-    process.btaggedTrueCJets = cms.EDFilter(
-        "CandViewSelector",
-        src=cms.InputTag("trueCJets"),
-        cut=cms.string(bTagCutStr)
-    )
-    process.trueCJetCount = cms.EDProducer(
-        "CollectionSizeProducer<reco::Candidate>",
-        src = cms.InputTag("trueCJets")
-    )
-    process.btaggedTrueCJetCount = cms.EDProducer(
-        "CollectionSizeProducer<reco::Candidate>",
-        src = cms.InputTag("btaggedTrueCJets")
-    )
-    process.cJetBTagEffSequence = cms.Sequence(
-        process.trueCJets *
-        process.btaggedTrueCJets *
-        process.trueCJetCount *
-        process.btaggedTrueCJetCount
-    )
-
-    #light-jet b-tagging efficiency
-    process.trueLJets = cms.EDFilter("CandViewSelector",
-        src=cms.InputTag("goodJets"),
-        #cut=cms.string("abs(partonFlavour()) <= 3 || abs(partonFlavour()) == 9 || abs(partonFlavour()) == 21") #uds, gluons
-        cut=cms.string("abs(partonFlavour()) != 4 && abs(partonFlavour()) != 5") #anything not a b or a c
-    )
-    process.btaggedTrueLJets = cms.EDFilter(
-        "CandViewSelector",
-        src=cms.InputTag("trueLJets"),
-        cut=cms.string(bTagCutStr)
-    )
-    process.trueLJetCount = cms.EDProducer(
-        "CollectionSizeProducer<reco::Candidate>",
-        src = cms.InputTag("trueLJets")
-    )
-    process.btaggedTrueLJetCount = cms.EDProducer(
-        "CollectionSizeProducer<reco::Candidate>",
-        src = cms.InputTag("btaggedTrueLJets")
-    )
-    process.lightJetBTagEffSequence = cms.Sequence(
-        process.trueLJets *
-        process.btaggedTrueLJets *
-        process.trueLJetCount *
-        process.btaggedTrueLJetCount
-    )
+        #light-jet b-tagging efficiency
+        process.trueLJets = cms.EDFilter("CandViewSelector",
+            src=cms.InputTag("goodJets"),
+            #cut=cms.string("abs(partonFlavour()) <= 3 || abs(partonFlavour()) == 9 || abs(partonFlavour()) == 21") #uds, gluons
+            cut=cms.string("abs(partonFlavour()) != 4 && abs(partonFlavour()) != 5") #anything not a b or a c
+        )
+        process.btaggedTrueLJets = cms.EDFilter(
+            "CandViewSelector",
+            src=cms.InputTag("trueLJets"),
+            cut=cms.string(bTagCutStr)
+        )
+        process.trueLJetCount = cms.EDProducer(
+            "CollectionSizeProducer<reco::Candidate>",
+            src = cms.InputTag("trueLJets")
+        )
+        process.btaggedTrueLJetCount = cms.EDProducer(
+            "CollectionSizeProducer<reco::Candidate>",
+            src = cms.InputTag("btaggedTrueLJets")
+        )
+        process.lJetBTagEffSequence = cms.Sequence(
+            process.trueLJets *
+            process.btaggedTrueLJets *
+            process.trueLJetCount *
+            process.btaggedTrueLJetCount
+        )
 
 
-    process.trueLJets = cms.EDFilter("CandViewSelector",
-        src=cms.InputTag("goodJets"),
-        cut=cms.string("abs(partonFlavour()) <= 3")
-    )
+        process.trueLJets = cms.EDFilter("CandViewSelector",
+            src=cms.InputTag("goodJets"),
+            cut=cms.string("abs(partonFlavour()) <= 3")
+        )
 
 
     process.btaggedJets = cms.EDFilter(
@@ -206,27 +206,29 @@ def JetSetup(process, conf):
         maxNumber=cms.uint32(9999999),
     )
 
-    sampleBEffs = Calibrations.bTaggingEfficiencies[conf.subChannel]
-    logger.debug("Using the following calibration coefficients for sample {0}: {1}".format(conf.subChannel, sampleBEffs))
-    process.bTagWeightProducer = cms.EDProducer('BTagSystematicsWeightProducer',
-        src=cms.InputTag("goodJets"),
-        nJets=cms.uint32(conf.Jets.nJets),
-        nTags=cms.uint32(conf.Jets.nBTags),
-        effB=cms.double(sampleBEffs.eff_b),
-        effC=cms.double(sampleBEffs.eff_c),
-        effL=cms.double(sampleBEffs.eff_l)
-    )
+    if conf.isMC:
+        sampleBEffs = Calibrations.bTaggingEfficiencies[conf.subChannel]
+        logger.debug("Using the following calibration coefficients for sample {0}: {1}".format(conf.subChannel, sampleBEffs))
+        process.bTagWeightProducer = cms.EDProducer('BTagSystematicsWeightProducer',
+            src=cms.InputTag("goodJets"),
+            nJets=cms.uint32(conf.Jets.nJets),
+            nTags=cms.uint32(conf.Jets.nBTags),
+            effB=cms.double(sampleBEffs.eff_b),
+            effC=cms.double(sampleBEffs.eff_c),
+            effL=cms.double(sampleBEffs.eff_l)
+        )
+        process.bEffSequence = cms.Sequence(
+            process.bJetBTagEffSequence *
+            process.cJetBTagEffSequence *
+            process.lJetBTagEffSequence *
+            process.bTagWeightProducer
+        )
 
 
     process.jetSequence = cms.Sequence(
       #process.skimJets *
       #process.noPUJets *
       process.goodJets *
-
-      #B-jet efficiency counters
-      process.bJetBTagEffSequence *
-      process.cJetBTagEffSequence *
-      process.lightJetBTagEffSequence *
 
       process.btaggedJets *
       process.untaggedJets *
@@ -235,9 +237,11 @@ def JetSetup(process, conf):
       process.lightJetCount *
       process.fwdMostLightJet *
       process.highestBTagJet *
-      process.lowestBTagJet *
-      process.bTagWeightProducer
+      process.lowestBTagJet
     )
+
+    if conf.isMC:
+        process.jetSequence += process.bEffSequence
 
     if conf.Jets.source == "selectedPatJets":
         process.jetSequence.insert(0, process.noPUJets)
