@@ -36,6 +36,7 @@ def JetSetup(process, conf):
             PUidMVA = cms.InputTag("puJetMva", "fullDiscriminant", "PAT"),
             PUidFlag = cms.InputTag("puJetMva", "fullId", "PAT"),
             PUidVars = cms.InputTag("puJetId", "", "PAT"),
+            isOriginal=cms.bool(True)
         )
 
 
