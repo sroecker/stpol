@@ -206,6 +206,10 @@
 		A76CFA9B16A6C82F00DC8250 /* run.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = run.sh; sourceTree = "<group>"; };
 		A76CFA9C16A6C82F00DC8250 /* working.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = working.py; sourceTree = "<group>"; };
 		A76CFAAB16A6CA8900DC8250 /* build.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build.sh; sourceTree = "<group>"; };
+		A78CFD4016B9348800D54BF6 /* BuildFile.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
+		A78CFD4116B9348800D54BF6 /* patobjectownrefproducer_cfg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = patobjectownrefproducer_cfg.py; sourceTree = "<group>"; };
+		A78CFD4316B9348800D54BF6 /* patobjectownrefproducer_cfi.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = patobjectownrefproducer_cfi.py; sourceTree = "<group>"; };
+		A78CFD4516B9348800D54BF6 /* PatObjectOwnRefProducer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PatObjectOwnRefProducer.cc; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -305,6 +309,7 @@
 		A76CF92516A6B2BE00DC8250 /* SingleTopPolarization */ = {
 			isa = PBXGroup;
 			children = (
+				A78CFD3F16B9348800D54BF6 /* PatObjectOwnRefProducer */,
 				A70C274916B0501C00495932 /* BTagSystematicsWeightProducer */,
 				A76CF92616A6B2BE00DC8250 /* Analysis */,
 				A76CF93F16A6B2BE00DC8250 /* CandTransverseMassProducer */,
@@ -1108,6 +1113,33 @@
 				A76CFA9C16A6C82F00DC8250 /* working.py */,
 			);
 			path = ttbar3jets;
+			sourceTree = "<group>";
+		};
+		A78CFD3F16B9348800D54BF6 /* PatObjectOwnRefProducer */ = {
+			isa = PBXGroup;
+			children = (
+				A78CFD4016B9348800D54BF6 /* BuildFile.xml */,
+				A78CFD4116B9348800D54BF6 /* patobjectownrefproducer_cfg.py */,
+				A78CFD4216B9348800D54BF6 /* python */,
+				A78CFD4416B9348800D54BF6 /* src */,
+			);
+			path = PatObjectOwnRefProducer;
+			sourceTree = "<group>";
+		};
+		A78CFD4216B9348800D54BF6 /* python */ = {
+			isa = PBXGroup;
+			children = (
+				A78CFD4316B9348800D54BF6 /* patobjectownrefproducer_cfi.py */,
+			);
+			path = python;
+			sourceTree = "<group>";
+		};
+		A78CFD4416B9348800D54BF6 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A78CFD4516B9348800D54BF6 /* PatObjectOwnRefProducer.cc */,
+			);
+			path = src;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

@@ -35,7 +35,7 @@
 //
 // class declaration
 //
-<template typename T>
+template <typename T>
 class PatObjectOwnRefProducer : public edm::EDProducer {
    public:
       explicit PatObjectOwnRefProducer(const edm::ParameterSet&);
@@ -68,7 +68,7 @@ class PatObjectOwnRefProducer : public edm::EDProducer {
 //
 // constructors and destructor
 //
-<template tyename T>
+template <typename T>
 PatObjectOwnRefProducer<T>::PatObjectOwnRefProducer(const edm::ParameterSet& iConfig)
 {
    //register your products
@@ -86,7 +86,7 @@ PatObjectOwnRefProducer<T>::PatObjectOwnRefProducer(const edm::ParameterSet& iCo
 }
 
 
-<template tyename T>
+template <typename T>
 PatObjectOwnRefProducer<T>::~PatObjectOwnRefProducer()
 {
  
@@ -101,7 +101,7 @@ PatObjectOwnRefProducer<T>::~PatObjectOwnRefProducer()
 //
 
 // ------------ method called to produce the data  ------------
-<template tyename T>
+template <typename T>
 void
 PatObjectOwnRefProducer<T>::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
@@ -126,48 +126,48 @@ PatObjectOwnRefProducer<T>::produce(edm::Event& iEvent, const edm::EventSetup& i
 }
 
 // ------------ method called once each job just before starting event loop  ------------
-<template tyename T>
-void 
+template <typename T>
+void
 PatObjectOwnRefProducer<T>::beginJob()
 {
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
-<template tyename T>
+template <typename T>
 void 
 PatObjectOwnRefProducer<T>::endJob() {
 }
 
 // ------------ method called when starting to processes a run  ------------
-<template tyename T>
+template <typename T>
 void 
 PatObjectOwnRefProducer<T>::beginRun(edm::Run&, edm::EventSetup const&)
 {
 }
 
 // ------------ method called when ending the processing of a run  ------------
-<template tyename T>
+template <typename T>
 void 
 PatObjectOwnRefProducer<T>::endRun(edm::Run&, edm::EventSetup const&)
 {
 }
 
 // ------------ method called when starting to processes a luminosity block  ------------
-<template tyename T>
+template <typename T>
 void 
 PatObjectOwnRefProducer<T>::beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&)
 {
 }
 
 // ------------ method called when ending the processing of a luminosity block  ------------
-<template tyename T>
+template <typename T>
 void 
 PatObjectOwnRefProducer<T>::endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&)
 {
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
-<template tyename T>
+template <typename T>
 void
 PatObjectOwnRefProducer<T>::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
   //The following says we do not know what parameters are allowed so do no validation
