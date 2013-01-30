@@ -8,6 +8,9 @@ import re
 import argparse
 import copy
 
+if "-b" in sys.argv:
+    sys.argv.remove("-b")
+
 parser = argparse.ArgumentParser(description='Process some integers.')
 parser.add_argument("-d", "--datadir", type=str, default="./data/trees",
                     help="directory for the trees")
@@ -71,8 +74,12 @@ class Channel:
         self.xs = crossSection
         print "Opening file {0}".format(fileName)
         self.file = ROOT.TFile(fileName)
-        self.xsWeight = float(self.xs) / self.file.Get("efficiencyAnalyzerMu").Get("muPath").GetBinContent(1)
-
+        
+        if self.xs>0:
+            self.xsWeight = float(self.xs) / self.file.Get("efficiencyAnalyzerMu").Get("muPath").GetBinContent(1)
+        else:
+            self.xsWeight = 1
+            
         keys = [x.GetName() for x in self.file.GetListOfKeys()]
         treeNames = filter(lambda x: x.startswith("tree"), keys)
         self.trees = [self.file.Get(k).Get("eventTree") for k in treeNames]
@@ -105,9 +112,9 @@ class Channel:
         c = ROOT.TCanvas()
         c.SetBatch(True)
         if r[1] is None:
-            r[1] = self.tree.GetMinimum(varName)
+            r[1] = self.tree.GetMinimum(var)
         if r[2] is None:
-            r[2] = self.tree.GetMaximum(varName)
+            r[2] = self.tree.GetMaximum(var)
         if cut is None:
             cut = Cut("", "1==1")
         if varName is None:
@@ -120,6 +127,7 @@ class Channel:
 
         if weight is None:
             weight = lumi*self.xsWeight
+        
 
         self.tree.Draw("{2}({0})>>{1}".format(varName, histName, fn), "%f*(%s)" % (weight, cut.cutStr))
         nEntries = int(self.tree.GetEntries(cut.cutStr))
@@ -152,7 +160,8 @@ channels["TTBar"] = Channel("TTBar", args.datadir + "/TTBar.root", xs["TTBar"], 
 channels["WW"] = Channel("WW", args.datadir + "/WW.root", xs["WW"], color=ROOT.kBlue)
 channels["WZ"] = Channel("WZ", args.datadir + "/WZ.root", xs["WZ"], color=ROOT.kBlue)
 channels["ZZ"] = Channel("ZZ", args.datadir + "/ZZ.root", xs["ZZ"], color=ROOT.kBlue)
-channels["WJets"] = Channel("WJets'", args.datadir + "/WJets1.root", xs["WJets"], color=ROOT.kGreen)
+channels["WJets"] = Channel("WJets", args.datadir + "/WJets1.root", xs["WJets"], color=ROOT.kGreen)
+channels["SingleMu"] = Channel("SingleMu", args.datadir + "/SingleMu.root", -1, color=ROOT.kBlack)
 #channels["QCDMu"] = Channel("QCDMu'", "/QCDMu.root", xs["QCDMu"], color=ROOT.kGray)
 #channels["QCD_20_30_EM"] = Channel("QCD_20_30_EM", "/QCD_20_30_EM.root", xs["QCD_20_30_EM"], color=ROOT.kGray)
 #channels["QCD_30_80_EM"] = Channel("QCD_30_80_EM", "/QCD_30_80_EM.root", xs["QCD_30_80_EM"], color=ROOT.kGray)

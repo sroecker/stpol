@@ -1,8 +1,8 @@
 #Does primary event skimming and PFBRECO
 #Author: Joosep Pata joosep.pata@cern.ch
 
-from Configuration.StandardSequences.Geometry_cff import *
-#from Configuration.Geometry.GeometryIdeal_cff import *
+#from Configuration.StandardSequences.Geometry_cff import *
+from Configuration.Geometry.GeometryIdeal_cff import *
 from Configuration.StandardSequences.MagneticField_cff import *
 from Configuration.StandardSequences.FrontierConditions_GlobalTag_cff import *
 import FWCore.ParameterSet.Config as cms
@@ -15,21 +15,58 @@ from SingleTopPolarization.Analysis.eventCounting import *
 
 from PhysicsTools.PatAlgos.selectionLayer1.jetSelector_cfi import *
 
+from FWCore.ParameterSet.VarParsing import VarParsing
 
 def SingleTopStep1(
   process,
-  isMC,
-  doDebug=False,
-  doSkimming=True,
-  doSlimming=True,
-  doMuon=True,
-  doElectron=True,
-  onGrid=False,
-  maxLeptonIso=None,
-  globalTag="START53_V7F"
   ):
 
-  if doDebug:
+  options = VarParsing('analysis')
+  options.register ('isMC', True,
+    VarParsing.multiplicity.singleton,
+    VarParsing.varType.bool,
+    "Run on MC"
+  )
+  options.register ('doDebug', False,
+    VarParsing.multiplicity.singleton,
+    VarParsing.varType.bool,
+    "Run in debugging mode"
+  )
+  options.register ('doSkimming', False,
+    VarParsing.multiplicity.singleton,
+    VarParsing.varType.bool,
+    "Preselect events"
+  )
+  options.register ('doSlimming', True,
+    VarParsing.multiplicity.singleton,
+    VarParsing.varType.bool,
+    "Drop unnecessary collections"
+  )
+  options.register ('doMuon', True,
+    VarParsing.multiplicity.singleton,
+    VarParsing.varType.bool,
+    "Do muon paths"
+  )
+  options.register ('doElectron', True,
+    VarParsing.multiplicity.singleton,
+    VarParsing.varType.bool,
+    "Do electron paths"
+  )
+  options.register ('globalTag', "START53_V7F",
+    VarParsing.multiplicity.singleton,
+    VarParsing.varType.string,
+    "Global tag"
+  )
+  options.parseArguments()
+
+  process.source.fileNames = cms.untracked.vstring(options.inputFiles)
+  process.maxEvents = cms.untracked.PSet(
+    input = cms.untracked.int32(options.maxEvents)
+  )
+  process.out.fileName = cms.untracked.string(options.outputFile)
+  process.options = cms.untracked.PSet(wantSummary=cms.untracked.bool(options.doDebug))
+
+  if options.doDebug:
     process.load("FWCore.MessageLogger.MessageLogger_cfi")
     process.MessageLogger = cms.Service("MessageLogger",
       destinations=cms.untracked.vstring('cout', 'debug'),
@@ -42,7 +79,7 @@ def SingleTopStep1(
 
   postfix = ""
 
-  usePF2PAT(process, runPF2PAT=True, jetAlgo='AK5', runOnMC=isMC, postfix=postfix,
+  usePF2PAT(process, runPF2PAT=True, jetAlgo='AK5', runOnMC=options.isMC, postfix=postfix,
     jetCorrections=('AK5PFchs', ['L1FastJet', 'L2Relative', 'L3Absolute']),
     pvCollection=cms.InputTag('goodOfflinePrimaryVertices'),
     typeIMetCorrections = True #FIXME: Does this automatically add type1 corrections completely and consistently?
@@ -90,7 +127,7 @@ def SingleTopStep1(
     muonSrc = cms.InputTag("selectedPatMuons"),
     primaryVertexSource = cms.InputTag("goodOfflinePrimaryVertices")
   )
-  
+
   #-------------------------------------------------
   # Electrons
   # Implemented as in https://indico.cern.ch/getFile.py/access?contribId=1&resId=0&materialId=slides&confId=208765
@@ -152,7 +189,7 @@ def SingleTopStep1(
   # Slimming
   #-----------------------------------------------
 
-  if not doSlimming:
+  if not options.doSlimming:
       process.out.outputCommands = cms.untracked.vstring('keep *')
   else:
       process.out.outputCommands = cms.untracked.vstring([
@@ -218,24 +255,24 @@ def SingleTopStep1(
 
   #Need separate paths because of skimming
 
-  if doMuon:
+  if options.doMuon:
     process.singleTopPathStep1Mu = cms.Path(
       process.goodOfflinePrimaryVertices
       * process.patPF2PATSequence
     )
 
-  if doElectron:
+  if options.doElectron:
     process.singleTopPathStep1Ele = cms.Path(
       process.goodOfflinePrimaryVertices
       * process.patPF2PATSequence
     )
 
-  if doMuon:
+  if options.doMuon:
     process.out.SelectEvents.SelectEvents.append("singleTopPathStep1Mu")
-  if doElectron:
+  if options.doElectron:
     process.out.SelectEvents.SelectEvents.append("singleTopPathStep1Ele")
 
-  if isMC:
+  if options.isMC:
     process.GlobalTag.globaltag = cms.string('START53_V7F::All')
 
     #https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideBTagJetProbabilityCalibration?redirectedfrom=CMS.SWGuideBTagJetProbabilityCalibration#Calibration_in_53x_Data_and_MC
@@ -279,13 +316,13 @@ def SingleTopStep1(
     process.patPF2PATSequence += process.scrapingFilter
     process.patPF2PATSequence += process.ecalLaserCorrFilter
 
-  if not onGrid:
-    from SingleTopPolarization.Analysis.cmdlineParsing import enableCommandLineArguments
-    enableCommandLineArguments(process)
-  else:
-    process.out.fileName = "step1.root"
+  #if not onGrid:
+  #  from SingleTopPolarization.Analysis.cmdlineParsing import enableCommandLineArguments
+  #  enableCommandLineArguments(process)
+  #else:
+  #  process.out.fileName = "step1.root"
 
-  if doSkimming:
+  if options.doSkimming:
     process.out.fileName.setValue(process.out.fileName.value().replace(".root", "_Skim.root"))
   else:
     process.out.fileName.setValue(process.out.fileName.value().replace(".root", "_noSkim.root"))
@@ -296,13 +333,13 @@ def SingleTopStep1(
   #-----------------------------------------------
 
   #Throw away events before particle flow?
-  if doSkimming:
+  if options.doSkimming:
       from SingleTopPolarization.Analysis.eventSkimming_cfg import skimFilters
       skimFilters(process)
 
-      if doMuon:
+      if options.doMuon:
         process.singleTopPathStep1Mu.insert(0, process.muonSkim)
-      if doElectron:
+      if options.doElectron:
         process.singleTopPathStep1Ele.insert(0, process.electronSkim)
 
 
@@ -315,24 +352,15 @@ def SingleTopStep1(
 
   #count events passing mu and ele paths
 
-  if doMuon:
+  if options.doMuon:
     countInSequence(process, process.singleTopPathStep1Mu)
-  if doElectron:
+  if options.doElectron:
     countInSequence(process, process.singleTopPathStep1Ele)
   #-------------------------------------------------
   #
   #-------------------------------------------------
 
-  print 80*"-"
-  print "Output file is %s" % process.out.fileName
-  print "isMC: %s" % str(isMC)
-  if doElectron:
-    print "ele path: " + str(process.singleTopPathStep1Ele)
-  if doMuon:
-    print "mu path: " + str(process.singleTopPathStep1Mu)
-  print "outputCommands: " + str(process.out.outputCommands)
-
-  if not doSlimming:
+  if not options.doSlimming:
     process.out.fileName.setValue(process.out.fileName.value().replace(".root", "_noSlim.root"))
 
   return process

@@ -11,5 +11,5 @@ merge = [
 		]
 a = channelComp("cosThetaLightJet_cosTheta", cuts=Cuts.finalEle, r=(10, -1, 1), doStack=True, mergeList=merge)
 b =  channelComp("cosThetaLightJet_cosTheta", cuts=Cuts.finalMu, r=(10, -1, 1), doStack=True, mergeList=merge)
-a[0].Print("../plots/cosTheta_finalEle.pdf")
-b[0].Print("../plots/cosTheta_finalMu.pdf")
+a[0].Print("plots/cosTheta_finalEle.pdf")
+b[0].Print("plots/cosTheta_finalMu.pdf")
