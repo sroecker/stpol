@@ -97,10 +97,11 @@ PatObjectOwnRefProducer<T>::produce(edm::Event& iEvent, const edm::EventSetup& i
         throw new 
     }*/
     
-    std::auto_ptr<std::vector<T>> outColl(new std::vector<T>(*pIn));
+    std::auto_ptr<std::vector<T>> outColl(new std::vector<T>(*inColl));
     
     for( auto & elem : *outColl) {
-        elem.addUserFloat("asd", 0.0);
+        edm::Ref<T> r(elem);
+        elem.addUserData("original", r);
     }
     
     /*
