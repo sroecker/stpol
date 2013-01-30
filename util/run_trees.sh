@@ -2,7 +2,7 @@
 
 JOBNUM=$1
 
-#. ./util/bcmsRun runconfs/step2_newCmdLine_cfg.py fileLists/T_t.txt trees/T_t $JOBNUM "channel=signal subChannel=T_t"
+. ./util/bcmsRun runconfs/step2_newCmdLine_cfg.py fileLists/T_t.txt trees/T_t $JOBNUM "channel=signal subChannel=T_t"
 #. ./util/bcmsRun runconfs/step2_newCmdLine_cfg.py fileLists/Tbar_t.txt trees/Tbar_t channel=signal subChannel=Tbar_t
 #. ./util/bcmsRun runconfs/step2_newCmdLine_cfg.py fileLists/T_tW.txt trees/T_tW channel=background subChannel=T_tW
 #. ./util/bcmsRun runconfs/step2_newCmdLine_cfg.py fileLists/Tbar_tW.txt trees/Tbar_tW channel=background subChannel=Tbar_tW
