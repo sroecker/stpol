@@ -222,7 +222,8 @@ def SingleTopStep2():
                     ["Phi", "phi"],
                     ["Mass", "mass"],
                     ["bDiscriminator", "bDiscriminator('%s')" % Config.Jets.bTagDiscriminant],
-                    ["rms", "userFloat('rms')"]
+                    ["rms", "userFloat('rms')"],
+                    ["partonFlavour", "partonFlavour()"]
                 ]
             ),
 
@@ -235,7 +236,8 @@ def SingleTopStep2():
                     ["Phi", "phi"],
                     ["Mass", "mass"],
                     ["bDiscriminator", "bDiscriminator('%s')" % Config.Jets.bTagDiscriminant],
-                    ["rms", "userFloat('rms')"]
+                    ["rms", "userFloat('rms')"],
+                    ["partonFlavour", "partonFlavour()"]
                 ]
             ),
 
@@ -248,7 +250,8 @@ def SingleTopStep2():
                     ["Phi", "phi"],
                     ["Mass", "mass"],
                     ["bDiscriminator", "bDiscriminator('%s')" % Config.Jets.bTagDiscriminant],
-                    ["rms", "userFloat('rms')"]
+                    ["rms", "userFloat('rms')"],
+                    ["partonFlavour", "partonFlavour()"]
                 ]
             ),
             treeCollection(
@@ -259,7 +262,8 @@ def SingleTopStep2():
                     ["Phi", "phi"],
                     ["Mass", "mass"],
                     ["bDiscriminator", "bDiscriminator('%s')" % Config.Jets.bTagDiscriminant],
-                    ["rms", "userFloat('rms')"]
+                    ["rms", "userFloat('rms')"],
+                    ["partonFlavour", "partonFlavour()"]
                 ]
             )
         )
