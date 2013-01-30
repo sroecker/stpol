@@ -63,6 +63,7 @@ class CleanNoPUJetProducer : public edm::EDProducer {
       const edm::InputTag jetPUIdVarsSrc;
 
       // ----------member data ---------------------------
+      const bool isOriginal;
 };
 
 //
@@ -82,6 +83,7 @@ CleanNoPUJetProducer::CleanNoPUJetProducer(const edm::ParameterSet& iConfig)
 , jetPUIdMVASrc(iConfig.getParameter<edm::InputTag>("PUidMVA"))
 , jetPUIdFlagSrc(iConfig.getParameter<edm::InputTag>("PUidFlag"))
 , jetPUIdVarsSrc(iConfig.getParameter<edm::InputTag>("PUidVars"))
+, isOriginal(iConfig.getParameter<bool>("isOriginal"))
 {
   produces<std::vector<pat::Jet> >();
   
@@ -117,14 +119,26 @@ CleanNoPUJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    iEvent.getByLabel(jetPUIdVarsSrc, jetIDs);
 
    std::auto_ptr<std::vector<pat::Jet> > outJets(new std::vector<pat::Jet>());
-
    for ( uint i = 0; i < jets->size(); ++i ) {
     const pat::Jet& jet = jets->at(i);
+    float mva = 0;
+    int idflag = 0;
+    const StoredPileupJetIdentifier* id = 0;
+    if (!isOriginal && jet.hasUserCand("original")) {
+        LogDebug("produce") << "Input jet is not original";
+        reco::CandidatePtr candP = jet.userCand("original");
+        mva = (*mvaIDs)[candP];
+        idflag = (*flags)[candP];
+        id = &((*jetIDs)[candP]);
+        LogDebug("produce") << "Using original jet pointer: mva = " << mva << " idflag = " << idflag;
+    } else {
+        mva = (*mvaIDs)[jets->refAt(i)];
+        idflag = (*flags)[jets->refAt(i)];
+        id = &((*jetIDs)[jets->refAt(i)]);
+        LogDebug("produce") << "Using original jet: mva = " << mva << " idflag = " << idflag;
+    }
 
     //Get the values from the valueMaps
-    float mva = (*mvaIDs)[jets->refAt(i)];
-    int idflag = (*flags)[jets->refAt(i)];
-    const StoredPileupJetIdentifier& id = (*jetIDs)[jets->refAt(i)];
 
     LogDebug("produce()") << "jet pt: " << jet.pt() << " eta: " << jet.eta() << " mvaID: " << mva;
     if( PileupJetIdentifier::passJetId( idflag, PileupJetIdentifier::kLoose ) ) {
@@ -132,7 +146,7 @@ CleanNoPUJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       outJets->push_back(jet);
 
       pat::Jet& jet = outJets->back();
-      jet.addUserFloat("rms", id.RMS());
+      jet.addUserFloat("rms", id->RMS());
 
     } else {
       LogDebug("produce()") << " fail loose wp";
