@@ -1,10 +1,14 @@
 from anfw import *
 
+#cut = Cuts.mu + Cuts.MT + Cuts.mlnu + Cuts.jets_1LJ + Cuts.jetRMS + Cuts.jetPt + Cuts.etaLJ + Cuts.recoFState #Cut("1plusLJ", "_lightJetCount>=1")
+cut = Cuts.mu + Cuts.MT
+print cut
+
 def calcBTaggingEff(channel):
-    print "Calculating b-tagging efficiencies for channel {0}".format(channel)
+    print "B-tagging effs for channel {0}".format(channel)
     ROOT.gROOT.cd()
-    cut = Cuts.mu + Cuts.jetRMS + Cuts.MT + Cuts.etaLJ + Cuts.jets_2J1T + Cuts.mlnu + Cuts.recoFState
-    print cut
+
+    #cut = Cuts.finalMu
     channels[channel].tree.Draw(">>elist", cut.cutStr)
     elist = ROOT.gROOT.Get("elist")
     print "Number of events in selection: %d" % elist.GetN()
@@ -40,21 +44,17 @@ def calcBTaggingEff(channel):
         sumBTaggedL += tree._btaggedTrueLJetCount
         sumTrueL += tree._trueLJetCount
     
-    print "B: %d %d" % (sumBTaggedB, sumTrueB)
-    print "C: %d %d" % (sumBTaggedC, sumTrueC)
-    print "L: %d %d" % (sumBTaggedL, sumTrueL)
-    print "Generated lepton counts: {0}".format(str(lepCount))
+    print ("jet counts (tagged | all): B: %d | %d" % (sumBTaggedB, sumTrueB)) + ("; C: %d | %d" % (sumBTaggedC, sumTrueC)) + ("; L: %d | %d" % (sumBTaggedL, sumTrueL))
+    #print "Generated lepton counts: {0}".format(str(lepCount))
  
     eff_b = float(sumBTaggedB)/float(sumTrueB)
     eff_c = float(sumBTaggedC)/float(sumTrueC)
     eff_l = float(sumBTaggedL)/float(sumTrueL)
     
-    print "eff_b = %.2E" % eff_b
-    print "eff_c = %.2E" % eff_c
-    print "eff_l = %.2E" % eff_l
-
+    print ("eff_b = %.2E" % eff_b) + (" | eff_c = %.2E" % eff_c) + (" | eff_l = %.2E" % eff_l)
+    print 80*"-"
     return {"eff_b": eff_b, "eff_c": eff_c, "eff_l": eff_l}
 
-print calcBTaggingEff("T_t")
-print calcBTaggingEff("WJets")
-print calcBTaggingEff("TTBar")
+calcBTaggingEff("T_t")
+calcBTaggingEff("WJets")
+calcBTaggingEff("TTBar")

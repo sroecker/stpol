@@ -13,6 +13,10 @@
 		A70C272916AFF53E00495932 /* crab_Data_step1.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = crab_Data_step1.cfg; path = crabs/crab_Data_step1.cfg; sourceTree = "<group>"; };
 		A70C272A16AFF53E00495932 /* crab_MC_step1.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = crab_MC_step1.cfg; path = crabs/crab_MC_step1.cfg; sourceTree = "<group>"; };
 		A70C272B16AFF53E00495932 /* crab_MC_step2.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = crab_MC_step2.cfg; path = crabs/crab_MC_step2.cfg; sourceTree = "<group>"; };
+		A70C274A16B0501C00495932 /* btagsystematicsweightproducer_cfg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = btagsystematicsweightproducer_cfg.py; sourceTree = "<group>"; };
+		A70C274B16B0501C00495932 /* BuildFile.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
+		A70C274D16B0501C00495932 /* btagsystematicsweightproducer_cfi.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = btagsystematicsweightproducer_cfi.py; sourceTree = "<group>"; };
+		A70C274F16B0501C00495932 /* BTagSystematicsWeightProducer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BTagSystematicsWeightProducer.cc; sourceTree = "<group>"; };
 		A724984316A6E6D300E687C5 /* build_scram.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build_scram.sh; sourceTree = "<group>"; };
 		A73D461D16A83DFB00703EF6 /* babysit2.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = babysit2.sh; sourceTree = "<group>"; };
 		A73D461E16A83DFB00703EF6 /* bcmsRun */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = bcmsRun; sourceTree = "<group>"; };
@@ -215,6 +219,33 @@
 			name = crabs;
 			sourceTree = "<group>";
 		};
+		A70C274916B0501C00495932 /* BTagSystematicsWeightProducer */ = {
+			isa = PBXGroup;
+			children = (
+				A70C274A16B0501C00495932 /* btagsystematicsweightproducer_cfg.py */,
+				A70C274B16B0501C00495932 /* BuildFile.xml */,
+				A70C274C16B0501C00495932 /* python */,
+				A70C274E16B0501C00495932 /* src */,
+			);
+			path = BTagSystematicsWeightProducer;
+			sourceTree = "<group>";
+		};
+		A70C274C16B0501C00495932 /* python */ = {
+			isa = PBXGroup;
+			children = (
+				A70C274D16B0501C00495932 /* btagsystematicsweightproducer_cfi.py */,
+			);
+			path = python;
+			sourceTree = "<group>";
+		};
+		A70C274E16B0501C00495932 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A70C274F16B0501C00495932 /* BTagSystematicsWeightProducer.cc */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
 		A73D461C16A83DFB00703EF6 /* util */ = {
 			isa = PBXGroup;
 			children = (
@@ -274,6 +305,7 @@
 		A76CF92516A6B2BE00DC8250 /* SingleTopPolarization */ = {
 			isa = PBXGroup;
 			children = (
+				A70C274916B0501C00495932 /* BTagSystematicsWeightProducer */,
 				A76CF92616A6B2BE00DC8250 /* Analysis */,
 				A76CF93F16A6B2BE00DC8250 /* CandTransverseMassProducer */,
 				A76CF94616A6B2BE00DC8250 /* CandViewTreemakerAnalyzer */,

@@ -79,6 +79,9 @@ class GenericTreemakerAnalyzer : public edm::EDAnalyzer {
 
 
    private:
+ 
+      const C ownDefaultValue;
+
       virtual void beginJob() ;
       virtual void analyze(const edm::Event&, const edm::EventSetup&);
       virtual void endJob() ;
@@ -103,6 +106,7 @@ class GenericTreemakerAnalyzer : public edm::EDAnalyzer {
       std::string treeName;
 
       const bool reportMissing;
+      const bool putNaNs;
 
 };
 
@@ -120,6 +124,8 @@ class GenericTreemakerAnalyzer : public edm::EDAnalyzer {
 template <typename T, typename C>
 GenericTreemakerAnalyzer<T, C>::GenericTreemakerAnalyzer(const edm::ParameterSet& iConfig) :
 reportMissing(iConfig.getUntrackedParameter<bool>("reportMissing", false))
+, ownDefaultValue(iConfig.getUntrackedParameter<C>("defaultValue", GenericTreemakerAnalyzer<T, C>::defaultValue))
+, putNaNs(iConfig.getUntrackedParameter<bool>("putNaNs", true))
 {
 
   makeTree = iConfig.getUntrackedParameter<bool>("makeTree", true);
@@ -133,7 +139,7 @@ reportMissing(iConfig.getUntrackedParameter<bool>("reportMissing", false))
 
   auto collectionsPSets = iConfig.getParameter<std::vector<edm::InputTag>>("collections");
   for (auto& colTag : collectionsPSets) {
-    treeValues[colTag.encode()] = new C();
+    treeValues[colTag.encode()] = new C(ownDefaultValue);
     std::string brName = colTag.instance() + std::string("_") + colTag.label();
     colNames[colTag.encode()] = colTag;
     outTree->Branch(brName.c_str(), treeValues[colTag.encode()]);
@@ -163,7 +169,7 @@ GenericTreemakerAnalyzer<T, C>::analyze(const edm::Event& iEvent, const edm::Eve
 
   //Initialize all branch variables
   for (auto& cols : treeValues) {
-    *(cols.second) = (C)defaultValue;
+    *(cols.second) = ownDefaultValue;
   }
 
   for (auto& cols : colNames) {
@@ -171,7 +177,9 @@ GenericTreemakerAnalyzer<T, C>::analyze(const edm::Event& iEvent, const edm::Eve
     iEvent.getByLabel(cols.second, object);
     if(object.isValid()) {
       LogDebug("produce()") << "Collection " << cols.second.encode()  << " = " << *object;
-      *(treeValues[cols.first]) = *object;
+      if (((*object)!=(*object) && putNaNs) || (*object)==(*object)) {
+          *(treeValues[cols.first]) = *object;
+      }
     } else {
       if(reportMissing) {
           LogDebug("produce()") << "Collection " << cols.second.encode() << " is not available";

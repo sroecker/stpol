@@ -24,17 +24,17 @@ def SingleTopStep2():
     if not Config.onGrid:
         options = VarParsing('analysis')
         options.register ('subChannel', 'T_t',
-				  VarParsing.multiplicity.singleton,
-				  VarParsing.varType.string,
-				  "The sample that you are running on")
+                  VarParsing.multiplicity.singleton,
+                  VarParsing.varType.string,
+                  "The sample that you are running on")
         options.register ('channel', 'signal',
-				  VarParsing.multiplicity.singleton,
-				  VarParsing.varType.string,
-				  "Signal or Background")
+                  VarParsing.multiplicity.singleton,
+                  VarParsing.varType.string,
+                  "Signal or Background")
         options.register ('reverseIsoCut', False,
-				  VarParsing.multiplicity.singleton,
-				  VarParsing.varType.bool,
-				  "Consider anti-isolated region")
+                  VarParsing.multiplicity.singleton,
+                  VarParsing.varType.bool,
+                  "Consider anti-isolated region")
         options.register ('doDebug', False,
 				  VarParsing.multiplicity.singleton,
 				  VarParsing.varType.bool,
@@ -222,7 +222,8 @@ def SingleTopStep2():
                     ["Phi", "phi"],
                     ["Mass", "mass"],
                     ["bDiscriminator", "bDiscriminator('%s')" % Config.Jets.bTagDiscriminant],
-                    ["rms", "userFloat('rms')"]
+                    ["rms", "userFloat('rms')"],
+                    ["partonFlavour", "partonFlavour()"]
                 ]
             ),
 
@@ -235,11 +236,12 @@ def SingleTopStep2():
                     ["Phi", "phi"],
                     ["Mass", "mass"],
                     ["bDiscriminator", "bDiscriminator('%s')" % Config.Jets.bTagDiscriminant],
-                    ["rms", "userFloat('rms')"]
+                    ["rms", "userFloat('rms')"],
+                    ["partonFlavour", "partonFlavour()"]
                 ]
             ),
 
-	    #all the b-tagged jets in the event, ordered pt-descending
+        #all the b-tagged jets in the event, ordered pt-descending
             treeCollection(
                 cms.untracked.InputTag("btaggedJets"), Config.Jets.nBTags,
                 [
@@ -248,7 +250,8 @@ def SingleTopStep2():
                     ["Phi", "phi"],
                     ["Mass", "mass"],
                     ["bDiscriminator", "bDiscriminator('%s')" % Config.Jets.bTagDiscriminant],
-                    ["rms", "userFloat('rms')"]
+                    ["rms", "userFloat('rms')"],
+                    ["partonFlavour", "partonFlavour()"]
                 ]
             ),
             treeCollection(
@@ -259,7 +262,8 @@ def SingleTopStep2():
                     ["Phi", "phi"],
                     ["Mass", "mass"],
                     ["bDiscriminator", "bDiscriminator('%s')" % Config.Jets.bTagDiscriminant],
-                    ["rms", "userFloat('rms')"]
+                    ["rms", "userFloat('rms')"],
+                    ["partonFlavour", "partonFlavour()"]
                 ]
             )
         )
@@ -360,17 +364,30 @@ def SingleTopStep2():
             cms.InputTag("muAndMETMT", ""),
             cms.InputTag("eleAndMETMT", ""),
 
+            ##B-tag systematics
+            #cms.InputTag("bTagWeightProducer", "bTagWeight"),
+            #cms.InputTag("bTagWeightProducer", "bTagWeightSystBCUp"),
+            #cms.InputTag("bTagWeightProducer", "bTagWeightSystBCDown"),
+            #cms.InputTag("bTagWeightProducer", "bTagWeightSystLUp"),
+            #cms.InputTag("bTagWeightProducer", "bTagWeightSystLDown"),
+
+
+            #Some debugging data
+            #cms.InputTag("kt6PFJets", "rho", "RECO"),
+            #cms.InputTag("recoNu", "Delta"),
+        )
+    )
+    
+    process.treesDoubleWeight = cms.EDAnalyzer("DoubleTreemakerAnalyzer",
+        defaultValue = cms.untracked.double(0),
+        putNaNs = cms.untracked.bool(False),
+        collections = cms.VInputTag(
             #B-tag systematics
             cms.InputTag("bTagWeightProducer", "bTagWeight"),
             cms.InputTag("bTagWeightProducer", "bTagWeightSystBCUp"),
             cms.InputTag("bTagWeightProducer", "bTagWeightSystBCDown"),
             cms.InputTag("bTagWeightProducer", "bTagWeightSystLUp"),
             cms.InputTag("bTagWeightProducer", "bTagWeightSystLDown"),
-
-
-            #Some debugging data
-            #cms.InputTag("kt6PFJets", "rho", "RECO"),
-            #cms.InputTag("recoNu", "Delta"),
         )
     )
 
@@ -404,7 +421,7 @@ def SingleTopStep2():
         )
     )
 
-    process.treeSequence = cms.Sequence(process.treesMu*process.treesEle*process.treesDouble*process.treesBool*process.treesCands*process.treesJets*process.treesInt)
+    process.treeSequence = cms.Sequence(process.treesMu*process.treesEle*process.treesDouble*process.treesBool*process.treesCands*process.treesJets*process.treesInt*process.treesDoubleWeight)
 
     #-----------------------------------------------
     # Flavour analyzer

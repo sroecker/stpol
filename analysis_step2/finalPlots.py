@@ -5,11 +5,11 @@ merge = [
 		["s", ".+_s$"],
 		["t#bar{t}", "TTBar$"],
 		["WJets", "WJets$"],
-		["QCD", "QCD.+"],
+		#["QCD", "QCD.+"],
 		["diboson", "WW|WZ|ZZ"],
 		["t", ".+_t$"],
 		]
-a = channelComp("cosThetaLightJet_cosTheta", cuts=Cuts.finalEle, r=(10, -1, 1), doStack=True, exclude="QCDMu", mergeList=merge)
-b =  channelComp("cosThetaLightJet_cosTheta", cuts=Cuts.finalMu, r=(10, -1, 1), doStack=True, exclude="QCD.+EM", mergeList=merge)
-a[0].Print("../plots/cosTheta_finalEle.pdf")
-b[0].Print("../plots/cosTheta_finalMu.pdf")
+a = channelComp("cosThetaLightJet_cosTheta", cuts=Cuts.finalEle, r=(10, -1, 1), doStack=True, mergeList=merge)
+b =  channelComp("cosThetaLightJet_cosTheta", cuts=Cuts.finalMu, r=(10, -1, 1), doStack=True, mergeList=merge)
+a[0].Print("plots/cosTheta_finalEle.pdf")
+b[0].Print("plots/cosTheta_finalMu.pdf")
