@@ -99,9 +99,11 @@ PatObjectOwnRefProducer<T>::produce(edm::Event& iEvent, const edm::EventSetup& i
     
     std::auto_ptr<std::vector<T>> outColl(new std::vector<T>(*inColl));
     
+    unsigned int i = 0;
     for( auto & elem : *outColl) {
-        edm::Ref<T, T> r(elem);
+        edm::Ref<View<T>> r(inColl, i);
         elem.addUserData("original", r);
+        i++;
     }
     
     /*
