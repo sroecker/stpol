@@ -31,6 +31,7 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include <DataFormats/PatCandidates/interface/Jet.h>
 #include "FWCore/Utilities/interface/InputTag.h"
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 
 //
@@ -90,22 +91,26 @@ PatObjectOwnRefProducer<T>::produce(edm::Event& iEvent, const edm::EventSetup& i
 {
     using namespace edm;
     
-    Handle<std::vector<T>> inColl;
+    Handle<View<reco::Candidate>> inCollCand;
+    Handle<View<T>> inColl;
+
+    iEvent.getByLabel(src, inCollCand);
     iEvent.getByLabel(src, inColl);
     
-    /*if(! inColl.isValid()) {
-        throw new 
-    }*/
+    if(!inColl.isValid() || !inCollCand.isValid())
+        throw cms::Exception("produce") << "Input collections were invalid";
+    LogDebug("produce") << "Input collections have " << inColl->size() << ", " << inCollCand->size() << " items"; 
     
-    std::auto_ptr<std::vector<T>> outColl(new std::vector<T>(*inColl));
+    std::auto_ptr<std::vector<T>> outColl(new std::vector<T>());
     
     unsigned int i = 0;
-    for( auto & elem : *outColl) {
-        edm::Ref<std::vector<T>> r(inColl, i);
-        elem.addUserData("original", r);
+    for( auto& elem : *inColl) {
+        T nElem(elem);
+        nElem.addUserCand("original", inCollCand->ptrAt(i));
+        outColl->push_back(nElem); 
         i++;
     }
-    
+    LogDebug("produce") << "Output collection has " << outColl->size() << " items"; 
     iEvent.put(outColl);
 }
 
