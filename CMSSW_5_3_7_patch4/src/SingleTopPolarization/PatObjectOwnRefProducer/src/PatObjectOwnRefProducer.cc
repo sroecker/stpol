@@ -101,24 +101,12 @@ PatObjectOwnRefProducer<T>::produce(edm::Event& iEvent, const edm::EventSetup& i
     
     unsigned int i = 0;
     for( auto & elem : *outColl) {
-        edm::Ref<View<T>> r(inColl, i);
+        edm::Ref<std::vector<T>> r(inColl, i);
         elem.addUserData("original", r);
         i++;
     }
     
-    /*
-     //Use the ExampleData to create an ExampleData2 which
-     // is put into the Event
-     std::auto_ptr<ExampleData2> pOut(new ExampleData2(*pIn));
-     iEvent.put(pOut);
-     */
-    
-    /* this is an EventSetup example
-     //Read SetupData from the SetupRecord in the EventSetup
-     ESHandle<SetupData> pSetup;
-     iSetup.get<SetupRecord>().get(pSetup);
-     */
-    
+    iEvent.put(outColl);
 }
 
 // ------------ method called once each job just before starting event loop  ------------
