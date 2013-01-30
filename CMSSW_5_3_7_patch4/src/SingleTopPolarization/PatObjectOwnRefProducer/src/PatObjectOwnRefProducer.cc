@@ -90,7 +90,7 @@ PatObjectOwnRefProducer<T>::produce(edm::Event& iEvent, const edm::EventSetup& i
 {
     using namespace edm;
     
-    Handle<View<T>> inColl;
+    Handle<std::vector<T>> inColl;
     iEvent.getByLabel(src, inColl);
     
     /*if(! inColl.isValid()) {
