@@ -190,7 +190,7 @@ def SingleTopStep2():
             collections = cms.untracked.VPSet(
             #all the selected jets in events, passing the reference selection cuts, ordered pt-descending
             treeCollection(
-                cms.untracked.InputTag("goodJets"), Config.Jets.nJets,
+                cms.untracked.InputTag("goodJets"), 5,
                 [
                     ["Pt", "pt"],
                     ["Eta", "eta"],
