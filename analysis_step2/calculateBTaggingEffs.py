@@ -31,7 +31,7 @@ def calcBTaggingEff(channel):
             tree._btaggedTrueCJetCount == -1 or tree._trueCJetCount == -1 or
             tree._btaggedTrueLJetCount == -1 or tree._trueLJetCount == -1
         ):
-            print "Warning: anomalous event"
+            #print "Warning: anomalous event"
             continue
         lepCount[tree._genLeptonsTCount] += 1
     
