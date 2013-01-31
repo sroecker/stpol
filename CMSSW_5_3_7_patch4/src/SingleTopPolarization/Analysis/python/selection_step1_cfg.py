@@ -32,7 +32,7 @@ def SingleTopStep1(
     VarParsing.varType.bool,
     "Run in debugging mode"
   )
-  options.register ('doSkimming', False,
+  options.register ('doSkimming', True,
     VarParsing.multiplicity.singleton,
     VarParsing.varType.bool,
     "Preselect events"
@@ -52,7 +52,7 @@ def SingleTopStep1(
     VarParsing.varType.bool,
     "Do electron paths"
   )
-  options.register ('globalTag', "START53_V7F",
+  options.register ('globalTag', "START53_V7F::All",
     VarParsing.multiplicity.singleton,
     VarParsing.varType.string,
     "Global tag"
@@ -272,8 +272,8 @@ def SingleTopStep1(
   if options.doElectron:
     process.out.SelectEvents.SelectEvents.append("singleTopPathStep1Ele")
 
+  process.GlobalTag.globaltag = cms.string(options.globalTag)
   if options.isMC:
-    process.GlobalTag.globaltag = cms.string('START53_V7F::All')
 
     #https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideBTagJetProbabilityCalibration?redirectedfrom=CMS.SWGuideBTagJetProbabilityCalibration#Calibration_in_53x_Data_and_MC
     process.GlobalTag.toGet = cms.VPSet(
@@ -285,7 +285,6 @@ def SingleTopStep1(
       connect = cms.untracked.string("frontier://FrontierPrep/CMS_COND_BTAU"))
     )
   else:
-    process.GlobalTag.globaltag = cms.string(globalTag) #FT_53_V6_AN2
 
     #https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideBTagJetProbabilityCalibration?redirectedfrom=CMS.SWGuideBTagJetProbabilityCalibration#Calibration_in_53x_Data_and_MC
     process.GlobalTag.toGet = cms.VPSet(
