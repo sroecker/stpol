@@ -47,7 +47,7 @@ class Cuts:
     recoFState = Cut("recoFstate", "_topCount==1")
     mu = Cut("mu", "_muonCount==1") + Cut("muIso", "_goodSignalMuons_0_relIso<0.12")
     ele = Cut("ele", "_electronCount==1") + Cut("eleIso", "_goodSignalElectrons_0_relIso<0.3") + Cut("eleMVA", "_goodSignalElectrons_0_mvaID>0.9")
-    
+
     jets_1LJ = Cut("1LJ", "_lightJetCount==1")
     jets_2J1T = Cut("2J1T", "_lightJetCount==1 && _bJetCount==1")
     jets_2J0T = Cut("2J0T", "_lightJetCount==1 && _bJetCount==0")
@@ -74,18 +74,18 @@ class Channel:
         self.xs = crossSection
         print "Opening file {0}".format(fileName)
         self.file = ROOT.TFile(fileName)
-        
+
         if self.xs>0:
             self.xsWeight = float(self.xs) / self.file.Get("efficiencyAnalyzerMu").Get("muPath").GetBinContent(1)
         else:
             self.xsWeight = 1
-            
+
         keys = [x.GetName() for x in self.file.GetListOfKeys()]
         treeNames = filter(lambda x: x.startswith("tree"), keys)
         self.trees = [self.file.Get(k).Get("eventTree") for k in treeNames]
         if "flavourAnalyzer" in keys:
             self.trees.append(self.file.Get("flavourAnalyzer").Get("FlavorTree"))
-        
+
         self.branches = []
         for t in self.trees[1:]:
             self.trees[0].AddFriend(t)
@@ -127,7 +127,7 @@ class Channel:
 
         if weight is None:
             weight = lumi*self.xsWeight
-        
+
 
         self.tree.Draw("{2}({0})>>{1}".format(varName, histName, fn), "%f*(%s)" % (weight, cut.cutStr))
         nEntries = int(self.tree.GetEntries(cut.cutStr))
@@ -156,7 +156,7 @@ channels["T_t"] = Channel("T_t", args.datadir + "/T_t.root", xs["T_t"], color=RO
 #channels["Tbar_s"] = Channel("Tbar_s", args.datadir + "/Tbar_s.root", xs["Tbar_s"], color=ROOT.kYellow)
 #channels["T_tW"] = Channel("T_tW", args.datadir + "/T_tW.root", xs["T_tW"], color=ROOT.kYellow+4)
 #channels["Tbar_tW"] = Channel("Tbar_tW", args.datadir + "/Tbar_tW.root", xs["Tbar_tW"], color=ROOT.kYellow+4)
-channels["TTBar"] = Channel("TTBar", args.datadir + "/TTBar.root", xs["TTBar"], color=ROOT.kOrange)
+channels["TTbar"] = Channel("TTbar", args.datadir + "/TTbar.root", xs["TTbar"], color=ROOT.kOrange)
 #channels["WW"] = Channel("WW", args.datadir + "/WW.root", xs["WW"], color=ROOT.kBlue)
 #channels["WZ"] = Channel("WZ", args.datadir + "/WZ.root", xs["WZ"], color=ROOT.kBlue)
 #channels["ZZ"] = Channel("ZZ", args.datadir + "/ZZ.root", xs["ZZ"], color=ROOT.kBlue)
