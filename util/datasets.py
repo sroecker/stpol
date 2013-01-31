@@ -91,6 +91,7 @@ class DS_S2MC(DS):
         out = DS.parseTemplate(self, out, tag)
         return out
 
+#Top samples are in https://twiki.cern.ch/twiki/bin/view/CMS/TopSamplesSummer12#Prioritisation_for_Moriond2013
 
 #Datasets and run ranges come from:
 #https://twiki.cern.ch/twiki/bin/viewauth/CMS/PdmV2012Analysis#Analysis_based_on_CMSSW_5_3_X_re
@@ -114,7 +115,7 @@ step1_data = [
       
     , DS_Data("SingleMu_Run2012C_v2",
       "/SingleMu/Run2012C-PromptReco-v2/AOD", "PromptReco", "FT_P_V42C_AN3::All", [198934, 203746])
-      
+    
     , DS_Data("SingleElectron_Run2012A",
       "/SingleElectron/Run2012A-13Jul2012-v1/AOD", "13JulReReco", "FT_53_V6_AN3::All", [-1, -1])
       
