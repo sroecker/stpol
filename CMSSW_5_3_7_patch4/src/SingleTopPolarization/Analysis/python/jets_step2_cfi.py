@@ -187,16 +187,16 @@ def JetSetup(process, conf):
     process.nJets = cms.EDFilter(
         "PATCandViewCountFilter",
         src=cms.InputTag("goodJets"),
-        minNumber=cms.uint32(conf.Jets.nJets if conf.Jets.cutJets else 2),
-        maxNumber=cms.uint32(conf.Jets.nJets if conf.Jets.cutJets else 4),
+        minNumber=cms.uint32(conf.Jets.nJets if conf.Jets.cutJets else 0),
+        maxNumber=cms.uint32(conf.Jets.nJets if conf.Jets.cutJets else 5),
     )
 
     #Require exactly M bTags, otherwise 1...3 bJets
     process.mBTags = cms.EDFilter(
         "PATCandViewCountFilter",
         src=cms.InputTag("btaggedJets"),
-        minNumber=cms.uint32(conf.Jets.nBTags if conf.Jets.cutJets else 1),
-        maxNumber=cms.uint32(conf.Jets.nBTags if conf.Jets.cutJets else 3),
+        minNumber=cms.uint32(conf.Jets.nBTags if conf.Jets.cutJets else 0),
+        maxNumber=cms.uint32(conf.Jets.nBTags if conf.Jets.cutJets else 5),
     )
 
     #Require at least 1 untagged jet
