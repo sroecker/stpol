@@ -7,12 +7,12 @@ xs = {
     , "Tbar_s": 1.76
     , "T_tW": 11.1
     , "Tbar_tW": 11.1
-    , "TTBar": 234
+    , "TTbar": 234
     , "WJets": 36257.2
     , "ZJets": 3503.71
     , "WW": 54.838
     , "WZ": 32.3161
-    , "ZZ": 8.059 
+    , "ZZ": 8.059
     , "QCDMu": 134680
 
     #http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=QCD_Pt_20_30_EMEnriched_TuneZ2star_8TeV_pythia6*

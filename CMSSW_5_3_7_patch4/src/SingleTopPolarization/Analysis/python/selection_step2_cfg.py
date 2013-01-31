@@ -39,12 +39,12 @@ def SingleTopStep2():
 				  VarParsing.multiplicity.singleton,
 				  VarParsing.varType.bool,
 				  "Turn on debugging messages")
-        options.register ('isMC', False,
+        options.register ('isMC', True,
 				  VarParsing.multiplicity.singleton,
 				  VarParsing.varType.bool,
 				  "Run on MC")
         options.parseArguments()
-    
+
         if options.channel.lower() == "signal":
             Config.channel = Config.Channel.signal
         elif options.channel.lower() == "background":
@@ -190,7 +190,7 @@ def SingleTopStep2():
             collections = cms.untracked.VPSet(
             #all the selected jets in events, passing the reference selection cuts, ordered pt-descending
             treeCollection(
-                cms.untracked.InputTag("goodJets"), Config.Jets.nJets,
+                cms.untracked.InputTag("goodJets"), 5,
                 [
                     ["Pt", "pt"],
                     ["Eta", "eta"],
@@ -377,7 +377,7 @@ def SingleTopStep2():
             #cms.InputTag("recoNu", "Delta"),
         )
     )
-    
+
     process.treesDoubleWeight = cms.EDAnalyzer("DoubleTreemakerAnalyzer",
         defaultValue = cms.untracked.double(0),
         putNaNs = cms.untracked.bool(False),
