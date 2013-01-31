@@ -92,10 +92,6 @@ CleanNoPUJetProducer::CleanNoPUJetProducer(const edm::ParameterSet& iConfig)
 
 CleanNoPUJetProducer::~CleanNoPUJetProducer()
 {
- 
-   // do anything here that needs to be done at desctruction time
-   // (e.g. close files, deallocate resources etc.)
-
 }
 
 
