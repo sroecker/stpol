@@ -9,9 +9,9 @@ of = ROOT.TFile("bTaggingEffs.root", "RECREATE")
 def calcBTaggingEff(channel):
     print "B-tagging effs for channel {0}".format(channel)
     of.cd()
-    hTrueB_bDiscr = ROOT.TH1F("hTrueB_BDiscr_{0}".format(channel), "true b-jet b-discriminator distribution", 100, -150, 100)
-    hTrueC_bDiscr = ROOT.TH1F("hTrueC_BDiscr_{0}".format(channel), "true c-jet b-discriminator distribution", 100, -150, 100)
-    hTrueL_bDiscr = ROOT.TH1F("hTrueL_BDiscr_{0}".format(channel), "true l-jet b-discriminator distribution", 100, -150, 100)
+    hTrueB_bDiscr = ROOT.TH1F("hTrueB_BDiscr_{0}".format(channel), "true b-jet b-discriminator distribution", 1000, -100, 40)
+    hTrueC_bDiscr = ROOT.TH1F("hTrueC_BDiscr_{0}".format(channel), "true c-jet b-discriminator distribution", 1000, -100, 40)
+    hTrueL_bDiscr = ROOT.TH1F("hTrueL_BDiscr_{0}".format(channel), "true l-jet b-discriminator distribution", 1000, -100, 40)
     ROOT.gROOT.cd()
     #cut = Cuts.finalMu
     channels[channel].tree.Draw(">>elist", cut.cutStr)
