@@ -44,6 +44,8 @@ class Cut:
 
 #Selection applied as in https://indico.cern.ch/getFile.py/access?contribId=1&resId=0&materialId=slides&confId=228739
 class Cuts:
+    initial = Cut("initial", "1==1")
+
     recoFState = Cut("recoFstate", "_topCount==1")
     mu = Cut("mu", "_muonCount==1") + Cut("muIso", "_goodSignalMuons_0_relIso<0.12")
     ele = Cut("ele", "_electronCount==1") + Cut("eleIso", "_goodSignalElectrons_0_relIso<0.3") + Cut("eleMVA", "_goodSignalElectrons_0_mvaID>0.9")
@@ -96,12 +98,17 @@ class Channel:
         if not color is None:
             self.color = color
 
-    def cutFlow(cut):
-        for c in cut.cutSequence:
-            print "{0} ({1}) = {2}".format(c.cutName, c.cutStr, self.tree.GetEntries(c.cutStr))
+    def cutFlowOfCut(self, _cut):
+    
+        tempC = Cuts.initial
+        print _cut
+        print _cut.cutSequence
+        for c in _cut.cutSequence:
+            print "{0} ({1}) = {2}".format(tempC.cutName, tempC.cutStr, self.tree.GetEntries(tempC.cutStr))
+            tempC += c
         return
 
-    def cutFlow(self):
+    def cutFlowTotal(self):
         muHist = self.file.Get("efficiencyAnalyzerMu").Get("muPath")
         eleHist = self.file.Get("efficiencyAnalyzerEle").Get("elePath")
         for h in [muHist, eleHist]:
