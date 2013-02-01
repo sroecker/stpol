@@ -16,6 +16,7 @@ from SingleTopPolarization.Analysis.eventCounting import *
 from PhysicsTools.PatAlgos.selectionLayer1.jetSelector_cfi import *
 
 from FWCore.ParameterSet.VarParsing import VarParsing
+import pdb
 
 def SingleTopStep1(
   process,
@@ -52,7 +53,10 @@ def SingleTopStep1(
     VarParsing.varType.bool,
     "Do electron paths"
   )
-  options.register ('globalTag', "START53_V7F::All",
+
+#Tag from https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions?redirectedfrom=CMS.SWGuideFrontierConditions#2012_MC_production
+# Latest for "53Y Releases (MC)"
+  options.register ('globalTag', "START53_V15::All",
     VarParsing.multiplicity.singleton,
     VarParsing.varType.string,
     "Global tag"
@@ -78,9 +82,13 @@ def SingleTopStep1(
     process.load("FWCore.MessageService.MessageLogger_cfi")
 
   postfix = ""
+  jetCorr = ['L1FastJet', 'L2Relative', 'L3Absolute']
+  if not options.isMC:
+      jetCorr += ['L2L3Residual']
 
+  pdb.set_trace()
   usePF2PAT(process, runPF2PAT=True, jetAlgo='AK5', runOnMC=options.isMC, postfix=postfix,
-    jetCorrections=('AK5PFchs', ['L1FastJet', 'L2Relative', 'L3Absolute']),
+    jetCorrections=('AK5PFchs', jetCorr),
     pvCollection=cms.InputTag('goodOfflinePrimaryVertices'),
     typeIMetCorrections = True #FIXME: Does this automatically add type1 corrections completely and consistently?
     #typeIMetCorrections = False #Type1 MET now applied later using runMETUncertainties
