@@ -8,6 +8,8 @@ class BTaggingEfficiency:
     def __str__(self):
         return str(self.__dict__)
 
+BTaggingEfficiency.default = BTaggingEfficiency(0.0, 0.0, 0.0)
+
 eff_ex_WJets = {
     "eff_b": 0.9545454545454546,
     "eff_c": 1.0,
@@ -23,7 +25,7 @@ eff_ex_T_t = {
 eff_ex_TTbar = {
     "eff_b": 0.8464307138572286,
     "eff_c": 0.192090395480226,
-    "eff_l": 0.008152173913043478 
+    "eff_l": 0.008152173913043478
 }
 
 
