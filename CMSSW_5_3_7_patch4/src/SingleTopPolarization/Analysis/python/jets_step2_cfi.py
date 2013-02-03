@@ -208,7 +208,10 @@ def JetSetup(process, conf):
     )
 
     if conf.isMC:
-        sampleBEffs = Calibrations.bTaggingEfficiencies[conf.subChannel]
+        if conf.subChannel in Calibrations.bTaggingEfficiencies.keys():
+            sampleBEffs = Calibrations.bTaggingEfficiencies[conf.subChannel]
+        else:
+            sampleBEffs = Calibrations.BTaggingEfficiency.default
         logger.debug("Using the following calibration coefficients for sample {0}: {1}".format(conf.subChannel, sampleBEffs))
         process.bTagWeightProducer = cms.EDProducer('BTagSystematicsWeightProducer',
             src=cms.InputTag("goodJets"),
