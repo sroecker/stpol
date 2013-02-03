@@ -86,7 +86,6 @@ def SingleTopStep1(
   if not options.isMC:
       jetCorr += ['L2L3Residual']
 
-  pdb.set_trace()
   usePF2PAT(process, runPF2PAT=True, jetAlgo='AK5', runOnMC=options.isMC, postfix=postfix,
     jetCorrections=('AK5PFchs', jetCorr),
     pvCollection=cms.InputTag('goodOfflinePrimaryVertices'),
