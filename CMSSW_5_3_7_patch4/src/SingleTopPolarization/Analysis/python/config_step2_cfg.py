@@ -51,7 +51,7 @@ class Config(C):
 
     #Whether to run over grid (without command-line arguments)
     onGrid = False
-    
+
     #A string that gives the MC sample you are running on
     subChannel = "T_t"
 
@@ -112,7 +112,7 @@ class Config(C):
 
     class Electrons(Leptons):
         pt = "ecalDrivenMomentum.Pt()"
-        mvaCut = 0.98
+        mvaCut = 0.5
         cutOnMVA = True
         relIsoCutRangeIsolatedRegion = [0.0, 0.1]
         relIsoCutRangeAntiIsolatedRegion = [0.1, 0.5]
