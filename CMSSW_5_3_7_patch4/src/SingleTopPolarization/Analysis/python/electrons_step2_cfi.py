@@ -47,6 +47,9 @@ def ElectronSetup(process, conf):
     #Loose veto electrons must not overlap with good signal electrons
     looseVetoElectronCut += "&& !(%s)" % goodSignalElectronCut
 
+    print "goodSignalElectronCut={0}".format(goodSignalElectronCut)
+    print "looseVetoElectronCut={0}".format(looseVetoElectronCut)
+
     process.goodSignalElectrons = cms.EDFilter("CandViewSelector",
       src=cms.InputTag("elesWithIso"), cut=cms.string(goodSignalElectronCut)
     )
