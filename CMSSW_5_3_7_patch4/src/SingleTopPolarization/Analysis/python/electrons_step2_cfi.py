@@ -157,7 +157,7 @@ def ElectronSetup(process, conf):
         bjetSrc=cms.InputTag("btaggedJets"),
 
         #either patMETs if cutting on ele + MET transverse mass or goodMETs if cutting on patMETs->goodMets pt
-        metSrc=cms.InputTag("goodMETs" if conf.Electrons.transverseMassType == conf.Leptons.WTransverseMassType.MET else "patMETs"),
+        metSrc=cms.InputTag("patMETs" if conf.Electrons.transverseMassType == conf.Leptons.WTransverseMassType.MET else "patMETs"),
     )
 
     if conf.doDebug:
