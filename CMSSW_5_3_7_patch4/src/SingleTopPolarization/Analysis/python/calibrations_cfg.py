@@ -11,21 +11,21 @@ class BTaggingEfficiency:
 BTaggingEfficiency.default = BTaggingEfficiency(0.0, 0.0, 0.0)
 
 eff_ex_WJets = {
-    "eff_b": 0.9545454545454546,
-    "eff_c": 1.0,
-    "eff_l": 0.12307692307692308
+    "eff_b": 2.04E-01,
+    "eff_c": 2.91E-02,
+    "eff_l": 7.66E-04
 }
 
 eff_ex_T_t = {
-    "eff_b": 0.9885614318395909,
-    "eff_c": 0.0,
-    "eff_l": 0.00019327406262079628
+    "eff_b": 4.31E-01,
+    "eff_c": 8.39E-03,
+    "eff_l": 1.22E-04,
 }
 
 eff_ex_TTbar = {
-    "eff_b": 0.8464307138572286,
-    "eff_c": 0.192090395480226,
-    "eff_l": 0.008152173913043478
+    "eff_b": 3.97E-01,
+    "eff_c": 3.21E-02,
+    "eff_l": 1.11E-03,
 }
 
 
