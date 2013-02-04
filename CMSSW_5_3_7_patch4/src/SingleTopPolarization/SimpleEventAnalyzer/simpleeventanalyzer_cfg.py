@@ -14,15 +14,11 @@ process.MessageLogger = cms.Service("MessageLogger",
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring("patTuple_PF2PAT.root"
-#        'file:/home/joosep/singletop/stpol/patTuple_slim_numEvent100.root'
+    fileNames = cms.untracked.vstring(
+        'file:/hdfs/cms/store/user/jpata/T_t-channel_TuneZ2star_8TeV-powheg-tauola/stpol_v3_1/33f82354a36574c1158b3181d92c6119/step1_Skim_10_1_TYz.root'
 #        'file:/hdfs/local/stpol/joosep/FEFF01BD-87DC-E111-BC9E-003048678F8E.root'
     )
 )
-
-#Command-line arguments
-from SingleTopPolarization.Analysis.cmdlineParsing import enableCommandLineArguments
-enableCommandLineArguments(process)
 
 #process.simpleAnalyzer = cms.EDAnalyzer(
 #	'SimpleMuonAnalyzer',
@@ -34,20 +30,19 @@ process.simpleAnalyzer = cms.EDAnalyzer(
     interestingCollections = cms.untracked.VInputTag([
 
         "selectedPatJets",
-        "smearedPatJets",
-        "smearedPatJetsResUp",
-        "smearedPatJetsResDown",
-
-        "selectedPatMuons",
-        "shiftedPatMuonsEnDown",
-        "shiftedPatMuonsEnUp",
-
-        "selectedPatElectrons",
-        "shiftedPatElectronsEnDown",
-        "shiftedPatElectronsEnUp"
+#        "smearedPatJets",
+#        "smearedPatJetsResUp",
+#        "smearedPatJetsResDown",
+#
+#        "selectedPatMuons",
+#        "shiftedPatMuonsEnDown",
+#        "shiftedPatMuonsEnUp",
+#
+#        "selectedPatElectrons",
+#        "shiftedPatElectronsEnDown",
+#        "shiftedPatElectronsEnUp"
     ]),
     maxObjects=cms.untracked.uint32(1)
 )
-
 
 process.p = cms.Path(process.simpleAnalyzer)

@@ -38,6 +38,8 @@
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
+#include "DataFormats/Provenance/interface/Provenance.h"
+
 //
 // class declaration
 //
@@ -103,6 +105,10 @@ SimpleEventAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   for(auto& o : objectsOfInterest) {
    edm::Handle<edm::View<reco::Candidate>> objects;
    iEvent.getByLabel(o, objects);
+   const edm::Provenance& prov = iEvent.getProvenance(objects.id());
+   std::stringstream ss; 
+   prov.write(ss);
+   edm::LogInfo("provenance:") << ss.str(); 
    //for (edm::View<reco::Candidate>::const_iterator obj = objects->begin(); obj != objects->end(); obj++) {
    edm::LogInfo("analyze()") << "Collection " << o.label() << " has " << objects->size() << " items";
    unsigned int i = 0;
