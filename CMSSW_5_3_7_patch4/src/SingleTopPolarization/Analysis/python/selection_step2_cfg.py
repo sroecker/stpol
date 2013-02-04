@@ -156,7 +156,7 @@ def SingleTopStep2():
         return ret
 
     process.treesMu = cms.EDAnalyzer('MuonCandViewTreemakerAnalyzer',
-            collections = cms.untracked.VPSet(
+        collections = cms.untracked.VPSet(
             treeCollection(
                 cms.untracked.InputTag("goodSignalMuons"), 1,
                 [
@@ -167,12 +167,23 @@ def SingleTopStep2():
                     ["Charge", "charge"],
                     ["genPdgId", "? genParticlesSize() > 0 ? genParticle(0).pdgId() : 0"],
                 ]
-                )
+            ),
+            treeCollection(
+                cms.untracked.InputTag("looseVetoMuons"), 1,
+                [
+                    ["Pt", "pt"],
+                    ["Eta", "eta"],
+                    ["Phi", "phi"],
+                    ["relIso", "userFloat('%s')" % Config.Muons.relIsoType],
+                    ["Charge", "charge"],
+                    ["genPdgId", "? genParticlesSize() > 0 ? genParticle(0).pdgId() : 0"],
+                ]
             )
+        )
     )
 
     process.treesEle = cms.EDAnalyzer('ElectronCandViewTreemakerAnalyzer',
-            collections = cms.untracked.VPSet(
+        collections = cms.untracked.VPSet(
             treeCollection(
                 cms.untracked.InputTag("goodSignalElectrons"), 1,
                 [
@@ -183,8 +194,19 @@ def SingleTopStep2():
                     ["mvaID", "electronID('mvaTrigV0')"],
                     ["Charge", "charge"],
                 ]
-                )
+            ),
+            treeCollection(
+                cms.untracked.InputTag("looseVetoElectrons"), 1,
+                [
+                    ["Pt", "pt"],
+                    ["Eta", "eta"],
+                    ["Phi", "phi"],
+                    ["relIso", "userFloat('%s')" % Config.Muons.relIsoType],
+                    ["Charge", "charge"],
+                    ["genPdgId", "? genParticlesSize() > 0 ? genParticle(0).pdgId() : 0"],
+                ]
             )
+        )
     )
     process.treesJets = cms.EDAnalyzer('JetCandViewTreemakerAnalyzer',
             collections = cms.untracked.VPSet(
