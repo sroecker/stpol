@@ -363,6 +363,12 @@ def SingleTopStep2():
                     ["Phi", "phi"],
                 ]
             ),
+            treeCollection(
+                cms.untracked.InputTag("patMETs"), 1,
+                [
+                    ["Pt", "pt"],
+                ]
+            ),
         )
     )
 
