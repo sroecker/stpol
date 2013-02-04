@@ -117,6 +117,7 @@ class Config(C):
         relIsoCutRangeIsolatedRegion = [0.0, 0.1]
         relIsoCutRangeAntiIsolatedRegion = [0.1, 0.5]
         looseVetoRelIsoCut = 0.15
+        transverseMassType = "MET"
 
 
     Electrons.relIsoType = Leptons.RelativeIsolation.rhoCorrRelIso
