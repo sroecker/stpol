@@ -16,9 +16,9 @@ def ElectronSetup(process, conf):
     goodElectronCut += "&& !(1.4442 < abs(superCluster.eta) < 1.5660)"
     goodElectronCut += "&& passConversionVeto()"
     #goodElectronCut += "&& (0.0 < electronID('mvaTrigV0') < 1.0)"
-    if conf.Electrons.cutOnMVA:
-        goodElectronCut += "&& electronID('mvaTrigV0') > %f" % conf.Electrons.mvaCut
     goodSignalElectronCut = goodElectronCut
+    if conf.Electrons.cutOnMVA:
+        goodSignalElectronCut += "&& electronID('mvaTrigV0') > %f" % conf.Electrons.mvaCut
     goodSignalElectronCut += '&& abs(userFloat("dxy")) < 0.02'
     goodSignalElectronCut += '&& userInt("gsfTrack_trackerExpectedHitsInner_numberOfHits") <= 0'
 
