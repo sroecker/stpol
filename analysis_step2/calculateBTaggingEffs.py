@@ -2,7 +2,7 @@ from anfw import *
 import pdb
 
 #cut = Cuts.mu + Cuts.MT + Cuts.mlnu + Cuts.jetRMS + Cuts.jetPt + Cuts.jets_1LJ + Cuts.etaLJ + Cuts.recoFState #Cut("1plusLJ", "_lightJetCount>=1")
-cut = Cuts.mu + Cuts.MT + Cuts.jets_1LJ + Cuts.mlnu + Cuts.jetRMS + Cuts.etaLJ + Cuts.recoFState + Cut("jet0Pt", "_goodJets_0_Pt>40")
+cut = Cuts.mu + Cuts.MT + Cuts.mlnu + Cuts.jetRMS + Cuts.etaLJ + Cuts.recoFState + Cuts.jetPt + Cut("1plusLJ", "_lightJetCount>=1")
 #cut = Cuts.mu + Cuts.MT
 print cut
 
