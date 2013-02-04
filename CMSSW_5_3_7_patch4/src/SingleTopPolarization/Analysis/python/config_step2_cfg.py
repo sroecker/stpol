@@ -116,7 +116,7 @@ class Config(C):
         cutOnMVA = True
         relIsoCutRangeIsolatedRegion = [0.0, 0.1]
         relIsoCutRangeAntiIsolatedRegion = [0.1, 0.5]
-        looseVetoRelIsoCut = 0.3
+        looseVetoRelIsoCut = 0.15
 
 
     Electrons.relIsoType = Leptons.RelativeIsolation.rhoCorrRelIso
