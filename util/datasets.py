@@ -138,7 +138,7 @@ step1_data = [
       
       #RunD
     , DS_Data("SingleMu_Run2012D-PromptReco-v1",
-      "/SingleMu/Run2012D-PromptReco-v1/RECO", "Run2012D-PromptReco-v1", "FT_P_V42_AN3::All", [203768, 208686])
+      "/SingleMu/Run2012D-PromptReco-v1/AOD", "Run2012D-PromptReco-v1", "FT_P_V42_AN3::All", [203768, 208686])
       
 ##########
       #Electron
