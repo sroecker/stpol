@@ -22,14 +22,27 @@ class Lumi:
         self.fname = url[url.rindex("/")+1:]
 
 lumis = {
-      "13JulReReco": Lumi("13JulReReco",
-        "/Reprocessing/Cert_190456-196531_8TeV_13Jul2012ReReco_Collisions12_JSON_v2.txt")
-    , "24AugReReco": Lumi("24AugReReco",
-        "/Reprocessing/Cert_198022-198523_8TeV_24Aug2012ReReco_Collisions12_JSON.txt")
-    , "06AugReReco": Lumi("06AugReReco",
-        "/Reprocessing/Cert_190782-190949_8TeV_06Aug2012ReReco_Collisions12_JSON.txt")
-    , "PromptReco": Lumi("PromptReco",
-        "/Prompt/Cert_190456-207898_8TeV_PromptReco_Collisions12_JSON.txt")
+
+    "Run2012A-13Jul2012": Lumi("Run2012A-13Jul2012",
+    "/Reprocessing/Cert_190456-196531_8TeV_13Jul2012ReReco_Collisions12_JSON_v2.txt")
+    
+    , "Run2012A-recover-06Aug2012": Lumi("Run2012A-recover-06Aug2012",
+    "/Reprocessing/Cert_190782-190949_8TeV_06Aug2012ReReco_Collisions12_JSON.txt")
+    
+    , "Run2012B-13Jul2012": Lumi("Run2012B-13Jul2012",
+    "/Reprocessing/Cert_190456-196531_8TeV_13Jul2012ReReco_Collisions12_JSON_v2.txt")
+    
+    , "Run2012C-24Aug": Lumi("Run2012C-24Aug",
+    "/Reprocessing/Cert_198022-198523_8TeV_24Aug2012ReReco_Collisions12_JSON.txt")
+    
+    , "Run2012C-PromptReco-v2": Lumi("Run2012C-PromptReco-v2",
+    "/Prompt/Cert_190456-203002_8TeV_PromptReco_Collisions12_JSON_v2.txt")
+
+    , "Run2012C-EcalRecover_11Dec2012": Lumi("Run2012C-EcalRecover_11Dec2012",
+    "/Reprocessing/Cert_201191-201191_8TeV_11Dec2012ReReco-recover_Collisions12_JSON.txt")
+
+    , "Run2012D-PromptReco-v1": Lumi("Run2012D-PromptReco-v1",
+    "/Prompt/Cert_190456-208686_8TeV_PromptReco_Collisions12_JSON.txt")
 }
 
 
@@ -100,36 +113,58 @@ class DS_S2MC(DS):
 #The global tags come from:
 #https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions?redirectedfrom=CMS.SWGuideFrontierConditions
 step1_data = [
-      DS_Data("SingleMu_RunA",
-      "/SingleMu/Run2012A-13Jul2012-v1/AOD", "13JulReReco", "FT_53_V6_AN3::All", [190456,193621])
+      
+      DS_Data("SingleMu_Run2012A",
+      "/SingleMu/Run2012A-13Jul2012-v1/AOD", "Run2012A-13Jul2012", "FT_53_V6_AN3::All", [190456,193621])
 
-    , DS_Data("SingleElectron_Run2012A_06AugReReco",
-      "/SingleElectron/Run2012A-recover-06Aug2012-v1/AOD", "06AugReReco", "FT_53_V6C_AN3::All", [190782, 190949])
-
+    , DS_Data("SingleMu_Run2012A",
+      "/SingleMu/Run2012A-recover-06Aug2012-v1/RECO", "Run2012A-recover-06Aug2012", "FT_53_V6_AN3::All", [193833, 196531])
+      
     , DS_Data("SingleMu_Run2012B",
-      "/SingleMu/Run2012B-13Jul2012-v1/AOD", "13JulReReco", "FT_53_V6_AN3::All", [193833, 196531])
+      "/SingleMu/Run2012B-13Jul2012-v1/AOD", "Run2012B-13Jul2012", "FT_53_V6_AN3::All", [193833, 196531])
 
-    , DS_Data("SingleElectron_Run2012C_24AugReReco",
-      "/SingleElectron/Run2012C-24Aug2012-v1/AOD", "24AugReReco", "FT_53_V10_AN3::All", [198022, 198913])
-
-    , DS_Data("SingleMu_Run2012C_v1",
-      "/SingleMu/Run2012C-PromptReco-v1/AOD", "PromptReco", "FT_P_V42C_AN3::All", [-1, -1])
+      #RunC
+#    , DS_Data("SingleMu_Run2012C_v1",
+#      "/SingleMu/Run2012C-PromptReco-v1/AOD", "PromptReco", "FT_P_V42C_AN3::All", [-1, -1])
+    
+    , DS_Data("SingleMu_Run2012C-24Aug2012-v1",
+      "/SingleMu/Run2012C-24Aug2012-v1/AOD", "Run2012C-24Aug", "FT_P_V42C_AN3::All", [198934, 203746])
 
     , DS_Data("SingleMu_Run2012C_v2",
-      "/SingleMu/Run2012C-PromptReco-v2/AOD", "PromptReco", "FT_P_V42C_AN3::All", [198934, 203746])
+      "/SingleMu/Run2012C-PromptReco-v2/AOD", "Run2012C-PromptReco-v2", "FT_P_V42C_AN3::All", [198934, 203746])
 
+    , DS_Data("SingleMu_Run2012C-EcalRecover_11Dec2012",
+      "/SingleMu/Run2012C-EcalRecover_11Dec2012-v1/AOD", "Run2012C-EcalRecover_11Dec2012", "FT_P_V42C_AN3::All", [201191, 201191])
+      
+      #RunD
+    , DS_Data("SingleMu/Run2012D-PromptReco-v1",
+      "/SingleMu/Run2012D-PromptReco-v1/RECO", "Run2012D-PromptReco-v1", "FT_P_V42_AN3::All", [203768, 208686])
+      
+##########
+      #Electron
     , DS_Data("SingleElectron_Run2012A",
-      "/SingleElectron/Run2012A-13Jul2012-v1/AOD", "13JulReReco", "FT_53_V6_AN3::All", [-1, -1])
+      "/SingleElectron/Run2012A-13Jul2012-v1/AOD", "Run2012A-13Jul2012", "FT_53_V6_AN3::All", [-1, -1])
 
+    , DS_Data("SingleElectron_Run2012A_06AugReReco",
+      "/SingleElectron/Run2012A-recover-06Aug2012-v1/AOD", "Run2012A-recover-06Aug2012", "FT_53_V6C_AN3::All", [190782, 190949])
+      
     , DS_Data("SingleElectron_Run2012B",
-      "/SingleElectron/Run2012B-13Jul2012-v1/AOD", "13JulReReco", "FT_53_V6_AN3::All", [-1, -1])
+      "/SingleElectron/Run2012B-13Jul2012-v1/AOD", "Run2012B-13Jul2012", "FT_53_V6_AN3::All", [-1, -1])
+            
+#    , DS_Data("SingleElectron_Run2012C_v1",
+#      "/SingleElectron/Run2012C-PromptReco-v1/AOD", "PromptReco", "FT_P_V42C_AN3::All", [-1, -1])
 
-    , DS_Data("SingleElectron_Run2012C_v1",
-      "/SingleElectron/Run2012C-PromptReco-v1/AOD", "PromptReco", "FT_P_V42C_AN3::All", [-1, -1])
+    , DS_Data("SingleElectron_Run2012C_24AugReReco",
+      "/SingleElectron/Run2012C-24Aug2012-v1/AOD", "Run2012C-24Aug", "FT_53_V10_AN3::All", [198022, 198913])
 
     , DS_Data("SingleElectron_Run2012C_v2",
-      "/SingleElectron/Run2012C-PromptReco-v2/AOD", "PromptReco", "FT_P_V42C_AN3::All", [-1, -1])
-
+      "/SingleElectron/Run2012C-PromptReco-v2/AOD", "Run2012C-PromptReco-v2", "FT_P_V42C_AN3::All", [-1, -1])
+      
+    , DS_Data("SingleElectron_Run2012C-EcalRecover_11Dec2012",
+      "/SingleElectron/Run2012C-EcalRecover_11Dec2012-v1/AOD", "Run2012C-EcalRecover_11Dec2012", "FT_P_V42C_AN3::All", [201191, 201191])
+      
+    , DS_Data("SingleElectron/Run2012D-PromptReco-v1",
+      "/SingleElectron/Run2012D-PromptReco-v1/AOD", "Run2012D-PromptReco-v1", "FT_P_V42_AN3::All", [-1, -1])
 ]
 
 step1_MC = [
