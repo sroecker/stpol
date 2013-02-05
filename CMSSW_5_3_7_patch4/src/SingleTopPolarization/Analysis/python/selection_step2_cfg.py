@@ -43,12 +43,23 @@ def SingleTopStep2():
 				  VarParsing.multiplicity.singleton,
 				  VarParsing.varType.bool,
 				  "Run on MC")
+        options.register ('globalTag', "START53_V15::All",
+                  VarParsing.multiplicity.singleton,
+                  VarParsing.varType.string,
+                  "Global tag"
+        )
         options.parseArguments()
 
-        if options.channel.lower() == "signal":
-            Config.channel = Config.Channel.signal
-        elif options.channel.lower() == "background":
-            Config.channel = Config.Channel.background
+
+        if options.isMC:
+            if options.channel.lower() == "signal":
+                Config.channel = Config.Channel.signal
+            elif options.channel.lower() == "background":
+                Config.channel = Config.Channel.background
+        else:
+            Config.channel = "data"
+            Config.subChannel = None
+
         Config.Leptons.reverseIsoCut = options.reverseIsoCut
         Config.subChannel = options.subChannel
         Config.doDebug = options.doDebug
