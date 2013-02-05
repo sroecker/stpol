@@ -64,8 +64,11 @@ https://twiki.cern.ch/twiki/bin/view/CMS/SyncSingleTopLeptonJets2012
 >cmsRun runconfs/step1_sync_cfg.py inputFiles=/store/mc/Summer12_DR53X/T_t-channel_TuneZ2star_8TeV-powheg-tauola/AODSIM/PU_S10_START53_V7A-v1/0000/0059C6F3-7CDC-E111-B4CB-001A92811726.root outputFile=sync_step1/sync_T_t_lepIso02_newIso.root &> log1
 
 ##CRAB
-To create the crab.cfg files to run over step2-mc, run in the base directory
->python2.7 util/datasets.py -t your_tag -T crabs/crab_MC_step2.cfg -d S2MC -o crabs/step2_MC_all
+To create the crab.cfg files to run over step1-data, run in the base directory
+>python2.7 $CMSSW_BASE/../util/datasets.py -t your_tag -T $CMSSW_BASE/../crabs/crab_MC_step2.cfg -d S2MC -o your_crab_output_dir
+To create the crab.cfg files to run over step2-mc (iso/antiIso), run in the base directory
+>python2.7 $CMSSW_BASE/../util/datasets.py -t your_tag -T $CMSSW_BASE/../crabs/crab_MC_step2_local_Iso.cfg -d S2MC -o your_crab_output_dir
+
 
 ###Using lumiCalc2.py
 To calculate the integrated luminosity from crab jobs, do the following
