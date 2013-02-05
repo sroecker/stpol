@@ -137,7 +137,7 @@ step1_data = [
       "/SingleMu/Run2012C-EcalRecover_11Dec2012-v1/AOD", "Run2012C-EcalRecover_11Dec2012", "FT_P_V42C_AN3::All", [201191, 201191])
       
       #RunD
-    , DS_Data("SingleMu/Run2012D-PromptReco-v1",
+    , DS_Data("SingleMu_Run2012D-PromptReco-v1",
       "/SingleMu/Run2012D-PromptReco-v1/RECO", "Run2012D-PromptReco-v1", "FT_P_V42_AN3::All", [203768, 208686])
       
 ##########
@@ -163,7 +163,7 @@ step1_data = [
     , DS_Data("SingleElectron_Run2012C-EcalRecover_11Dec2012",
       "/SingleElectron/Run2012C-EcalRecover_11Dec2012-v1/AOD", "Run2012C-EcalRecover_11Dec2012", "FT_P_V42C_AN3::All", [201191, 201191])
       
-    , DS_Data("SingleElectron/Run2012D-PromptReco-v1",
+    , DS_Data("SingleElectron_Run2012D-PromptReco-v1",
       "/SingleElectron/Run2012D-PromptReco-v1/AOD", "Run2012D-PromptReco-v1", "FT_P_V42_AN3::All", [-1, -1])
 ]
 
