@@ -1,10 +1,14 @@
 from anfw import *
 import pdb
+import math
 
 #cut = Cuts.mu + Cuts.MT + Cuts.mlnu + Cuts.jetRMS + Cuts.jetPt + Cuts.jets_1LJ + Cuts.etaLJ + Cuts.recoFState #Cut("1plusLJ", "_lightJetCount>=1")
 cut = Cuts.mu + Cuts.MT + Cuts.mlnu + Cuts.jetRMS + Cuts.etaLJ + Cuts.recoFState + Cuts.jetPt + Cut("1plusLJ", "_lightJetCount>=1")
 #cut = Cuts.mu + Cuts.MT
 print cut
+
+def effUnc(eff, count):
+    return math.sqrt(eff*(1.0-eff)/count)
 
 of = ROOT.TFile("bTaggingEffs.root", "RECREATE")
 def calcBTaggingEff(channel):
@@ -71,8 +75,18 @@ def calcBTaggingEff(channel):
     eff_b = float(sumBTaggedB)/float(sumTrueB)
     eff_c = float(sumBTaggedC)/float(sumTrueC)
     eff_l = float(sumBTaggedL)/float(sumTrueL)
+
+    sigma_eff_b = effUnc(eff_b, sumTrueB)
+    sigma_eff_c = effUnc(eff_c, sumTrueC)
+    sigma_eff_l = effUnc(eff_l, sumTrueL)
+
     print "nFailed = {0}".format(nFailed)
-    print ("eff_b = %.2E" % eff_b) + (" | eff_c = %.2E" % eff_c) + (" | eff_l = %.2E" % eff_l)
+    def printEff(eff, sigma, flavour):
+        print "eff_{3} = {0:.2E} (\sigma {1:.2E}) ({2:.1%})".format(eff, sigma, sigma/eff, flavour)
+    printEff(eff_b, sigma_eff_b, "b")
+    printEff(eff_c, sigma_eff_c, "c")
+    printEff(eff_l, sigma_eff_l, "l")
+
     print 80*"-"
     of.Write()
 
