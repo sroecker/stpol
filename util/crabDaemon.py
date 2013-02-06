@@ -168,8 +168,10 @@ class JobStatus:
         outD["Retrieved"] = retrievedDict
         return outD
 
-def jobLog(crabdir, jobIdx, command, f, status):
-    f.write("{4} {0} {1} {2} {3}".format(datetime.datetime.now(), crabdir, jobIdx, command, status))
+def jobLog(f, crabdir, jobIdx, command, status):
+    fi = open(f, "a+")
+    fi.write("{4} {0} {1} {2} {3}\n".format(crabdir, jobIdx, command, status, datetime.datetime.now())
+    fi.close()
 
 def parseDir(d, resub, ofile):
     crabdir = d
@@ -202,7 +204,7 @@ def parseDir(d, resub, ofile):
             if resub:
                 CrabStatus.extCommand("crab -c {0} -forceResubmit {1}".format(crabdir, ','.join(map(str, couldNotGet)) ), "resub")
                 for j in couldNotGet:
-                    jobLog(crabdir, j, "forceResubmit", "COULDNOTGET")
+                    jobLog(ofile, crabdir, j, "forceResubmit", "COULDNOTGET")
 
         statuses = CrabStatus.getStatus(d)
         jobsToResub = filter(lambda x: x.requiresResub(), statuses)
@@ -217,7 +219,7 @@ def parseDir(d, resub, ofile):
         try:
             CrabStatus.resubmit(crabdir, jobsToResub)
             for j in jobsToResub:
-                jobLog(crabdir, j.N, "resubmit", j.retcode)
+                jobLog(ofile, crabdir, j.N, "resubmit", j.retcode)
         except CrabFailedException as e:
             print "Could not resubmit with crab: {0}".format(e.message)
 
@@ -239,7 +241,7 @@ if __name__=="__main__":
     signal.signal(signal.SIGINT, signal_handler)
     incompleteJobs = []
     completeJobs = []
-    ofile = open("/home/joosep/web/crabOut.txt", "a+")
+    ofile = "/home/joosep/web/crabOut.txt"
 
     try:
         while True:
