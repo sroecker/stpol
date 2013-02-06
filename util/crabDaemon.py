@@ -169,9 +169,9 @@ class JobStatus:
         return outD
 
 def jobLog(f, crabdir, jobIdx, command, status):
-    fi = open(f, "a+")
-    fi.write("{4} {0} {1} {2} {3}\n".format(crabdir, jobIdx, command, status, datetime.datetime.now())
-    fi.close()
+    fil = open(f, "a+")
+    fil.write("{4} {0} {1} {2} {3}\n".format(crabdir, jobIdx, command, status, datetime.datetime.now()))
+    fil.close()
 
 def parseDir(d, resub, ofile):
     crabdir = d
