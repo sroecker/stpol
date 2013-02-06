@@ -25,16 +25,16 @@ lumis = {
 
     "Run2012A-13Jul2012": Lumi("Run2012A-13Jul2012",
     "/Cert_190456-196531_8TeV_13Jul2012ReReco_Collisions12_JSON_v2.txt")
-    
+
     , "Run2012A-recover-06Aug2012": Lumi("Run2012A-recover-06Aug2012",
     "/Cert_190782-190949_8TeV_06Aug2012ReReco_Collisions12_JSON.txt")
-    
+
     , "Run2012B-13Jul2012": Lumi("Run2012B-13Jul2012",
     "/Cert_190456-196531_8TeV_13Jul2012ReReco_Collisions12_JSON_v2.txt")
-    
+
     , "Run2012C-24Aug": Lumi("Run2012C-24Aug",
     "/Cert_198022-198523_8TeV_24Aug2012ReReco_Collisions12_JSON.txt")
-    
+
     , "Run2012C-PromptReco-v2": Lumi("Run2012C-PromptReco-v2",
     "/Cert_190456-203002_8TeV_PromptReco_Collisions12_JSON_v2.txt")
 
@@ -116,20 +116,20 @@ class DS_S2MC(DS):
 #The global tags come from:
 #https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions?redirectedfrom=CMS.SWGuideFrontierConditions
 step1_data = [
-      
+
       DS_Data("SingleMu_Run2012A",
       "/SingleMu/Run2012A-13Jul2012-v1/AOD", "Run2012A-13Jul2012", "FT_53_V6_AN3::All", [190456,193621])
 
     , DS_Data("SingleMu_Run2012A",
       "/SingleMu/Run2012A-recover-06Aug2012-v1/RECO", "Run2012A-recover-06Aug2012", "FT_53_V6_AN3::All", [193833, 196531])
-      
+
     , DS_Data("SingleMu_Run2012B",
       "/SingleMu/Run2012B-13Jul2012-v1/AOD", "Run2012B-13Jul2012", "FT_53_V6_AN3::All", [193833, 196531])
 
       #RunC
 #    , DS_Data("SingleMu_Run2012C_v1",
 #      "/SingleMu/Run2012C-PromptReco-v1/AOD", "PromptReco", "FT_P_V42C_AN3::All", [-1, -1])
-    
+
     , DS_Data("SingleMu_Run2012C-24Aug2012-v1",
       "/SingleMu/Run2012C-24Aug2012-v1/AOD", "Run2012C-24Aug", "FT_P_V42C_AN3::All", [198934, 203746])
 
@@ -138,11 +138,11 @@ step1_data = [
 
     , DS_Data("SingleMu_Run2012C-EcalRecover_11Dec2012",
       "/SingleMu/Run2012C-EcalRecover_11Dec2012-v1/AOD", "Run2012C-EcalRecover_11Dec2012", "FT_P_V42C_AN3::All", [201191, 201191])
-      
+
       #RunD
     , DS_Data("SingleMu_Run2012D-PromptReco-v1",
       "/SingleMu/Run2012D-PromptReco-v1/AOD", "Run2012D-PromptReco-v1", "FT_P_V42_AN3::All", [203768, 208686])
-      
+
 ##########
       #Electron
     , DS_Data("SingleElectron_Run2012A",
@@ -150,10 +150,10 @@ step1_data = [
 
     , DS_Data("SingleElectron_Run2012A_06AugReReco",
       "/SingleElectron/Run2012A-recover-06Aug2012-v1/AOD", "Run2012A-recover-06Aug2012", "FT_53_V6C_AN3::All", [190782, 190949])
-      
+
     , DS_Data("SingleElectron_Run2012B",
       "/SingleElectron/Run2012B-13Jul2012-v1/AOD", "Run2012B-13Jul2012", "FT_53_V6_AN3::All", [-1, -1])
-            
+
 #    , DS_Data("SingleElectron_Run2012C_v1",
 #      "/SingleElectron/Run2012C-PromptReco-v1/AOD", "PromptReco", "FT_P_V42C_AN3::All", [-1, -1])
 
@@ -162,10 +162,10 @@ step1_data = [
 
     , DS_Data("SingleElectron_Run2012C_v2",
       "/SingleElectron/Run2012C-PromptReco-v2/AOD", "Run2012C-PromptReco-v2", "FT_P_V42C_AN3::All", [-1, -1])
-      
+
     , DS_Data("SingleElectron_Run2012C-EcalRecover_11Dec2012",
       "/SingleElectron/Run2012C-EcalRecover_11Dec2012-v1/AOD", "Run2012C-EcalRecover_11Dec2012", "FT_P_V42C_AN3::All", [201191, 201191])
-      
+
     , DS_Data("SingleElectron_Run2012D-PromptReco-v1",
       "/SingleElectron/Run2012D-PromptReco-v1/AOD", "Run2012D-PromptReco-v1", "FT_P_V42_AN3::All", [-1, -1])
 ]
@@ -270,12 +270,12 @@ step2_MC = [
 
 ]
 
-step2_Data = [
+step2_data = [
     DS_Data("SingleMu1", "/SingleMu/jpata-stpol_step1_v3_1-60389801c9c75bd7ec94ff0c7c5a7358/USER", "total", "FT_53_V6_AN3::All")
-    DS_Data("SingleEle1", "/SingleElectron/joosep-Jan31_all-49eb03845dffa028caa53d26232b143a/USER", "total", "FT_53_V6_AN3::All")
-    DS_Data("SingleEle2", "/SingleElectron/joosep-Jan31_all-a2316588016b5c752b27be91245f9d8d/USER", "total", "FT_53_V6_AN3::All")
-    DS_Data("SingleEle3", "/SingleElectron/joosep-Jan31_all-fd13d2df3af397f914d3b3a3be95a5ba/USER", "total", "FT_53_V6_AN3::All")
-    DS_Data("SingleEle4", "/SingleElectron/joosep-step1_Data_Feb5-1d982c38357b1be9f9666c2b21150ebd/USER", "total", "FT_53_V6_AN3::All")
+    , DS_Data("SingleEle1", "/SingleElectron/joosep-Jan31_all-49eb03845dffa028caa53d26232b143a/USER", "total", "FT_53_V6_AN3::All")
+    , DS_Data("SingleEle2", "/SingleElectron/joosep-Jan31_all-a2316588016b5c752b27be91245f9d8d/USER", "total", "FT_53_V6_AN3::All")
+    , DS_Data("SingleEle3", "/SingleElectron/joosep-Jan31_all-fd13d2df3af397f914d3b3a3be95a5ba/USER", "total", "FT_53_V6_AN3::All")
+    , DS_Data("SingleEle4", "/SingleElectron/joosep-step1_Data_Feb5-1d982c38357b1be9f9666c2b21150ebd/USER", "total", "FT_53_V6_AN3::All")
 ]
 
 """
@@ -284,7 +284,8 @@ Possible dataset sets to process
 possible_ds = {
     "S1D": step1_data,
     "S1MC": step1_MC,
-    "S2MC": step2_MC
+    "S2MC": step2_MC,
+    "S2D": step2_data
     }
 
 parser = argparse.ArgumentParser(description='Creates crab.cfg files based on \
