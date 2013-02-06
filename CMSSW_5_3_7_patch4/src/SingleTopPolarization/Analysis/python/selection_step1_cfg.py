@@ -89,8 +89,8 @@ def SingleTopStep1(
   usePF2PAT(process, runPF2PAT=True, jetAlgo='AK5', runOnMC=options.isMC, postfix=postfix,
     jetCorrections=('AK5PFchs', jetCorr),
     pvCollection=cms.InputTag('goodOfflinePrimaryVertices'),
-    typeIMetCorrections = True #FIXME: Does this automatically add type1 corrections completely and consistently?
-    #typeIMetCorrections = False #Type1 MET now applied later using runMETUncertainties
+    #typeIMetCorrections = True
+    typeIMetCorrections = False #Type1 MET now applied later using runMETUncertainties
   )
 
   # https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections#JetEnCorPFnoPU2012

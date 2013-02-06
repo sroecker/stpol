@@ -231,7 +231,8 @@ def SingleTopStep2():
                     ["Mass", "mass"],
                     ["bDiscriminator", "bDiscriminator('%s')" % Config.Jets.bTagDiscriminant],
                     ["rms", "userFloat('rms')"],
-                    ["partonFlavour", "partonFlavour()"]
+                    ["partonFlavour", "partonFlavour()"],
+                    ["deltaR", "userFloat('deltaR')"]
                 ]
             ),
             # treeCollection(
@@ -256,7 +257,8 @@ def SingleTopStep2():
                     ["Mass", "mass"],
                     ["bDiscriminator", "bDiscriminator('%s')" % Config.Jets.bTagDiscriminant],
                     ["rms", "userFloat('rms')"],
-                    ["partonFlavour", "partonFlavour()"]
+                    ["partonFlavour", "partonFlavour()"],
+                    ["deltaR", "userFloat('deltaR')"]
                 ]
             ),
 
@@ -270,7 +272,8 @@ def SingleTopStep2():
                     ["Mass", "mass"],
                     ["bDiscriminator", "bDiscriminator('%s')" % Config.Jets.bTagDiscriminant],
                     ["rms", "userFloat('rms')"],
-                    ["partonFlavour", "partonFlavour()"]
+                    ["partonFlavour", "partonFlavour()"],
+                    ["deltaR", "userFloat('deltaR')"]
                 ]
             ),
 
@@ -284,7 +287,8 @@ def SingleTopStep2():
                     ["Mass", "mass"],
                     ["bDiscriminator", "bDiscriminator('%s')" % Config.Jets.bTagDiscriminant],
                     ["rms", "userFloat('rms')"],
-                    ["partonFlavour", "partonFlavour()"]
+                    ["partonFlavour", "partonFlavour()"],
+                    ["deltaR", "userFloat('deltaR')"]
                 ]
             ),
             treeCollection(
@@ -296,7 +300,8 @@ def SingleTopStep2():
                     ["Mass", "mass"],
                     ["bDiscriminator", "bDiscriminator('%s')" % Config.Jets.bTagDiscriminant],
                     ["rms", "userFloat('rms')"],
-                    ["partonFlavour", "partonFlavour()"]
+                    ["partonFlavour", "partonFlavour()"],
+                    ["deltaR", "userFloat('deltaR')"]
                 ]
             )
         )

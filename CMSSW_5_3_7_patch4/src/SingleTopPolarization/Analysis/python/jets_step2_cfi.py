@@ -49,7 +49,7 @@ def JetSetup(process, conf):
     bTagCutStr = 'bDiscriminator("%s") >= %f' % (conf.Jets.bTagDiscriminant, conf.Jets.BTagWorkingPointVal())
 
     process.goodJets = cms.EDFilter("CandViewSelector",
-        src=cms.InputTag("noPUJets" if conf.Jets.source == "selectedPatJets" else conf.Jets.source),
+        src=cms.InputTag("deltaRJets"),
         cut=cms.string(jetCut)
     )
 
@@ -207,6 +207,11 @@ def JetSetup(process, conf):
         maxNumber=cms.uint32(9999999),
     )
 
+    process.deltaRJets = cms.EDProducer("DeltaRProducer",
+        leptonSrc=cms.InputTag("goodSignalLeptons"),
+        jetSrc=cms.InputTag("noPUJets" if conf.Jets.source == "selectedPatJets" else conf.Jets.source)
+    )
+
     if conf.isMC:
         if conf.subChannel in Calibrations.bTaggingEfficiencies.keys():
             sampleBEffs = Calibrations.bTaggingEfficiencies[conf.subChannel]
@@ -232,6 +237,7 @@ def JetSetup(process, conf):
     process.jetSequence = cms.Sequence(
       #process.skimJets *
       #process.noPUJets *
+      process.deltaRJets *
       process.goodJets *
 
       process.btaggedJets *
