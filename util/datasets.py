@@ -24,25 +24,25 @@ class Lumi:
 lumis = {
 
     "Run2012A-13Jul2012": Lumi("Run2012A-13Jul2012",
-    "/Reprocessing/Cert_190456-196531_8TeV_13Jul2012ReReco_Collisions12_JSON_v2.txt")
+    "/Cert_190456-196531_8TeV_13Jul2012ReReco_Collisions12_JSON_v2.txt")
     
     , "Run2012A-recover-06Aug2012": Lumi("Run2012A-recover-06Aug2012",
-    "/Reprocessing/Cert_190782-190949_8TeV_06Aug2012ReReco_Collisions12_JSON.txt")
+    "/Cert_190782-190949_8TeV_06Aug2012ReReco_Collisions12_JSON.txt")
     
     , "Run2012B-13Jul2012": Lumi("Run2012B-13Jul2012",
-    "/Reprocessing/Cert_190456-196531_8TeV_13Jul2012ReReco_Collisions12_JSON_v2.txt")
+    "/Cert_190456-196531_8TeV_13Jul2012ReReco_Collisions12_JSON_v2.txt")
     
     , "Run2012C-24Aug": Lumi("Run2012C-24Aug",
-    "/Reprocessing/Cert_198022-198523_8TeV_24Aug2012ReReco_Collisions12_JSON.txt")
+    "/Cert_198022-198523_8TeV_24Aug2012ReReco_Collisions12_JSON.txt")
     
     , "Run2012C-PromptReco-v2": Lumi("Run2012C-PromptReco-v2",
-    "/Prompt/Cert_190456-203002_8TeV_PromptReco_Collisions12_JSON_v2.txt")
+    "/Cert_190456-203002_8TeV_PromptReco_Collisions12_JSON_v2.txt")
 
     , "Run2012C-EcalRecover_11Dec2012": Lumi("Run2012C-EcalRecover_11Dec2012",
-    "/Reprocessing/Cert_201191-201191_8TeV_11Dec2012ReReco-recover_Collisions12_JSON.txt")
+    "/Cert_201191-201191_8TeV_11Dec2012ReReco-recover_Collisions12_JSON.txt")
 
     , "Run2012D-PromptReco-v1": Lumi("Run2012D-PromptReco-v1",
-    "/Prompt/Cert_190456-208686_8TeV_PromptReco_Collisions12_JSON.txt")
+    "/Cert_190456-208686_8TeV_PromptReco_Collisions12_JSON.txt")
 }
 
 
@@ -66,7 +66,7 @@ class DS:
 Represents a Real Data dataset
 """
 class DS_Data(DS):
-    def __init__(self, name, ds, lumi, globalTag, runrange):
+    def __init__(self, name, ds, lumi, globalTag, runrange=None):
         DS.__init__(self, name, ds)
         self.lumi = lumi
         self.globalTag = globalTag
@@ -265,6 +265,10 @@ step2_MC = [
     DS_S2MC("QCD_Pt_350_BCtoE", "/QCD_Pt_350_BCtoE_TuneZ2star_8TeV_pythia6/jpata-stpol_v3_1-33f82354a36574c1158b3181d92c6119/USER"),
 
 
+]
+
+step2_Data = [
+    DS_Data("SingleMu", "/SingleMu/jpata-stpol_step1_v3_1-60389801c9c75bd7ec94ff0c7c5a7358/USER", "Run2012A-13Jul2012", "FT_53_V6_AN3::All")
 ]
 
 """
