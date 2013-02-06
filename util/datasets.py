@@ -288,36 +288,37 @@ possible_ds = {
     "S2D": step2_data
     }
 
-parser = argparse.ArgumentParser(description='Creates crab.cfg files based on \
-                                              a template file.')
-parser.add_argument("-t", "--tag", type=str, default="notag",
-                    help="A unique tag for publishing")
-parser.add_argument("-T", "--template", type=str, default="", required=True,
-                    help="template file to use")
-parser.add_argument("-o", "--ofdir", type=str, default="", required=True,
-                    help="output directory for files")
-parser.add_argument("-d", "--data", type=str, default="", required=True,
-                    help="name of the list of datasets to parse", choices=possible_ds.keys())
-args = parser.parse_args()
-print args
-tag = args.tag
-ofdir = args.ofdir
+if __name__=="__main__":
+    parser = argparse.ArgumentParser(description='Creates crab.cfg files based on \
+                                                  a template file.')
+    parser.add_argument("-t", "--tag", type=str, default="notag",
+                        help="A unique tag for publishing")
+    parser.add_argument("-T", "--template", type=str, default="", required=True,
+                        help="template file to use")
+    parser.add_argument("-o", "--ofdir", type=str, default="", required=True,
+                        help="output directory for files")
+    parser.add_argument("-d", "--data", type=str, default="", required=True,
+                        help="name of the list of datasets to parse", choices=possible_ds.keys())
+    args = parser.parse_args()
+    print args
+    tag = args.tag
+    ofdir = args.ofdir
 
-def read_template(fn):
-    f = open(fn)
-    s = f.read()
-    f.close()
-    return s
+    def read_template(fn):
+        f = open(fn)
+        s = f.read()
+        f.close()
+        return s
 
-template = read_template(args.template)
-dslist = possible_ds[args.data]
+    template = read_template(args.template)
+    dslist = possible_ds[args.data]
 
-os.mkdir(ofdir)
-for ds in dslist:
-    ofn = "{2}/crab_{0}_{1}.cfg".format(ds.name, tag, ofdir)
-    of = open(ofn, "w")
-    cfg = ds.parseTemplate(template, tag)
-    of.write(cfg)
-    of.close()
-    print "{0} done".format(ofn)
+    os.mkdir(ofdir)
+    for ds in dslist:
+        ofn = "{2}/crab_{0}_{1}.cfg".format(ds.name, tag, ofdir)
+        of = open(ofn, "w")
+        cfg = ds.parseTemplate(template, tag)
+        of.write(cfg)
+        of.close()
+        print "{0} done".format(ofn)
 
