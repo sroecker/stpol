@@ -12,7 +12,10 @@ h_lu = h0.Clone("h_lu")
 cut = Cuts.finalMu.cutStr
 
 nonan = "&& bTagWeight_bTagWeightProducer == bTagWeight_bTagWeightProducer && bTagWeightSystBCDown_bTagWeightProducer == bTagWeightSystBCDown_bTagWeightProducer && bTagWeightSystBCUp_bTagWeightProducer == bTagWeightSystBCUp_bTagWeightProducer && bTagWeightSystLDown_bTagWeightProducer == bTagWeightSystLDown_bTagWeightProducer && bTagWeightSystLUp_bTagWeightProducer == bTagWeightSystLUp_bTagWeightProducer"
-channels["T_t"].tree.Draw("cosThetaLightJet_cosTheta>>h0", "1*(%s)" % (cut), "")
+
+
+for weight in ["1", "bTagWeight_bTagWeightProducer", "bTagWeightSystBCDown_bTagWeightProducer", "bTagWeightSystBCUp_bTagWeightProducer", "bTagWeightSystLDown_bTagWeightProducer", "bTagWeightSystLUp_bTagWeightProducer"]:
+    channels["T_t"].tree.Draw("cosThetaLightJet_cosTheta>>h_{0}".format(weight), "{0}*{2}*({1})".format(lumiW, cut), "")
 channels["T_t"].tree.Draw("cosThetaLightJet_cosTheta>>h", "bTagWeight_bTagWeightProducer*(%s)" % (cut), "SAME")
 channels["T_t"].tree.Draw("cosThetaLightJet_cosTheta>>h_bcd", "bTagWeightSystBCDown_bTagWeightProducer*(%s)" % (cut), "SAME")
 channels["T_t"].tree.Draw("cosThetaLightJet_cosTheta>>h_bcu", "bTagWeightSystBCUp_bTagWeightProducer*(%s)" % (cut), "SAME")
@@ -31,10 +34,10 @@ channels["T_t"].tree.Draw("cosThetaLightJet_cosTheta>>h_lu", "bTagWeightSystLUp_
 #leg.Draw()
 
 h0.SetTitle("Sensitivity to b-tagging SF")
-h0.SetLineColor(2)
-h.SetLineColor(3)
-h_bcd.SetLineColor(4)
-h_bcu.SetLineColor(5)
-h_ld.SetLineColor(6)
-h_lu.SetLineColor(7)
+h0.SetStats(False)
 
+i = 0
+for h in [h0, h, h_bcd, h_bcu, h_ld, h_lu]:
+    h.SetLineColor(colorList[i])
+    h.SetLineWidth(2)
+    i += 1

@@ -43,6 +43,9 @@ lumis = {
 
     , "Run2012D-PromptReco-v1": Lumi("Run2012D-PromptReco-v1",
     "/Cert_190456-208686_8TeV_PromptReco_Collisions12_JSON.txt")
+
+    , "total": Lumi("total",
+    "/total.json")
 }
 
 
@@ -268,7 +271,11 @@ step2_MC = [
 ]
 
 step2_Data = [
-    DS_Data("SingleMu", "/SingleMu/jpata-stpol_step1_v3_1-60389801c9c75bd7ec94ff0c7c5a7358/USER", "Run2012A-13Jul2012", "FT_53_V6_AN3::All")
+    DS_Data("SingleMu1", "/SingleMu/jpata-stpol_step1_v3_1-60389801c9c75bd7ec94ff0c7c5a7358/USER", "total", "FT_53_V6_AN3::All")
+    DS_Data("SingleEle1", "/SingleElectron/joosep-Jan31_all-49eb03845dffa028caa53d26232b143a/USER", "total", "FT_53_V6_AN3::All")
+    DS_Data("SingleEle2", "/SingleElectron/joosep-Jan31_all-a2316588016b5c752b27be91245f9d8d/USER", "total", "FT_53_V6_AN3::All")
+    DS_Data("SingleEle3", "/SingleElectron/joosep-Jan31_all-fd13d2df3af397f914d3b3a3be95a5ba/USER", "total", "FT_53_V6_AN3::All")
+    DS_Data("SingleEle4", "/SingleElectron/joosep-step1_Data_Feb5-1d982c38357b1be9f9666c2b21150ebd/USER", "total", "FT_53_V6_AN3::All")
 ]
 
 """
