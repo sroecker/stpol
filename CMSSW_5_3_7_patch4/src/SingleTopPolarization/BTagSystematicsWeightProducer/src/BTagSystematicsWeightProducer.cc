@@ -78,10 +78,13 @@ private:
     Combinations combs;
     double scaleFactor(BTagSystematicsWeightProducer::Flavour flavour, BTagSystematicsWeightProducer::BTagAlgo algo, double pt, double eta, double& sfUp, double& sfDown);
     double piecewise(double x, const std::vector<double>& bin_low, const std::vector<double>& bin_val);
-    
+   
+    //Hard-coded look-up tables for the errors of the SFb for various algos
     static const std::vector<double> SFb_ptBins;
     static const std::vector<double> SFb_CSVM_Err;
-    const BTagSystematicsWeightProducer::BTagAlgo bTagAlgo;
+    static const std::vector<double> SFb_TCHPT_Err;
+
+    BTagSystematicsWeightProducer::BTagAlgo bTagAlgo;
     // ----------member data ---------------------------
 };
 
@@ -261,7 +264,7 @@ double BTagSystematicsWeightProducer::scaleFactor(BTagSystematicsWeightProducer:
             if(ptOverFlow || ptUnderFlow)
                 sfErr = 2*sfErr;
             SFerr(sfErr);
-        } else if(algo == BTagSystematicsWeightProducer:TCHPT) {
+        } else if(algo == BTagSystematicsWeightProducer::TCHPT) {
             sf = sfB_TCHPT();
             double sfErr = piecewise(pt, BTagSystematicsWeightProducer::SFb_ptBins, BTagSystematicsWeightProducer::SFb_TCHPT_Err);
             if(ptOverFlow || ptUnderFlow)
@@ -281,7 +284,7 @@ double BTagSystematicsWeightProducer::scaleFactor(BTagSystematicsWeightProducer:
                 sfErr = 2*sfErr;
             SFerr(sfErr);
             
-        } else if(algo == BTagSystematicsWeightProducer:TCHPT) {
+        } else if(algo == BTagSystematicsWeightProducer::TCHPT) {
             sf = sfB_TCHPT();
             double sfErr = piecewise(pt, BTagSystematicsWeightProducer::SFb_ptBins, BTagSystematicsWeightProducer::SFb_TCHPT_Err);
             sfErr = 2*sfErr;
@@ -330,13 +333,13 @@ BTagSystematicsWeightProducer::BTagSystematicsWeightProducer(const edm::Paramete
     (*effs)[BTagSystematicsWeightProducer::c] = iConfig.getParameter<double>("effC");
     (*effs)[BTagSystematicsWeightProducer::l] = iConfig.getParameter<double>("effL");
     const std::string algo = iConfig.getParameter<std::string>("algo");
-    if(std::string::compare(algo, "CSVM") == 0)
-        bTagAlgo = BTagSystematicsWeightProducer::CSVM)
-    else if(std::string::compare(algo, "TCHPT") == 0)
-        bTagAlgo = BTagSystematicsWeightProducer::TCHPT)
-    else
+    if(algo.compare("CSVM") == 0) {
+        bTagAlgo = BTagSystematicsWeightProducer::CSVM;
+    } else if(algo.compare("TCHPT") == 0) {
+        bTagAlgo = BTagSystematicsWeightProducer::TCHPT;
+    } else {
         throw cms::Exception("scaleFactor") << "algo " << algo << " not implemented";
-
+    }
     
     //Precalculate the tagging combinations
     combinations(nJets, nTags, combs);
