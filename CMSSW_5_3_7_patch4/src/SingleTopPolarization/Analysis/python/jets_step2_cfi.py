@@ -224,7 +224,8 @@ def JetSetup(process, conf):
             nTags=cms.uint32(conf.Jets.nBTags),
             effB=cms.double(sampleBEffs.eff_b),
             effC=cms.double(sampleBEffs.eff_c),
-            effL=cms.double(sampleBEffs.eff_l)
+            effL=cms.double(sampleBEffs.eff_l),
+            algo=cms.string(conf.Jets.bTagWorkingPoint)
         )
         process.bEffSequence = cms.Sequence(
             process.bJetBTagEffSequence *
