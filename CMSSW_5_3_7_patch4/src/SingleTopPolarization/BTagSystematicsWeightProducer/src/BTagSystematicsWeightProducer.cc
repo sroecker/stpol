@@ -105,24 +105,46 @@ const std::vector<double> BTagSystematicsWeightProducer::SFb_ptBins ({
                 800
 });
 
+//https://twiki.cern.ch/twiki/pub/CMS/BtagPOG/SFb-pt_payload_Moriond13.txt
 const std::vector<double> BTagSystematicsWeightProducer::SFb_CSVM_Err ({
-                0.0554504,
-                0.0209663,
-                0.0207019,
-                0.0230073,
-                0.0208719,
-                0.0200453,
-                0.0264232,
-                0.0240102,
-                0.0229375,
-                0.0184615,
-                0.0216242,
-                0.0248119,
-                0.0465748,
-                0.0474666,
-                0.0718173,
-                0.0717567
+    0.0554504,
+    0.0209663,
+    0.0207019,
+    0.0230073,
+    0.0208719,
+    0.0200453,
+    0.0264232,
+    0.0240102,
+    0.0229375,
+    0.0184615,
+    0.0216242,
+    0.0248119,
+    0.0465748,
+    0.0474666,
+    0.0718173,
+    0.0717567
 });
+
+//bin-by-bin(pt) variation for TCHPT for QCD-derived scale factors
+const std::vector<double> BTagSystematicsWeightProducer::SFb_TCHPT_Err ({
+    0.0725549,
+    0.0275189,
+    0.0279695,
+    0.028065,
+    0.0270752,
+    0.0254934,
+    0.0262087,
+    0.0230919,
+    0.0294829,
+    0.0226487,
+    0.0272755,
+    0.0303747,
+    0.051223,
+    0.0542895,
+    0.0589887,
+    0.0584216
+});
+
 
 //bin_low must be sorted ascending, contains the lower values of bins.
 //The final bin_low contains the upper value of the last bin.
@@ -178,11 +200,19 @@ double BTagSystematicsWeightProducer::scaleFactor(BTagSystematicsWeightProducer:
         sfDown = sf - sfErr;
     };
 
+    //https://twiki.cern.ch/twiki/pub/CMS/BtagPOG/SFb-pt_payload_Moriond13.txt
     auto sfB_CSVM = [&pt] () {
         double x = pt;
         return 0.726981*((1.+(0.253238*x))/(1.+(0.188389*x)));
     };
+    
+    //Tagger: TCHPT within 20 < pt < 800 GeV, abs(eta) < 2.4, x = pt
+    auto sfB_TCHPT = [&pt] () {
+        double x = pt;
+        return 0.305208*((1.+(0.595166*x))/(1.+(0.186968*x)));
+    };
 
+    //
     auto sfL_CSVM = [&eta, &pt, &sfUp, &sfDown] () {
         double x = pt;
 
@@ -202,7 +232,7 @@ double BTagSystematicsWeightProducer::scaleFactor(BTagSystematicsWeightProducer:
             sfUp = ((1.17671+(0.0010147*x))+(-3.66269e-06*(x*x)))+(2.88425e-09*(x*(x*x)));
             return ((1.09145+(0.000687171*x))+(-2.45054e-06*(x*x)))+(1.7844e-09*(x*(x*x)));   
         }
-        else {
+        else { //jet eta overflow
           return TMath::QuietNaN();
         }
     };
@@ -215,16 +245,29 @@ double BTagSystematicsWeightProducer::scaleFactor(BTagSystematicsWeightProducer:
             if(ptOverFlow || ptUnderFlow)
                 sfErr = 2*sfErr; 
             SFerr(sfErr); 
+        } else if(algo == BTagSystematicsWeightProducer:TCHPT) {
+            sf = sfB_TCHPT();
+            double sfErr = piecewise(pt, BTagSystematicsWeightProducer::SFb_ptBins, BTagSystematicsWeightProducer::SFb_TCHPT_Err);
+            if(ptOverFlow || ptUnderFlow)
+                sfErr = 2*sfErr; 
+            SFerr(sfErr); 
         } else {
             throw cms::Exception("scaleFactor") << "algo " << algo << " not implemented";
         }
     }
+    //for c use the b SF but increase unc. by a factor of 2
     else if( flavour==BTagSystematicsWeightProducer::c ) {
-        
-        //for c use the b SF but increase unc. by a factor of 2
         if(algo == BTagSystematicsWeightProducer::CSVM) {
             sf = sfB_CSVM();
             double sfErr = piecewise(pt, BTagSystematicsWeightProducer::SFb_ptBins, BTagSystematicsWeightProducer::SFb_CSVM_Err);
+            sfErr = 2*sfErr;  
+            if(ptOverFlow || ptUnderFlow)
+                sfErr = 2*sfErr; 
+            SFerr(sfErr);
+            
+        } else if(algo == BTagSystematicsWeightProducer:TCHPT) {
+            sf = sfB_TCHPT();
+            double sfErr = piecewise(pt, BTagSystematicsWeightProducer::SFb_ptBins, BTagSystematicsWeightProducer::SFb_TCHPT_Err);
             sfErr = 2*sfErr;  
             if(ptOverFlow || ptUnderFlow)
                 sfErr = 2*sfErr; 
