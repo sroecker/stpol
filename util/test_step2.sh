@@ -5,4 +5,9 @@ rm -Rf $OFDIR
 mkdir $OFDIR
 
 cmsRun $CMSSW_BASE/../runconfs/step2_newCmdLine_cfg.py inputFiles=file:$IN isMC=True channel=background subChannel=TTbar outputFile=$OFDIR/out.root &> $OFDIR/log_step2.txt
-echo $?
+EX=$?
+echo "Exit code:"$EX 
+if [ "$EX" -ne 0 ]
+then
+    tail -n 50 $OFDIR/log*.txt
+fi
