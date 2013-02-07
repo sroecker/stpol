@@ -99,7 +99,7 @@ class Channel:
             self.color = color
 
     def cutFlowOfCut(self, _cut):
-    
+
         tempC = Cuts.initial
         print _cut
         print _cut.cutSequence
@@ -167,7 +167,7 @@ channels["TTbar"] = Channel("TTbar", args.datadir + "/TTbar.root", xs["TTbar"], 
 #channels["WW"] = Channel("WW", args.datadir + "/WW.root", xs["WW"], color=ROOT.kBlue)
 #channels["WZ"] = Channel("WZ", args.datadir + "/WZ.root", xs["WZ"], color=ROOT.kBlue)
 #channels["ZZ"] = Channel("ZZ", args.datadir + "/ZZ.root", xs["ZZ"], color=ROOT.kBlue)
-#channels["WJets"] = Channel("WJets", args.datadir + "/WJets1.root", xs["WJets"], color=ROOT.kGreen)
+channels["WJets"] = Channel("WJets", args.datadir + "/WJets.root", xs["WJets"], color=ROOT.kGreen)
 #channels["SingleMu"] = Channel("SingleMu", args.datadir + "/SingleMu.root", -1, color=ROOT.kBlack)
 #channels["QCDMu"] = Channel("QCDMu'", "/QCDMu.root", xs["QCDMu"], color=ROOT.kGray)
 #channels["QCD_20_30_EM"] = Channel("QCD_20_30_EM", "/QCD_20_30_EM.root", xs["QCD_20_30_EM"], color=ROOT.kGray)

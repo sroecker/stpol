@@ -2,6 +2,8 @@ from anfw import *
 import pdb
 import math
 
+import json
+
 #cut = Cuts.mu + Cuts.MT + Cuts.mlnu + Cuts.jetRMS + Cuts.jetPt + Cuts.jets_1LJ + Cuts.etaLJ + Cuts.recoFState #Cut("1plusLJ", "_lightJetCount>=1")
 cut = Cuts.mu + Cuts.MT + Cuts.mlnu + Cuts.jetRMS + Cuts.etaLJ + Cuts.recoFState + Cuts.jetPt + Cut("1plusLJ", "_lightJetCount>=1")
 #cut = Cuts.mu + Cuts.MT
@@ -12,6 +14,7 @@ def effUnc(eff, count):
 
 of = ROOT.TFile("bTaggingEffs.root", "RECREATE")
 def calcBTaggingEff(channel):
+
     print "B-tagging effs for channel {0}".format(channel)
     of.cd()
     hTrueB_bDiscr = ROOT.TH1F("hTrueB_BDiscr_{0}".format(channel), "true b-jet b-discriminator distribution", 1000, -100, 40)
@@ -90,10 +93,56 @@ def calcBTaggingEff(channel):
     print 80*"-"
     of.Write()
 
-    return {"eff_b": eff_b, "eff_c": eff_c, "eff_l": eff_l}
+    return {
+    "count_events": elist.GetN(),
+    "eff_b": 100.0*eff_b, "eff_c": 100.0*eff_c, "eff_l": 100.0*eff_l,
+    "sigma_eff_b": 100*sigma_eff_b, "sigma_eff_c": 100*sigma_eff_c, "sigma_eff_l": 100*sigma_eff_l,
+    "rel_sigma_eff_b": 100.0*sigma_eff_b/eff_b, "rel_sigma_eff_c": 100.0*sigma_eff_c/eff_c, "rel_sigma_eff_l": 100.0*sigma_eff_l/eff_l,
+    "count_b_total": sumTrueB, "count_b_tagged": sumBTaggedB,
+    "count_c_total": sumTrueC, "count_c_tagged": sumBTaggedC,
+    "count_l_total": sumTrueL, "count_l_tagged": sumBTaggedL
+    }
 
-calcBTaggingEff("T_t")
-calcBTaggingEff("WJets")
-calcBTaggingEff("TTbar")
+effs = dict()
+
+effs["T_t"] = calcBTaggingEff("T_t")
+effs["WJets"] = calcBTaggingEff("WJets")
+effs["TTbar"] = calcBTaggingEff("TTbar")
+
+out = dict()
+out["bTaggingEffs"] = dict()
+for (chan, eff) in effs.items():
+    for (k, v) in eff.items():
+        out["bTaggingEffs"]["{0}_{1}".format(k, chan)] = v
+
 
 of.Close()
+ofile = open("bTaggingEffs.json", "w+")
+ofile.write(json.dumps(effs))
+ofile.close()
+
+from Cheetah.Template import Template
+temp = r"""
+#compiler-settings
+cheetahVarStartToken = @
+#end compiler-settings
+\begin{tabular}{ |l|c|c|c|c|c| }
+     \hline
+     MC sample & MC events in sel. & flavour & total & b-tagged & $\epsilon$ & stat. unc. \\
+     \hline
+     \multirow{3}{*}{single top, t-channel, top} & \multirow{3}{*}{@effs['T_t']['count_events']} & b & @effs['T_t']['count_b_total'] & @effs['T_t']['count_b_tagged'] & #echo '%.2f' % @effs['T_t']['eff_b']# \pm #echo '%.1f' % @effs['T_t']['rel_sigma_eff_b']#\% \\\cline{3-6}
+%                                                 &                                               & c & @effs['T_t']['count_c_total'] & @effs['T_t']['count_c_tagged'] & #echo '%.3E' % @effs['T_t']['eff_c']# & #echo '%.3E' %  @effs['T_t']['sigma_eff_c']# \\\cline{3-7}
+%                                                 &                                               & l & @effs['T_t']['count_l_total'] & @effs['T_t']['count_l_tagged'] & #echo '%.3E' % @effs['T_t']['eff_l']# & #echo '%.3E' %  @effs['T_t']['sigma_eff_l']# \\\cline{3-7}
+%     \hline
+%     \multirow{3}{*}{$t\bar{t}$} & \multirow{3}{*}{@effs['TTbar']['count_events']} & b & @effs['TTbar']['count_b_total'] & @effs['TTbar']['count_b_tagged'] & #echo '%.3E' % @effs['TTbar']['eff_b']# & #echo '%.3E' %  @effs['TTbar']['sigma_eff_b']# \\\cline{3-7}
+%                                      &                                                 & c & @effs['TTbar']['count_c_total'] & @effs['TTbar']['count_c_tagged'] & #echo '%.3E' % @effs['TTbar']['eff_c']# & #echo '%.3E' %  @effs['TTbar']['sigma_eff_c']# \\\cline{3-7}
+%                                      &                                                 & l & @effs['TTbar']['count_l_total'] & @effs['TTbar']['count_l_tagged'] & #echo '%.3E' % @effs['TTbar']['eff_l']# & #echo '%.3E' %  @effs['TTbar']['sigma_eff_l']# \\\cline{3-7}
+%     \hline
+%     \multirow{3}{*}{W+Jets} & \multirow{3}{*}{@effs['WJets']['count_events']} & b & @effs['WJets']['count_b_total'] & @effs['WJets']['count_b_tagged'] & #echo '%.3E' % @effs['WJets']['eff_b']# & #echo '%.3E' %  @effs['WJets']['sigma_eff_b']# \\\cline{3-7}
+%                             &                                                 & c & @effs['WJets']['count_c_total'] & @effs['WJets']['count_c_tagged'] & #echo '%.3E' % @effs['WJets']['eff_c']# & #echo '%.3E' %  @effs['WJets']['sigma_eff_c']# \\\cline{3-7}
+%                             &                                                 & l & @effs['WJets']['count_l_total'] & @effs['WJets']['count_l_tagged'] & #echo '%.3E' % @effs['WJets']['eff_l']# & #echo '%.3E' %  @effs['WJets']['sigma_eff_l']# \\\cline{3-7}
+    \hline
+\end{tabular}
+"""
+
+print Template(temp, searchList=[{"effs": effs}])
