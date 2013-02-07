@@ -134,6 +134,17 @@ def SingleTopStep2():
     from SingleTopPolarization.Analysis.electrons_step2_cfi import ElectronSetup
     ElectronSetup(process, Config)
 
+    process.looseVetoMuCount = cms.EDProducer(
+        "CollectionSizeProducer<reco::Candidate>",
+        src = cms.InputTag("looseVetoMuons")
+    )
+
+    process.looseVetoEleCount = cms.EDProducer(
+        "CollectionSizeProducer<reco::Candidate>",
+        src = cms.InputTag("looseVetoElectrons")
+    )
+
+
     #Combine the found electron/muon to a single collection
     process.goodSignalLeptons = cms.EDProducer(
          'CandRefCombiner',
@@ -450,6 +461,10 @@ def SingleTopStep2():
             cms.InputTag("electronCount"),
             cms.InputTag("topCount"),
             cms.InputTag("bJetCount"),
+            cms.InputTag("lightJetCount"),
+
+            cms.InputTag("looseVetoMuCount"),
+            cms.InputTag("looseVetoEleCount"),
 
             cms.InputTag("btaggedTrueBJetCount"),
             cms.InputTag("trueBJetCount"),
@@ -458,7 +473,6 @@ def SingleTopStep2():
             cms.InputTag("btaggedTrueLJetCount"),
             cms.InputTag("trueLJetCount"),
 
-            cms.InputTag("lightJetCount"),
 
             cms.InputTag("genLeptonsTCount")
             ]
@@ -498,15 +512,30 @@ def SingleTopStep2():
         from SingleTopPolarization.Analysis.debugAnalyzers_step2_cfi import DebugAnalyzerSetup
         DebugAnalyzerSetup(process)
 
+    process.looseVetoMuCount = cms.EDProducer(
+        "CollectionSizeProducer<reco::Candidate>",
+        src = cms.InputTag("looseVetoMuons")
+    )
+
+    process.looseVetoElectronCount = cms.EDProducer(
+        "CollectionSizeProducer<reco::Candidate>",
+        src = cms.InputTag("looseVetoElectrons")
+    )
+
+
     if Config.doMuon:
         from SingleTopPolarization.Analysis.muons_step2_cfi import MuonPath
         MuonPath(process, Config)
         process.muPath.insert(process.muPath.index(process.singleIsoMu)+1, process.goodSignalLeptons)
+        process.muPath.insert(process.muPath.index(process.looseVetoMuons)+1, process.looseVetoMuCount)
+        process.muPath.insert(process.muPath.index(process.looseVetoElectrons)+1, process.looseVetoEleCount)
 
     if Config.doElectron:
         from SingleTopPolarization.Analysis.electrons_step2_cfi import ElectronPath
         ElectronPath(process, Config)
         process.elePath.insert(process.elePath.index(process.singleIsoEle)+1, process.goodSignalLeptons)
+        process.elePath.insert(process.elePath.index(process.looseVetoMuons)+1, process.looseVetoMuCount)
+        process.elePath.insert(process.elePath.index(process.looseVetoElectrons)+1, process.looseVetoEleCount)
 
     process.treePath = cms.Path(process.treeSequence)
     if Config.isMC:

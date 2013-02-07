@@ -271,15 +271,15 @@ step2_MC = [
 ]
 
 #Jan31 partial reprocessing of step1
-step2_Data = [
-    DS_Data("SingleMuA_809_pb", "/SingleMu/joosep-Jan31_all-ddb64625c246284e02e1dd440ed9dce0/USER", "total", "FT_53_V6_AN3::All")
-    DS_Data("SingleMuB_3877_pb", "/SingleMu/joosep-Jan31_all-ddb64625c246284e02e1dd440ed9dce0/USER", "total", "FT_53_V6_AN3::All")
-    DS_Data("SingleMuC_3735_pb", "/SingleMu/joosep-Jan31_all-a2316588016b5c752b27be91245f9d8d/USER", "total", "FT_53_V6_AN3::All")
-   
-    DS_Data("SingleEleA2_809_pb", "/SingleElectron/joosep-Jan31_all-49eb03845dffa028caa53d26232b143a/USER", "total", "FT_53_V6_AN3::All")
-    DS_Data("SingleEleC_4547_pb", "/SingleElectron/joosep-Jan31_all-a2316588016b5c752b27be91245f9d8d/USER", "total", "FT_53_V6_AN3::All")
-    DS_Data("SingleEleA1_56_pb", "/SingleElectron/joosep-Jan31_all-fd13d2df3af397f914d3b3a3be95a5ba/USER", "total", "FT_53_V6_AN3::All")
-    DS_Data("SingleEleD_2680_pb", "/SingleElectron/joosep-step1_Data_Feb5-1d982c38357b1be9f9666c2b21150ebd/USER", "total", "FT_53_V6_AN3::All")
+step2_data = [
+    DS_Data("SingleMuAB", "/SingleMu/joosep-Jan31_all-ddb64625c246284e02e1dd440ed9dce0/USER", "total", "FT_53_V6_AN3::All")
+    #, DS_Data("SingleMuB", "/SingleMu/joosep-Jan31_all-ddb64625c246284e02e1dd440ed9dce0/USER", "total", "FT_53_V6_AN3::All")
+    , DS_Data("SingleMuC", "/SingleMu/joosep-Jan31_all-a2316588016b5c752b27be91245f9d8d/USER", "total", "FT_53_V6_AN3::All")
+
+    , DS_Data("SingleEleA2", "/SingleElectron/joosep-Jan31_all-49eb03845dffa028caa53d26232b143a/USER", "total", "FT_53_V6_AN3::All")
+    , DS_Data("SingleEleC", "/SingleElectron/joosep-Jan31_all-a2316588016b5c752b27be91245f9d8d/USER", "total", "FT_53_V6_AN3::All")
+    , DS_Data("SingleEleA1", "/SingleElectron/joosep-Jan31_all-fd13d2df3af397f914d3b3a3be95a5ba/USER", "total", "FT_53_V6_AN3::All")
+    , DS_Data("SingleEleD", "/SingleElectron/joosep-step1_Data_Feb5-1d982c38357b1be9f9666c2b21150ebd/USER", "total", "FT_53_V6_AN3::All")
 ]
 
 """
