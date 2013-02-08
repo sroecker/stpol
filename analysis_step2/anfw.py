@@ -7,6 +7,7 @@ from collections import OrderedDict
 import re
 import argparse
 import copy
+import pdb
 
 if "-b" in sys.argv:
     sys.argv.remove("-b")
@@ -47,10 +48,11 @@ class Cuts:
     initial = Cut("initial", "1==1")
 
     recoFState = Cut("recoFstate", "_topCount==1")
-    mu = Cut("mu", "_muonCount==1") + Cut("muIso", "_goodSignalMuons_0_relIso<0.12")
+    mu = Cut("mu", "_muonCount==1") + Cut("muIso", "_goodSignalMuons_0_relIso<0.12") + Cut("looseMuVeto", "_looseVetoMuCount==0") + Cut("looseEleVeto", "_looseVetoEleCount==0")
     ele = Cut("ele", "_electronCount==1") + Cut("eleIso", "_goodSignalElectrons_0_relIso<0.3") + Cut("eleMVA", "_goodSignalElectrons_0_mvaID>0.9")
 
     jets_1LJ = Cut("1LJ", "_lightJetCount==1")
+    jets_2plusJ = Cut("1plusLJ", "_lightJetCount>=0 && _bJetCount>=0 && (_lightJetCount + _bJetCount)>=2")
     jets_2J1T = Cut("2J1T", "_lightJetCount==1 && _bJetCount==1")
     jets_2J0T = Cut("2J0T", "_lightJetCount==1 && _bJetCount==0")
     jets_3J1T = Cut("3J1T", "_lightJetCount==2 && _bJetCount==1")
@@ -63,11 +65,12 @@ class Cuts:
     jetPt = Cut("jetPt", "_goodJets_0_Pt>40 && _goodJets_1_Pt>40")
     jetEta = Cut("jetEta", "abs(_lowestBTagJet_0_Eta)<4.5 && abs(_highestBTagJet_0_Eta)<4.5")
     jetRMS = Cut("rms_{lj}", "_lowestBTagJet_0_rms < 0.025")
-    MT = Cut("MT", "(_muAndMETMT > 50 | _eleAndMETMT > 45)")
+    MTmu = Cut("MT", "_muAndMETMT > 50")
+    MTele = Cut("MT", "_patMETs_0_Pt>45")
 #    Orso = mlnu + jets_2J1T + jetPt + jetRMS + MT + etaLJ#jetEta
-    Orso = mlnu + jets_2J1T + jetPt + jetRMS + MT + etaLJ + jetEta
-    finalMu = mu + recoFState + Orso
-    finalEle = ele + recoFState + Orso
+    Orso = mlnu + jets_2J1T + jetPt + jetRMS + etaLJ + jetEta
+    finalMu = mu + recoFState + Orso + MTmu
+    finalEle = ele + recoFState + Orso + MTele
 
 class Channel:
     def __init__(self, channelName, fileName, crossSection, color=None):
@@ -111,9 +114,11 @@ class Channel:
     def cutFlowTotal(self):
         muHist = self.file.Get("efficiencyAnalyzerMu").Get("muPath")
         eleHist = self.file.Get("efficiencyAnalyzerEle").Get("elePath")
+        cutFlowD = OrderedDict()
         for h in [muHist, eleHist]:
             for n in range(1, h.GetNbinsX()+1):
-                print "%s: %d" % (h.GetXaxis().GetBinLabel(n), int(h.GetBinContent(n)))
+               cutFlowD[h.GetXaxis().GetBinLabel(n)] = int(h.GetBinContent(n))
+        return cutFlowD
 
     def plot1D(self, var, r=[100, None, None], cut=None, fn="", weight=None, varName=None):
         c = ROOT.TCanvas()
@@ -155,19 +160,28 @@ class Channel:
         return h
 
 
-channels = OrderedDict()
+sampleColors = {"T_t": ROOT.kRed, "WJets": ROOT.kGreen, "W1Jets": ROOT.kGreen+1, "W2Jets": ROOT.kGreen+2}
 
-channels["T_t"] = Channel("T_t", args.datadir + "/T_t.root", xs["T_t"], color=ROOT.kRed)
+def loadSamples(enabledSamples):
+    channels = OrderedDict()
+    for (sampleName, fileName) in enabledSamples.items():
+        channels[sampleName] = Channel(sampleName, args.datadir + "/" + fileName, xs[sampleName], sampleColors[sampleName])
+        cutFlowD = channels[sampleName].cutFlowTotal()
+        print cutFlowD
+    return channels
+
+#channels["T_t"] = Channel("T_t", args.datadir + "/T_t.root", xs["T_t"], color=ROOT.kRed)
 #channels["Tbar_t"] = Channel("Tbar_t", args.datadir + "/Tbar_t.root", xs["Tbar_t"], color=ROOT.kRed)
 #channels["T_s"] = Channel("T_s", args.datadir + "/T_s.root", xs["T_s"], color=ROOT.kYellow)
 #channels["Tbar_s"] = Channel("Tbar_s", args.datadir + "/Tbar_s.root", xs["Tbar_s"], color=ROOT.kYellow)
 #channels["T_tW"] = Channel("T_tW", args.datadir + "/T_tW.root", xs["T_tW"], color=ROOT.kYellow+4)
 #channels["Tbar_tW"] = Channel("Tbar_tW", args.datadir + "/Tbar_tW.root", xs["Tbar_tW"], color=ROOT.kYellow+4)
-channels["TTbar"] = Channel("TTbar", args.datadir + "/TTbar.root", xs["TTbar"], color=ROOT.kOrange)
+#channels["TTbar"] = Channel("TTbar", args.datadir + "/TTbar.root", xs["TTbar"], color=ROOT.kOrange)
 #channels["WW"] = Channel("WW", args.datadir + "/WW.root", xs["WW"], color=ROOT.kBlue)
 #channels["WZ"] = Channel("WZ", args.datadir + "/WZ.root", xs["WZ"], color=ROOT.kBlue)
 #channels["ZZ"] = Channel("ZZ", args.datadir + "/ZZ.root", xs["ZZ"], color=ROOT.kBlue)
-channels["WJets"] = Channel("WJets", args.datadir + "/WJets.root", xs["WJets"], color=ROOT.kGreen)
+#channels["WJets"] = Channel("WJets", args.datadir + "/WD_WJets1.root", xs["WJets"], color=ROOT.kGreen)
+#channels["W1Jets"] = Channel("W1Jets_excl", args.datadir + "/W1Jets.root", xs["WJets"], color=ROOT.kGreen)
 #channels["SingleMu"] = Channel("SingleMu", args.datadir + "/SingleMu.root", -1, color=ROOT.kBlack)
 #channels["QCDMu"] = Channel("QCDMu'", "/QCDMu.root", xs["QCDMu"], color=ROOT.kGray)
 #channels["QCD_20_30_EM"] = Channel("QCD_20_30_EM", "/QCD_20_30_EM.root", xs["QCD_20_30_EM"], color=ROOT.kGray)
