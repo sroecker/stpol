@@ -24,3 +24,9 @@
 
 #Xcode files
 *.xcworkspace
+
+#testing stuff
+test*
+
+#crab jobs
+crabs/step*
