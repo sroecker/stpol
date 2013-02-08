@@ -9,6 +9,10 @@ xs = {
     , "Tbar_tW": 11.1
     , "TTbar": 234
     , "WJets": 36257.2
+
+    #FIXME: exlusive sample branching ratio
+    , "W1Jets": 36257.2
+
     , "ZJets": 3503.71
     , "WW": 54.838
     , "WZ": 32.3161
