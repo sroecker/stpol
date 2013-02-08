@@ -117,11 +117,11 @@ class DS_S2MC(DS):
 #https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions?redirectedfrom=CMS.SWGuideFrontierConditions
 step1_data = [
 
-      DS_Data("SingleMu_Run2012A",
+      DS_Data("SingleMu_Run2012A_13Jul2012_v1",
       "/SingleMu/Run2012A-13Jul2012-v1/AOD", "Run2012A-13Jul2012", "FT_53_V6_AN3::All", [190456,193621])
 
-    , DS_Data("SingleMu_Run2012A",
-      "/SingleMu/Run2012A-recover-06Aug2012-v1/RECO", "Run2012A-recover-06Aug2012", "FT_53_V6_AN3::All", [193833, 196531])
+    , DS_Data("SingleMu_Run2012A_recover_06Aug2012_v1",
+      "/SingleMu/Run2012A-recover-06Aug2012-v1/AOD", "Run2012A-recover-06Aug2012", "FT_53_V6_AN3::All", [193833, 196531])
 
     , DS_Data("SingleMu_Run2012B",
       "/SingleMu/Run2012B-13Jul2012-v1/AOD", "Run2012B-13Jul2012", "FT_53_V6_AN3::All", [193833, 196531])
