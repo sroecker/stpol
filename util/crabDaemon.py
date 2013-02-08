@@ -249,8 +249,16 @@ if __name__=="__main__":
             incompleteJobs = jobFile.readlines()
             jobFile.close()
             incompleteJobs = map(lambda x: x.strip(), incompleteJobs)
+            incompleteJobs = filter(lambda x: not x.startswith("!"), incompleteJobs)
             incompleteJobs = filter(lambda x: os.path.exists("{0}/share/crab.cfg".format(x)), incompleteJobs)
             incompleteJobs = list(set(incompleteJobs).difference(completeJobs))
+            incompleteJobs.sort()
+            jobFile = open("jobList.txt", "w+")
+            for job in incompleteJobs:
+                jobFile.write(job + "\n")
+            for job in completeJobs:
+                jobFile.write("!" + job + "\n")
+            jobFile.close()
             print "Considering dirs: {0}".format(incompleteJobs)
 
             for d in incompleteJobs:
