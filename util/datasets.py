@@ -7,7 +7,6 @@ Author: Joosep Pata joosep.pata@cern.ch
 
 import sys
 import os
-
 import argparse
 
 """
@@ -170,6 +169,16 @@ step1_data = [
       "/SingleElectron/Run2012D-PromptReco-v1/AOD", "Run2012D-PromptReco-v1", "FT_P_V42_AN3::All", [-1, -1])
 ]
 
+step2_newMC = [
+    DS("TTbar_FullLept", "/TTJets_FullLeptMGDecays_8TeV-madgraph/joosep-step1_MC_Feb6-243fe90abe1b1cf7bc2119dc7c0b2e28/USER")
+    , DS("WJets_inclusive", "/WJetsToLNu_TuneZ2Star_8TeV-madgraph-tarball/joosep-step1_MC_Feb6-243fe90abe1b1cf7bc2119dc7c0b2e28/USER")
+
+    , DS("W1Jets_exclusive", "/W1JetsToLNu_TuneZ2Star_8TeV-madgraph/jpata-Jan31_WJets_samples-6154e41574fbefb9af6528e169eaecf5/USER")
+    , DS("W2Jets_exclusive", "/W2JetsToLNu_TuneZ2Star_8TeV-madgraph/jpata-Jan31_WJets_samples-6154e41574fbefb9af6528e169eaecf5/USER")
+    , DS("W3Jets_exclusive", "/W3JetsToLNu_TuneZ2Star_8TeV-madgraph/jpata-Jan31_WJets_samples-6154e41574fbefb9af6528e169eaecf5/USER")
+    , DS("W4Jets_exclusive", "/W4JetsToLNu_TuneZ2Star_8TeV-madgraph/jpata-Jan31_WJets_samples-6154e41574fbefb9af6528e169eaecf5/USER")
+]
+
 step1_MC = [
       DS("T_t", "/T_t-channel_TuneZ2star_8TeV-powheg-tauola/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM")
     , DS("Tbar_t", "/Tbar_t-channel_TuneZ2star_8TeV-powheg-tauola/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM")
@@ -289,6 +298,7 @@ possible_ds = {
     "S1D": step1_data,
     "S1MC": step1_MC,
     "S2MC": step2_MC,
+    "S2newMC": step2_newMC,
     "S2D": step2_data
     }
 
@@ -325,4 +335,3 @@ if __name__=="__main__":
         of.write(cfg)
         of.close()
         print "{0} done".format(ofn)
-
