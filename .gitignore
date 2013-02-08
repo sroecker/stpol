@@ -18,6 +18,7 @@
 
 #ROOT files
 *.root
+trees
 
 #Logs
 *.log
