@@ -73,4 +73,4 @@ To create the crab.cfg files to run over step2-mc (iso/antiIso), run in the base
 ###Using lumiCalc2.py
 To calculate the integrated luminosity from crab jobs, do the following
 >crab -c YOUR_DIR -report
->lumiCalc2.py -i YOUR_DIR overview
+>lumiCalc2.py --without-checkforupdate -i YOUR_DIR/res/lumiSummary.json overview
