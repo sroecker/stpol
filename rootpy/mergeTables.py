@@ -1,7 +1,7 @@
 import tables
 import sys
 
-fi = tables.openFile("test.h5", "r", "Test")
+fi = tables.openFile(sys.argv[1], "r", "Test")
 of = tables.openFile("out.h5", "w", "Out")
 import pdb
 
@@ -13,7 +13,7 @@ for node in fi:
         for coln in node.colnames:
             allcols[coln] = node.coldescrs[coln]
         nodes.append(node._v_pathname)
-
+pdb.set_trace()
 nRows = fi.getNode(nodes[0]).nrows
 newT = of.createTable("/", "newT", allcols, expectedrows=nRows, filters=tables.Filters(complevel=9, complib='blosc', fletcher32=False))
 row = newT.row
