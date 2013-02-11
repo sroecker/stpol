@@ -42,7 +42,13 @@ def SingleTopStep2():
         options.register ('isMC', True,
 				  VarParsing.multiplicity.singleton,
 				  VarParsing.varType.bool,
-				  "Run on MC")
+				  "Run on MC"
+        )
+        options.register ('doGenParticlePath', True,
+				  VarParsing.multiplicity.singleton,
+				  VarParsing.varType.bool,
+				  "Run the gen particle paths (only works on specific MC)"
+        )        
         options.register ('globalTag', "START53_V15::All",
                   VarParsing.multiplicity.singleton,
                   VarParsing.varType.string,
@@ -399,7 +405,7 @@ def SingleTopStep2():
         )
     )
 
-    process.treesDouble = cms.EDAnalyzer("DoubleTreemakerAnalyzer",
+    process.treesDouble = cms.EDAnalyzer("FloatTreemakerAnalyzer",
         collections = cms.VInputTag(
             #Merged cosTheta*
             cms.InputTag("cosTheta", "cosThetaLightJet"),
@@ -433,7 +439,7 @@ def SingleTopStep2():
         )
     )
 
-    process.treesDoubleWeight = cms.EDAnalyzer("DoubleTreemakerAnalyzer",
+    process.treesDoubleWeight = cms.EDAnalyzer("FloatTreemakerAnalyzer",
         defaultValue = cms.untracked.double(0),
         putNaNs = cms.untracked.bool(False),
         collections = cms.VInputTag(
@@ -501,7 +507,7 @@ def SingleTopStep2():
     from SingleTopPolarization.Analysis.hlt_step2_cfi import HLTSetup
     HLTSetup(process, Config)
 
-    if Config.isMC:
+    if Config.isMC and options.doGenParticlePath:
         from SingleTopPolarization.Analysis.partonStudy_step2_cfi import PartonStudySetup
         PartonStudySetup(process)
         process.partonPath = cms.Path(process.commonPartonSequence)
