@@ -124,7 +124,7 @@ class GenericTreemakerAnalyzer : public edm::EDAnalyzer {
 template <typename T, typename C>
 GenericTreemakerAnalyzer<T, C>::GenericTreemakerAnalyzer(const edm::ParameterSet& iConfig) :
 reportMissing(iConfig.getUntrackedParameter<bool>("reportMissing", false))
-, ownDefaultValue(iConfig.getUntrackedParameter<C>("defaultValue", GenericTreemakerAnalyzer<T, C>::defaultValue))
+, ownDefaultValue(iConfig.getUntrackedParameter<T>("defaultValue", GenericTreemakerAnalyzer<T, C>::defaultValue))
 , putNaNs(iConfig.getUntrackedParameter<bool>("putNaNs", true))
 {
 
@@ -303,8 +303,11 @@ GenericTreemakerAnalyzer<T, C>::fillDescriptions(edm::ConfigurationDescriptions&
 
 //typedef SingleObjectSelector< edm::View<pat::Jet>, StringCutObjectSelector<pat::Jet, true>, edm::OwnVector<pat::Jet, edm::ClonePolicy<pat::Jet>> > JetViewSelector;
 
-typedef GenericTreemakerAnalyzer<float, float> FloatTreemakerAnalyzer;
-template<> const double FloatTreemakerAnalyzer::defaultValue = TMath::QuietNaN();
+typedef GenericTreemakerAnalyzer<double, double> DoubleTreemakerAnalyzer;
+template<> const double DoubleTreemakerAnalyzer::defaultValue = TMath::QuietNaN();
+
+typedef GenericTreemakerAnalyzer<double, float> FloatTreemakerAnalyzer;
+template<> const float FloatTreemakerAnalyzer::defaultValue = TMath::QuietNaN();
 
 typedef GenericTreemakerAnalyzer<bool, int> BoolTreemakerAnalyzer;
 template<> const int BoolTreemakerAnalyzer::defaultValue = -1;
