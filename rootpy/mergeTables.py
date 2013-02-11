@@ -1,9 +1,11 @@
 import tables
 import sys
-
-fi = tables.openFile(sys.argv[1], "r", "Test")
-of = tables.openFile("out.h5", "w", "Out")
 import pdb
+infile = sys.argv[1]
+outfile = infile.replace(".h5", "_opt.h5")
+
+fi = tables.openFile(infile, "r", "Test")
+of = tables.openFile(outfile, "w", "SingleTopPolarization")
 
 nodes = []
 allcols = dict()
@@ -13,9 +15,21 @@ for node in fi:
         for coln in node.colnames:
             allcols[coln] = node.coldescrs[coln]
         nodes.append(node._v_pathname)
+
+
+nodesToCreate = {}
+
+for key in allcols.keys():
+    if allcols[key].dtype == "float64":
+        nodesToCreate[key] = tables.Float32Col()
+    elif allcols[key].dtype == "int64":
+        nodesToCreate[key] = tables.Int32Col()
+    else:
+        nodesToCreate[key] = allcols[key]
+
 pdb.set_trace()
 nRows = fi.getNode(nodes[0]).nrows
-newT = of.createTable("/", "newT", allcols, expectedrows=nRows, filters=tables.Filters(complevel=9, complib='blosc', fletcher32=False))
+newT = of.createTable("/", "events", nodesToCreate, expectedrows=nRows, filters=tables.Filters(complevel=9, complib='blosc', fletcher32=False))
 row = newT.row
 for i in range(nRows):
     row.append()
@@ -27,4 +41,3 @@ for nodeName in nodes:
         print "putting {0}".format(coln)
         newT.modifyColumn(colname=coln, column=node.colinstances[coln][:])
     newT.flush()
-
