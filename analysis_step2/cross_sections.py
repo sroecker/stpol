@@ -19,22 +19,20 @@ xs = {
     , "ZZ": 8.059
     , "QCDMu": 134680
 
-    #http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=QCD_Pt_20_30_EMEnriched_TuneZ2star_8TeV_pythia6*
-    , "QCD_20_30_EMEnriched": 2.886E8
+    #http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=QCD_Pt_*_*_EMEnriched_TuneZ2star_8TeV_pythia6*
+    , "QCD_Pt_20_30_EMEnriched": 2.886E8
+    , "QCD_Pt_30_80_EMEnriched": 7.433E7
+    , "QCD_Pt_80_170_EMEnriched": 1191000.0
+    , "QCD_Pt_170_250_EMEnriched": 30990.0
+    , "QCD_Pt_250_350_EMEnriched": 4250.0
+    , "QCD_Pt_350_EMEnriched": 810.0
 
-    #http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=QCD_Pt_30_80_EMEnriched_TuneZ2star_8TeV_pythia6*
-    , "QCD_30_80_EMEnriched": 7.433E7
-
-    #http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=QCD_Pt_80_170_EMEnriched_TuneZ2star_8TeV_pythia6*
-    , "QCD_80_170_EMEnriched": 1191000.0
-
-    #http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=QCD_Pt_170_250_EMEnriched_TuneZ2star_8TeV_pythia6*
-    , "QCD_170_250_EMEnriched": 30990.0
-
-    #http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=QCD_Pt_250_350_EMEnriched_TuneZ2star_8TeV_pythia6*
-    , "QCD_250_350_EMEnriched": 4250.0
-
-    #http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=QCD_Pt_350_EMEnriched_TuneZ2star_8TeV_pythia6*
-    , "QCD_350_EMEnriched": 810.0
+    #http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=QCD_Pt_*_*_BCtoE_TuneZ2star_8TeV_pythia6*
+    , "QCD_Pt_20_30_BCtoE": 2.886E8
+    , "QCD_Pt_30_80_BCtoE": 7.424E7
+    , "QCD_Pt_80_170_BCtoE": 1191000.0
+    , "QCD_Pt_170_250_BCtoE": 30980.0
+    , "QCD_Pt_250_350_BCtoE": 4250.0
+    , "QCD_Pt_350_BCtoE": 811.0
 }
 
