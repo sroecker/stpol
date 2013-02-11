@@ -16,17 +16,17 @@ do
         echo "Moving output file "$i".root"
         mv "$i.root" $i"_"$LUMI"_pb.root"
     fi
-    for j in WD_*
-    do
-        if [ "$i" != "$j" -a -f $i/res/lumiSummary.json -a -f $j/res/lumiSummary.json ]
-        then
-            COMP=`compareJSON.py --and $i/res/lumiSummary.json $j/res/lumiSummary.json`
-            if [ "$COMP" != "{}" ]
-            then
-#                echo $COMP
-                echo "Overlap between $i and $j!"
-            fi
-        fi
-    done
+#    for j in WD_*
+#    do
+#        if [ "$i" != "$j" -a -f $i/res/lumiSummary.json -a -f $j/res/lumiSummary.json ]
+#        then
+#            COMP=`compareJSON.py --and $i/res/lumiSummary.json $j/res/lumiSummary.json`
+#            if [ "$COMP" != "{}" ]
+#            then
+##                echo $COMP
+#                echo "Overlap between $i and $j!"
+#            fi
+#        fi
+#    done
     echo "---"
 done

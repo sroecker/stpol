@@ -199,9 +199,9 @@ def parseDir(d, resub, ofile):
             break
         if len(jobsToGet)!=len(gotJobIDs) or sum(map(lambda x: x[0]!=x[1].N, zip(gotJobIDs, jobsToGet)))>0:
             couldNotGet = list(set(JobStatus.indices(jobsToGet)).difference(set(gotJobIDs)))
-            print "Problem getting jobs: {0}".format(couldNotGet)
-            print "Resubmitting by force: {0}".format(couldNotGet)
+            print "Problem getting {1} jobs: {0}".format(couldNotGet, len(couldNotGet))
             if resub:
+                print "Resubmitting by force: {0}".format(couldNotGet)
                 CrabStatus.extCommand("crab -c {0} -forceResubmit {1}".format(crabdir, ','.join(map(str, couldNotGet)) ), "resub")
                 for j in couldNotGet:
                     jobLog(ofile, crabdir, j, "forceResubmit", "COULDNOTGET")
@@ -250,6 +250,7 @@ if __name__=="__main__":
             jobFile.close()
             incompleteJobs = map(lambda x: x.strip(), incompleteJobs)
             incompleteJobs = filter(lambda x: not x.startswith("!"), incompleteJobs)
+            incompleteJobs = map(lambda y: y.split()[0], map(lambda x: x.strip(), incompleteJobs))
             incompleteJobs = filter(lambda x: os.path.exists("{0}/share/crab.cfg".format(x)), incompleteJobs)
             incompleteJobs = list(set(incompleteJobs).difference(completeJobs))
             incompleteJobs.sort()

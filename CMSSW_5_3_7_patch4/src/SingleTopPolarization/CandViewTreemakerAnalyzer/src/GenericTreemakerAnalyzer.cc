@@ -303,8 +303,8 @@ GenericTreemakerAnalyzer<T, C>::fillDescriptions(edm::ConfigurationDescriptions&
 
 //typedef SingleObjectSelector< edm::View<pat::Jet>, StringCutObjectSelector<pat::Jet, true>, edm::OwnVector<pat::Jet, edm::ClonePolicy<pat::Jet>> > JetViewSelector;
 
-typedef GenericTreemakerAnalyzer<double, double> DoubleTreemakerAnalyzer;
-template<> const double DoubleTreemakerAnalyzer::defaultValue = TMath::QuietNaN();
+typedef GenericTreemakerAnalyzer<float, float> FloatTreemakerAnalyzer;
+template<> const double FloatTreemakerAnalyzer::defaultValue = TMath::QuietNaN();
 
 typedef GenericTreemakerAnalyzer<bool, int> BoolTreemakerAnalyzer;
 template<> const int BoolTreemakerAnalyzer::defaultValue = -1;
@@ -314,6 +314,7 @@ template<> const int IntTreemakerAnalyzer::defaultValue = -1;
 
 //define this as a plug-in
 DEFINE_FWK_MODULE(DoubleTreemakerAnalyzer);
+DEFINE_FWK_MODULE(FloatTreemakerAnalyzer);
 DEFINE_FWK_MODULE(BoolTreemakerAnalyzer);
 DEFINE_FWK_MODULE(IntTreemakerAnalyzer);
 
