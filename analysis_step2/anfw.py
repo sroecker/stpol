@@ -8,6 +8,10 @@ import re
 import argparse
 import copy
 import pdb
+import logging
+
+
+logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
 
 if "-b" in sys.argv:
     sys.argv.remove("-b")
@@ -18,6 +22,13 @@ parser.add_argument("-d", "--datadir", type=str, default="./data/trees",
 args = parser.parse_args()
 
 lumi = 20000
+sampleColors = {
+    "T_t": ROOT.kRed,
+    "WJets": ROOT.kGreen,
+    "W1Jets": ROOT.kGreen+1,
+    "W2Jets": ROOT.kGreen+2,
+    "SingleMuA": ROOT.kBlack,
+}
 
 class Files:
     outFile = ROOT.TFile("outFile.root", "RECREATE")
@@ -45,7 +56,7 @@ class Cut:
 
 #Selection applied as in https://indico.cern.ch/getFile.py/access?contribId=1&resId=0&materialId=slides&confId=228739
 class Cuts:
-    initial = Cut("initial", "1==1")
+    initial = Cut("postSkim", "1==1")
 
     recoFState = Cut("recoFstate", "_topCount==1")
     mu = Cut("mu", "_muonCount==1") + Cut("muIso", "_goodSignalMuons_0_relIso<0.12") + Cut("looseMuVeto", "_looseVetoMuCount==0") + Cut("looseEleVeto", "_looseVetoEleCount==0")
@@ -72,14 +83,17 @@ class Cuts:
     finalMu = mu + recoFState + Orso + MTmu
     finalEle = ele + recoFState + Orso + MTele
 
-class Channel:
-    def __init__(self, channelName, fileName, crossSection, color=None):
-        self.channelName = channelName
-        self.fileName = fileName
-        self.xs = crossSection
-        print "Opening file {0}".format(fileName)
-        self.file = ROOT.TFile(fileName)
+class Channel(object):
+    def __init__(self, **kwargs):
+        self.channelName = kwargs.get("channelName")
+        self.fileName = kwargs.get("fileName")
+        self.xs = kwargs.get("crossSection")
+        self.color = kwargs.get("color")
+        print "Opening file {0}".format(self.fileName)
+        self.file = ROOT.TFile(self.fileName)
+        self.integratedDataLumi = None
 
+        #First bin contains the total number of processed events
         if self.xs>0:
             self.xsWeight = float(self.xs) / self.file.Get("efficiencyAnalyzerMu").Get("muPath").GetBinContent(1)
         else:
@@ -98,8 +112,6 @@ class Channel:
             branches = [x.GetName() for x in t.GetListOfBranches()]
             self.branches += branches
         self.tree = self.trees[0]
-        if not color is None:
-            self.color = color
 
     def cutFlowOfCut(self, _cut):
 
@@ -120,33 +132,33 @@ class Channel:
                cutFlowD[h.GetXaxis().GetBinLabel(n)] = int(h.GetBinContent(n))
         return cutFlowD
 
-    def plot1D(self, var, r=[100, None, None], cut=None, fn="", weight=None, varName=None):
+    """
+    var - the name of the branch to plot
+    varRange - [nbins, min, max] of the histogram
+    additional kwargs:
+    cut
+    function
+    varName
+    """
+    def plot1D(self, var, varRange, **kwargs):
+    
         c = ROOT.TCanvas()
         c.SetBatch(True)
-        if r[1] is None:
-            r[1] = self.tree.GetMinimum(var)
-        if r[2] is None:
-            r[2] = self.tree.GetMaximum(var)
-        if cut is None:
-            cut = Cut("", "1==1")
-        if varName is None:
-            varName = var
-        histName = self.channelName + "_" + varName + "_" + cut.cutName + "_" + fn + "_hist"
-        h = ROOT.TH1F(histName, varName, r[0], r[1], r[2])
-        if not self.color is None:
-            h.SetLineColor(self.color)
-            h.SetFillColor(self.color)
+        
+        cut = kwargs.get("cut", Cuts.initial)
+        varName = kwargs.get("varName", var)
+        function = kwargs.get("function", "")
+        histName = self.channelName + "_" + varName + "_" + cut.cutName + "_" + function + "_hist"
+        
+        h = ROOT.TH1F(histName, varName, varRange[0], varRange[1], varRange[2])
 
         if weight is None:
-            weight = lumi*self.xsWeight
+            weight = self.integratedDataLumi*self.xsWeight
 
-
-        self.tree.Draw("{2}({0})>>{1}".format(varName, histName, fn), "%f*(%s)" % (weight, cut.cutStr))
+        self.tree.Draw("{2}({0})>>{1}".format(varName, histName, function), "%f*(%s)" % (weight, cut.cutStr))
         nEntries = int(self.tree.GetEntries(cut.cutStr))
         print "%s %s entries=%d" % (self.channelName, cut.cutName, nEntries)
-        if nEntries<50:
-            print "Histogram with very few entries, smoothing"
-            h.Smooth(5)
+        self.styleHist(h)
         return h
 
     def plot2D(self, var1, var2, cut=None):
@@ -159,13 +171,59 @@ class Channel:
         h = ROOT.gROOT.CurrentDirectory().Get(histName)
         return h
 
+    def styleHist(self, h):
+        if not self.color is None:
+            h.SetLineColor(self.color)
+            h.SetFillColor(self.color)
 
-sampleColors = {"T_t": ROOT.kRed, "WJets": ROOT.kGreen, "W1Jets": ROOT.kGreen+1, "W2Jets": ROOT.kGreen+2}
+class DataChannel(Channel):
+    def __init__(self, **kwargs):
+        super(DataChannel, self).__init__(**kwargs)
+        self.lumi = kwargs.get("lumi")
 
+    def styleHist(self, h):
+        h.SetLineColor(self.color)
+        h.SetFillColor(ROOT.kWhite)
+        h.SetMarkerStyle(ROOT.kFullDotLarge)
+
+class CombinedChannel(object):
+    def __init__(self, **kwargs):
+        self.channels = kwargs.get("channels")
+        self.name = kwargs.get("name")
+        self.chain = ROOT.TChain(self.name)
+        for channel in self.channels:
+            self.chain.Add(channel.file.GetName())
+        
 def loadSamples(enabledSamples):
     channels = OrderedDict()
+    
+    lumiPat = re.compile(".+_([0-9]*)_pb.*")
     for (sampleName, fileName) in enabledSamples.items():
-        channels[sampleName] = Channel(sampleName, args.datadir + "/" + fileName, xs[sampleName], sampleColors[sampleName])
+        isData = "Single" in fileName
+        
+        
+        if isData:
+            samplexs = -1
+        else:
+            samplexs = xs[sampleName]
+        if isData:
+            lumiMatch = lumiPat.match(fileName)
+            lumi = int(lumiMatch.group(1))
+        if not isData:
+            channels[sampleName] = Channel(
+                channelName=sampleName,
+                fileName=(args.datadir + "/" + fileName),
+                crossSection=xs[sampleName],
+                color=sampleColors[sampleName]
+            )
+        else:
+            channels[sampleName] = DataChannel(
+                channelName=sampleName,
+                fileName=(args.datadir + "/" + fileName),
+                crossSection=-1,
+                color=ROOT.kBlack,
+                lumi=lumi
+            )
         cutFlowD = channels[sampleName].cutFlowTotal()
         print cutFlowD
     return channels
@@ -264,9 +322,6 @@ def mergeHists(hists, mergeList=[]):
             oh.Add(hists[m])
         oHists[name] = oh
     return oHists
-
-
-
 
 def channelComp(variable, cuts=None, fn="", r=[20,None, None], doStack=False, doNormalize=False, legPos="R", exclude="", mergeList=[]):
     hists = OrderedDict()
