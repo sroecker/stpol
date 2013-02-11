@@ -1,9 +1,6 @@
 from anfw import *
 
-enabledSamples = {
-    "SingleEle": "SingleEle_merged_4729_pb.root",
-    "SingleMu": "SingleMu_merged_8190_pb.root",
-    
+enabledSamplesMC = {
     "T_t": "WD_T_t.root",
     "Tbar_t": "WD_Tbar_t.root",
     "T_tW": "WD_T_tW.root",
@@ -34,22 +31,45 @@ enabledSamples = {
     "QCD_Pt_250_350_EMEnriched": "WD_QCD_Pt_250_350_EMEnriched.root",
     "QCD_Pt_350_EMEnriched": "WD_QCD_Pt_350_EMEnriched.root",
 }
-samples = loadSamples(enabledSamples)
+enabledSamplesData = {
+    "SingleEle": "SingleEle_merged_4729_pb.root",
+    "SingleMu": "SingleMu_merged_8190_pb.root",
+}
 
-lumiMu = samples["SingleMu"].lumi
-lumiEle = samples["SingleEle"].lumi
+samplesMC = loadSamples(enabledSamplesMC)
+samplesData = loadSamples(enabledSamplesData)
+
+lumiMu = samplesData["SingleMu"].lumi
+lumiEle = samplesData["SingleEle"].lumi
 
 plots_cosTheta_final = dict()
-pdb.set_trace()
-for (sampleName, sample) in samples.items():
+
+for (sampleName, sample) in samplesMC.items():
     plots_cosTheta_final[sampleName] = sample.plot1D("cosThetaLightJet_cosTheta", [20, -1, 1], cut=Cuts.finalMu, integratedDataLumi=lumiMu)
+for (sampleName, sample) in samplesData.items():
+    plots_cosTheta_final[sampleName] = sample.plot1D("cosThetaLightJet_cosTheta", [20, -1, 1], cut=Cuts.finalMu, weight=1.0, integratedDataLumi=1.0)
 
 merge = [
     ["tW", ".+_tW$"],
 	["s", ".+_s$"],
-	["t#bar{t}", "TTBar$"],
+	["t#bar{t}", "TTbar$"],
+	["data", "^Single(Mu|Ele)"],
 	["WJets", "WJets$"],
 	["QCD", "QCD.+"],
 	["diboson", "WW|WZ|ZZ"],
 	["t", ".+_t$"],
 ]
+
+merged = mergeHists(plots_cosTheta_final, merge)
+mergedData = merged.pop("data")
+mergedBG = merged
+
+c = ROOT.TCanvas()
+leg = legend("R")
+stack = ROOT.THStack()
+for (name, hist) in mergedBG.items():
+    leg.AddEntry(hist, name)
+    stack.Add(hist)
+stack.Draw("HIST F")
+mergedData.Draw("E1 SAME")
+leg.Draw()
