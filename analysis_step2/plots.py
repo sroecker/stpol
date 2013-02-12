@@ -42,34 +42,43 @@ samplesData = loadSamples(enabledSamplesData)
 lumiMu = samplesData["SingleMu"].lumi
 lumiEle = samplesData["SingleEle"].lumi
 
-plots_cosTheta_final = dict()
+def plotVar(var, r, cut, integratedDataLumi):
 
-for (sampleName, sample) in samplesMC.items():
-    plots_cosTheta_final[sampleName] = sample.plot1D("cosThetaLightJet_cosTheta", [20, -1, 1], cut=Cuts.finalMu, integratedDataLumi=lumiMu)
-for (sampleName, sample) in samplesData.items():
-    plots_cosTheta_final[sampleName] = sample.plot1D("cosThetaLightJet_cosTheta", [20, -1, 1], cut=Cuts.finalMu, weight=1.0, integratedDataLumi=1.0)
+    hists = dict()
+    for (sampleName, sample) in samplesMC.items():
+        hists[sampleName] = sample.plot1D(var, r, cut=cut, integratedDataLumi=integratedDataLumi)
+    for (sampleName, sample) in samplesData.items():
+        hists[sampleName] = sample.plot1D(var, r, cut=cut, weight=1.0, integratedDataLumi=1.0)
 
-merge = [
-    ["tW", ".+_tW$"],
-	["s", ".+_s$"],
-	["t#bar{t}", "TTbar$"],
-	["data", "^Single(Mu|Ele)"],
-	["WJets", "WJets$"],
-	["QCD", "QCD.+"],
-	["diboson", "WW|WZ|ZZ"],
-	["t", ".+_t$"],
-]
+    merge = [
+        ["tW", ".+_tW$"],
+        ["s", ".+_s$"],
+        ["t#bar{t}", "TTbar$"],
+        ["data", "^Single(Mu|Ele)"],
+        ["WJets", "WJets$"],
+        ["QCD", "QCD.+"],
+        ["diboson", "WW|WZ|ZZ"],
+        ["t", ".+_t$"],
+    ]
 
-merged = mergeHists(plots_cosTheta_final, merge)
-mergedData = merged.pop("data")
-mergedBG = merged
+    merged = mergeHists(hists, merge)
+    mergedData = merged.pop("data")
+    mergedBG = merged
 
-c = ROOT.TCanvas()
-leg = legend("R")
-stack = ROOT.THStack()
-for (name, hist) in mergedBG.items():
-    leg.AddEntry(hist, name)
-    stack.Add(hist)
-stack.Draw("HIST F")
-mergedData.Draw("E1 SAME")
-leg.Draw()
+    c = ROOT.TCanvas()
+    leg = legend("R")
+    stack = ROOT.THStack()
+    for (name, hist) in mergedBG.items():
+        leg.AddEntry(hist, name)
+        stack.Add(hist)
+    stack.Draw("HIST F")
+    mergedData.Draw("E1 SAME")
+    leg.Draw()
+    return c, leg, hists
+
+c1, leg1, h1 = plotVar("cosThetaLightJet_cosTheta", [20, -1, 1], Cuts.finalMu, lumiMu)
+#c1.Print("plots/cosTheta_finalMu.png")
+#c2, leg2, h2 = plotVar("cosThetaLightJet_cosTheta", [20, -1, 1], Cuts.finalEle, lumiEle)
+#c2.Print("plots/cosTheta_finalEle.png")
+
+
