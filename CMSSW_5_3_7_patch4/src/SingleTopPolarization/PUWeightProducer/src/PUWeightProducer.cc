@@ -103,10 +103,9 @@ void
 PUWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
    using namespace edm;
-
+   
    Handle<std::vector< PileupSummaryInfo > > PupInfo;
    iEvent.getByLabel(edm::InputTag("addPileupInfo"), PupInfo);
-   
    std::vector<PileupSummaryInfo>::const_iterator PVI;
    
    float Tnpv = TMath::QuietNaN();
@@ -132,7 +131,6 @@ PUWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       puWeight = reweighter->weight(Tnpv);
    }
    LogDebug("produce()") << "calculated PU weight = " << puWeight;
-
    iEvent.put(std::auto_ptr<double>(new double(Tnpv)), "nVertices");   
    iEvent.put(std::auto_ptr<double>(new double(puWeight)), "PUWeight");   
 

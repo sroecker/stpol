@@ -500,6 +500,7 @@ def SingleTopStep2():
             cms.InputTag("eventIDProducer", "runId"),
             cms.InputTag("eventIDProducer", "lumiId"),
 
+            cms.InputTag("offlinePVCount"),
 
             cms.InputTag("genLeptonsTCount")
             ]
@@ -576,9 +577,14 @@ def SingleTopStep2():
         if Config.doElectron:
              process.elePath.insert(0, process.puWeightProducer)
 
+    process.offlinePVCount = cms.EDProducer(
+        "CollectionSizeProducer<reco::Vertex>",
+        src = cms.InputTag("offlinePrimaryVertices")
+    )
+
     process.eventIDProducer = cms.EDProducer('EventIDProducer'
     )
-    process.treePath = cms.Path(process.eventIDProducer * process.treeSequence)
+    process.treePath = cms.Path(process.eventIDProducer * process.offlinePVCount *  process.treeSequence)
     if Config.isMC:
         process.treePath += process.flavourAnalyzer
 
