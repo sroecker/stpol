@@ -24,10 +24,41 @@ args = parser.parse_args()
 lumi = 20000
 sampleColors = {
     "T_t": ROOT.kRed,
+    "Tbar_t": ROOT.kRed,
+    "T_tW": ROOT.kYellow+4,
+    "Tbar_tW": ROOT.kYellow+4,
+    "T_s": ROOT.kYellow,
+    "Tbar_s": ROOT.kYellow,
+    
     "WJets": ROOT.kGreen,
     "W1Jets": ROOT.kGreen+1,
     "W2Jets": ROOT.kGreen+2,
-    "SingleMuA": ROOT.kBlack,
+    
+    "WW": ROOT.kBlue,
+    "WZ": ROOT.kBlue,
+    "ZZ": ROOT.kBlue,
+    
+    "TTbar": ROOT.kOrange,
+    
+    "QCDMu": ROOT.kGray,
+    
+    "QCD_Pt_20_30_EMEnriched": ROOT.kGray,
+    "QCD_Pt_30_80_EMEnriched": ROOT.kGray,
+    "QCD_Pt_80_170_EMEnriched": ROOT.kGray,
+    "QCD_Pt_170_250_EMEnriched": ROOT.kGray,
+    "QCD_Pt_250_350_EMEnriched": ROOT.kGray,
+    "QCD_Pt_350_EMEnriched": ROOT.kGray,
+    
+    
+    "QCD_Pt_20_30_BCtoE": ROOT.kGray,
+    "QCD_Pt_30_80_BCtoE": ROOT.kGray,
+    "QCD_Pt_80_170_BCtoE": ROOT.kGray,
+    "QCD_Pt_170_250_BCtoE": ROOT.kGray,
+    "QCD_Pt_250_350_BCtoE": ROOT.kGray,
+    "QCD_Pt_350_BCtoE": ROOT.kGray,
+    
+    "SingleMu": ROOT.kBlack,
+    "SingleEle": ROOT.kBlack,
 }
 
 class Files:
@@ -140,20 +171,17 @@ class Channel(object):
     function
     varName
     """
-    def plot1D(self, var, varRange, **kwargs):
-    
-        c = ROOT.TCanvas()
-        c.SetBatch(True)
-        
+    def plot1D(self, var, varRange, **kwargs):        
         cut = kwargs.get("cut", Cuts.initial)
         varName = kwargs.get("varName", var)
         function = kwargs.get("function", "")
+        integratedDataLumi = kwargs.get("integratedDataLumi")
+        weight = kwargs.get("weight", integratedDataLumi*self.xsWeight)
         histName = self.channelName + "_" + varName + "_" + cut.cutName + "_" + function + "_hist"
         
         h = ROOT.TH1F(histName, varName, varRange[0], varRange[1], varRange[2])
-
-        if weight is None:
-            weight = self.integratedDataLumi*self.xsWeight
+        c = ROOT.TCanvas()
+        c.SetBatch(True)
 
         self.tree.Draw("{2}({0})>>{1}".format(varName, histName, function), "%f*(%s)" % (weight, cut.cutStr))
         nEntries = int(self.tree.GetEntries(cut.cutStr))
