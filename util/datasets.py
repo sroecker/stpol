@@ -237,6 +237,11 @@ step1_MC = [
     , DS("WJets_excl4", "/W4JetsToLNu_TuneZ2Star_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM")
 ]
 
+step1_FSIM_Valid = [
+    DS("TTJets_FSIM_Valid_FastSim", "/TTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola/Summer12-START53_V7C_FSIM-v1/AODSIM"),
+    DS("TTJets_FSIM_Valid_FullSim", "/TTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola/Summer12_DR53X-PU_S10_START53_V7C-v1/AODSIM"),
+]
+
 step2_MC = [
     DS_S2MC("T_t", "/T_t-channel_TuneZ2star_8TeV-powheg-tauola/jpata-stpol_v3_1-33f82354a36574c1158b3181d92c6119/USER", "T_t"),
     DS_S2MC("Tbar_t", "/Tbar_t-channel_TuneZ2star_8TeV-powheg-tauola/jpata-stpol_v3_1-33f82354a36574c1158b3181d92c6119/USER", "Tbar_t"),
