@@ -74,9 +74,9 @@ def plotVar(var, r, cut, integratedDataLumi):
     stack.Draw("HIST F")
     mergedData.Draw("E1 SAME")
     leg.Draw()
-    return c, leg, hists
+    return c, leg, hists, mergedData
 
-c1, leg1, h1 = plotVar("cosThetaLightJet_cosTheta", [20, -1, 1], Cuts.finalMu, lumiMu)
+c1, leg1, h1, mergedData = plotVar("cosThetaLightJet_cosTheta", [20, -1, 1], Cuts.mu, lumiMu)
 #c1.Print("plots/cosTheta_finalMu.png")
 #c2, leg2, h2 = plotVar("cosThetaLightJet_cosTheta", [20, -1, 1], Cuts.finalEle, lumiEle)
 #c2.Print("plots/cosTheta_finalEle.png")
