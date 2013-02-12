@@ -173,17 +173,23 @@ class Channel(object):
     """
     def plot1D(self, var, varRange, **kwargs):        
         cut = kwargs.get("cut", Cuts.initial)
-        varName = kwargs.get("varName", var)
+        varName = kwargs.get("varName")
+        if varName is None:
+            varName = varNamePretty(var)
+        
         function = kwargs.get("function", "")
         integratedDataLumi = kwargs.get("integratedDataLumi")
-        weight = kwargs.get("weight", integratedDataLumi*self.xsWeight)
+        weight = kwargs.get("weight")
+        if weight is None:
+            weight = 1.0
+        
         histName = self.channelName + "_" + varName + "_" + cut.cutName + "_" + function + "_hist"
         
         h = ROOT.TH1F(histName, varName, varRange[0], varRange[1], varRange[2])
         c = ROOT.TCanvas()
         c.SetBatch(True)
 
-        self.tree.Draw("{2}({0})>>{1}".format(varName, histName, function), "%f*(%s)" % (weight, cut.cutStr))
+        self.tree.Draw("{2}({0})>>{1}".format(var, histName, function), "%s*(%s)" % (weight, cut.cutStr))
         nEntries = int(self.tree.GetEntries(cut.cutStr))
         print "%s %s entries=%d" % (self.channelName, cut.cutName, nEntries)
         self.styleHist(h)
@@ -290,7 +296,7 @@ def canvas(s):
     c.SetWindowSize(int(1.05*s*1280), int(1.05*s*1024))
     return c
 
-def randStr(n):
+def randstr(n):
     chars = string.ascii_lowercase
     return ''.join([random.choice(chars) for i in range(n)])
 
@@ -322,7 +328,8 @@ def varNamePretty(varName):
     "_fwdMostLightJet_0_Eta": "#eta_{lj}",
     "cosThetaLightJet_cosTheta": "cos #theta_{lj}",
     "_lightJetCount": "nJets",
-    "_bJetCount": "nBTags"
+    "_bJetCount": "nBTags",
+    "nVertices_puWeightProducer": "Nvtx"
     }
     if varName in d.keys():
         return d[varName]
