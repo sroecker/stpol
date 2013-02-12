@@ -133,8 +133,8 @@ class JobStatus:
 
 
     def requiresResub(self):
-#        if self.N == 275:
-#            pdb.set_trace()
+       # if self.N == 2524:
+       #     pdb.set_trace()
         if self.status=="Aborted" \
             or self.status=="Done" and (self.retcode>0)\
             or self.status=="Retrieved" and (self.retcode>0)\
@@ -265,7 +265,7 @@ if __name__=="__main__":
             for d in incompleteJobs:
                 print "{0}".format(str(datetime.datetime.now().__str__()))
                 print "***Checking %s***" % d
-                isDone = parseDir(d, "resub" in sys.argv, ofile)
+                isDone = parseDir(d, "--resub" in sys.argv, ofile)
                 if isDone:
                     completeJobs.append(d)
             if len(incompleteJobs)==0:
