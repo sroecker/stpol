@@ -35,6 +35,7 @@
 #include <DataFormats/MuonReco/interface/Muon.h>
 #include <DataFormats/PatCandidates/interface/Muon.h>
 #include <DataFormats/EgammaCandidates/interface/Photon.h>
+#include <DataFormats/VertexReco/interface/Vertex.h>
 
 //
 // class declaration
@@ -170,6 +171,7 @@ void CollectionSizeProducer<T>::fillDescriptions(edm::ConfigurationDescriptions&
 
 //define this as a plug-in
 DEFINE_FWK_MODULE(CollectionSizeProducer<reco::Candidate>);
+DEFINE_FWK_MODULE(CollectionSizeProducer<reco::Vertex>);
 DEFINE_FWK_MODULE(CollectionSizeProducer<pat::Muon>);
 DEFINE_FWK_MODULE(CollectionSizeProducer<reco::Muon>);
 DEFINE_FWK_MODULE(CollectionSizeProducer<reco::Photon>);
