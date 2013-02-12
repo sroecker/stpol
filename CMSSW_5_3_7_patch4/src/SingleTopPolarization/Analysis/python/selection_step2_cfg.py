@@ -3,6 +3,7 @@ import SingleTopPolarization.Analysis.eventCounting as eventCounting
 from SingleTopPolarization.Analysis.config_step2_cfg import Config
 
 from FWCore.ParameterSet.VarParsing import VarParsing
+import SingleTopPolarization.Analysis.pileUpDistributions as pileUpDistributions
 
 import logging
 #BTag working points from https://twiki.cern.ch/twiki/bin/viewauth/CMS/BTagPerformanceOP#B_tagging_Operating_Points_for_5
@@ -48,11 +49,21 @@ def SingleTopStep2():
 				  VarParsing.multiplicity.singleton,
 				  VarParsing.varType.bool,
 				  "Run the gen particle paths (only works on specific MC)"
-        )        
+        )
         options.register ('globalTag', "START53_V15::All",
                   VarParsing.multiplicity.singleton,
                   VarParsing.varType.string,
                   "Global tag"
+        )
+        options.register ('srcPUDistribution', "S10",
+                  VarParsing.multiplicity.singleton,
+                  VarParsing.varType.string,
+                  "Source pile-up distribution"
+        )
+        options.register ('destPUDistribution', "data",
+                  VarParsing.multiplicity.singleton,
+                  VarParsing.varType.string,
+                  "destination pile-up distribution"
         )
         options.parseArguments()
 
@@ -62,9 +73,12 @@ def SingleTopStep2():
                 Config.channel = Config.Channel.signal
             elif options.channel.lower() == "background":
                 Config.channel = Config.Channel.background
+            Config.srcPUDistribution = pileUpDistributions.distributions[options.srcPUDistribution]
+            Config.destPUDistribution = pileUpDistributions.distributions[options.destPUDistribution]
         else:
             Config.channel = "data"
             Config.subChannel = None
+
 
         Config.Leptons.reverseIsoCut = options.reverseIsoCut
         Config.subChannel = options.subChannel
@@ -420,6 +434,7 @@ def SingleTopStep2():
             cms.InputTag("cosThetaProducerTrueJet", "cosThetaLightJet"),
             cms.InputTag("cosThetaProducerTrueAll", "cosThetaLightJet"),
 
+            cms.InputTag("puWeightProducer", "nVertices"),
 
             #Transverse mass of MET and lepton
             cms.InputTag("muAndMETMT", ""),
@@ -449,6 +464,8 @@ def SingleTopStep2():
             cms.InputTag("bTagWeightProducer", "bTagWeightSystBCDown"),
             cms.InputTag("bTagWeightProducer", "bTagWeightSystLUp"),
             cms.InputTag("bTagWeightProducer", "bTagWeightSystLDown"),
+
+            cms.InputTag("puWeightProducer", "PUWeight"),
         )
     )
 
@@ -478,6 +495,10 @@ def SingleTopStep2():
             cms.InputTag("trueCJetCount"),
             cms.InputTag("btaggedTrueLJetCount"),
             cms.InputTag("trueLJetCount"),
+
+            cms.InputTag("eventIDProducer", "eventId"),
+            cms.InputTag("eventIDProducer", "runId"),
+            cms.InputTag("eventIDProducer", "lumiId"),
 
 
             cms.InputTag("genLeptonsTCount")
@@ -514,6 +535,7 @@ def SingleTopStep2():
         if Config.channel==Config.Channel.signal:
             process.partonPath += process.partonStudyTrueSequence
 
+
     if Config.doDebug:
         from SingleTopPolarization.Analysis.debugAnalyzers_step2_cfi import DebugAnalyzerSetup
         DebugAnalyzerSetup(process)
@@ -543,7 +565,20 @@ def SingleTopStep2():
         process.elePath.insert(process.elePath.index(process.looseVetoMuons)+1, process.looseVetoMuCount)
         process.elePath.insert(process.elePath.index(process.looseVetoElectrons)+1, process.looseVetoEleCount)
 
-    process.treePath = cms.Path(process.treeSequence)
+    if Config.isMC:
+        process.puWeightProducer = cms.EDProducer('PUWeightProducer'
+            , maxVertices = cms.uint32(50)
+            , srcDistribution = cms.vdouble(Config.srcPUDistribution)
+            , destDistribution = cms.vdouble(Config.destPUDistribution)
+        )
+        if Config.doMuon:
+             process.muPath.insert(0, process.puWeightProducer)
+        if Config.doElectron:
+             process.elePath.insert(0, process.puWeightProducer)
+
+    process.eventIDProducer = cms.EDProducer('EventIDProducer'
+    )
+    process.treePath = cms.Path(process.eventIDProducer * process.treeSequence)
     if Config.isMC:
         process.treePath += process.flavourAnalyzer
 

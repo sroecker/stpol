@@ -29,11 +29,10 @@
 #include "FWCore/Framework/interface/MakerMacros.h"
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
-
-
-//
-// class declaration
-//
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
+#include "PhysicsTools/Utilities/interface/LumiReWeighting.h"
+#include "TMath.h"
 
 class PUWeightProducer : public edm::EDProducer {
    public:
@@ -51,7 +50,10 @@ class PUWeightProducer : public edm::EDProducer {
       virtual void endRun(edm::Run&, edm::EventSetup const&);
       virtual void beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
       virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
-
+      const unsigned int maxVertices;
+      std::vector<double> srcDistr;
+      std::vector<double> destDistr;
+      edm::LumiReWeighting* reweighter;
       // ----------member data ---------------------------
 };
 
@@ -68,28 +70,27 @@ class PUWeightProducer : public edm::EDProducer {
 // constructors and destructor
 //
 PUWeightProducer::PUWeightProducer(const edm::ParameterSet& iConfig)
+: maxVertices(iConfig.getParameter<unsigned int>("maxVertices"))
+, srcDistr(iConfig.getParameter<std::vector<double>>("srcDistribution"))
+, destDistr(iConfig.getParameter<std::vector<double>>("destDistribution"))
 {
-   //register your products
-/* Examples
-   produces<ExampleData2>();
+   srcDistr.resize(maxVertices);
+   destDistr.resize(maxVertices);
+   std::vector<float> _srcDistr;
+   std::vector<float> _destDistr;
+   for (unsigned int i=0;i<maxVertices;i++) {
+       _srcDistr.push_back((float)srcDistr[i]);
+       _destDistr.push_back((float)destDistr[i]);
+   }
 
-   //if do put with a label
-   produces<ExampleData2>("label");
- 
-   //if you want to put into the Run
-   produces<ExampleData2,InRun>();
-*/
-   //now do what ever other initialization is needed
-  
+   produces<double>("PUWeight");
+   produces<double>("nVertices");
+   reweighter = new edm::LumiReWeighting(_srcDistr, _destDistr);
 }
 
 
 PUWeightProducer::~PUWeightProducer()
 {
- 
-   // do anything here that needs to be done at desctruction time
-   // (e.g. close files, deallocate resources etc.)
-
 }
 
 
@@ -102,22 +103,39 @@ void
 PUWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
    using namespace edm;
-/* This is an event example
-   //Read 'ExampleData' from the Event
-   Handle<ExampleData> pIn;
-   iEvent.getByLabel("example",pIn);
 
-   //Use the ExampleData to create an ExampleData2 which 
-   // is put into the Event
-   std::auto_ptr<ExampleData2> pOut(new ExampleData2(*pIn));
-   iEvent.put(pOut);
-*/
+   Handle<std::vector< PileupSummaryInfo > > PupInfo;
+   iEvent.getByLabel(edm::InputTag("addPileupInfo"), PupInfo);
+   
+   std::vector<PileupSummaryInfo>::const_iterator PVI;
+   
+   float Tnpv = TMath::QuietNaN();
+   int nPUs = 0;
+   for(PVI = PupInfo->begin(); PVI != PupInfo->end(); ++PVI) {
+      int BX = PVI->getBunchCrossing();
+   
+      if(BX == 0) {
+        nPUs++; 
+        Tnpv = PVI->getTrueNumInteractions();
+        //float Tnpv_fsim = PVI->getPU_NumInteractions();
+        //if (Tnpv!=Tnpv)
+        //    Tnpv = Tnpv_fsim;
+        LogDebug("produce()") << "true num int = " << Tnpv;
+        continue;
+      }
+   }
+   LogDebug("produce()") << "number of PU infos in event = " << nPUs;
+   
+   
+   double puWeight = TMath::QuietNaN(); 
+   if (nPUs>0 && Tnpv>0) {
+      puWeight = reweighter->weight(Tnpv);
+   }
+   LogDebug("produce()") << "calculated PU weight = " << puWeight;
 
-/* this is an EventSetup example
-   //Read SetupData from the SetupRecord in the EventSetup
-   ESHandle<SetupData> pSetup;
-   iSetup.get<SetupRecord>().get(pSetup);
-*/
+   iEvent.put(std::auto_ptr<double>(new double(Tnpv)), "nVertices");   
+   iEvent.put(std::auto_ptr<double>(new double(puWeight)), "PUWeight");   
+
  
 }
 
