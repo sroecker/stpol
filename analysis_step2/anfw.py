@@ -12,7 +12,7 @@ import logging
 
 
 def h_str(self):
-    
+
     integral = self.Integral(1, self.GetNbinsX())
     return "{0}: {1}, entries={2:.2E}, integral={5:.2E}, mean={3:.2E}, RMS={4:.2E}".format(
         type(self).__name__,
@@ -23,11 +23,16 @@ def h_str(self):
         integral
     )
 
+def makeStrSafe(s, badchars = ["{", "}", "+", "-", "."], replacement=""):
+    for bc in badchars:
+        s = s.replace(bc, replacement)
+    return s
+
 ROOT.TH1F.__str__ = h_str
 ROOT.TH1D.__str__ = h_str
 ROOT.TH1I.__str__ = h_str
 
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
 logger = logging.getLogger("anfw")
 if "-b" in sys.argv:
@@ -46,34 +51,34 @@ sampleColors = {
     "Tbar_tW": ROOT.kYellow+4,
     "T_s": ROOT.kYellow,
     "Tbar_s": ROOT.kYellow,
-    
+
     "WJets": ROOT.kGreen,
     "W1Jets": ROOT.kGreen+1,
     "W2Jets": ROOT.kGreen+2,
-    
+
     "WW": ROOT.kBlue,
     "WZ": ROOT.kBlue,
     "ZZ": ROOT.kBlue,
-    
+
     "TTbar": ROOT.kOrange,
-    
+
     "QCDMu": ROOT.kGray,
-    
+
     "QCD_Pt_20_30_EMEnriched": ROOT.kGray,
     "QCD_Pt_30_80_EMEnriched": ROOT.kGray,
     "QCD_Pt_80_170_EMEnriched": ROOT.kGray,
     "QCD_Pt_170_250_EMEnriched": ROOT.kGray,
     "QCD_Pt_250_350_EMEnriched": ROOT.kGray,
     "QCD_Pt_350_EMEnriched": ROOT.kGray,
-    
-    
+
+
     "QCD_Pt_20_30_BCtoE": ROOT.kGray,
     "QCD_Pt_30_80_BCtoE": ROOT.kGray,
     "QCD_Pt_80_170_BCtoE": ROOT.kGray,
     "QCD_Pt_170_250_BCtoE": ROOT.kGray,
     "QCD_Pt_250_350_BCtoE": ROOT.kGray,
     "QCD_Pt_350_BCtoE": ROOT.kGray,
-    
+
     "SingleMu": ROOT.kBlack,
     "SingleEle": ROOT.kBlack,
 }
@@ -143,7 +148,7 @@ class Channel(object):
         print "Opening file {0}".format(self.fileName)
         self.file = ROOT.TFile(self.fileName)
         self.integratedDataLumi = None
-        
+
         self.effHistMu = self.file.Get("efficiencyAnalyzerMu").Get("muPath")
         self.effHistEle = self.file.Get("efficiencyAnalyzerEle").Get("elePath")
 
@@ -167,7 +172,7 @@ class Channel(object):
             branches = [x.GetName() for x in t.GetListOfBranches()]
             self.branches += branches
         self.tree = self.trees[0]
-        
+
         print "processed events = {0}, passing mu skim = {1}, passing ele skim = {2}, in trees = {3}".format(
             self.effHistMu.GetBinContent(1),
             self.effHistMu.GetBinContent(3),
@@ -211,14 +216,14 @@ class Channel(object):
         integratedDataLumi = kwargs.get("integratedDataLumi")
         dtype = kwargs.get("dtype", "float")
         weight = kwargs.get("weight")
-    
+
         self.logger.debug("var={0}, varRange={1}, kwargs={2}".format(var, varRange, kwargs))
-        
+
         if weight is None:
             weight = 1.0
-        
+
         histName = self.channelName + "_" + varName + "_" + cut.cutName + "_" + function + "_hist"
-        
+        histName = makeStrSafe(histName)
         if dtype=="float":
             h = ROOT.TH1F(histName, varName, varRange[0], varRange[1], varRange[2])
             h.Sumw2()
@@ -226,21 +231,24 @@ class Channel(object):
             h = ROOT.TH1I(histName, varName, varRange[0], varRange[1], varRange[2])
         else:
             raise TypeError("Histogram type {0} not implemented".format(dtype))
-    
+
         self.logger.debug("Created histogram '{0}'".format(h))
 
         c = ROOT.TCanvas()
         c.SetBatch(True)
-    
+
         drawStr = "{2}({0})>>{1}".format(var, histName, function)
         weightStr = "%s*(%s)" % (weight, cut.cutStr)
-        
+
         self.logger.debug("Calling TTree.Draw({0}, {1})".format(drawStr, weightStr))
 
         self.tree.Draw(drawStr, weightStr)
         self.logger.debug("Output histogram: {0}".format(h))
 
         nEntries = int(self.tree.GetEntries(cut.cutStr))
+        if nEntries == 0 or h.GetEntries()==0 or h.Integral()==0:
+            self.logger.warning("Histogram is empty: {0}".format(h))
+
         self.logger.info("True MC number of entries in cut {0} = {1:.2E}".format(cut.cutName, nEntries))
         self.styleHist(h)
         return h
@@ -277,15 +285,15 @@ class CombinedChannel(object):
         self.chain = ROOT.TChain(self.name)
         for channel in self.channels:
             self.chain.Add(channel.file.GetName())
-        
+
 def loadSamples(enabledSamples):
     channels = OrderedDict()
-    
+
     lumiPat = re.compile(".+_([0-9]*)_pb.*")
     for (sampleName, fileName) in enabledSamples.items():
         isData = "Single" in fileName
-        
-        
+
+
         if isData:
             samplexs = -1
         else:
@@ -362,7 +370,7 @@ def legend(corner=None):
     elif corner == "CU":
         coords = [0.42, 0.66, 0.58, 0.89]
     elif corner == "R":
-        coords = [0.91, 0.12, 0.99, 0.90]
+        coords = [0.72, 0.12, 0.99, 0.90]
     elif corner == "RL":
         coords = [0.73, 0.20, 0.88, 0.43]
 
@@ -376,10 +384,19 @@ def varNamePretty(varName):
     d = {
     "_recoTop_0_Mass": "ml#nu",
     "_fwdMostLightJet_0_Eta": "#eta_{lj}",
+    "_lowestBTagJet_0_Eta": "#eta_{lj}",
     "cosThetaLightJet_cosTheta": "cos #theta_{lj}",
     "_lightJetCount": "nJets",
     "_bJetCount": "nBTags",
-    "nVertices_puWeightProducer": "Nvtx"
+    "nVerticesTrue_puWeightProducer": "N_{vtx. true.}",
+    "_offlinePVCount": "N_{vtx. reco.}",
+    "_muonsWithIso_0_normChi2": "muon norm. #chi^{2}",
+    '_muonsWithIso_0_track_hitPattern_trackerLayersWithMeasurement': "muon track layers hit count",
+    '_muonsWithIso_0_globalTrack_hitPattern_numberOfValidMuonHits': "muon global track hits",
+    '_muonsWithIso_0_innerTrack_hitPattern_numberOfValidPixelHits': "muon inner track px hits",
+    '_muonsWithIso_0_db': "muon db",
+    '_muonsWithIso_0_dz': "muon dz",
+    '_muonsWithIso_0_numberOfMatchedStations': "muon matched station count"
     }
     if varName in d.keys():
         return d[varName]
