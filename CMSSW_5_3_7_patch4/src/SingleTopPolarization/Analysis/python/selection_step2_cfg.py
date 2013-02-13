@@ -200,6 +200,17 @@ def SingleTopStep2():
     process.treesMu = cms.EDAnalyzer('MuonCandViewTreemakerAnalyzer',
         collections = cms.untracked.VPSet(
             treeCollection(
+                cms.untracked.InputTag("muonsWithIso"), 1,
+                [
+                    ["Pt", "pt"],
+                    ["Eta", "eta"],
+                    ["Phi", "phi"],
+                    ["relIso", "userFloat('%s')" % Config.Muons.relIsoType],
+                    ["Charge", "charge"],
+                    ["genPdgId", "? genParticlesSize() > 0 ? genParticle(0).pdgId() : 0"],
+                ]
+            ),
+            treeCollection(
                 cms.untracked.InputTag("goodSignalMuons"), 1,
                 [
                     ["Pt", "pt"],
@@ -226,6 +237,17 @@ def SingleTopStep2():
 
     process.treesEle = cms.EDAnalyzer('ElectronCandViewTreemakerAnalyzer',
         collections = cms.untracked.VPSet(
+            treeCollection(
+                cms.untracked.InputTag("elesWithIso"), 1,
+                [
+                    ["Pt", "%s" % Config.Electrons.pt],
+                    ["Eta", "eta"],
+                    ["Phi", "phi"],
+                    ["relIso", "userFloat('%s')" % Config.Electrons.relIsoType],
+                    ["mvaID", "electronID('mvaTrigV0')"],
+                    ["Charge", "charge"],
+                ]
+            ),
             treeCollection(
                 cms.untracked.InputTag("goodSignalElectrons"), 1,
                 [
@@ -261,6 +283,8 @@ def SingleTopStep2():
                     ["Phi", "phi"],
                     ["Mass", "mass"],
                     ["bDiscriminator", "bDiscriminator('%s')" % Config.Jets.bTagDiscriminant],
+                    ["bDiscriminatorTCHP", "bDiscriminator('%s')" % Config.Jets.BTagDiscriminant.TCHP],
+                    ["bDiscriminatorCSV_MVA", "bDiscriminator('%s')" % Config.Jets.BTagDiscriminant.CSV_MVA],
                     ["rms", "userFloat('rms')"],
                     ["partonFlavour", "partonFlavour()"],
                     ["deltaR", "userFloat('deltaR')"]
@@ -287,6 +311,8 @@ def SingleTopStep2():
                     ["Phi", "phi"],
                     ["Mass", "mass"],
                     ["bDiscriminator", "bDiscriminator('%s')" % Config.Jets.bTagDiscriminant],
+                    ["bDiscriminatorTCHP", "bDiscriminator('%s')" % Config.Jets.BTagDiscriminant.TCHP],
+                    ["bDiscriminatorCSV_MVA", "bDiscriminator('%s')" % Config.Jets.BTagDiscriminant.CSV_MVA],
                     ["rms", "userFloat('rms')"],
                     ["partonFlavour", "partonFlavour()"],
                     ["deltaR", "userFloat('deltaR')"]
@@ -302,6 +328,8 @@ def SingleTopStep2():
                     ["Phi", "phi"],
                     ["Mass", "mass"],
                     ["bDiscriminator", "bDiscriminator('%s')" % Config.Jets.bTagDiscriminant],
+                    ["bDiscriminatorTCHP", "bDiscriminator('%s')" % Config.Jets.BTagDiscriminant.TCHP],
+                    ["bDiscriminatorCSV_MVA", "bDiscriminator('%s')" % Config.Jets.BTagDiscriminant.CSV_MVA],
                     ["rms", "userFloat('rms')"],
                     ["partonFlavour", "partonFlavour()"],
                     ["deltaR", "userFloat('deltaR')"]
@@ -317,6 +345,8 @@ def SingleTopStep2():
                     ["Phi", "phi"],
                     ["Mass", "mass"],
                     ["bDiscriminator", "bDiscriminator('%s')" % Config.Jets.bTagDiscriminant],
+                    ["bDiscriminatorTCHP", "bDiscriminator('%s')" % Config.Jets.BTagDiscriminant.TCHP],
+                    ["bDiscriminatorCSV_MVA", "bDiscriminator('%s')" % Config.Jets.BTagDiscriminant.CSV_MVA],
                     ["rms", "userFloat('rms')"],
                     ["partonFlavour", "partonFlavour()"],
                     ["deltaR", "userFloat('deltaR')"]
@@ -330,6 +360,8 @@ def SingleTopStep2():
                     ["Phi", "phi"],
                     ["Mass", "mass"],
                     ["bDiscriminator", "bDiscriminator('%s')" % Config.Jets.bTagDiscriminant],
+                    ["bDiscriminatorTCHP", "bDiscriminator('%s')" % Config.Jets.BTagDiscriminant.TCHP],
+                    ["bDiscriminatorCSV_MVA", "bDiscriminator('%s')" % Config.Jets.BTagDiscriminant.CSV_MVA],
                     ["rms", "userFloat('rms')"],
                     ["partonFlavour", "partonFlavour()"],
                     ["deltaR", "userFloat('deltaR')"]
@@ -518,7 +550,8 @@ def SingleTopStep2():
             genParticles = cms.InputTag('genParticles'),
             generator = cms.InputTag('generator'),
             genJets = cms.InputTag('selectedPatJets', 'genJets'),
-            saveGenJets = cms.bool(False)
+            saveGenJets = cms.bool(False),
+            savePDFInfo = cms.bool(True)
         )
 
 
