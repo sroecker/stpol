@@ -86,6 +86,7 @@ PUWeightProducer::PUWeightProducer(const edm::ParameterSet& iConfig)
    produces<double>("PUWeight");
    produces<double>("nVertices");
    reweighter = new edm::LumiReWeighting(_srcDistr, _destDistr);
+   //reweighter = new edm::LumiReWeighting(_destDistr, _srcDistr);
 }
 
 
@@ -108,20 +109,19 @@ PUWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    iEvent.getByLabel(edm::InputTag("addPileupInfo"), PupInfo);
    std::vector<PileupSummaryInfo>::const_iterator PVI;
    
-   float Tnpv = TMath::QuietNaN();
+   float Tnpv = -1.0;
    int nPUs = 0;
    for(PVI = PupInfo->begin(); PVI != PupInfo->end(); ++PVI) {
       int BX = PVI->getBunchCrossing();
    
-      if(BX == 0) {
-        nPUs++; 
-        Tnpv = PVI->getTrueNumInteractions();
-        //float Tnpv_fsim = PVI->getPU_NumInteractions();
-        //if (Tnpv!=Tnpv)
-        //    Tnpv = Tnpv_fsim;
-        LogDebug("produce()") << "true num int = " << Tnpv;
-        continue;
-      }
+      Tnpv = PVI->getPU_NumInteractions();
+      //if(BX == 0) {
+      //  nPUs++; 
+      //  //Tnpv = PVI->getTrueNumInteractions();
+      //  Tnpv = PVI->getPU_NumInteractions();
+      //  LogDebug("produce()") << "true num int = " << Tnpv;
+      //  continue;
+      //}
    }
    LogDebug("produce()") << "number of PU infos in event = " << nPUs;
    
