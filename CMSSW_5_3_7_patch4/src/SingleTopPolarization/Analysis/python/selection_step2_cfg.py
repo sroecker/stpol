@@ -208,6 +208,13 @@ def SingleTopStep2():
                     ["relIso", "userFloat('%s')" % Config.Muons.relIsoType],
                     ["Charge", "charge"],
                     ["genPdgId", "? genParticlesSize() > 0 ? genParticle(0).pdgId() : 0"],
+                    ["normChi2", "normChi2"],
+                    ["track_hitPattern_trackerLayersWithMeasurement", "userFloat('track_hitPattern_trackerLayersWithMeasurement')"],
+                    ["globalTrack_hitPattern_numberOfValidMuonHits", "userFloat('globalTrack_hitPattern_numberOfValidMuonHits')"],
+                    ["innerTrack_hitPattern_numberOfValidPixelHits", "userFloat('innerTrack_hitPattern_numberOfValidPixelHits')"],
+                    ["db", "dB"],
+                    ["dz", "userFloat('dz')"],
+                    ["numberOfMatchedStations", "numberOfMatchedStations"],
                 ]
             ),
             treeCollection(
@@ -246,6 +253,10 @@ def SingleTopStep2():
                     ["relIso", "userFloat('%s')" % Config.Electrons.relIsoType],
                     ["mvaID", "electronID('mvaTrigV0')"],
                     ["Charge", "charge"],
+                    ["superCluster_eta", "superCluster.eta"],
+                    ["passConversionVeto", "passConversionVeto()"],
+                    ["superCluster_eta", "superCluster.eta"],
+                    ["gsfTrack_trackerExpectedHitsInner_numberOfHits", "userInt('gsfTrack_trackerExpectedHitsInner_numberOfHits')"]
                 ]
             ),
             treeCollection(

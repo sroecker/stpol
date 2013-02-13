@@ -19,7 +19,7 @@ def ElectronSetup(process, conf):
     goodSignalElectronCut = goodElectronCut
     if conf.Electrons.cutOnMVA:
         goodSignalElectronCut += "&& electronID('mvaTrigV0') > %f" % conf.Electrons.mvaCut
-    goodSignalElectronCut += '&& abs(userFloat("dxy")) < 0.02'
+    goodSignalElectronCut += "&& abs(userFloat('dxy')) < 0.02"
     goodSignalElectronCut += '&& userInt("gsfTrack_trackerExpectedHitsInner_numberOfHits") <= 0'
 
     if conf.Electrons.cutOnIso:

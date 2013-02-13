@@ -151,7 +151,7 @@
 		A76CF9E816A6B2BE00DC8250 /* TransferMatrixCreator.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TransferMatrixCreator.cc; sourceTree = "<group>"; };
 		A76CF9E916A6B2BE00DC8250 /* transfermatrixcreator_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = transfermatrixcreator_cfg.py; sourceTree = "<group>"; };
 		A76CFA1816A6B2F000DC8250 /* analysis.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = analysis.py; sourceTree = "<group>"; };
-		A76CFA1A16A6B2F000DC8250 /* anfw.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = anfw.py; sourceTree = "<group>"; };
+		A76CFA1A16A6B2F000DC8250 /* anfw.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; lineEnding = 0; path = anfw.py; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.python; };
 		A76CFA1C16A6B2F000DC8250 /* binContent.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = binContent.py; sourceTree = "<group>"; };
 		A76CFA1D16A6B2F000DC8250 /* bTaggingSensitivity.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = bTaggingSensitivity.py; sourceTree = "<group>"; };
 		A76CFA1F16A6B2F000DC8250 /* cosTheta_phaseSpaceBias.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = cosTheta_phaseSpaceBias.py; sourceTree = "<group>"; };
