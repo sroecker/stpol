@@ -11,8 +11,25 @@ import pdb
 import logging
 
 
-logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
+def h_str(self):
+    
+    integral = self.Integral(1, self.GetNbinsX())
+    return "{0}: {1}, entries={2:.2E}, integral={5:.2E}, mean={3:.2E}, RMS={4:.2E}".format(
+        type(self).__name__,
+        self.GetName(),
+        self.GetEntries(),
+        self.GetMean(),
+        self.GetRMS(),
+        integral
+    )
 
+ROOT.TH1F.__str__ = h_str
+ROOT.TH1D.__str__ = h_str
+ROOT.TH1I.__str__ = h_str
+
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
+
+logger = logging.getLogger("anfw")
 if "-b" in sys.argv:
     sys.argv.remove("-b")
 
@@ -120,15 +137,22 @@ class Channel(object):
         self.fileName = kwargs.get("fileName")
         self.xs = kwargs.get("crossSection")
         self.color = kwargs.get("color")
+        self.logger = logging.getLogger("anfw.Channel." + self.channelName)
+
+
         print "Opening file {0}".format(self.fileName)
         self.file = ROOT.TFile(self.fileName)
         self.integratedDataLumi = None
+        
+        self.effHistMu = self.file.Get("efficiencyAnalyzerMu").Get("muPath")
+        self.effHistEle = self.file.Get("efficiencyAnalyzerEle").Get("elePath")
 
         #First bin contains the total number of processed events
         if self.xs>0:
             self.xsWeight = float(self.xs) / self.file.Get("efficiencyAnalyzerMu").Get("muPath").GetBinContent(1)
         else:
             self.xsWeight = 1
+
 
         keys = [x.GetName() for x in self.file.GetListOfKeys()]
         treeNames = filter(lambda x: x.startswith("tree"), keys)
@@ -143,6 +167,13 @@ class Channel(object):
             branches = [x.GetName() for x in t.GetListOfBranches()]
             self.branches += branches
         self.tree = self.trees[0]
+        
+        print "processed events = {0}, passing mu skim = {1}, passing ele skim = {2}, in trees = {3}".format(
+            self.effHistMu.GetBinContent(1),
+            self.effHistMu.GetBinContent(3),
+            self.effHistEle.GetBinContent(3),
+            self.tree.GetEntriesFast()
+        )
 
     def cutFlowOfCut(self, _cut):
 
@@ -171,27 +202,46 @@ class Channel(object):
     function
     varName
     """
-    def plot1D(self, var, varRange, **kwargs):        
+    def plot1D(self, var, varRange, **kwargs):
         cut = kwargs.get("cut", Cuts.initial)
         varName = kwargs.get("varName")
         if varName is None:
             varName = varNamePretty(var)
-        
         function = kwargs.get("function", "")
         integratedDataLumi = kwargs.get("integratedDataLumi")
+        dtype = kwargs.get("dtype", "float")
         weight = kwargs.get("weight")
+    
+        self.logger.debug("var={0}, varRange={1}, kwargs={2}".format(var, varRange, kwargs))
+        
         if weight is None:
             weight = 1.0
         
         histName = self.channelName + "_" + varName + "_" + cut.cutName + "_" + function + "_hist"
         
-        h = ROOT.TH1F(histName, varName, varRange[0], varRange[1], varRange[2])
+        if dtype=="float":
+            h = ROOT.TH1F(histName, varName, varRange[0], varRange[1], varRange[2])
+            h.Sumw2()
+        elif dtype=="int":
+            h = ROOT.TH1I(histName, varName, varRange[0], varRange[1], varRange[2])
+        else:
+            raise TypeError("Histogram type {0} not implemented".format(dtype))
+    
+        self.logger.debug("Created histogram '{0}'".format(h))
+
         c = ROOT.TCanvas()
         c.SetBatch(True)
+    
+        drawStr = "{2}({0})>>{1}".format(var, histName, function)
+        weightStr = "%s*(%s)" % (weight, cut.cutStr)
+        
+        self.logger.debug("Calling TTree.Draw({0}, {1})".format(drawStr, weightStr))
 
-        self.tree.Draw("{2}({0})>>{1}".format(var, histName, function), "%s*(%s)" % (weight, cut.cutStr))
+        self.tree.Draw(drawStr, weightStr)
+        self.logger.debug("Output histogram: {0}".format(h))
+
         nEntries = int(self.tree.GetEntries(cut.cutStr))
-        print "%s %s entries=%d" % (self.channelName, cut.cutName, nEntries)
+        self.logger.info("True MC number of entries in cut {0} = {1:.2E}".format(cut.cutName, nEntries))
         self.styleHist(h)
         return h
 
