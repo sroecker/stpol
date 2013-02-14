@@ -276,7 +276,7 @@ def SingleTopStep2():
                     ["Pt", "pt"],
                     ["Eta", "eta"],
                     ["Phi", "phi"],
-                    ["relIso", "userFloat('%s')" % Config.Muons.relIsoType],
+                    ["relIso", "userFloat('%s')" % Config.Electrons.relIsoType],
                     ["Charge", "charge"],
                     ["genPdgId", "? genParticlesSize() > 0 ? genParticle(0).pdgId() : 0"],
                 ]
