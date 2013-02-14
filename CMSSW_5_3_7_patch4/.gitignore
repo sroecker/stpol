@@ -3,3 +3,5 @@
 !/src
 /src/*
 !/src/SingleTopPolarization
+
+__init__.py
