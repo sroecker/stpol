@@ -6,7 +6,9 @@ do
     echo $i
     echo "Input DS:"`cat $i/log/crab.log | grep "CMSSW.datasetpath" | cut -d' ' -f6`
     echo "Output DS:"`grep "<User Dataset Name>" $i/log/crab.log | tail -n1 | cut -f8 -d' '`
-    if [ ! -f $i/res/lumiSummary.json ]; then crab -c $i -report &> /dev/null; fi
+     
+    crab -c $i -report &> /dev/null
+    #if [ ! -f $i/res/lumiSummary.json ]; then crab -c $i -report &> /dev/null; fi
     lumiCalc2.py -i $i/res/lumiSummary.json -o lumi.out overview &> /dev/null
     LUMI=`~/singletop/stpol/util/addLumis.py lumi.out`
     rm lumi.out
