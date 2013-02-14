@@ -208,7 +208,7 @@ def SingleTopStep2():
                     ["relIso", "userFloat('%s')" % Config.Muons.relIsoType],
                     ["Charge", "charge"],
                     ["genPdgId", "? genParticlesSize() > 0 ? genParticle(0).pdgId() : 0"],
-                    ["normChi2", "normChi2"],
+                    ["normChi2", "? globalTrack().isNonnull() ? normChi2 : -1.0"],
                     ["track_hitPattern_trackerLayersWithMeasurement", "userFloat('track_hitPattern_trackerLayersWithMeasurement')"],
                     ["globalTrack_hitPattern_numberOfValidMuonHits", "userFloat('globalTrack_hitPattern_numberOfValidMuonHits')"],
                     ["innerTrack_hitPattern_numberOfValidPixelHits", "userFloat('innerTrack_hitPattern_numberOfValidPixelHits')"],
@@ -477,7 +477,7 @@ def SingleTopStep2():
             cms.InputTag("cosThetaProducerTrueJet", "cosThetaLightJet"),
             cms.InputTag("cosThetaProducerTrueAll", "cosThetaLightJet"),
 
-            cms.InputTag("puWeightProducer", "nVertices"),
+            cms.InputTag("puWeightProducer", "nVerticesTrue"),
 
             #Transverse mass of MET and lepton
             cms.InputTag("muAndMETMT", ""),

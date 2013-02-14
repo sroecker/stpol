@@ -84,7 +84,10 @@ PUWeightProducer::PUWeightProducer(const edm::ParameterSet& iConfig)
    }
 
    produces<double>("PUWeight");
-   produces<double>("nVertices");
+   produces<double>("nVertices0");
+   produces<double>("nVerticesBXPlus1");
+   produces<double>("nVerticesBXMinus1");
+   produces<double>("nVerticesTrue");
    reweighter = new edm::LumiReWeighting(_srcDistr, _destDistr);
    //reweighter = new edm::LumiReWeighting(_destDistr, _srcDistr);
 }
@@ -109,29 +112,37 @@ PUWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    iEvent.getByLabel(edm::InputTag("addPileupInfo"), PupInfo);
    std::vector<PileupSummaryInfo>::const_iterator PVI;
    
-   float Tnpv = -1.0;
+   float n0 = TMath::QuietNaN(); 
+   float ntrue = TMath::QuietNaN();
+   float nm1 = TMath::QuietNaN();
+   float np1 = TMath::QuietNaN();
    int nPUs = 0;
    for(PVI = PupInfo->begin(); PVI != PupInfo->end(); ++PVI) {
       int BX = PVI->getBunchCrossing();
-   
-      Tnpv = PVI->getPU_NumInteractions();
-      //if(BX == 0) {
-      //  nPUs++; 
-      //  //Tnpv = PVI->getTrueNumInteractions();
-      //  Tnpv = PVI->getPU_NumInteractions();
-      //  LogDebug("produce()") << "true num int = " << Tnpv;
-      //  continue;
-      //}
+      nPUs++; 
+      if(BX == 0) {
+        //Tnpv = PVI->getTrueNumInteractions();
+        n0 = PVI->getPU_NumInteractions();
+        ntrue = PVI->getTrueNumInteractions();
+        LogDebug("produce()") << "true num int = " << ntrue;
+      }
+      else if(BX == 1) {
+          nm1 = PVI->getPU_NumInteractions();
+      }
+      else if(BX == -1) {
+          np1 = PVI->getPU_NumInteractions();
+      }
    }
-   LogDebug("produce()") << "number of PU infos in event = " << nPUs;
-   
    
    double puWeight = TMath::QuietNaN(); 
-   if (nPUs>0 && Tnpv>0) {
-      puWeight = reweighter->weight(Tnpv);
+   if (nPUs>0 && n0>0) {
+      puWeight = reweighter->weight(n0);
    }
    LogDebug("produce()") << "calculated PU weight = " << puWeight;
-   iEvent.put(std::auto_ptr<double>(new double(Tnpv)), "nVertices");   
+   iEvent.put(std::auto_ptr<double>(new double(n0)), "nVertices0");   
+   iEvent.put(std::auto_ptr<double>(new double(np1)), "nVerticesBXPlus1");   
+   iEvent.put(std::auto_ptr<double>(new double(nm1)), "nVerticesBXMinus1");   
+   iEvent.put(std::auto_ptr<double>(new double(ntrue)), "nVerticesTrue");   
    iEvent.put(std::auto_ptr<double>(new double(puWeight)), "PUWeight");   
 
  
