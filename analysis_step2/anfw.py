@@ -344,7 +344,10 @@ def loadSamples(enabledSamples):
 
 def normalize(h, to=1.0):
     h.Sumw2()
-    h.Scale(to/h.Integral())
+    if h.Integral()>0.0:
+        h.Scale(to/h.Integral())
+    else:
+        logger.warning("Histogram {0} is empty".format(h))
     return h
 
 def canvas(s):
