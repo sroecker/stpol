@@ -1,5 +1,5 @@
 import methods,params
-from methods import SampleList
+from methods import SampleList, TTreeLoader, PlotParams
 
 def addAutoSample(samplelist, groupname, samplename, fname):
 	s = methods.Sample(fname, params.xs[samplename], samplename)
@@ -10,25 +10,20 @@ def addAutoSample(samplelist, groupname, samplename, fname):
 		g = methods.SampleGroup(groupname, params.colors[samplename])
 		samplelist.addGroup(g)
 
-class PlotStacked:
-	def __init__(self):
+class StackedPlotCreator:
+	def __init__(self, samples):
+		self.samples = samples
+		
+		self._openSamples()
+	
+	def _openSamples(self):
+		for gk in self.samples.groups:
+			g = self.samples.groups[gk]
+			for s in g.samples:
+				print s
+	
+	def plot(self, cut, plots):
 		return
-
-class DrawCreator:
-	def __init__(self, chstring = None):
-		self._mcs = []
-		self._cuts = []
-		self._data = None
-		self.chstring = chstring
-	
-	def addCut(self, cut):
-		self._cuts.append(cut)
-	
-	def getCuts(self):
-		pass
-	
-	def _getCutString(self):
-		return '&&'.join(map(lambda s: '('+str(s)+')', self._cuts))
 	
 	def addMC(self, fname, crsec, name, color=None):
 		try:
@@ -40,7 +35,7 @@ class DrawCreator:
 	def setData(self, fname, luminosity):
 		self._data = _DataChannel(fname, luminosity)
 	
-	def plot(self, var, hmin, hmax, hbins, plotname, intsc=False):
+	def _plot(self, var, hmin, hmax, hbins, plotname, intsc=False):
 		p = Plot()
 		p.log.addParam('Variable', var)
 		p.log.addParam('HT min', hmin)
@@ -137,28 +132,7 @@ class DrawCreator:
 		# return the plot object where it can be drawn etc.
 		return p
 
-class _TTree(object):
-	def __init__(self, fname):
-		self.fname = fname
-		
-		print 'Open file: `%s`'%(fname)
-		self.tfile = TFile(self.fname)
-		
-		if self.tfile.IsZombie():
-			raise IOError('Error: file `%s` not found!'%fname)
-		
-		# We'll load all the trees
-		keys = [x.GetName() for x in self.tfile.GetListOfKeys()]
-		tree_names = filter(lambda x: x.startswith("trees"), keys)
-		trees = [self.tfile.Get(k).Get("eventTree") for k in tree_names]
-		for t in trees[1:]:
-			trees[0].AddFriend(t)
-		self.tree = trees[0]
-	
-	def getTotalEvents(self):
-		return self.tfile.Get('efficiencyAnalyzerMu').Get('muPath').GetBinContent(1)
-
-class _MCChannel(_TTree):
+class _MCChannel(TTreeLoader):
 	def __init__(self, fname, crsec, name, color):
 		super(_MCChannel, self).__init__(fname)
 		
@@ -170,7 +144,7 @@ class _MCChannel(_TTree):
 		#N = tfile.Get('efficiencyAnalyzerMu').Get('muPath').GetBinContent(1)
 		#return (tree, tfile, N)
 
-class _DataChannel(_TTree):
+class _DataChannel(TTreeLoader):
 	def __init__(self, fname, luminosity):
 		super(_DataChannel, self).__init__(fname)
 		self.luminosity = luminosity

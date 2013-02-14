@@ -1,3 +1,5 @@
+import ROOT
+
 def th_sep(i, sep=','):
 	i = abs(int(i))
 	if i == 0:
@@ -74,3 +76,29 @@ class SampleList:
 	
 	#def addSample(self, gn, s):
 	#	self.groups[gn].add(s)
+
+class TTreeLoader(object):
+	def __init__(self, fname):
+		self.fname = fname
+		
+		print 'Open file: `%s`'%(fname)
+		self.tfile = ROOT.TFile(self.fname)
+		
+		if self.tfile.IsZombie():
+			raise IOError('Error: file `%s` not found!'%fname)
+		
+		# We'll load all the trees
+		keys = [x.GetName() for x in self.tfile.GetListOfKeys()]
+		tree_names = filter(lambda x: x.startswith("trees"), keys)
+		trees = [self.tfile.Get(k).Get("eventTree") for k in tree_names]
+		for t in trees[1:]:
+			trees[0].AddFriend(t)
+		self.tree = trees[0]
+	
+	def getTotalEvents(self):
+		return self.tfile.Get('efficiencyAnalyzerMu').Get('muPath').GetBinContent(1)
+
+class PlotParams(object):
+	def __init__(self, var, r):
+		self.var = var
+		self.r = r
