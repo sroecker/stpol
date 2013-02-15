@@ -1,29 +1,25 @@
 import methods,params
-from methods import SampleList, TTreeLoader, PlotParams
+from methods import Sample, MCSample, DataSample, SampleList, PlotParams
 
 def addAutoSample(samplelist, groupname, samplename, fname):
-	s = methods.Sample(fname, params.xs[samplename], samplename)
-	
-	if groupname in samplelist.groups:
-		samplelist.groups[groupname].add(s)
-	else:
+	if groupname not in samplelist.groups:
 		g = methods.SampleGroup(groupname, params.colors[samplename])
 		samplelist.addGroup(g)
+	s = methods.MCSample(fname, params.xs[samplename], samplename, directory=samplelist.directory)
+	samplelist.groups[groupname].add(s)
 
 class StackedPlotCreator:
-	def __init__(self, samples):
-		self.samples = samples
-		
-		self._openSamples()
-	
-	def _openSamples(self):
-		for gk in self.samples.groups:
-			g = self.samples.groups[gk]
-			for s in g.samples:
-				print s
+	def __init__(self, datasample, mcsamples):
+		self.mcs = mcsamples
+		self.data = datasample
 	
 	def plot(self, cut, plots):
-		return
+		# Apply cuts
+		
+		# Plot
+		for p in plots:
+			#self._plot(p)
+			print p
 	
 	def addMC(self, fname, crsec, name, color=None):
 		try:
@@ -35,7 +31,7 @@ class StackedPlotCreator:
 	def setData(self, fname, luminosity):
 		self._data = _DataChannel(fname, luminosity)
 	
-	def _plot(self, var, hmin, hmax, hbins, plotname, intsc=False):
+	def _plot(self, pp):
 		p = Plot()
 		p.log.addParam('Variable', var)
 		p.log.addParam('HT min', hmin)
@@ -132,24 +128,6 @@ class StackedPlotCreator:
 		# return the plot object where it can be drawn etc.
 		return p
 
-class _MCChannel(TTreeLoader):
-	def __init__(self, fname, crsec, name, color):
-		super(_MCChannel, self).__init__(fname)
-		
-		self.crsec = crsec
-		self.name = name
-		self.color = color if color is not None else kOrange
-		
-		# Get the total number of events and return
-		#N = tfile.Get('efficiencyAnalyzerMu').Get('muPath').GetBinContent(1)
-		#return (tree, tfile, N)
-
-class _DataChannel(TTreeLoader):
-	def __init__(self, fname, luminosity):
-		super(_DataChannel, self).__init__(fname)
-		self.luminosity = luminosity
-		pass
- 
 class Plot:
 	def __init__(self):
 		self.log = PlotLog()

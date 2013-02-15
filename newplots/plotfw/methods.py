@@ -39,11 +39,42 @@ class Cut:
 		return self.cutName
 
 # Single sample with a specified cross section
-class Sample:
-	def __init__(self, fname, xs, name=None):
+class Sample(object):
+	def __init__(self, fname, name=None, directory=None):
 		self.fname = fname
-		self.xs = xs
+		self.directory = directory
 		self.name = name
+		
+		self._openTree()
+	
+	def __repr__(self):
+		return self.fname
+	
+	def _openTree(self):
+		fpath = (self.directory+'/' if self.directory is not None else '') + self.fname
+		print 'Opening file: `%s`'%(fpath)
+		self.tfile = ROOT.TFile(fpath)
+		
+		if self.tfile.IsZombie():
+			raise IOError('Error: file `%s` not found!'%fpath)
+		
+		# We'll load all the trees
+		keys = [x.GetName() for x in self.tfile.GetListOfKeys()]
+		tree_names = filter(lambda x: x.startswith("trees"), keys)
+		trees = [self.tfile.Get(k).Get("eventTree") for k in tree_names]
+		for t in trees[1:]:
+			trees[0].AddFriend(t)
+		self.tree = trees[0]
+
+class MCSample(Sample):
+	def __init__(self, fname, xs, name=None, directory=None):
+		super(MCSample,self).__init__(fname, name=name, directory=directory)
+		self.xs = xs
+
+class DataSample(Sample):
+	def __init__(self, fname, lumi, name=None, directory=None):
+		super(DataSample,self).__init__(fname, name=name, directory=directory)
+		self.lumi = lumi
 
 # Group of samples with the same color and label
 class SampleGroup:
@@ -76,29 +107,18 @@ class SampleList:
 	
 	#def addSample(self, gn, s):
 	#	self.groups[gn].add(s)
-
-class TTreeLoader(object):
-	def __init__(self, fname):
-		self.fname = fname
-		
-		print 'Open file: `%s`'%(fname)
-		self.tfile = ROOT.TFile(self.fname)
-		
-		if self.tfile.IsZombie():
-			raise IOError('Error: file `%s` not found!'%fname)
-		
-		# We'll load all the trees
-		keys = [x.GetName() for x in self.tfile.GetListOfKeys()]
-		tree_names = filter(lambda x: x.startswith("trees"), keys)
-		trees = [self.tfile.Get(k).Get("eventTree") for k in tree_names]
-		for t in trees[1:]:
-			trees[0].AddFriend(t)
-		self.tree = trees[0]
 	
-	def getTotalEvents(self):
-		return self.tfile.Get('efficiencyAnalyzerMu').Get('muPath').GetBinContent(1)
+	def listSamples(self):
+		for gk in self.groups:
+			print gk
+			g = self.groups[gk]
+			for s in g.samples:
+				print '> ', s
 
 class PlotParams(object):
 	def __init__(self, var, r):
 		self.var = var
 		self.r = r
+	
+	def __repr__(self):
+		return self.var
