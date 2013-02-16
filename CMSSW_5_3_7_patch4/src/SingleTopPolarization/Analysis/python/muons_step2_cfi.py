@@ -95,42 +95,33 @@ def MuonSetup(process, conf = None):
     #####################
     # MET/MtW cutting   #
     #####################
+    #produce the muon and MET invariant transverse mass
+    process.muAndMETMT = cms.EDProducer('CandTransverseMassProducer',
+        collections=cms.untracked.vstring(["patMETs", "goodSignalMuons"])
+    )
+    process.goodMETs = cms.EDFilter("CandViewSelector",
+      src=cms.InputTag("patMETs"), cut=cms.string("pt>%f" % conf.Muons.transverseMassCut)
+    )
+
+    process.metMuSequence = cms.Sequence(
+        process.muAndMETMT*
+        process.goodMETs
+    )
     #Either use MET cut or MtW cut
     if conf.Muons.transverseMassType == conf.Leptons.WTransverseMassType.MET:
-        process.goodMETs = cms.EDFilter("CandViewSelector",
-          src=cms.InputTag("patMETs"), cut=cms.string("pt>%f" % conf.Muons.transverseMassCut)
-        )
-
-        process.metMuSequence = cms.Sequence(
-            process.goodMETs
-        )
-
         if conf.Leptons.cutOnTransverseMass:
             process.hasMET = cms.EDFilter("PATCandViewCountFilter",
                 src = cms.InputTag("goodMETs"),
                 minNumber = cms.uint32(1),
                 maxNumber = cms.uint32(1)
             )
-            process.metMuSequence += process.hasMET
-
     elif conf.Muons.transverseMassType == conf.Leptons.WTransverseMassType.MtW:
-
-        #produce the muon and MET invariant transverse mass
-        process.muAndMETMT = cms.EDProducer('CandTransverseMassProducer',
-            collections=cms.untracked.vstring(["patMETs", "goodSignalMuons"])
-        )
-
-        process.metMuSequence = cms.Sequence(
-            process.muAndMETMT
-        )
-
         if conf.Leptons.cutOnTransverseMass:
             process.hasMuMETMT = cms.EDFilter('EventDoubleFilter',
                 src=cms.InputTag("muAndMETMT"),
                 min=cms.double(conf.Muons.transverseMassCut),
                 max=cms.double(9999999)
             )
-            process.metMuSequence += process.hasMuMETMT
 
     process.recoNuProducerMu = cms.EDProducer('ClassicReconstructedNeutrinoProducer',
         leptonSrc=cms.InputTag("singleIsoMu"),

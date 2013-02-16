@@ -89,68 +89,32 @@ def ElectronSetup(process, conf):
     #####################
     # MET/MtW cutting   #
     #####################
+    process.goodMETsEle = cms.EDFilter("CandViewSelector",
+      src=cms.InputTag("patMETs"), cut=cms.string("pt>%f" % conf.Electrons.transverseMassCut)
+    )
+    process.eleAndMETMT = cms.EDProducer('CandTransverseMassProducer',
+        collections=cms.untracked.vstring(["patMETs", "goodSignalElectrons"])
+    )
+
+    process.metEleSequence = cms.Sequence(
+        process.eleAndMETMT *
+        process.goodMETsEle
+    )
     #Either use MET cut or MtW cut
     if conf.Electrons.transverseMassType == conf.Leptons.WTransverseMassType.MET:
-        process.goodMETsEle = cms.EDFilter("CandViewSelector",
-          src=cms.InputTag("patMETs"), cut=cms.string("pt>%f" % conf.Electrons.transverseMassCut)
-        )
-
-        process.metEleSequence = cms.Sequence(
-            process.goodMETsEle
-        )
-
         if conf.Leptons.cutOnTransverseMass:
             process.hasMETEle = cms.EDFilter("PATCandViewCountFilter",
                 src = cms.InputTag("goodMETsEle"),
                 minNumber = cms.uint32(1),
                 maxNumber = cms.uint32(1)
             )
-            process.metMuSequence.insert(-1, process.hasMETEle)
-
     elif conf.Electrons.transverseMassType == conf.Leptons.WTransverseMassType.MtW:
-
-        #produce the muon and MET invariant transverse mass
-        process.eleAndMETMT = cms.EDProducer('CandTransverseMassProducer',
-            collections=cms.untracked.vstring(["patMETs", "goodSignalElectrons"])
-        )
-
-        process.metEleSequence = cms.Sequence(
-            process.eleAndMETMT
-        )
-
         if conf.Leptons.cutOnTransverseMass:
             process.hasEleMETMT = cms.EDFilter('EventDoubleFilter',
                 src=cms.InputTag("eleAndMETMT"),
                 min=cms.double(conf.Electrons.transverseMassCut),
                 max=cms.double(9999999)
             )
-            process.metEleSequence += process.hasEleMETMT
-
-
-    # if metType == "MET":
-    #     process.goodMETs = cms.EDFilter("CandViewSelector",
-    #       src=cms.InputTag("patMETs"),
-    #       cut=cms.string("pt>35")
-    #     )
-    #     process.hasMET = cms.EDFilter(
-    #         "PATCandViewCountFilter",
-    #         src=cms.InputTag("goodMETs"),
-    #         minNumber=cms.uint32(1),
-    #         maxNumber=cms.uint32(1),
-    #     )
-    #     process.metEleSequence = cms.Sequence(process.goodMETs*process.hasMET)
-    # elif metType == "MtW":
-    #     process.eleAndMETMT = cms.EDProducer('CandTransverseMassProducer',
-    #         collections=cms.untracked.vstring(["patMETs", "goodSignalElectrons"])
-    #     )
-    #     process.hasEleMETMT = cms.EDFilter('EventDoubleFilter',
-    #         src=cms.InputTag("eleAndMETMT"),
-    #         min=cms.double(40),
-    #         max=cms.double(9999999)
-    #     )
-    #     process.metEleSequence = cms.Sequence(process.eleAndMETMT * process.hasEleMETMT)
-    # else:
-    #     print "WARNING: MET type not specified in electron channel"
 
     process.recoNuProducerEle = cms.EDProducer('ClassicReconstructedNeutrinoProducer',
         leptonSrc=cms.InputTag("singleIsoEle"),
