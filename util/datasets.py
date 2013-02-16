@@ -360,6 +360,7 @@ possible_ds = {
     "S2MC": step2_MC,
     "S2newMC": step2_newMC,
     "S2D": step2_data,
+    "S2newD": step2_newData,
     "S2FSIM": step2_FastSimValid
     }
 
