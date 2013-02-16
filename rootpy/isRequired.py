@@ -1,5 +1,5 @@
 def isRequired(tree):
-    if tree.GetName()=="eventTree":
+    if tree.name =="eventTree":
         return tree
     else:
         return None
