@@ -12,10 +12,9 @@ smpls.listSamples()
 
 datasmpl = drawfw.DataSample('WD_SingleMuAB_4665_pb.root', 4665, directory='/home/joosep/singletop/data/trees/Feb8_A/Iso')
 
-# Set cuts
-#cuts = drawfw.params.Cuts.Orso
-cuts = [drawfw.methods.Cut('', '')]
-print 'Cuts:', cuts
+# Set the cut
+cut = drawfw.methods.Cut('', '')
+print 'Cut:', str(cut)
 
 # Set plots
 plots = [
@@ -25,5 +24,4 @@ plots = [
 
 # Plot
 pltc = drawfw.StackedPlotCreator(datasmpl, smpls)
-for c in cuts:
-	pltc.plot(c, plots)
+ps = pltc.plot(cut, plots)
