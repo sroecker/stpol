@@ -22,7 +22,7 @@ class StackedPlotCreator:
 		retplots = []
 		for p in plots:
 			mpo = self._plot(p)
-			mpo.save(p.var, log=False)
+			#mpo.save(p.var, log=False)
 			retplots.append(mpo)
 		return retplots
 	
@@ -156,13 +156,16 @@ class Plot:
 		self._pp = pp
 	
 	def draw(self):
-		self.cvs = ROOT.TCanvas('tcvs_%s'%self._pp.var, self._pp.var, w, h)
 		self.stack.Draw('')
 		self.dt_hist.Draw('E1 SAME')
 		self.legend.Draw('SAME')
 	
-	def save(self, fout, w=550, h=400, log=True, fmt='png'):
+	def save(self, w=550, h=400, log=False, fmt='png', fout=None):
+		if fout is None:
+			fout = self._pp.getOFname()
+		
 		print 'Saving as:', fout+'.'+fmt
+		self.cvs = ROOT.TCanvas('tcvs_%s'%self._pp.var, self._pp.var, w, h)
 		self.draw()
 		self.cvs.SaveAs(fout+'.'+fmt)
 		

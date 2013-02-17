@@ -1,4 +1,5 @@
 import ROOT
+import string
 
 def th_sep(i, sep=','):
 	i = abs(int(i))
@@ -126,3 +127,6 @@ class PlotParams(object):
 	
 	def __repr__(self):
 		return self.var
+	
+	def getOFname(self):
+		return filter(lambda x: x in string.ascii_letters+string.digits, self.var)
