@@ -1,5 +1,6 @@
 from plotfw import drawfw
 from plotfw.drawfw import addAutoSample as addSample
+from plotfw.params import Cuts as cutlist
 
 # Set samples
 smpls = drawfw.SampleList('/home/joosep/singletop/data/trees/Feb8_A/Iso')
@@ -13,7 +14,8 @@ smpls.listSamples()
 datasmpl = drawfw.DataSample('WD_SingleMuAB_4665_pb.root', 4665, directory='/home/joosep/singletop/data/trees/Feb8_A/Iso')
 
 # Set the cut
-cut = drawfw.methods.Cut('', '')
+#cut = drawfw.methods.Cut('', '')
+cut = cutlist.finalMu
 print 'Cut:', str(cut)
 
 # Set plots
@@ -25,3 +27,6 @@ plots = [
 # Plot
 pltc = drawfw.StackedPlotCreator(datasmpl, smpls)
 ps = pltc.plot(cut, plots)
+
+for p in ps:
+	p.save()
