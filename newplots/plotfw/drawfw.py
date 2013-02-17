@@ -6,7 +6,14 @@ def addAutoSample(samplelist, groupname, samplename, fname):
 	if groupname not in samplelist.groups:
 		g = methods.SampleGroup(groupname, params.colors[samplename])
 		samplelist.addGroup(g)
-	s = methods.MCSample(fname, params.xs[samplename], samplename, directory=samplelist.directory)
+		
+	# Create the sample
+	if samplename in params.xs:
+		xs = params.xs[samplename]
+	else:
+		print 'Notice: cross section fallback to group (g: %s, s: %s)'%(groupname, samplename)
+		xs = params.xs[groupname] 
+	s = methods.MCSample(fname, xs, samplename, directory=samplelist.directory)
 	samplelist.groups[groupname].add(s)
 
 class StackedPlotCreator:
