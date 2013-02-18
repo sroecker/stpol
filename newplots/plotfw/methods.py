@@ -94,7 +94,7 @@ class MCSample(Sample):
 class DataSample(Sample):
 	"""Sample with a corresponding luminosity"""
 	def __init__(self, fname, lumi, name=None, directory=None):
-		super(DataSample,self).__init__(fname, name=name, directory=directory)
+		super(DataSample,self).__init__(fname, name=name if name is not None else fname, directory=directory)
 		self.luminosity = lumi
 
 # Group of samples with the same color and label

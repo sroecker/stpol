@@ -1,5 +1,5 @@
 import ROOT
-import logging
+import logging, time
 from zlib import adler32
 import methods,params,plotlog
 from methods import Sample, MCSample, DataSample, SampleList, PlotParams
@@ -62,10 +62,15 @@ class StackedPlotCreator:
 			smpls_mc += self._mcs.groups[gk].samples
 		smpls = smpls_mc + self._data
 		
+		t_cuts = time.clock()
 		for s in smpls:
+			logging.info('Cutting on `%s`', s.name)
+			t_cut = time.clock()
 			s.tree.Draw(">>elist", self._cutstr)
 			elist = ROOT.gROOT.Get("elist")
 			s.tree.SetEventList(elist)
+			logging.debug('Cutting on `%s` took %f', s.name, time.clock()-t_cut)
+		logging.debug('Cutting all took %f', time.clock()-t_cuts)
 		
 		# Plot
 		retplots = []
