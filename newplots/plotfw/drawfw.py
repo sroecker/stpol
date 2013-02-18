@@ -1,5 +1,6 @@
 import ROOT
 import logging
+from zlib import adler32
 import methods,params,plotlog
 from methods import Sample, MCSample, DataSample, SampleList, PlotParams
 
@@ -53,6 +54,7 @@ class StackedPlotCreator:
 		"""Method takes a cut and list of plots and then returns a list plot objects."""
 		# Apply cuts
 		self._cutstr = cut.cutStr
+		logging.info('Cut string: %s', self._cutstr)
 		ROOT.gROOT.cd()
 		
 		smpls_mc = []
@@ -69,7 +71,6 @@ class StackedPlotCreator:
 		retplots = []
 		for p in plots:
 			mpo = self._plot(p)
-			#mpo.save(p.var, log=False)
 			retplots.append(mpo)
 		return retplots
 
@@ -82,7 +83,8 @@ class StackedPlotCreator:
 		"""
 		print 'Plotting:', pp
 
-		plotname = 'plot_' + pp.getName()
+		plotname = 'plot_cut%s_%s' % (adler32(self._cutstr), pp.getName())
+		logging.info('Plotting: %s', plotname)
 
 		p = Plot(pp)
 		p.log.addParam('Variable', pp.var)
