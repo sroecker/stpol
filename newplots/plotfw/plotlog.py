@@ -1,4 +1,4 @@
-import cPickle
+import cPickle, logging
 
 class PlotLog:
 	def __init__(self, verbose=True):
@@ -19,11 +19,11 @@ class PlotLog:
 			print 'Cuts applied:'
 			for c in self.cuts:
 				print '>', c
-			print 'Generated cutstring:', self.cutstring
+			logging.info('Generated cutstring: %s', self.cutstring)
 	
 	def addProcess(self, name, title=None, ismc=True):
 		if name in self._processes:
-			print 'Warning: Process `%s` already exists!'%name
+			logging.warning('Process `%s` already exists!', name)
 		else:
 			self._processes[name] = {
 				'title': title if title is not None else name,
@@ -40,33 +40,33 @@ class PlotLog:
 		self._params.append(np)
 		
 		if self._v:
-			print 'P `%s`: %s'%(title, value)
+			logging.info('P `%s`: %s', title, value)
 		
 	def setVariable(self, proc, var, value):
 		if proc not in self._processes:
-			print 'Warning: Process `%s` does not exists!'%var
+			logging.warning('Warning: Process `%s` does not exists!', var)
 			return
 			
 		if var not in self._variables:
 			self.addVariable(var)
 		
 		if var in self._processes[proc]['vars']:
-			print 'Notice: Variable already has value! (%s::%s)'%(proc, var)
+			logging.info('Notice: Variable already has value! (%s::%s)', proc, var)
 		
 		self._processes[proc]['vars'][var] = value
 		if self._v:
-			print '%s::%s:'%(proc, var), value
+			logging.info('%s::%s: %s', proc, var, value)
 	
 	def addVariable(self, var, title=None):
 		if var in self._variables:
-			print 'Notice: Variable `%s` already exists!'%var
+			logging.info('Notice: Variable `%s` already exists!', var)
 		else:
 			self._variables[var] = {
 				'title': title if title is not None else var
 			}
 	
 	def save(self, fname):
-		print 'Pickling log to `%s`'%fname
+		logging.info('Pickling log to `%s`', fname)
 		fh = open(fname, 'w')
 		cPickle.dump(self, fh, 0)
 		fh.close()

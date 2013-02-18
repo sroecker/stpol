@@ -1,6 +1,10 @@
+import logging
 from plotfw import drawfw
 from plotfw.drawfw import addAutoSample as addSample
 from plotfw.params import Cuts as cutlist
+
+# Logging
+logging.basicConfig(level=logging.DEBUG)
 
 # Set samples
 datasmpl = drawfw.DataSample('WD_SingleEleA1_82_pb.root', 82, directory='/home/joosep/singletop/data/trees/Feb8_A/Iso')

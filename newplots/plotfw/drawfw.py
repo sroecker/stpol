@@ -1,4 +1,5 @@
 import ROOT
+import logging
 import methods,params,plotlog
 from methods import Sample, MCSample, DataSample, SampleList, PlotParams
 
@@ -16,7 +17,7 @@ def addAutoSample(samplelist, groupname, samplename, fname):
 	if samplename in params.xs:
 		xs = params.xs[samplename]
 	else:
-		print 'Notice: cross section fallback to group (g: %s, s: %s)'%(groupname, samplename)
+		logging.warning('Notice: cross section fallback to group (g: %s, s: %s)', groupname, samplename)
 		xs = params.xs[groupname] 
 	s = methods.MCSample(fname, xs, samplename, directory=samplelist.directory)
 	samplelist.groups[groupname].add(s)
@@ -187,11 +188,12 @@ class Plot:
 	def save(self, w=550, h=400, log=False, fmt='png', fout=None):
 		if fout is None:
 			fout = self._pp.getName()
+		ofname = fout+'.'+fmt
 		
-		print 'Saving as:', fout+'.'+fmt
+		logging.info('Saving as: %s', ofname)
 		self.cvs = ROOT.TCanvas('tcvs_%s'%self._pp.var, self._pp.var, w, h)
 		self.draw()
-		self.cvs.SaveAs(fout+'.'+fmt)
+		self.cvs.SaveAs(ofname)
 		
 		if log:
 			self.log.save(fout+'.pylog')
