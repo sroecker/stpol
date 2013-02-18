@@ -1,6 +1,8 @@
 import ROOT
 import logging, time
 from zlib import adler32
+import random
+import string
 import methods,params,plotlog
 from methods import Sample, MCSample, DataSample, SampleList, PlotParams
 
@@ -56,22 +58,26 @@ class StackedPlotCreator:
 		self._cutstr = cut.cutStr
 		logging.info('Cut string: %s', self._cutstr)
 		ROOT.gROOT.cd()
-		
+
 		smpls_mc = []
 		for gk in self._mcs.groups:
 			smpls_mc += self._mcs.groups[gk].samples
 		smpls = smpls_mc + self._data
-		
+
 		t_cuts = time.clock()
 		for s in smpls:
 			logging.info('Cutting on `%s`', s.name)
-			t_cut = time.clock()
-			s.tree.Draw(">>elist", self._cutstr)
-			elist = ROOT.gROOT.Get("elist")
+			s.tree.SetEntryList(0)
+			logging.debug("Drawing event list for sample {0} with cut {1}".format(s.name, self._cutstr))
+			uniqueName = s.name + "_" + ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(4))
+			elistName = "elist_"+uniqueName
+			nEvents = s.tree.Draw(">>%s"%elistName, self._cutstr)
+			logging.debug("Done drawing {0} events into list {1}".format(nEvents, elistName))
+			elist = ROOT.gROOT.Get(elistName)
 			s.tree.SetEventList(elist)
 			logging.debug('Cutting on `%s` took %f', s.name, time.clock()-t_cut)
 		logging.debug('Cutting all took %f', time.clock()-t_cuts)
-		
+
 		# Plot
 		retplots = []
 		for p in plots:
@@ -118,15 +124,15 @@ class StackedPlotCreator:
 		for d in self._data:
 			dt_filled = d.tree.Draw('%s>>+%s'%(pp.var, dt_hist_name), cut_string, 'goff')
 			total_luminosity += d.luminosity
+			dname = d.name
+			p.log.addProcess(dname, ismc=False)
+			p.log.setVariable(dname, 'crsec', d.luminosity)
+			p.log.setVariable(dname, 'fname', d.fname)
+			p.log.setVariable(dname, 'filled', dt_filled)
+			#p.log.setVariable(dname, 'int', dt_int)
+
 		dt_int = p.dt_hist.Integral()
 
-		'''
-		p.log.addProcess('data', ismc=False)
-		p.log.setVariable('data', 'crsec', self._data.luminosity)
-		p.log.setVariable('data', 'fname', self._data.fname)
-		p.log.setVariable('data', 'filled', dt_filled)
-		p.log.setVariable('data', 'int', dt_int)
-		'''
 
 		# TODO: implement effectice luminosity
 		#effective_lumi = self._data.luminosity*float(self._data.tree.GetEntries())/float(self._data.getTotalEvents())
