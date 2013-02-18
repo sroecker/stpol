@@ -6,7 +6,10 @@ from plotfw.params import Cuts as cutlist
 logging.basicConfig(level=logging.DEBUG)
 
 # Set samples
-datasmpl = drawfw.DataSample('WD_SingleEleA1_82_pb.root', 82, directory='/home/joosep/singletop/data/trees/Feb8_A/Iso')
+datasmpls = [
+	drawfw.DataSample( 'WD_SingleEleA1_82_pb.root',  82, directory='/home/joosep/singletop/data/trees/Feb8_A/Iso'),
+	drawfw.DataSample('WD_SingleEleA2_808_pb.root', 808, directory='/home/joosep/singletop/data/trees/Feb8_A/Iso')
+]
 
 smplsgen = drawfw.SampleListGenerator('/home/joosep/singletop/data/trees/Feb8_A/Iso')
 smplsgen.add('WJets', 'W1Jets', 'W1Jets.root')
@@ -31,7 +34,7 @@ plots = [
 ]
 
 # Plot
-pltc = drawfw.StackedPlotCreator(datasmpl, smpls)
+pltc = drawfw.StackedPlotCreator(datasmpls, smpls)
 ps = pltc.plot(cut, plots)
 
 for p in ps:

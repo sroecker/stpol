@@ -33,10 +33,21 @@ class SampleListGenerator:
 		return self._samplelist
 
 class StackedPlotCreator:
-	"""Class that is used to create stacked plots (based on samples)"""
-	def __init__(self, datasample, mcsamples):
+	"""Class that is used to create stacked plots
+	
+	Initalizer takes the data and MC samples which are then plotted.
+	datasamples is either of type DataSample or [DataSample].
+	mcsamples has to be of type SampleList
+	
+	"""
+	def __init__(self, datasamples, mcsamples):
 		self._mcs = mcsamples
-		self._data = datasample
+		
+		# if a single data sample is given it does not have to be a list
+		if isinstance(datasamples, list):
+			self._data = datasamples
+		else:
+			self._data = [datasamples]
 	
 	def plot(self, cut, plots):
 		"""Method takes a cut and list of plots and then returns a list plot objects."""
@@ -79,22 +90,28 @@ class StackedPlotCreator:
 		p.log.addVariable('filled', 'Events filled')
 		p.log.addVariable('int', 'Integrated events')
 		
-		# Create histograms
+		# Create data histogram
+		total_luminosity = 0.0
 		dt_hist_name = '%s_hist_data'%plotname
+		p.dt_hist = ROOT.TH1F(dt_hist_name, '', pp.hbins, pp.hmin, pp.hmax)
+		p.dt_hist.SetMarkerStyle(20)
+		for d in self._data:
+			dt_filled = d.tree.Draw('%s>>%s'%(pp.var, dt_hist_name), cut_string, 'goff')
+			total_luminosity += d.luminosity
+		dt_int = p.dt_hist.Integral()
 		
+		'''
 		p.log.addProcess('data', ismc=False)
 		p.log.setVariable('data', 'crsec', self._data.luminosity)
 		p.log.setVariable('data', 'fname', self._data.fname)
-		p.dt_hist = ROOT.TH1F(dt_hist_name, '', pp.hbins, pp.hmin, pp.hmax)
-		p.dt_hist.SetMarkerStyle(20)
-		p.log.setVariable('data', 'filled', self._data.tree.Draw('%s>>%s'%(pp.var, dt_hist_name), cut_string, 'goff'))
-		dt_int = p.dt_hist.Integral()
+		p.log.setVariable('data', 'filled', dt_filled)
 		p.log.setVariable('data', 'int', dt_int)
+		'''
 		
-		#effective_lumi = self._data.luminosity*float(self._data.tree.GetEntries())/float(self._data.getTotalEvents())
 		# TODO: implement effectice luminosity
-		effective_lumi = self._data.luminosity
-		p.log.addParam('Luminosity', self._data.luminosity)
+		#effective_lumi = self._data.luminosity*float(self._data.tree.GetEntries())/float(self._data.getTotalEvents())
+		effective_lumi = total_luminosity
+		p.log.addParam('Luminosity', total_luminosity)
 		p.log.addParam('Effective luminosity', effective_lumi)
 		
 		data_max = p.dt_hist.GetMaximum()
@@ -131,7 +148,8 @@ class StackedPlotCreator:
 			mc_hist.SetLineWidth(0)
 			p.mc_hists.append(mc_hist)
 			
-			p.log.setVariable(mc.name, 'filled', mc.tree.Draw('%s>>%s'%(pp.var,hist_name), cut_string, 'goff'))
+			mc_filled = mc.tree.Draw('%s>>%s'%(pp.var,hist_name), cut_string, 'goff')
+			p.log.setVariable(mc.name, 'filled', mc_filled)
 			
 			# MC scaling
 			expected_events = mc.crsec*effective_lumi
