@@ -3,6 +3,11 @@ import methods,params,plotlog
 from methods import Sample, MCSample, DataSample, SampleList, PlotParams
 
 def addAutoSample(samplelist, groupname, samplename, fname):
+	"""Helper function that adds a MC sample to a SampleList.
+	
+	It uses the color and cross sections defined in params.py to do that.
+	
+	"""
 	if groupname not in samplelist.groups:
 		g = methods.SampleGroup(groupname, params.colors[samplename])
 		samplelist.addGroup(g)
@@ -17,11 +22,13 @@ def addAutoSample(samplelist, groupname, samplename, fname):
 	samplelist.groups[groupname].add(s)
 
 class StackedPlotCreator:
+	"""Class that is used to create stacked plots (based on samples)"""
 	def __init__(self, datasample, mcsamples):
 		self._mcs = mcsamples
 		self._data = datasample
 	
 	def plot(self, cut, plots):
+		"""Method takes a cut and list of plots and then returns a list plot objects."""
 		# Apply cuts
 		self._cutstr = cut.cutStr
 		
@@ -33,10 +40,13 @@ class StackedPlotCreator:
 			retplots.append(mpo)
 		return retplots
 	
-	def setData(self, fname, luminosity):
-		self._data = _DataChannel(fname, luminosity)
-	
 	def _plot(self, pp):
+		"""Internally used plotting method.
+		
+		It takes a PlotParams class and returns the corresponding Plot
+		object.
+		
+		"""
 		print 'Plotting:', pp
 		
 		plotname = 'plot_' + pp.getName()
@@ -158,6 +168,13 @@ class StackedPlotCreator:
 		return p
 
 class Plot:
+	"""This class represents a single plot and has the methods to export it.
+	
+	This class puts everything together (different histograms, legend etc)
+	and allows to export the plot easily. It also handles the metadata
+	logging.
+	
+	"""
 	def __init__(self, pp):
 		self.log = plotlog.PlotLog()
 		self._pp = pp
