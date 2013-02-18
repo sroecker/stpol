@@ -13,6 +13,8 @@ colors = {
 	"WJets": ROOT.kGreen,
 	"W1Jets": ROOT.kGreen+1,
 	"W2Jets": ROOT.kGreen+2,
+	"W3Jets": ROOT.kGreen+3,
+	"W4Jets": ROOT.kGreen+4,
 
 	"WW": ROOT.kBlue,
 	"WZ": ROOT.kBlue,

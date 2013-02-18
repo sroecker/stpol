@@ -1,4 +1,5 @@
 import ROOT
+import string
 
 def th_sep(i, sep=','):
 	i = abs(int(i))
@@ -65,6 +66,9 @@ class Sample(object):
 		for t in trees[1:]:
 			trees[0].AddFriend(t)
 		self.tree = trees[0]
+	
+	def getTotalEvents(self):
+		return self.tfile.Get('efficiencyAnalyzerMu').Get('muPath').GetBinContent(1)
 
 class MCSample(Sample):
 	def __init__(self, fname, xs, name=None, directory=None):
@@ -74,7 +78,7 @@ class MCSample(Sample):
 class DataSample(Sample):
 	def __init__(self, fname, lumi, name=None, directory=None):
 		super(DataSample,self).__init__(fname, name=name, directory=directory)
-		self.lumi = lumi
+		self.luminosity = lumi
 
 # Group of samples with the same color and label
 class SampleGroup:
@@ -116,9 +120,13 @@ class SampleList:
 				print '> ', s
 
 class PlotParams(object):
-	def __init__(self, var, r):
+	def __init__(self, var, r, bins=20):
 		self.var = var
-		self.r = r
+		self.r = r; self.hmin = r[0]; self.hmax = r[1]
+		self.bins=bins; self.hbins = bins
 	
 	def __repr__(self):
 		return self.var
+	
+	def getOFname(self):
+		return filter(lambda x: x in string.ascii_letters+string.digits, self.var)

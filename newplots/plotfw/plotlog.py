@@ -23,7 +23,7 @@ class PlotLog:
 	
 	def addProcess(self, name, title=None, ismc=True):
 		if name in self._processes:
-			print 'Warning: Process `%s` already exists!'%var
+			print 'Warning: Process `%s` already exists!'%name
 		else:
 			self._processes[name] = {
 				'title': title if title is not None else name,
@@ -64,9 +64,6 @@ class PlotLog:
 			self._variables[var] = {
 				'title': title if title is not None else var
 			}
-	
-#	def __str__(self):
-#		return 'HEHEH'
 	
 	def save(self, fname):
 		print 'Pickling log to `%s`'%fname
