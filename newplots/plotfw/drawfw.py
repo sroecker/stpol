@@ -5,7 +5,6 @@ import random
 import string
 import methods,params,plotlog
 from methods import Sample, MCSample, DataSample, SampleList, PlotParams
-from multiprocessing import Pool
 
 class SampleListGenerator:
 	"""Helper class that makes it easier to generate sample lists for MC.
@@ -85,9 +84,7 @@ class StackedPlotCreator:
 			logging.debug('Cutting on `%s` took %f', s.name, time.clock()-t_cut)
 		logging.debug('Cutting all took %f', time.clock()-t_cuts)
 
-		# Plot with multiprocessing
-		#p = Pool(10)
-		#return p.map(self._plot, plots)
+		# Plot
 		return map(self._plot, plots)
 
 	def _plot(self, pp):
