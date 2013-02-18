@@ -67,12 +67,13 @@ class StackedPlotCreator:
 
 		t_cuts = time.clock()
 		for s in smpls:
+			t_cut = time.clock()
 			logging.info('Cutting on `%s`', s.name)
 			t_cut = time.clock()
 
 			s.tree.SetEventList(0) # reset TTree
 			#s.tree.SetEntryList(0)
-			
+
 			logging.debug("Drawing event list for sample {0} with cut {1}".format(s.name, self._cutstr))
 			uniqueName = s.name + "_" + ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(4))
 			elist_name = "elist_"+uniqueName
@@ -80,7 +81,7 @@ class StackedPlotCreator:
 			logging.debug("Done drawing {0} events into list {1}".format(nEvents, elist_name))
 			elist = ROOT.gROOT.Get(elist_name)
 			s.tree.SetEventList(elist)
-			
+
 			logging.debug('Cutting on `%s` took %f', s.name, time.clock()-t_cut)
 		logging.debug('Cutting all took %f', time.clock()-t_cuts)
 
