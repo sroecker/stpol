@@ -6,9 +6,9 @@ from plotfw.params import Cuts as cutlist
 datasmpl = drawfw.DataSample('WD_SingleMuAB_4665_pb.root', 4665, directory='/home/joosep/singletop/data/trees/Feb8_A/Iso')
 
 smpls = drawfw.SampleList('/home/joosep/singletop/data/trees/Feb8_A/Iso')
-addSample(smpls, 'Dilepton', 'WW', 'WD_WW.root')
-addSample(smpls, 'Dilepton', 'WZ', 'WD_WZ.root')
-addSample(smpls, 'Dilepton', 'ZZ', 'WD_ZZ.root')
+addSample(smpls, 'Diboson', 'WW', 'WD_WW.root')
+addSample(smpls, 'Diboson', 'WZ', 'WD_WZ.root')
+addSample(smpls, 'Diboson', 'ZZ', 'WD_ZZ.root')
 addSample(smpls, 'TTbar', 'TTbar', 'WD_TTbar.root')
 addSample(smpls, 'WJets', 'W1Jets', 'W1Jets.root')
 addSample(smpls, 'WJets', 'W2Jets', 'W2Jets.root')

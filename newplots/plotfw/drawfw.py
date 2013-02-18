@@ -1,8 +1,14 @@
 import ROOT
+import logging
 import methods,params,plotlog
 from methods import Sample, MCSample, DataSample, SampleList, PlotParams
 
 def addAutoSample(samplelist, groupname, samplename, fname):
+	"""Helper function that adds a MC sample to a SampleList.
+	
+	It uses the color and cross sections defined in params.py to do that.
+	
+	"""
 	if groupname not in samplelist.groups:
 		g = methods.SampleGroup(groupname, params.colors[samplename])
 		samplelist.addGroup(g)
@@ -11,17 +17,19 @@ def addAutoSample(samplelist, groupname, samplename, fname):
 	if samplename in params.xs:
 		xs = params.xs[samplename]
 	else:
-		print 'Notice: cross section fallback to group (g: %s, s: %s)'%(groupname, samplename)
+		logging.warning('Notice: cross section fallback to group (g: %s, s: %s)', groupname, samplename)
 		xs = params.xs[groupname] 
 	s = methods.MCSample(fname, xs, samplename, directory=samplelist.directory)
 	samplelist.groups[groupname].add(s)
 
 class StackedPlotCreator:
+	"""Class that is used to create stacked plots (based on samples)"""
 	def __init__(self, datasample, mcsamples):
 		self._mcs = mcsamples
 		self._data = datasample
 	
 	def plot(self, cut, plots):
+		"""Method takes a cut and list of plots and then returns a list plot objects."""
 		# Apply cuts
 		self._cutstr = cut.cutStr
 		
@@ -33,13 +41,16 @@ class StackedPlotCreator:
 			retplots.append(mpo)
 		return retplots
 	
-	def setData(self, fname, luminosity):
-		self._data = _DataChannel(fname, luminosity)
-	
 	def _plot(self, pp):
+		"""Internally used plotting method.
+		
+		It takes a PlotParams class and returns the corresponding Plot
+		object.
+		
+		"""
 		print 'Plotting:', pp
 		
-		plotname = 'name_' + pp.var
+		plotname = 'plot_' + pp.getName()
 		
 		p = Plot(pp)
 		p.log.addParam('Variable', pp.var)
@@ -59,12 +70,14 @@ class StackedPlotCreator:
 		p.log.addVariable('int', 'Integrated events')
 		
 		# Create histograms
+		dt_hist_name = '%s_hist_data'%plotname
+		
 		p.log.addProcess('data', ismc=False)
 		p.log.setVariable('data', 'crsec', self._data.luminosity)
 		p.log.setVariable('data', 'fname', self._data.fname)
-		p.dt_hist = ROOT.TH1F('hist_data', '', pp.hbins, pp.hmin, pp.hmax)
+		p.dt_hist = ROOT.TH1F(dt_hist_name, '', pp.hbins, pp.hmin, pp.hmax)
 		p.dt_hist.SetMarkerStyle(20)
-		p.log.setVariable('data', 'filled', self._data.tree.Draw('%s>>hist_data'%pp.var, cut_string, 'goff'))
+		p.log.setVariable('data', 'filled', self._data.tree.Draw('%s>>%s'%(pp.var, dt_hist_name), cut_string, 'goff'))
 		dt_int = p.dt_hist.Integral()
 		p.log.setVariable('data', 'int', dt_int)
 		
@@ -158,6 +171,13 @@ class StackedPlotCreator:
 		return p
 
 class Plot:
+	"""This class represents a single plot and has the methods to export it.
+	
+	This class puts everything together (different histograms, legend etc)
+	and allows to export the plot easily. It also handles the metadata
+	logging.
+	
+	"""
 	def __init__(self, pp):
 		self.log = plotlog.PlotLog()
 		self._pp = pp
@@ -169,12 +189,13 @@ class Plot:
 	
 	def save(self, w=550, h=400, log=False, fmt='png', fout=None):
 		if fout is None:
-			fout = self._pp.getOFname()
+			fout = self._pp.getName()
+		ofname = fout+'.'+fmt
 		
-		print 'Saving as:', fout+'.'+fmt
+		logging.info('Saving as: %s', ofname)
 		self.cvs = ROOT.TCanvas('tcvs_%s'%self._pp.var, self._pp.var, w, h)
 		self.draw()
-		self.cvs.SaveAs(fout+'.'+fmt)
+		self.cvs.SaveAs(ofname)
 		
 		if log:
 			self.log.save(fout+'.pylog')
