@@ -53,7 +53,18 @@ class StackedPlotCreator:
 		"""Method takes a cut and list of plots and then returns a list plot objects."""
 		# Apply cuts
 		self._cutstr = cut.cutStr
-
+		ROOT.gROOT.cd()
+		
+		smpls_mc = []
+		for gk in self._mcs.groups:
+			smpls_mc += self._mcs.groups[gk].samples
+		smpls = smpls_mc + self._data
+		
+		for s in smpls:
+			s.tree.Draw(">>elist", self._cutstr)
+			elist = ROOT.gROOT.Get("elist")
+			s.tree.SetEventList(elist)
+		
 		# Plot
 		retplots = []
 		for p in plots:
@@ -81,7 +92,8 @@ class StackedPlotCreator:
 		enabledBranches = []
 		#p.log.addParam('Integrated scaling', str(intsc))
 
-		cut_string = self._cutstr
+		#cut_string = self._cutstr
+		cut_string = ''
 		p.log.setCuts([''], cut_string)
 
 		# Create the legend
