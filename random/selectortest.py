@@ -2,12 +2,6 @@ import ROOT
 import time
 from TestSelector import *
 
-def myFunc(self, tree):
-	vals = [tree._goodJets_0_Eta, tree._goodJets_1_Eta, tree._goodJets_2_Eta]
-	vals.sort()
-	#print "{0}".format(vals)
-	return vals[1], 1
-
 def drawWithSelector(tree, vs, cut):
 	ROOT.gROOT.cd()
 	tree.Draw(">>elist", cut)
@@ -29,8 +23,13 @@ def drawNormally(tree, vs, cut):
 	for v in vs:
 		histname = 'hist_norm_%s' % v['name']
 		h = ROOT.TH1F(histname, histname, 20, v['min'], v['max'])
-		tree.Draw('%s>>%s'%(v['var'],histname), cut)
 		hs.append({'name': v['name'], 'var':v['var'], 'hist':h})
+	
+	t = time.clock()
+	for v in vs:
+		histname = 'hist_norm_%s' % v['name']
+		tree.Draw('%s>>%s'%(v['var'],histname), cut, 'goff')
+	print 'Time normally:', time.clock()-t
 	
 	return hs
 
@@ -48,21 +47,30 @@ vs = [
 	{'name': 'eta',  'var': '_goodJets_1_Eta', 'min': 0, 'max': 5}
 ]
 
-selector_t = time.clock()
-selector_hs = drawWithSelector(tree, vs, '_goodJets_1_Eta>1')
-selector_t = time.clock() - selector_t
+#cut = '1 == 1'
+cut = '_goodJets_1_Eta>1 && _recoTop_0_Mass<400'
 
 normally_t = time.clock()
-normally_hs = drawNormally(tree, vs, '_goodJets_1_Eta>1')
+normally_hs = drawNormally(tree, vs, cut)
 normally_t = time.clock() - normally_t
 
+selector_t = time.clock()
+selector_hs = drawWithSelector(tree, vs, cut)
+selector_t = time.clock() - selector_t
+
+normlist_t = time.clock()
+normally_hs = drawNormally(tree, vs, '')
+normlist_t = time.clock() - normlist_t
+
+print
 print 'Selector time:', selector_t
 print 'Normally time:', normally_t
+print 'Normlist time:', normlist_t
 
 hs = map(lambda x,y: (x,y), selector_hs, normally_hs)
 
 cvs=[]
 for h in hs:
 	cvs.append(ROOT.TCanvas('canvas_%s'%h[0]['name'], 'canvas_%s'%h[0]['name']))
-	h[0]['hist'].Draw()
-	h[1]['hist'].Draw('E1 SAME')
+	h[1]['hist'].Draw()
+	h[0]['hist'].Draw('E1 SAME')

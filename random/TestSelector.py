@@ -11,9 +11,12 @@ class TestSelector(ROOT.TPySelector):
 		func = func
 	
 	def Begin( self ):
-		print 'py: beginning'
+		#print 'py: beginning'
+		pass
+	
 	def SlaveBegin( self, tree ):
-		print 'py: slave beginning'
+		#print 'py: slave beginning'
+		pass
 		
 	def Process( self, entry ):
 		self.nProcessed += 1
