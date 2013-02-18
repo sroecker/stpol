@@ -23,7 +23,7 @@ smpls.listSamples() # print sample list
 
 # Set the cut
 cut = drawfw.methods.Cut('ab_topmass', '_recoTop_0_Mass > 200 && _recoTop_0_Mass < 500') \
-    * cutlist.ele
+	* cutlist.ele
 #cut = cutlist.finalEle
 print 'Cut:', str(cut)
 
