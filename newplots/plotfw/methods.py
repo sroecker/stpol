@@ -122,9 +122,7 @@ class SampleGroup:
 
 class SampleList:
 	"""List of all sample groups"""
-	def __init__(self, directory=''):
-		self.directory = directory
-		
+	def __init__(self):
 		self.groups = {} # initially there are no sample groups
 	
 	def addGroup(self, g):

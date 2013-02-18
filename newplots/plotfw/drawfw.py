@@ -3,24 +3,34 @@ import logging
 import methods,params,plotlog
 from methods import Sample, MCSample, DataSample, SampleList, PlotParams
 
-def addAutoSample(samplelist, groupname, samplename, fname):
-	"""Helper function that adds a MC sample to a SampleList.
+class SampleListGenerator:
+	"""Helper class that makes it easier to generate sample lists for MC.
 	
-	It uses the color and cross sections defined in params.py to do that.
+	It assumes that all the samples are in the directory.
+	It uses the color and cross sections defined in params.py for the
+	corresponding sample and group parameters.
 	
 	"""
-	if groupname not in samplelist.groups:
-		g = methods.SampleGroup(groupname, params.colors[samplename])
-		samplelist.addGroup(g)
+	def __init__(self, directory):
+		self._directory = directory
+		self._samplelist = SampleList()
 		
-	# Create the sample
-	if samplename in params.xs:
-		xs = params.xs[samplename]
-	else:
-		logging.warning('Notice: cross section fallback to group (g: %s, s: %s)', groupname, samplename)
-		xs = params.xs[groupname] 
-	s = methods.MCSample(fname, xs, samplename, directory=samplelist.directory)
-	samplelist.groups[groupname].add(s)
+	def add(self, groupname, samplename, fname):
+		if groupname not in self._samplelist.groups:
+			g = methods.SampleGroup(groupname, params.colors[samplename])
+			self._samplelist.addGroup(g)
+			
+		# Create the sample
+		if samplename in params.xs:
+			xs = params.xs[samplename]
+		else:
+			logging.warning('Notice: cross section fallback to group (g: %s, s: %s)', groupname, samplename)
+			xs = params.xs[groupname] 
+		s = methods.MCSample(fname, xs, samplename, directory=self._directory)
+		self._samplelist.groups[groupname].add(s)
+	
+	def getSampleList(self):
+		return self._samplelist
 
 class StackedPlotCreator:
 	"""Class that is used to create stacked plots (based on samples)"""

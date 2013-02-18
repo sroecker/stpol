@@ -1,6 +1,5 @@
 import logging
 from plotfw import drawfw
-from plotfw.drawfw import addAutoSample as addSample
 from plotfw.params import Cuts as cutlist
 
 # Logging
@@ -9,12 +8,13 @@ logging.basicConfig(level=logging.DEBUG)
 # Set samples
 datasmpl = drawfw.DataSample('WD_SingleEleA1_82_pb.root', 82, directory='/home/joosep/singletop/data/trees/Feb8_A/Iso')
 
-smpls = drawfw.SampleList('/home/joosep/singletop/data/trees/Feb8_A/Iso')
-addSample(smpls, 'WJets', 'W1Jets', 'W1Jets.root')
-addSample(smpls, 'WJets', 'W2Jets', 'W2Jets.root')
-addSample(smpls, 'WJets', 'W3Jets', 'W3Jets.root')
-addSample(smpls, 'WJets', 'W4Jets', 'W4Jets.root')
-addSample(smpls, 'TTbar', 'TTbar', 'WD_TTbar.root')
+smplsgen = drawfw.SampleListGenerator('/home/joosep/singletop/data/trees/Feb8_A/Iso')
+smplsgen.add('WJets', 'W1Jets', 'W1Jets.root')
+smplsgen.add('WJets', 'W2Jets', 'W2Jets.root')
+smplsgen.add('WJets', 'W3Jets', 'W3Jets.root')
+smplsgen.add('WJets', 'W4Jets', 'W4Jets.root')
+smplsgen.add('TTbar', 'TTbar', 'WD_TTbar.root')
+smpls = smplsgen.getSampleList()
 
 smpls.listSamples() # print sample list
 
