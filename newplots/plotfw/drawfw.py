@@ -70,12 +70,14 @@ class StackedPlotCreator:
 		p.log.addVariable('int', 'Integrated events')
 		
 		# Create histograms
+		dt_hist_name = '%s_hist_data'%plotname
+		
 		p.log.addProcess('data', ismc=False)
 		p.log.setVariable('data', 'crsec', self._data.luminosity)
 		p.log.setVariable('data', 'fname', self._data.fname)
-		p.dt_hist = ROOT.TH1F('%s_hist_data'%plotname, '', pp.hbins, pp.hmin, pp.hmax)
+		p.dt_hist = ROOT.TH1F(dt_hist_name, '', pp.hbins, pp.hmin, pp.hmax)
 		p.dt_hist.SetMarkerStyle(20)
-		p.log.setVariable('data', 'filled', self._data.tree.Draw('%s>>hist_data'%pp.var, cut_string, 'goff'))
+		p.log.setVariable('data', 'filled', self._data.tree.Draw('%s>>%s'%(pp.var, dt_hist_name), cut_string, 'goff'))
 		dt_int = p.dt_hist.Integral()
 		p.log.setVariable('data', 'int', dt_int)
 		
