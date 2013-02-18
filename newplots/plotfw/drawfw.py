@@ -70,31 +70,24 @@ class StackedPlotCreator:
 		t_cuts = time.clock()
 		for s in smpls:
 			logging.info('Cutting on `%s`', s.name)
-			s.tree.SetEntryList(0)
+			t_cut = time.clock()
+
+			s.tree.SetEventList(0) # reset TTree
+			#s.tree.SetEntryList(0)
+			
 			logging.debug("Drawing event list for sample {0} with cut {1}".format(s.name, self._cutstr))
 			uniqueName = s.name + "_" + ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(4))
-			elistName = "elist_"+uniqueName
-			nEvents = s.tree.Draw(">>%s"%elistName, self._cutstr)
+			elist_name = "elist_"+uniqueName
+			nEvents = s.tree.Draw(">>%s"%elist_name, self._cutstr)
 			logging.debug("Done drawing {0} events into list {1}".format(nEvents, elistName))
 			elist = ROOT.gROOT.Get(elistName)
 			s.tree.SetEventList(elist)
+			
 			logging.debug('Cutting on `%s` took %f', s.name, time.clock()-t_cut)
 		logging.debug('Cutting all took %f', time.clock()-t_cuts)
 
 		# Plot
-<<<<<<< Updated upstream
-		retplots = []
-		for p in plots:
-			mpo = self._plot(p)
-			retplots.append(mpo)
-=======
-		retplots = p.map(self._plot, plots)
-#		for p in plots:
-#			mpo = self._plot(p)
-#			#mpo.save(p.var, log=False)
-#			retplots.append(mpo)
->>>>>>> Stashed changes
-		return retplots
+		return p.map(self._plot, plots)
 
 	def _plot(self, pp):
 		"""Internally used plotting method.
@@ -108,7 +101,7 @@ class StackedPlotCreator:
 		plotname = 'plot_cut%s_%s' % (adler32(self._cutstr), pp.getName())
 		logging.info('Plotting: %s', plotname)
 
-		p = Plot(pp)
+		p = Plot(pp, cutstring=adler32(self._cutstr))
 		p.log.addParam('Variable', pp.var)
 		p.log.addParam('HT min', pp.hmin)
 		p.log.addParam('HT max', pp.hmax)
@@ -243,9 +236,10 @@ class Plot:
 	logging.
 
 	"""
-	def __init__(self, pp):
+	def __init__(self, pp, cutstring=None):
 		self.log = plotlog.PlotLog()
 		self._pp = pp
+		self._cutstring = str(cutstring)
 
 	def draw(self):
 		self.stack.Draw('')
@@ -254,11 +248,11 @@ class Plot:
 
 	def save(self, w=550, h=400, log=False, fmt='png', fout=None):
 		if fout is None:
-			fout = self._pp.getName()
+			fout = self._pp.getName() + ('_'+self._cutstring if self._cutstring is not None else '')
 		ofname = fout+'.'+fmt
 
 		logging.info('Saving as: %s', ofname)
-		self.cvs = ROOT.TCanvas('tcvs_%s'%self._pp.var, self._pp.var, w, h)
+		self.cvs = ROOT.TCanvas('tcvs_%s'%fout, self._pp.var, w, h)
 		self.draw()
 		self.cvs.SaveAs(ofname)
 
