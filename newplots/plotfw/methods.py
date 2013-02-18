@@ -12,6 +12,9 @@ def th_sep(i, sep=','):
 	o.reverse()
 	return str(sep).join([str(o[0])] + map(lambda x: '%03d'%x, o[1:]))
 
+def filter_alnum(s):
+	return filter(lambda x: x in string.ascii_letters+string.digits, s)
+
 # Class to handle (concatenate) cuts
 class Cut:
 	def __init__(self, cutName, cutStr):
@@ -120,13 +123,16 @@ class SampleList:
 				print '> ', s
 
 class PlotParams(object):
-	def __init__(self, var, r, bins=20):
+	def __init__(self, var, r, bins=20, name=None):
 		self.var = var
 		self.r = r; self.hmin = r[0]; self.hmax = r[1]
 		self.bins=bins; self.hbins = bins
+		
+		self._name = name if name is not None else filter_alnum(var)
 	
 	def __repr__(self):
 		return self.var
 	
-	def getOFname(self):
-		return filter(lambda x: x in string.ascii_letters+string.digits, self.var)
+	def getName(self):
+		#return filter_alnum(self._name)
+		return self._name

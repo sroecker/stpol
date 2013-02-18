@@ -39,7 +39,7 @@ class StackedPlotCreator:
 	def _plot(self, pp):
 		print 'Plotting:', pp
 		
-		plotname = 'name_' + pp.var
+		plotname = 'plot_' + pp.getName()
 		
 		p = Plot(pp)
 		p.log.addParam('Variable', pp.var)
@@ -62,7 +62,7 @@ class StackedPlotCreator:
 		p.log.addProcess('data', ismc=False)
 		p.log.setVariable('data', 'crsec', self._data.luminosity)
 		p.log.setVariable('data', 'fname', self._data.fname)
-		p.dt_hist = ROOT.TH1F('hist_data', '', pp.hbins, pp.hmin, pp.hmax)
+		p.dt_hist = ROOT.TH1F('%s_hist_data'%plotname, '', pp.hbins, pp.hmin, pp.hmax)
 		p.dt_hist.SetMarkerStyle(20)
 		p.log.setVariable('data', 'filled', self._data.tree.Draw('%s>>hist_data'%pp.var, cut_string, 'goff'))
 		dt_int = p.dt_hist.Integral()
@@ -169,7 +169,7 @@ class Plot:
 	
 	def save(self, w=550, h=400, log=False, fmt='png', fout=None):
 		if fout is None:
-			fout = self._pp.getOFname()
+			fout = self._pp.getName()
 		
 		print 'Saving as:', fout+'.'+fmt
 		self.cvs = ROOT.TCanvas('tcvs_%s'%self._pp.var, self._pp.var, w, h)
