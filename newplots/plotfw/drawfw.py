@@ -5,6 +5,7 @@ import random
 import string
 import methods,params,plotlog
 from methods import Sample, MCSample, DataSample, SampleList, PlotParams
+from multiprocessing import Pool
 
 class SampleListGenerator:
 	"""Helper class that makes it easier to generate sample lists for MC.
@@ -54,10 +55,7 @@ class StackedPlotCreator:
 
 	def plot(self, cut, plots):
 		"""Method takes a cut and list of plots and then returns a list plot objects."""
-        from multiprocessing import Pool
-        p = Pool(10)
-
-        # Apply cuts
+		# Apply cuts
 		self._cutstr = cut.cutStr
 		logging.info('Cut string: %s', self._cutstr)
 		ROOT.gROOT.cd()
@@ -79,15 +77,17 @@ class StackedPlotCreator:
 			uniqueName = s.name + "_" + ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(4))
 			elist_name = "elist_"+uniqueName
 			nEvents = s.tree.Draw(">>%s"%elist_name, self._cutstr)
-			logging.debug("Done drawing {0} events into list {1}".format(nEvents, elistName))
-			elist = ROOT.gROOT.Get(elistName)
+			logging.debug("Done drawing {0} events into list {1}".format(nEvents, elist_name))
+			elist = ROOT.gROOT.Get(elist_name)
 			s.tree.SetEventList(elist)
 			
 			logging.debug('Cutting on `%s` took %f', s.name, time.clock()-t_cut)
 		logging.debug('Cutting all took %f', time.clock()-t_cuts)
 
-		# Plot
-		return p.map(self._plot, plots)
+		# Plot with multiprocessing
+		#p = Pool(10)
+		#return p.map(self._plot, plots)
+		return map(self._plot, plots)
 
 	def _plot(self, pp):
 		"""Internally used plotting method.
