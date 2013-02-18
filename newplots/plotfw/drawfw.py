@@ -54,7 +54,10 @@ class StackedPlotCreator:
 
 	def plot(self, cut, plots):
 		"""Method takes a cut and list of plots and then returns a list plot objects."""
-		# Apply cuts
+        from multiprocessing import Pool
+        p = Pool(10)
+
+        # Apply cuts
 		self._cutstr = cut.cutStr
 		logging.info('Cut string: %s', self._cutstr)
 		ROOT.gROOT.cd()
@@ -79,10 +82,18 @@ class StackedPlotCreator:
 		logging.debug('Cutting all took %f', time.clock()-t_cuts)
 
 		# Plot
+<<<<<<< Updated upstream
 		retplots = []
 		for p in plots:
 			mpo = self._plot(p)
 			retplots.append(mpo)
+=======
+		retplots = p.map(self._plot, plots)
+#		for p in plots:
+#			mpo = self._plot(p)
+#			#mpo.save(p.var, log=False)
+#			retplots.append(mpo)
+>>>>>>> Stashed changes
 		return retplots
 
 	def _plot(self, pp):
