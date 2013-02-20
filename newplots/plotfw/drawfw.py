@@ -246,7 +246,6 @@ class Plot:
 		self.log = plotlog.PlotLog()
 		self._pp = pp
 		self._cutstring = str(cutstring)
-		self.doLogY = False
 
 	def draw(self):
 		self.stack.Draw('')
@@ -264,7 +263,7 @@ class Plot:
 			self.cvs.SetRightMargin(0.3)
 
 		self.draw()
-		self.cvs.SetLogy(self.doLogY)
+		self.cvs.SetLogy(self._pp.doLogY)
 		self.cvs.SaveAs(ofname)
 
 		if log:
