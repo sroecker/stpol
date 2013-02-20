@@ -176,6 +176,7 @@ class StackedPlotCreator:
 
 			mc_hist = ROOT.TH1F(hist_name, '', pp.hbins, pp.hmin, pp.hmax)
 			mc_hist.SetFillColor(mc.color)
+			mc_hist.SetLineColor(mc.color)
 			mc_hist.SetLineWidth(0)
 			p.mc_hists.append(mc_hist)
 
@@ -259,6 +260,9 @@ class Plot:
 
 		logging.info('Saving as: %s', ofname)
 		self.cvs = ROOT.TCanvas('tcvs_%s'%fout, self._pp.var, w, h)
+		if self.legend.legpos == "R":
+			self.cvs.SetRightMargin(0.3)
+
 		self.draw()
 		self.cvs.SetLogy(self.doLogY)
 		self.cvs.SaveAs(ofname)
@@ -267,12 +271,19 @@ class Plot:
 			self.log.save(fout+'.pylog')
 
 class GroupLegend:
-	def __init__(self, groups, plot):
-		self.legend = ROOT.TLegend(0.80, 0.65, 1.00, 0.90)
+	legCoords = dict()
+	legCoords["R"] = [0.72, 0.12, 0.99, 0.90]
+
+	def __init__(self, groups, plot, legpos="R"):
+		self.legpos = legpos
+		coords = GroupLegend.legCoords[self.legpos]
+
+		self.legend = ROOT.TLegend(coords[0], coords[1], coords[2], coords[3])
+
 		for name, group in groups.items():
 			firstHistoName = groups[name].samples[0].name
 			self.legend.AddEntry(plot.mc_histMap[firstHistoName], name, "F")
-
+		self.legend.AddEntry(plot.dt_hist, "data")
 	def Draw(self, args=""):
 		return self.legend.Draw(args)
 
