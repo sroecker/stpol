@@ -1,7 +1,9 @@
 from plotfw import drawfw
 from plotfw.params import Cuts as cutlist
 import logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG, format="%(asctime)s;%(levelname)s;%(message)s")
+import pdb
+
 #from IPython.core.display import Image
 
 def initSamples():
@@ -14,8 +16,8 @@ def initSamples():
     datasmplsEle = [
         drawfw.DataSample('SingleEleA1_82_pb.root', 82, directory='/home/joosep/singletop/data/trees/Feb18/Iso'),
         drawfw.DataSample('SingleEleC1_495_pb.root', 495, directory='/home/joosep/singletop/data/trees/Feb18/Iso'),
-        drawfw.DataSample('SingleEleC2_6118_pb.root', 6118, directory='/home/joosep/singletop/data/trees/Feb18/Iso'),
-        drawfw.DataSample('SingleEleD_7234_pb.root', 7234, directory='/home/joosep/singletop/data/trees/Feb18/Iso')
+        #drawfw.DataSample('SingleEleC2_6118_pb.root', 6118, directory='/home/joosep/singletop/data/trees/Feb18/Iso'),
+        #drawfw.DataSample('SingleEleD_7234_pb.root', 7234, directory='/home/joosep/singletop/data/trees/Feb18/Iso')
 
     ]
     smplsgen = drawfw.SampleListGenerator('/home/joosep/singletop/data/trees/Feb18/Iso/')
@@ -24,9 +26,9 @@ def initSamples():
     smplsgen.add('t-channel', 'Tbar_t', 'Tbar_t.root')
     smplsgen.add('WJets', 'WJets', 'WJets_inclusive.root')
 
-    smplsgen.add('DYJets', 'DYJets', 'DYJets.root')
+    #smplsgen.add('DYJets', 'DYJets', 'DYJets.root')
 
-    smplsgen.add('QCD', 'QCDMu', 'QCDMu.root')
+    #smplsgen.add('QCD', 'QCDMu', 'QCDMu.root')
 
     smplsgen.add('QCD', 'QCD_Pt_20_30_BCtoE', 'QCD_Pt_20_30_BCtoE.root')
     smplsgen.add('QCD', 'QCD_Pt_30_80_BCtoE', 'QCD_Pt_30_80_BCtoE.root')
@@ -34,11 +36,11 @@ def initSamples():
     smplsgen.add('QCD', 'QCD_Pt_170_250_BCtoE', 'QCD_Pt_170_250_BCtoE.root')
     smplsgen.add('QCD', 'QCD_Pt_250_350_BCtoE', 'QCD_Pt_250_350_BCtoE.root')
 
-    smplsgen.add('QCD', 'QCD_Pt_20_30_EMEnriched', 'QCD_Pt_20_30_EMEnriched.root')
-    smplsgen.add('QCD', 'QCD_Pt_30_80_EMEnriched', 'QCD_Pt_30_80_EMEnriched.root')
-    smplsgen.add('QCD', 'QCD_Pt_80_170_EMEnriched', 'QCD_Pt_80_170_EMEnriched.root')
-    #FIXME: 170_250 is missing
-    smplsgen.add('QCD', 'QCD_Pt_350_EMEnriched', 'QCD_Pt_350_EMEnriched.root')
+    #smplsgen.add('QCD', 'QCD_Pt_20_30_EMEnriched', 'QCD_Pt_20_30_EMEnriched.root')
+    #smplsgen.add('QCD', 'QCD_Pt_30_80_EMEnriched', 'QCD_Pt_30_80_EMEnriched.root')
+    #smplsgen.add('QCD', 'QCD_Pt_80_170_EMEnriched', 'QCD_Pt_80_170_EMEnriched.root')
+    ##FIXME: 170_250 is missing
+    #smplsgen.add('QCD', 'QCD_Pt_350_EMEnriched', 'QCD_Pt_350_EMEnriched.root')
 
     smpls = smplsgen.getSampleList()
 
@@ -61,13 +63,18 @@ def initSamples():
 if __name__ == "__main__":
     datasmplsMu, datasmplsEle, smpls, pltcMu, pltcEle = initSamples()
 
-    plotpars = [drawfw.PlotParams('abs(_lowestBTagJet_0_Eta)', (0, 5))]
+    #plotpars = [drawfw.PlotParams('abs(_lowestBTagJet_0_Eta)', (0, 5))]
+    plotparsMu = [drawfw.PlotParams('_muonsWithIso_0_relIso', (0, 1))]
+    plotparsEle1 = [drawfw.PlotParams('_elesWithIso_0_relIso', (0, 1))]
+    plotparsEle2 = [drawfw.PlotParams('_elesWithIso_0_Pt', (0, 200)), drawfw.PlotParams('abs(_elesWithIso_0_Eta)', (0, 5))]
 
+    #psMu = pltcMu.plot(cutlist.initial, plotparsMu)
+    psEle1 = pltcEle.plot(cutlist.initial, plotparsEle1)
+    psEle2 = pltcEle.plot(cutlist.initial, plotparsEle2)
 
-    psMu = pltcMu.plot(cutlist.mu, plotpars)
-    psEle = pltcEle.plot(cutlist.ele, plotpars)
-
-    ps = psMu + psEle
+    #ps = psMu + psEle
+    ps = psEle1 + psEle2
 
     for p in ps:
+        p.doLogY = True
         p.save()
