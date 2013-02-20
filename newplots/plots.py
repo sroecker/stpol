@@ -66,12 +66,14 @@ if __name__ == "__main__":
     #plotpars = [drawfw.PlotParams('abs(_lowestBTagJet_0_Eta)', (0, 5))]
     plotparsMu1 = [drawfw.PlotParams('_muonsWithIso_0_relIso', (0, 1))]
     plotparsEle1 = [drawfw.PlotParams('_elesWithIso_0_relIso', (0, 1))]
-    jetPlots = [drawfw.PlotParams('_lightJetCount + _bJetCount', (1, 6), bins=6, plotTitle="N_{jets} in muon channel, data vs. MC")]
+    jetPlots = [drawfw.PlotParams('_lightJetCount + _bJetCount', (1, 6), bins=6, plotTitle="N_{jets} in muon channel")]
+    finalSelPlots = [drawfw.PlotParams('cosThetaLightJet_cosTheta', (-1, 1), plotTitle="#cos #theta_{lj} in muon channel, final selection")]
 
     psMu = []
     psEle = []
     #psMu = pltcMu.plot(cutlist.initial, plotparsMu1)
-    psMu += pltcMu.plot(cutlist.jets_OK*cutlist.mu, jetPlots)
+    #psMu += pltcMu.plot(cutlist.jets_OK*cutlist.mu, jetPlots)
+    psMu += pltcMu.plot(cutlist.finalMu, finalSelPlots)
     #psEle = pltcEle.plot(cutlist.initial, plotparsEle1)
     #psEle2 = pltcEle.plot(cutlist.initial, plotparsEle2)
 
