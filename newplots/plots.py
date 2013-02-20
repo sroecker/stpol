@@ -75,28 +75,38 @@ if __name__ == "__main__":
     psEle = []
     #Plot the lepton rel. iso distributions
     preLepPlotsMu = [
-        drawfw.PlotParams('_muonsWithIso_0_relIso', (0, 1), plotTitle="muon rel. iso. before ID", doLogY=True),
+        drawfw.PlotParams('_muonsWithIso_0_relIso', (0, 0.2), plotTitle="muon rel. iso. before ID", doLogY=True),
     ]
     preLepPlotsEle = [
-        drawfw.PlotParams('_elesWithIso_0_relIso', (0, 1), plotTitle="electron rel. iso. before ID", doLogY=True)
+        drawfw.PlotParams('_elesWithIso_0_relIso', (0, 0.2), plotTitle="electron rel. iso. before ID", doLogY=True)
     ]
-    psMu += pltcMu.plot(cutlist.initial, preLepPlotsMu)
-    psEle += pltcMu.plot(cutlist.initial, preLepPlotsEle)
+    #psMu += pltcMu.plot(cutlist.initial, preLepPlotsMu)
+    #psEle += pltcEle.plot(cutlist.initial, preLepPlotsEle)
 
     #Plot the NJet distribution in the muon channel
-    jetPlots = [drawfw.PlotParams('_lightJetCount + _bJetCount', (1, 6), bins=6, plotTitle="N_{jets} in muon channel")]
+    jetPlots = [drawfw.PlotParams('_lightJetCount + _bJetCount', (1, 6), bins=6, plotTitle="N_{jets}")]
     #psMu += pltcMu.plot(cutlist.jets_OK*cutlist.mu, jetPlots)
+
+    #Plot the NJet distribution in the muon channel
+    jetPlots = [drawfw.PlotParams('_lightJetCount + _bJetCount', (1, 6), bins=6, plotTitle="N_{jets}")]
+    #psMu += pltcMu.plot(cutlist.jets_OK*cutlist.mu, jetPlots, cutDescription="mu channel")
+
+    #MET/MtW distribution
+    metPlotsMu = [drawfw.PlotParams('_muAndMETMT', (0, 150), plotTitle="M_{tW}")]
+    metPlotsEle = [drawfw.PlotParams('_patMETs_0_Pt', (0, 150), plotTitle="MET")]
+    psMu += pltcMu.plot(cutlist.mu*cutlist.jets_2J, metPlotsMu, cutDescription="mu channel, 2J")
+    psEle += pltcEle.plot(cutlist.ele*cutlist.jets_2J, metPlotsEle, cutDescription="ele. channel, 2J")
 
     #Plot b-discriminator of highest and lowest b-tagged jet in the muon channel
     jetbDiscrPlots = [
-        drawfw.PlotParams('_highestBTagJet_0_bDiscriminator', (0, 10), plotTitle="TCHP discriminator of the b-jet in muon channel", doLogY=True),
-        drawfw.PlotParams('_lowestBTagJet_0_bDiscriminator', (0, 10), plotTitle="TCHP discriminator of the light jet muon channel", doLogY=True)
+        drawfw.PlotParams('_highestBTagJet_0_bDiscriminator', (0, 10), plotTitle="TCHP discriminator of the b-jet", doLogY=True),
+        drawfw.PlotParams('_lowestBTagJet_0_bDiscriminator', (0, 10), plotTitle="TCHP discriminator of the light jet", doLogY=True)
     ]
-    psMu += pltcMu.plot(cutlist.mu, jetbDiscrPlots)
+    psMu += pltcMu.plot(cutlist.mu*cutlist.jets_2J, jetbDiscrPlots, cutDescription="mu channel, 2J")
 
     #Plot cosTheta* etc in the final selection
     finalSelPlots = [drawfw.PlotParams('cosThetaLightJet_cosTheta', (-1, 1), plotTitle="#cos #theta_{lj} in muon channel, final selection")]
-    psMu += pltcMu.plot(cutlist.finalMu, finalSelPlots)
+    #psMu += pltcMu.plot(cutlist.finalMu, finalSelPlots, cutDescription="mu channel, 2J1T")
 
 
     #psEle = pltcEle.plot(cutlist.initial, plotparsEle1)
