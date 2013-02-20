@@ -85,30 +85,30 @@ if __name__ == "__main__":
     preLepPlotsEle = [
         drawfw.PlotParams('_elesWithIso_0_relIso', (0, 0.2), plotTitle="electron rel. iso. before ID", doLogY=True)
     ]
-    #psMu += pltcMu.plot(cutlist.initial, preLepPlotsMu)
-    #psEle += pltcEle.plot(cutlist.initial, preLepPlotsEle)
+    psMu += pltcMu.plot(cutlist.initial, preLepPlotsMu)
+    psEle += pltcEle.plot(cutlist.initial, preLepPlotsEle)
 
     #Plot the NJet distribution in the muon channel
     jetPlots = [drawfw.PlotParams('_lightJetCount + _bJetCount', (1, 6), bins=6, plotTitle="N_{jets}")]
-    #psMu += pltcMu.plot(cutlist.jets_OK*cutlist.mu, jetPlots)
+    psMu += pltcMu.plot(cutlist.jets_OK*cutlist.mu, jetPlots)
 
     #Plot the NJet distribution in the muon channel
     jetPlots = [drawfw.PlotParams('_lightJetCount + _bJetCount', (1, 6), bins=6, plotTitle="N_{jets}")]
-    #psMu += pltcMu.plot(cutlist.jets_OK*cutlist.mu, jetPlots, cutDescription="mu channel")
+    psMu += pltcMu.plot(cutlist.jets_OK*cutlist.mu, jetPlots, cutDescription="mu channel")
 
     #MET/MtW distribution
     metPlotsMu = [drawfw.PlotParams('_muAndMETMT', (0, 150), plotTitle="M_{tW}")]
     metPlotsEle = [drawfw.PlotParams('_patMETs_0_Pt', (0, 150), plotTitle="MET")]
-    #psMu += pltcMu.plot(cutlist.mu*cutlist.jets_2J, metPlotsMu, cutDescription="mu channel, 2J")
-    #psEle += pltcEle.plot(cutlist.ele*cutlist.jets_2J, metPlotsEle, cutDescription="ele. channel, 2J")
+    psMu += pltcMu.plot(cutlist.mu*cutlist.jets_2J, metPlotsMu, cutDescription="mu channel, 2J")
+    psEle += pltcEle.plot(cutlist.ele*cutlist.jets_2J, metPlotsEle, cutDescription="ele. channel, 2J")
 
     #Plot b-discriminator of highest and lowest b-tagged jet in the muon channel
     jetbDiscrPlots = [
         #drawfw.PlotParams('_highestBTagJet_0_bDiscriminator', (0, 10), plotTitle="TCHP discriminator of the b-jet", doLogY=True),
         #drawfw.PlotParams('_lowestBTagJet_0_bDiscriminator', (0, 10), plotTitle="TCHP discriminator of the light jet", doLogY=True),
     ]
-    #psMu += pltcMu.plot(cutlist.mu * cutlist.jets_2J, jetbDiscrPlots, cutDescription="mu channel, 2J")
-    #psEle += pltcMu.plot(cutlist.ele * cutlist.jets_2J, jetbDiscrPlots, cutDescription="ele channel, 2J")
+    psMu += pltcMu.plot(cutlist.mu * cutlist.jets_2J, jetbDiscrPlots, cutDescription="mu channel, 2J")
+    psEle += pltcMu.plot(cutlist.ele * cutlist.jets_2J, jetbDiscrPlots, cutDescription="ele channel, 2J")
 
     lightJetPlots = [
         drawfw.PlotParams('_lowestBTagJet_0_Eta', (-5, 5), plotTitle="#eta of the light jet"),
@@ -120,16 +120,10 @@ if __name__ == "__main__":
 
     #Plot cosTheta* etc in the final selection
     finalSelPlots = [drawfw.PlotParams('cosThetaLightJet_cosTheta', (-1, 1), plotTitle="#cos #theta_{lj} in muon channel, final selection")]
-    #psMu += pltcMu.plot(cutlist.finalMu, finalSelPlots, cutDescription="mu channel, 2J1T")
-    #psEle += pltcEle.plot(cutlist.finalEle, finalSelPlots, cutDescription="ele channel, 2J1T")
+    psMu += pltcMu.plot(cutlist.finalMu, finalSelPlots, cutDescription="mu channel, 2J1T")
+    psEle += pltcEle.plot(cutlist.finalEle, finalSelPlots, cutDescription="ele channel, 2J1T")
 
-
-    #psEle = pltcEle.plot(cutlist.initial, plotparsEle1)
-    #psEle2 = pltcEle.plot(cutlist.initial, plotparsEle2)
-
-    #ps = psMu + psEle
     ps = psMu + psEle
 
     for p in ps:
         p.save()
-
