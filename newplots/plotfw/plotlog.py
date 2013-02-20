@@ -7,7 +7,7 @@ class PlotLog:
 
 		self._variables = {}
 		self._processes = {}
-		self._params = []
+		self._params = {}
 
 		self._v = verbose
 
@@ -32,15 +32,18 @@ class PlotLog:
 			}
 
 	def addParam(self, title, value):
-		np = {
-			'title': title,
-			'value': value
-		}
-
-		self._params.append(np)
-
+#		np = {
+#			'title': title,
+#			'value': value
+#		}
+#
+#		self._params.append(np)
+		self._params[title] = value
 		if self._v:
 			logging.info('P `%s`: %s', title, value)
+
+	def getParam(self, par):
+		return self._params[par]
 
 	def setVariable(self, proc, var, value):
 		if proc not in self._processes:
