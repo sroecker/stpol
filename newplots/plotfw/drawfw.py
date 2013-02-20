@@ -54,7 +54,7 @@ class StackedPlotCreator:
 		else:
 			self._data = [datasamples]
 
-	def plot(self, cut, plots):
+	def plot(self, cut, plots, cutDescription=""):
 		"""Method takes a cut and list of plots and then returns a list plot objects."""
 		# Apply cuts
 		self._cutstr = cut.cutStr
@@ -87,7 +87,10 @@ class StackedPlotCreator:
 		logging.debug('Cutting all took %f', time.clock()-t_cuts)
 
 		# Plot
-		return map(self._plot, plots)
+		retplots = map(self._plot, plots)
+		for p in retplots:
+			p.setPlotTitle(cutDescription)
+		return retplots
 
 	def _plot(self, pp):
 		"""Internally used plotting method.
@@ -247,6 +250,12 @@ class Plot:
 		self._pp = pp
 		self._cutstring = str(cutstring)
 
+
+	def setPlotTitle(self, cutDescription=""):
+		self.cutDescription = cutDescription
+		self.plotTitle = self._pp.plotTitle + " in " + cutDescription
+
+
 	def draw(self):
 		self.stack.Draw('')
 		self.dt_hist.Draw('E1 SAME')
@@ -258,12 +267,13 @@ class Plot:
 		ofname = fout+'.'+fmt
 
 		logging.info('Saving as: %s', ofname)
-		self.cvs = ROOT.TCanvas('tcvs_%s'%fout, self._pp.plotTitle, w, h)
+		self.cvs = ROOT.TCanvas('tcvs_%s'%fout, self.plotTitle, w, h)
 		if self.legend.legpos == "R":
 			self.cvs.SetRightMargin(0.3)
 
 		self.draw()
 		self.cvs.SetLogy(self._pp.doLogY)
+		self.stack.SetTitle(self.plotTitle)
 		self.cvs.SaveAs(ofname)
 
 		if log:
@@ -286,7 +296,7 @@ class GroupLegend:
 		for name, group in groups.items():
 			firstHistoName = groups[name].samples[0].name
 			self.legend.AddEntry(plot.mc_histMap[firstHistoName], name, "F")
-		self.legend.AddEntry(plot.dt_hist, "#splitline{data}{L_{int.} = %.1f fb^{-1}}" % (plot.log.getParam("Luminosity")/1000.0))
+		self.legend.AddEntry(plot.dt_hist, "L_{int.} = %.1f fb^{-1}" % (plot.log.getParam("Luminosity")/1000.0))
 
 	def Draw(self, args=""):
 		return self.legend.Draw(args)
