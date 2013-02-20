@@ -104,10 +104,10 @@ class SampleGroup:
 	Useful to, for example, group samples in a stacked histogram.
 
 	"""
-	def __init__(self, name, color):
+	def __init__(self, name, color, prettyName=None):
 		self.name = name
 		self.color = color
-
+		self.prettyName = prettyName if prettyName is not None else name
 		self.samples = [] # initially there are no samples
 
 	def add(self, s):
