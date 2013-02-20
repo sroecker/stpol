@@ -269,7 +269,7 @@ class Plot:
 		logging.info('Saving as: %s', ofname)
 		self.cvs = ROOT.TCanvas('tcvs_%s'%fout, self.plotTitle, w, h)
 		if self.legend.legpos == "R":
-			self.cvs.SetRightMargin(0.3)
+			self.cvs.SetRightMargin(0.36)
 
 		self.draw()
 		self.cvs.SetLogy(self._pp.doLogY)
@@ -281,7 +281,7 @@ class Plot:
 
 class GroupLegend:
 	legCoords = dict()
-	legCoords["R"] = [0.72, 0.12, 0.99, 0.90]
+	legCoords["R"] = [0.65, 0.12, 0.99, 0.90]
 
 	def __init__(self, groups, plot, legpos="R"):
 		self.legpos = legpos
@@ -295,7 +295,7 @@ class GroupLegend:
 		self.legend.SetFillStyle(4000)
 		for name, group in groups.items():
 			firstHistoName = groups[name].samples[0].name
-			self.legend.AddEntry(plot.mc_histMap[firstHistoName], name, "F")
+			self.legend.AddEntry(plot.mc_histMap[firstHistoName], group.prettyName, "F")
 		self.legend.AddEntry(plot.dt_hist, "L_{int.} = %.1f fb^{-1}" % (plot.log.getParam("Luminosity")/1000.0))
 
 	def Draw(self, args=""):
