@@ -5,14 +5,18 @@ logging.basicConfig(level=logging.DEBUG)
 #from IPython.core.display import Image
 
 def initSamples():
-    from newplots.plotfw import drawfw
+    from plotfw import drawfw
     datasmplsMu = [
         drawfw.DataSample('SingleMuAB_5299_pb.root', 5299, name="SingleMuAB", directory='/home/joosep/singletop/data/trees/Feb18/Iso'),
         drawfw.DataSample('SingleMuC_6790_pb.root', 6790, name="SingleMuC", directory='/home/joosep/singletop/data/trees/Feb18/Iso'),
         drawfw.DataSample('SingleMuD_7274_pb.root', 7247, name="SingleMuD", directory='/home/joosep/singletop/data/trees/Feb18/Iso'),
     ]
     datasmplsEle = [
+        drawfw.DataSample('SingleEleA1_82_pb.root', 82, directory='/home/joosep/singletop/data/trees/Feb18/Iso'),
+        drawfw.DataSample('SingleEleC1_495_pb.root', 495, directory='/home/joosep/singletop/data/trees/Feb18/Iso'),
+        drawfw.DataSample('SingleEleC2_6118_pb.root', 6118, directory='/home/joosep/singletop/data/trees/Feb18/Iso'),
         drawfw.DataSample('SingleEleD_7234_pb.root', 7234, directory='/home/joosep/singletop/data/trees/Feb18/Iso')
+
     ]
     smplsgen = drawfw.SampleListGenerator('/home/joosep/singletop/data/trees/Feb18/Iso/')
     smplsgen.add('TTbar', 'TTbar', 'TTJets_MassiveBinDECAY.root')
@@ -55,7 +59,7 @@ def initSamples():
 
 
 if __name__ == "__main__":
-    datasmpls, smpls, pltcMu, pltcEle = initSamples()
+    datasmplsMu, datasmplsEle, smpls, pltcMu, pltcEle = initSamples()
 
     plotpars = [drawfw.PlotParams('abs(_lowestBTagJet_0_Eta)', (0, 5))]
 
@@ -64,3 +68,6 @@ if __name__ == "__main__":
     psEle = pltcEle.plot(cutlist.ele, plotpars)
 
     ps = psMu + psEle
+
+    for p in ps:
+        p.save()
