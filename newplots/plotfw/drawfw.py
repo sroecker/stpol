@@ -279,11 +279,14 @@ class GroupLegend:
 		coords = GroupLegend.legCoords[self.legpos]
 
 		self.legend = ROOT.TLegend(coords[0], coords[1], coords[2], coords[3])
-
+		self.legend.SetFillColor(ROOT.kWhite)
+		self.legend.SetLineColor(ROOT.kWhite)
+		self.legend.SetTextFont(133)
+		self.legend.SetTextSize(25)
+		self.legend.SetFillStyle(4000)
 		for name, group in groups.items():
 			firstHistoName = groups[name].samples[0].name
 			self.legend.AddEntry(plot.mc_histMap[firstHistoName], name, "F")
-		pdb.set_trace()
 		self.legend.AddEntry(plot.dt_hist, "#splitline{data}{L_{int.} = %.1f fb^{-1}}" % (plot.log.getParam("Luminosity")/1000.0))
 
 	def Draw(self, args=""):
