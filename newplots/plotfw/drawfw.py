@@ -251,7 +251,52 @@ class StackedPlotCreator(PlotCreator):
 		# return the plot object where it can be drawn etc.
 		return p
 
-class Plot:
+class ShapePlotCreator(PlotCreator):
+	"""Create plots for sample shape comparison."""
+	def __init__(self, samples):
+		self._slist = samples
+	
+	def plot(self, cut, plots):
+		"""Method takes a cut and list of plots and then returns a list plot objects."""
+		# Apply cuts
+		self._cutstr = cut.cutStr
+		logging.info('Cut string: %s', self._cutstr)
+		
+		smpls = self._slist.getSamples()
+		self._applyCuts(self._cutstr, smpls)
+
+		# Plot
+		return map(self._plot, plots)
+	
+	def _plot(self, pp):
+		p = ShapePlot(pp, cutstring=adler32(self._cutstr))
+		plotname = 'plot_cut%s_%s' % (adler32(self._cutstr), pp.getName())
+		logging.info('Plotting: %s', plotname)
+
+		# Create the histograms
+		for gk in self._slist.groups:
+			g = self._slist.groups[gk]
+			hist_name = 'hist_%s_%s'%(plotname, g.getName())
+			logging.info('Created histogram: %s', hist_name)
+
+			hist = ROOT.TH1F(hist_name, '', pp.hbins, pp.hmin, pp.hmax)
+			#p.mc_histMap[g.name] = hist
+
+			filled_tot = 0.0
+			for s in g.getSamples():
+				filled = s.tree.Draw('%s>>+%s'%(pp.var, hist_name), '', 'goff')
+				logging.info('Filled for `%s` by `%s`: %f', hist_name, s.name, filled)
+				filled_tot += filled
+			logging.info('Filled total for `%s` : %f', hist_name, filled_tot)
+			hist.Scale(1/filled_tot)
+			p.addHist(hist, g.name)
+
+		#dt_int = p.dt_hist.Integral()
+		p.legend = ShapeGroupLegend(self._slist.groups, p)
+		
+		return p
+
+class Plot(object):
 	"""This class represents a single plot and has the methods to export it.
 
 	This class puts everything together (different histograms, legend etc)
@@ -274,6 +319,9 @@ class Plot:
 		self.stack.Draw('')
 		self.dt_hist.Draw('E1 SAME')
 		self.legend.Draw('SAME')
+		
+		self.cvs.SetLogy(self._pp.doLogY)
+		self.stack.SetTitle(self.plotTitle)
 
 	def save(self, w=550, h=400, log=False, fmt='png', fout=None):
 		if fout is None:
@@ -281,17 +329,32 @@ class Plot:
 		ofname = fout+'.'+fmt
 
 		logging.info('Saving as: %s', ofname)
-		self.cvs = ROOT.TCanvas('tcvs_%s'%fout, self.plotTitle, w, h)
+		self.cvs = ROOT.TCanvas('tcvs_%s'%fout, '', w, h)
 		if self.legend.legpos == "R":
 			self.cvs.SetRightMargin(0.36)
 
 		self.draw()
-		self.cvs.SetLogy(self._pp.doLogY)
-		self.stack.SetTitle(self.plotTitle)
 		self.cvs.SaveAs(ofname)
 
 		if log:
 			self.log.save(fout+'.pylog')
+
+class ShapePlot(Plot):
+	def __init__(self, pp, cutstring=None):
+		super(ShapePlot,self).__init__(pp, cutstring)
+		#self._hists = []
+		self._hists = {}
+
+	def addHist(self, h, name):
+		#self._hists.append(h)
+		self._hists[name] = h
+
+	def draw(self):
+		first = True
+		for hk,h in self._hists.items():
+			h.Draw('' if first else 'SAME')
+			first = False
+		self.legend.Draw('SAME')
 
 class GroupLegend:
 	legCoords = dict()
@@ -314,3 +377,13 @@ class GroupLegend:
 
 	def Draw(self, args=""):
 		return self.legend.Draw(args)
+
+class ShapeGroupLegend(GroupLegend):
+	def __init__(self, groups, plot, legpos="R"):
+		self.legpos = legpos
+		coords = GroupLegend.legCoords[self.legpos]
+
+		self.legend = ROOT.TLegend(coords[0], coords[1], coords[2], coords[3])
+
+		for name,hist in plot._hists.items():
+			self.legend.AddEntry(hist, name, "F")
