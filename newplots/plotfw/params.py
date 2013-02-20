@@ -74,7 +74,8 @@ class Cuts:
 
 	jets_1LJ = Cut("1LJ", "_lightJetCount==1")
 	jets_OK = Cut("jetsOK", "_lightJetCount>=0 && _bJetCount>=0")
-	jets_2plusJ = Cut("1plusLJ", "_lightJetCount>=0 && _bJetCount>=0 && (_lightJetCount + _bJetCount)>=2")
+	jets_2plusJ = jets_OK * Cut("2plusLJ", "(_lightJetCount + _bJetCount)>=2")
+	jets_2J = jets_OK * Cut("2J", "(_lightJetCount + _bJetCount)==2")
 	jets_2J1T = Cut("2J1T", "_lightJetCount==1 && _bJetCount==1")
 	jets_2J0T = Cut("2J0T", "_lightJetCount==2 && _bJetCount==0")
 	jets_3J1T = Cut("3J1T", "_lightJetCount==2 && _bJetCount==1")
