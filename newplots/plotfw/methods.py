@@ -122,6 +122,9 @@ class SampleGroup:
 	def getColor(self):
 		return self.color
 
+	def getSamples(self):
+		return self.samples
+
 class SampleList:
 	"""List of all sample groups"""
 	def __init__(self):
@@ -139,6 +142,12 @@ class SampleList:
 			g = self.groups[gk]
 			for s in g.samples:
 				print '> ', s
+
+	def getSamples(self):
+		samples = []
+		for gk in self.groups:
+			samples += self.groups[gk].getSamples()
+		return samples
 
 # Plot parameters
 class PlotParams(object):
