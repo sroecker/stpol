@@ -4,7 +4,8 @@ from zlib import adler32
 import random
 import string
 import methods,params,plotlog
-from methods import Sample, MCSample, DataSample, SampleList, PlotParams
+from methods import Sample, MCSample, DataSample, SampleGroup, SampleList
+from methods import PlotParams
 
 import pdb
 
@@ -37,11 +38,40 @@ class SampleListGenerator:
 	def getSampleList(self):
 		return self._samplelist
 
-class StackedPlotCreator:
+class PlotCreator(object):
+	def __init__(self):
+		self._hehe = 0
+	
+	def _applyCut(self, cutstr, s, reset=True):
+		t_cut = time.clock()
+		logging.info('Cutting on `%s`', s.name)
+		t_cut = time.clock()
+
+		if reset:
+			s.tree.SetEventList(0) # reset TTree
+			#s.tree.SetEntryList(0)
+
+		logging.debug("Drawing event list for sample {0} with cut {1}".format(s.name, cutstr))
+		uniqueName = s.name + "_" + ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(4))
+		elist_name = "elist_"+uniqueName
+		nEvents = s.tree.Draw(">>%s"%elist_name, cutstr)
+		logging.debug("Done drawing {0} events into list {1}".format(nEvents, elist_name))
+		elist = ROOT.gROOT.Get(elist_name)
+		s.tree.SetEventList(elist)
+
+		logging.debug('Cutting on `%s` took %f', s.name, time.clock()-t_cut)
+	
+	def _applyCuts(self, cutstr, smpls, reset=True):
+		t_cut = time.clock()
+		map(lambda s: self._applyCut(cutstr, s, reset=reset), smpls)
+		logging.debug('Cutting on all took %f', time.clock()-t_cut)
+		
+
+class StackedPlotCreator(PlotCreator):
 	"""Class that is used to create stacked plots
 
 	Initalizer takes the data and MC samples which are then plotted.
-	datasamples is either of type DataSample or [DataSample].
+	datasamples is either of type DataSample, [DataSample] or SampleGroup.
 	mcsamples has to be of type SampleList
 
 	"""
@@ -49,10 +79,17 @@ class StackedPlotCreator:
 		self._mcs = mcsamples
 
 		# if a single data sample is given it does not have to be a list
-		if isinstance(datasamples, list):
+		if isinstance(datasamples, SampleGroup):
 			self._data = datasamples
+		elif isinstance(datasamples, list):
+			self._data = SampleGroup('data', ROOT.kBlack)
+			map(self._data.add, datasamples)
+		elif isinstance(datasamples, DataSample):
+			self._data = SampleGroup('data', ROOT.kBlack)
+			self._data.add(datasamples)
 		else:
-			self._data = [datasamples]
+			logging.error('Bad type for `datasamples`!')
+			
 
 	def plot(self, cut, plots, cutDescription=""):
 		"""Method takes a cut and list of plots and then returns a list plot objects."""
@@ -60,31 +97,9 @@ class StackedPlotCreator:
 		self._cutstr = cut.cutStr
 		logging.info('Cut string: %s', self._cutstr)
 		ROOT.gROOT.cd()
-
-		smpls_mc = []
-		for gk in self._mcs.groups:
-			smpls_mc += self._mcs.groups[gk].samples
-		smpls = smpls_mc + self._data
-
-		t_cuts = time.clock()
-		for s in smpls:
-			t_cut = time.clock()
-			logging.info('Cutting on `%s`', s.name)
-			t_cut = time.clock()
-
-			s.tree.SetEventList(0) # reset TTree
-			#s.tree.SetEntryList(0)
-
-			logging.debug("Drawing event list for sample {0} with cut {1}".format(s.name, self._cutstr))
-			uniqueName = s.name + "_" + ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(4))
-			elist_name = "elist_"+uniqueName
-			nEvents = s.tree.Draw(">>%s"%elist_name, self._cutstr)
-			logging.debug("Done drawing {0} events into list {1}".format(nEvents, elist_name))
-			elist = ROOT.gROOT.Get(elist_name)
-			s.tree.SetEventList(elist)
-
-			logging.debug('Cutting on `%s` took %f', s.name, time.clock()-t_cut)
-		logging.debug('Cutting all took %f', time.clock()-t_cuts)
+		
+		smpls = self._mcs.getSamples() + self._data.getSamples()
+		self._applyCuts(self._cutstr, smpls)
 
 		# Plot
 		retplots = map(self._plot, plots)
@@ -128,7 +143,7 @@ class StackedPlotCreator:
 		dt_hist_name = '%s_hist_data'%plotname
 		p.dt_hist = ROOT.TH1F(dt_hist_name, '', pp.hbins, pp.hmin, pp.hmax)
 		p.dt_hist.SetMarkerStyle(20)
-		for d in self._data:
+		for d in self._data.getSamples():
 			dt_filled = d.tree.Draw('%s>>+%s'%(pp.var, dt_hist_name), cut_string, 'goff')
 			total_luminosity += d.luminosity
 			dname = d.name
