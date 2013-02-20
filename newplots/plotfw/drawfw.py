@@ -7,8 +7,6 @@ import methods,params,plotlog
 from methods import Sample, MCSample, DataSample, SampleGroup, SampleList
 from methods import PlotParams
 
-import pdb
-
 class SampleListGenerator:
 	"""Helper class that makes it easier to generate sample lists for MC.
 
