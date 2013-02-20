@@ -38,9 +38,11 @@ class SampleListGenerator:
 
 class PlotCreator(object):
 	def __init__(self):
-		self._hehe = 0
+		pass
 	
 	def _applyCut(self, cutstr, s, reset=True):
+		ROOT.gROOT.cd()
+		
 		t_cut = time.clock()
 		logging.info('Cutting on `%s`', s.name)
 		t_cut = time.clock()
@@ -94,7 +96,6 @@ class StackedPlotCreator(PlotCreator):
 		# Apply cuts
 		self._cutstr = cut.cutStr
 		logging.info('Cut string: %s', self._cutstr)
-		ROOT.gROOT.cd()
 		
 		smpls = self._mcs.getSamples() + self._data.getSamples()
 		self._applyCuts(self._cutstr, smpls)
