@@ -69,17 +69,36 @@ def initSamples():
 if __name__ == "__main__":
     datasmplsMu, datasmplsEle, smpls, pltcMu, pltcEle = initSamples()
 
-    #plotpars = [drawfw.PlotParams('abs(_lowestBTagJet_0_Eta)', (0, 5))]
-    plotparsMu1 = [drawfw.PlotParams('_muonsWithIso_0_relIso', (0, 1))]
-    plotparsEle1 = [drawfw.PlotParams('_elesWithIso_0_relIso', (0, 1))]
-    jetPlots = [drawfw.PlotParams('_lightJetCount + _bJetCount', (1, 6), bins=6, plotTitle="N_{jets} in muon channel")]
-    finalSelPlots = [drawfw.PlotParams('cosThetaLightJet_cosTheta', (-1, 1), plotTitle="#cos #theta_{lj} in muon channel, final selection")]
+
 
     psMu = []
     psEle = []
-    #psMu = pltcMu.plot(cutlist.initial, plotparsMu1)
+    #Plot the lepton rel. iso distributions
+    preLepPlotsMu = [
+        drawfw.PlotParams('_muonsWithIso_0_relIso', (0, 1), plotTitle="muon rel. iso. before ID", doLogY=True),
+    ]
+    preLepPlotsEle = [
+        drawfw.PlotParams('_elesWithIso_0_relIso', (0, 1), plotTitle="electron rel. iso. before ID", doLogY=True)
+    ]
+    psMu += pltcMu.plot(cutlist.initial, preLepPlotsMu)
+    psEle += pltcMu.plot(cutlist.initial, preLepPlotsEle)
+
+    #Plot the NJet distribution in the muon channel
+    jetPlots = [drawfw.PlotParams('_lightJetCount + _bJetCount', (1, 6), bins=6, plotTitle="N_{jets} in muon channel")]
     #psMu += pltcMu.plot(cutlist.jets_OK*cutlist.mu, jetPlots)
+
+    #Plot b-discriminator of highest and lowest b-tagged jet in the muon channel
+    jetbDiscrPlots = [
+        drawfw.PlotParams('_highestBTagJet_0_bDiscriminator', (0, 10), plotTitle="TCHP discriminator of the b-jet in muon channel", doLogY=True),
+        drawfw.PlotParams('_lowestBTagJet_0_bDiscriminator', (0, 10), plotTitle="TCHP discriminator of the light jet muon channel", doLogY=True)
+    ]
+    psMu += pltcMu.plot(cutlist.mu, jetbDiscrPlots)
+
+    #Plot cosTheta* etc in the final selection
+    finalSelPlots = [drawfw.PlotParams('cosThetaLightJet_cosTheta', (-1, 1), plotTitle="#cos #theta_{lj} in muon channel, final selection")]
     psMu += pltcMu.plot(cutlist.finalMu, finalSelPlots)
+
+
     #psEle = pltcEle.plot(cutlist.initial, plotparsEle1)
     #psEle2 = pltcEle.plot(cutlist.initial, plotparsEle2)
 
