@@ -259,7 +259,7 @@ class Plot:
 		ofname = fout+'.'+fmt
 
 		logging.info('Saving as: %s', ofname)
-		self.cvs = ROOT.TCanvas('tcvs_%s'%fout, self._pp.var, w, h)
+		self.cvs = ROOT.TCanvas('tcvs_%s'%fout, self._pp.plotTitle, w, h)
 		if self.legend.legpos == "R":
 			self.cvs.SetRightMargin(0.3)
 
@@ -283,7 +283,8 @@ class GroupLegend:
 		for name, group in groups.items():
 			firstHistoName = groups[name].samples[0].name
 			self.legend.AddEntry(plot.mc_histMap[firstHistoName], name, "F")
-		self.legend.AddEntry(plot.dt_hist, "data")
+		pdb.set_trace()
+		self.legend.AddEntry(plot.dt_hist, "#splitline{data}{L_{int.} = %.1f fb^{-1}}" % (plot.log.getParam("Luminosity")/1000.0))
+
 	def Draw(self, args=""):
 		return self.legend.Draw(args)
-
