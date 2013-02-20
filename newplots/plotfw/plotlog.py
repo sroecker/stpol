@@ -19,7 +19,7 @@ class PlotLog:
 			print 'Cuts applied:'
 			for c in self.cuts:
 				print '>', c
-			logging.info('Generated cutstring: %s', self.cutstring)
+			logging.info('Generated cutstring: "%s"', self.cutstring)
 
 	def addProcess(self, name, title=None, ismc=True):
 		if name in self._processes:
