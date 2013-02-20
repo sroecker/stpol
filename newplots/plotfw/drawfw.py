@@ -325,7 +325,7 @@ class Plot(object):
 
 	def save(self, w=550, h=400, log=False, fmt='png', fout=None):
 		if fout is None:
-			fout = self._pp.getName() + ('_'+self._cutstring if self._cutstring is not None else '')
+			fout = self.getName()
 		ofname = fout+'.'+fmt
 
 		logging.info('Saving as: %s', ofname)
@@ -338,6 +338,9 @@ class Plot(object):
 
 		if log:
 			self.log.save(fout+'.pylog')
+
+	def getName(self):
+		return self._pp.getName() + ('_'+self._cutstring if self._cutstring is not None else '')
 
 class ShapePlot(Plot):
 	def __init__(self, pp, cutstring=None):
