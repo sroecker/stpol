@@ -22,11 +22,17 @@ def initSamples():
     ]
     smplsgen = drawfw.SampleListGenerator('/home/joosep/singletop/data/trees/Feb18/Iso/')
     smplsgen.add('TTbar', 'TTbar', 'TTJets_MassiveBinDECAY.root')
+
     smplsgen.add('t-channel', 'T_t', 'T_t.root')
     smplsgen.add('t-channel', 'Tbar_t', 'Tbar_t.root')
+    smplsgen.add('s-channel', 'T_s', 'T_s.root')
+    smplsgen.add('s-channel', 'Tbar_s', 'Tbar_s.root')
+    smplsgen.add('tW-channel', 'T_tW', 'T_tW.root')
+    smplsgen.add('tW-channel', 'Tbar_tW', 'Tbar_tW.root')
+
     smplsgen.add('WJets', 'WJets', 'WJets_inclusive.root')
 
-    #smplsgen.add('DYJets', 'DYJets', 'DYJets.root')
+    smplsgen.add('DYJets', 'DYJets', 'DYJets.root')
 
     smplsgen.add('QCD', 'QCDMu', 'QCDMu.root')
 
@@ -36,11 +42,11 @@ def initSamples():
     smplsgen.add('QCD', 'QCD_Pt_170_250_BCtoE', 'QCD_Pt_170_250_BCtoE.root')
     smplsgen.add('QCD', 'QCD_Pt_250_350_BCtoE', 'QCD_Pt_250_350_BCtoE.root')
 
-    #smplsgen.add('QCD', 'QCD_Pt_20_30_EMEnriched', 'QCD_Pt_20_30_EMEnriched.root')
-    #smplsgen.add('QCD', 'QCD_Pt_30_80_EMEnriched', 'QCD_Pt_30_80_EMEnriched.root')
-    #smplsgen.add('QCD', 'QCD_Pt_80_170_EMEnriched', 'QCD_Pt_80_170_EMEnriched.root')
+    smplsgen.add('QCD', 'QCD_Pt_20_30_EMEnriched', 'QCD_Pt_20_30_EMEnriched.root')
+    smplsgen.add('QCD', 'QCD_Pt_30_80_EMEnriched', 'QCD_Pt_30_80_EMEnriched.root')
+    smplsgen.add('QCD', 'QCD_Pt_80_170_EMEnriched', 'QCD_Pt_80_170_EMEnriched.root')
     ##FIXME: 170_250 is missing
-    #smplsgen.add('QCD', 'QCD_Pt_350_EMEnriched', 'QCD_Pt_350_EMEnriched.root')
+    smplsgen.add('QCD', 'QCD_Pt_350_EMEnriched', 'QCD_Pt_350_EMEnriched.root')
 
     smpls = smplsgen.getSampleList()
 
@@ -81,6 +87,5 @@ if __name__ == "__main__":
     ps = psMu + psEle
 
     for p in ps:
-        p.doLogY = True
         p.save()
 
