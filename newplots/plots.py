@@ -10,8 +10,8 @@ def initSamples():
     from plotfw import drawfw
     datasmplsMu = [
         drawfw.DataSample('SingleMuAB_5299_pb.root', 5299, name="SingleMuAB", directory='/home/joosep/singletop/data/trees/Feb18/Iso'),
-        drawfw.DataSample('SingleMuC_6790_pb.root', 6790, name="SingleMuC", directory='/home/joosep/singletop/data/trees/Feb18/Iso'),
-        drawfw.DataSample('SingleMuD_7274_pb.root', 7247, name="SingleMuD", directory='/home/joosep/singletop/data/trees/Feb18/Iso'),
+        #drawfw.DataSample('SingleMuC_6790_pb.root', 6790, name="SingleMuC", directory='/home/joosep/singletop/data/trees/Feb18/Iso'),
+        #drawfw.DataSample('SingleMuD_7274_pb.root', 7247, name="SingleMuD", directory='/home/joosep/singletop/data/trees/Feb18/Iso'),
     ]
     datasmplsEle = [
         drawfw.DataSample('SingleEleA1_82_pb.root', 82, directory='/home/joosep/singletop/data/trees/Feb18/Iso'),
@@ -28,7 +28,7 @@ def initSamples():
 
     #smplsgen.add('DYJets', 'DYJets', 'DYJets.root')
 
-    #smplsgen.add('QCD', 'QCDMu', 'QCDMu.root')
+    smplsgen.add('QCD', 'QCDMu', 'QCDMu.root')
 
     smplsgen.add('QCD', 'QCD_Pt_20_30_BCtoE', 'QCD_Pt_20_30_BCtoE.root')
     smplsgen.add('QCD', 'QCD_Pt_30_80_BCtoE', 'QCD_Pt_30_80_BCtoE.root')
@@ -59,21 +59,22 @@ def initSamples():
 
     return datasmplsMu, datasmplsEle, smpls, pltcMu, pltcEle
 
-
+#TODO: normalized QCD vs. signal comparison, data vs. MC for lepton relIso
 if __name__ == "__main__":
     datasmplsMu, datasmplsEle, smpls, pltcMu, pltcEle = initSamples()
 
     #plotpars = [drawfw.PlotParams('abs(_lowestBTagJet_0_Eta)', (0, 5))]
-    plotparsMu = [drawfw.PlotParams('_muonsWithIso_0_relIso', (0, 1))]
+    plotparsMu1 = [drawfw.PlotParams('_muonsWithIso_0_relIso', (0, 1))]
     plotparsEle1 = [drawfw.PlotParams('_elesWithIso_0_relIso', (0, 1))]
-    plotparsEle2 = [drawfw.PlotParams('_elesWithIso_0_Pt', (0, 200)), drawfw.PlotParams('abs(_elesWithIso_0_Eta)', (0, 5))]
+    jetPlots = [drawfw.PlotParams('_lightJetCount + _bJetCount', (0, 5))]
 
-    #psMu = pltcMu.plot(cutlist.initial, plotparsMu)
-    psEle1 = pltcEle.plot(cutlist.initial, plotparsEle1)
-    psEle2 = pltcEle.plot(cutlist.initial, plotparsEle2)
+    psMu = pltcMu.plot(cutlist.initial, plotparsMu1)
+    psMu += pltcMu.plot(cutlist.jetsOK*cutlist.mu, jetPlots)
+    psEle = pltcEle.plot(cutlist.initial, plotparsEle1)
+    #psEle2 = pltcEle.plot(cutlist.initial, plotparsEle2)
 
     #ps = psMu + psEle
-    ps = psEle1 + psEle2
+    ps = psMu + psEle
 
     for p in ps:
         p.doLogY = True
