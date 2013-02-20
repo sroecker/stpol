@@ -6,6 +6,8 @@ import string
 import methods,params,plotlog
 from methods import Sample, MCSample, DataSample, SampleList, PlotParams
 
+import pdb
+
 class SampleListGenerator:
 	"""Helper class that makes it easier to generate sample lists for MC.
 
@@ -112,7 +114,7 @@ class StackedPlotCreator:
 		p.log.setCuts([''], cut_string)
 
 		# Create the legend
-		p.legend = ROOT.TLegend(0.80, 0.65, 1.00, 0.90)
+		#p.legend = ROOT.TLegend(0.80, 0.65, 1.00, 0.90)
 
 		# Create log variables
 		p.log.addVariable('filled', 'Events filled')
@@ -165,6 +167,7 @@ class StackedPlotCreator:
 
 		mc_int = 0
 		p.mc_hists = []
+		p.mc_histMap = dict()
 		for mc in temp_mcs:
 			p.log.addProcess(mc.name)
 			p.log.setVariable(mc.name, 'crsec', mc.crsec)
@@ -176,6 +179,8 @@ class StackedPlotCreator:
 			mc_hist.SetLineWidth(0)
 			p.mc_hists.append(mc_hist)
 
+			p.mc_histMap[mc.name] = mc_hist
+
 			mc_filled = mc.tree.Draw('%s>>%s'%(pp.var,hist_name), cut_string, 'goff')
 			p.log.setVariable(mc.name, 'filled', mc_filled)
 
@@ -185,7 +190,7 @@ class StackedPlotCreator:
 			scale_factor = float(expected_events)/float(total_events)
 			mc_hist.Scale(scale_factor)
 
-			p.legend.AddEntry(mc_hist, mc.name, 'F')
+			#p.legend.AddEntry(mc_hist, mc.name, 'F')
 
 			mc_int += mc_hist.Integral()
 
@@ -219,6 +224,8 @@ class StackedPlotCreator:
 		for ht in p.mc_hists:
 			p.stack.Add(ht)
 
+		p.legend = GroupLegend(self._mcs.groups, p)
+
 		p.stack.SetMaximum(1.1*max(data_max, mc_max))
 		#p.stack.GetXaxis().SetTitle('This is the x-axis title. (GeV)')
 		#p.stack.GetYaxis().SetTitle('This is the Y-axis title. (GeV)')
@@ -238,6 +245,7 @@ class Plot:
 		self.log = plotlog.PlotLog()
 		self._pp = pp
 		self._cutstring = str(cutstring)
+		self.doLogY = False
 
 	def draw(self):
 		self.stack.Draw('')
@@ -252,7 +260,19 @@ class Plot:
 		logging.info('Saving as: %s', ofname)
 		self.cvs = ROOT.TCanvas('tcvs_%s'%fout, self._pp.var, w, h)
 		self.draw()
+		self.cvs.SetLogy(self.doLogY)
 		self.cvs.SaveAs(ofname)
 
 		if log:
 			self.log.save(fout+'.pylog')
+
+class GroupLegend:
+	def __init__(self, groups, plot):
+		self.legend = ROOT.TLegend(0.80, 0.65, 1.00, 0.90)
+		for name, group in groups.items():
+			firstHistoName = groups[name].samples[0].name
+			self.legend.AddEntry(plot.mc_histMap[firstHistoName], name, "F")
+
+	def Draw(self, args=""):
+		return self.legend.Draw(args)
+
