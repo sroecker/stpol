@@ -224,7 +224,7 @@ class StackedPlotCreator(PlotCreator):
 		'''
 
 		# Kolmorogov test
-		basemc = ROOT.TH1F('hist_mc_ktbase', '', pp.hbins, pp.hmin, pp.hmax)
+		basemc = ROOT.TH1F('hist_mc_ktbase_%s'%plotname, '', pp.hbins, pp.hmin, pp.hmax)
 		for mc_hist in p.mc_hists:
 			basemc.Add(mc_hist)
 
@@ -323,7 +323,7 @@ class Plot(object):
 		self.cvs.SetLogy(self._pp.doLogY)
 		self.stack.SetTitle(self.plotTitle)
 
-	def save(self, w=550, h=400, log=False, fmt='png', fout=None):
+	def save(self, w=650, h=400, log=False, fmt='png', fout=None):
 		if fout is None:
 			fout = self.getName()
 		ofname = fout+'.'+fmt
@@ -331,7 +331,7 @@ class Plot(object):
 		logging.info('Saving as: %s', ofname)
 		self.cvs = ROOT.TCanvas('tcvs_%s'%fout, '', w, h)
 		if self.legend.legpos == "R":
-			self.cvs.SetRightMargin(0.36)
+			self.cvs.SetRightMargin(0.26)
 
 		self.draw()
 		self.cvs.SaveAs(ofname)
@@ -364,7 +364,7 @@ class ShapePlot(Plot):
 
 class GroupLegend:
 	legCoords = dict()
-	legCoords["R"] = [0.65, 0.12, 0.99, 0.90]
+	legCoords["R"] = [0.75, 0.25, 0.99, 0.75]
 
 	def __init__(self, groups, plot, legpos="R"):
 		self.legpos = legpos
