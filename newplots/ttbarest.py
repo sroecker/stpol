@@ -26,4 +26,4 @@ for ck,c in cutlist.items():
 	print 'Cut:', ck
 	ps = pltcMu.plot(c, plots)
 	for p in ps:
-		p.save(fout = 'plots_ttbar/ttbar_%s_%s'%(ck,p.getName()), fmt='pdf')
+		p.save(fout = 'plots_ttbar/ttbar_%s_%s'%(ck,p.getName()), fmt='pdf', log=True)

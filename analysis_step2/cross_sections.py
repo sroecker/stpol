@@ -10,8 +10,15 @@ xs = {
 	, "TTbar": 234
 	, "WJets": 36257.2
 
-	#FIXME: exlusive sample branching ratio
-	, "W1Jets": 36257.2
+	#FIXME: ttbar branching ratio
+	, "TTJets_SemiLept": (4.0/9.0) * 234
+	, "TTJets_FullLept": (1.0/9.0) * 234
+
+	#FIXME: exclusive sample branching ratio
+	, "W1Jets": 0.25 * 36257.2
+	, "W2Jets": 0.25 * 36257.2
+	, "W3Jets": 0.25 * 36257.2
+	, "W4Jets": 0.25 * 36257.2
 
 	, "DYJets": 3503.71
 	, "WW": 54.838
