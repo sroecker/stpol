@@ -31,7 +31,7 @@ smplsgen.add('DYJets', 'DYJets', 'DYJets.root')
 
 smplsgen.add('diboson', 'WW', 'WW.root')
 smplsgen.add('diboson', 'WZ', 'WZ.root')
-##FIXME: ZZ is missing
+smplsgen.add('diboson', 'ZZ', 'ZZ.root')
 
 smplsgen.add('QCD', 'QCDMu', 'QCDMu.root')
 
