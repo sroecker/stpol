@@ -1,3 +1,14 @@
+# Plots
 *.png
 *.pdf
 *.eps
+
+# Latex output files
+*.aux
+*.nav
+*.out
+*.snm
+*.toc
+
+# Plot log file
+*.pylog
