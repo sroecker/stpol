@@ -152,7 +152,7 @@ class SampleList:
 # Plot parameters
 class PlotParams(object):
 	"""Class that holds the information of what and how to plot."""
-	def __init__(self, var, r, bins=20, name=None, plotTitle=None, doLogY=False):
+	def __init__(self, var, r, bins=20, name=None, plotTitle=None, doLogY=False, ofname=None):
 		self.var = var
 		self.r = r; self.hmin = r[0]; self.hmax = r[1]
 		self.bins=bins; self.hbins = bins
@@ -161,6 +161,7 @@ class PlotParams(object):
 			self.plotTitle = self.var
 		self._name = name if name is not None else filter_alnum(var)
 		self.doLogY = doLogY
+		self._ofname = ofname
 
 	def __repr__(self):
 		return self.var

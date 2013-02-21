@@ -340,7 +340,10 @@ class Plot(object):
 			self.log.save(fout+'.pylog')
 
 	def getName(self):
-		return self._pp.getName() + ('_'+self._cutstring if self._cutstring is not None else '')
+		if self._pp._ofname is not None:
+			return self._pp._ofname
+		else:
+			return self._pp.getName() + ('_'+self._cutstring if self._cutstring is not None else '')
 
 class ShapePlot(Plot):
 	def __init__(self, pp, cutstring=None):
