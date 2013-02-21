@@ -13,7 +13,6 @@ xs = {
 	#FIXME: ttbar branching ratio
 	, "TTJets_SemiLept": (4.0/9.0) * xs['TTbar']
 	, "TTJets_FullLept": (1.0/9.0) * xs['TTbar']
-	, "TTJets_MassBin":  (4.0/9.0) * xs['TTbar']
 
 	#FIXME: exclusive sample branching ratio
 	, "W1Jets": 0.25 * xs['WJets']
