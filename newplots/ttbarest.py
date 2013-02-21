@@ -4,21 +4,26 @@ from plotfw.params import Cuts as cuts
 import logging
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s;%(levelname)s;%(message)s")
 
-# 3J1T cut
-cut = cuts.mu * cuts.mlnu * cuts.jets_3J1T * cuts.jetPt * cuts.jetRMS * cuts.etaLJ * cuts.jetEta * cuts.MTmu
+# Cuts
+cut = cuts.mu * cuts.mlnu * cuts.jetPt * cuts.jetRMS * cuts.etaLJ * cuts.jetEta * cuts.MTmu
+cutlist = {
+	'3J1T': cut * cuts.jets_3J1T,
+	'3J2T': cut * cuts.jets_3J2T,
+}
 
 # Set plots
 plots = [
-	drawfw.PlotParams('_recoTop_0_Mass', (130, 220), bins=9),
-	drawfw.PlotParams('abs(_lowestBTagJet_0_Eta)', (2.5, 4.5)),
+	drawfw.PlotParams('_recoTop_0_Mass', (130, 220), bins=9, ofname='topmass'),
+	drawfw.PlotParams('abs(_lowestBTagJet_0_Eta)', (2.5, 4.5), ofname='bjeteta'),
 	#drawfw.PlotParams('_lowestBTagJet_0_Eta', (-5, 5)),
-	drawfw.PlotParams('_recoTop_0_Pt', (0, 300), bins=15),
-	drawfw.PlotParams('cosThetaLightJet_cosTheta', (-1, 1))
+	drawfw.PlotParams('_recoTop_0_Pt', (0, 300), bins=15, ofname='toppt'),
+	drawfw.PlotParams('cosThetaLightJet_cosTheta', (-1, 1), ofname='costheta')
 ]
 
 from samples import pltcMu
 
-ps = pltcMu.plot(cut, plots)
-
-for p in ps:
-	p.save(fout = 'ttbar_%s'%p.getName())
+for ck,c in cutlist.items():
+	print 'Cut:', ck
+	ps = pltcMu.plot(c, plots)
+	for p in ps:
+		p.save(fout = 'plots_ttbar/ttbar_%s_%s'%(ck,p.getName()), fmt='pdf')
