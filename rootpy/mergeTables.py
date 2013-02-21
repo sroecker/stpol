@@ -1,10 +1,11 @@
 import tables
 import sys
 import pdb
+print "Running merge script"
 infile = sys.argv[1]
 outfile = infile.replace(".h5", "_opt.h5")
 
-fi = tables.openFile(infile, "r", "Test")
+fi = tables.openFile(infile)
 of = tables.openFile(outfile, "w", "SingleTopPolarization")
 
 nodes = []
@@ -27,7 +28,6 @@ for key in allcols.keys():
     else:
         nodesToCreate[key] = allcols[key]
 
-pdb.set_trace()
 nRows = fi.getNode(nodes[0]).nrows
 newT = of.createTable("/", "events", nodesToCreate, expectedrows=nRows, filters=tables.Filters(complevel=9, complib='blosc', fletcher32=False))
 row = newT.row

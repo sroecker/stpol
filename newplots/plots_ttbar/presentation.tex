@@ -1,0 +1,37 @@
+\documentclass[utf8]{beamer}
+\usetheme{Rochester}
+
+%\setbeamertemplate{background canvas}[vertical shading][bottom=white,top=structure.fg!25]
+% or whatever
+%\setbeamertemplate{headline}{}
+%\setbeamertemplate{footline}{}
+\setbeamersize{text margin left=0.50cm}
+  
+\usepackage[estonian]{babel}
+%\usepackage[T1]{fontenc}
+
+\newcommand{\plot}[3]{
+	\begin{frame}{#2: #3}
+		\begin{figure}[htb]
+			\center
+			\includegraphics[scale=0.58]{ttbar_#2_#1.pdf}
+			%\caption{3J1T}
+		\end{figure}
+	\end{frame}
+}
+
+\begin{document}
+
+\plot{costheta}{3J1T}{$\cos(\theta)$}
+\plot{costheta}{3J2T}{$\cos(\theta)$}
+
+\plot{topmass}{3J1T}{Top mass}
+\plot{topmass}{3J2T}{Top mass}
+
+\plot{toppt}{3J1T}{Top $p_t$}
+\plot{toppt}{3J2T}{Top $p_t$}
+
+\plot{bjeteta}{3J1T}{$\eta$ of lowest b-tag jet}
+\plot{bjeteta}{3J2T}{$\eta$ of lowest b-tag jet}
+
+\end{document}
