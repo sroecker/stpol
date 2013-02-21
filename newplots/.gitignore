@@ -12,3 +12,6 @@
 
 # Plot log file
 *.pylog
+
+# List of plots for Tex
+plotlist
