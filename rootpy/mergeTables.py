@@ -1,6 +1,7 @@
 import tables
 import sys
 import pdb
+import time
 print "Running merge script"
 infile = sys.argv[1]
 outfile = infile.replace(".h5", "_opt.h5")
@@ -29,7 +30,7 @@ for key in allcols.keys():
         nodesToCreate[key] = allcols[key]
 
 nRows = fi.getNode(nodes[0]).nrows
-newT = of.createTable("/", "events", nodesToCreate, expectedrows=nRows, filters=tables.Filters(complevel=9, complib='blosc', fletcher32=False))
+newT = of.createTable("/", "events", nodesToCreate, expectedrows=nRows, filters=tables.Filters(complevel=0, complib='zlib', fletcher32=False))
 row = newT.row
 for i in range(nRows):
     row.append()
@@ -37,7 +38,12 @@ newT.flush()
 print len(nodes)
 for nodeName in nodes:
     node = fi.getNode(nodeName)
+
     for coln in node.colnames:
+        t0 = time.time()
         print "putting {0}".format(coln)
         newT.modifyColumn(colname=coln, column=node.colinstances[coln][:])
-    newT.flush()
+        newT.flush()
+        t1 = time.time()
+        dt = t1-t0
+        print "Done putting {0} in {1:.2f} sec".format(coln, dt)
