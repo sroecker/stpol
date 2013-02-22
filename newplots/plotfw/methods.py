@@ -113,6 +113,10 @@ class SampleGroup:
 	def add(self, s):
 		self.samples.append(s)
 
+	def addList(self, sl):
+		for sample in sl:
+			self.add(sample)
+
 	def getName(self):
 		return self.name
 
