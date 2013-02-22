@@ -50,6 +50,7 @@ time_elapsed = 0
 times_elapsed = []
 
 for i in range(nBlocks):
+    times_elapsed.append(time_elapsed)
     time_1 = time.time()
     arrs = []
     ndots = 100*i/nBlocks
@@ -64,7 +65,6 @@ for i in range(nBlocks):
     newT.flush()
     time_2 = time.time()
     time_elapsed = time_2 - time_1
-    times_elapsed.append(time_elapsed)
 
 print "Put {0} of {1} rows".format(newT.nrows, nRows)
 #for nodeName in nodes:
