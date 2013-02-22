@@ -71,8 +71,11 @@ if __name__ == "__main__":
     sigQCD.addGroup(smpls.groups["t-channel"])
     sigQCD.addGroup(smpls.groups["QCD"])
     sigQCDshapeComp = drawfw.ShapePlotCreator(sigQCD)
-    psMu += sigQCDshapeComp.plot(cutlist.initial, [drawfw.PlotParams("_muonsWithIso_0_relIso", (0, 0.5), doLogY=True)])
+    #psMu += sigQCDshapeComp.plot(cutlist.initial, [drawfw.PlotParams("_muonsWithIso_0_relIso", (0, 0.5), doLogY=True)])
 
+    sigData = plotfw.methods.SampleList()
+    sigData.addGroup(smpls.groups["t-channel"])
+    #sigData.addGroup(
     ps = psMu + psEle
     for p in ps:
         p.save(fmt="pdf")
