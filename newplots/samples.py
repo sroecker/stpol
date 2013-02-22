@@ -8,12 +8,17 @@ datasmplsMu = [
 	#drawfw.DataSample('SingleMuD_7274_pb.root', 7247, name="SingleMuD", directory=_directory),
 ]
 
+smplsMu = drawfw.SampleGroup("mu", ROOT.kBlack, "single mu")
+smplsMu.addList(datasmplsMu)
+
 datasmplsEle = [
 	drawfw.DataSample('SingleEleA1_82_pb.root', 82, directory=_directory),
 	drawfw.DataSample('SingleEleC1_495_pb.root', 495, directory=_directory),
 	#drawfw.DataSample('SingleEleC2_6118_pb.root', 6118, directory=_directory),
 	#drawfw.DataSample('SingleEleD_7234_pb.root', 7234, directory=_directory)
 ]
+smplsEle = drawfw.SampleGroup("ele", ROOT.kBlack, "single ele")
+smplsEle.addList(datasmplsEle)
 
 smplsgen = drawfw.SampleListGenerator(_directory)
 smplsgen.add('TTbar', 'TTbar', 'TTJets_MassiveBinDECAY.root')
