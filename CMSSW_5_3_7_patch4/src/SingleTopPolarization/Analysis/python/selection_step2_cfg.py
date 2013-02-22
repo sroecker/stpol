@@ -556,7 +556,7 @@ def SingleTopStep2():
     # Flavour analyzer
     #-----------------------------------------------
 
-    if Config.isMC:
+    if Config.isMC and Config.subChannel=="WJets":
         process.flavourAnalyzer = cms.EDAnalyzer('FlavourAnalyzer',
             genParticles = cms.InputTag('genParticles'),
             generator = cms.InputTag('generator'),
@@ -629,7 +629,7 @@ def SingleTopStep2():
     process.eventIDProducer = cms.EDProducer('EventIDProducer'
     )
     process.treePath = cms.Path(process.eventIDProducer * process.offlinePVCount *  process.treeSequence)
-    if Config.isMC:
+    if Config.isMC and Config.subChannel=="WJets":
         process.treePath += process.flavourAnalyzer
 
     #-----------------------------------------------

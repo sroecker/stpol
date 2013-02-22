@@ -1,11 +1,14 @@
 #!/bin/bash
+WD="/tmp/joosep/"${PWD##*/}
+export WD
+mkdir $WD
 for i in `find . -name 'WD_*' -type d`
 WD=/tmp/joosep/${PWD##*/}
 mkdir $WD
 rm -f $WD/*
 do
     echo $i
-    rm $WD/*.root
+    rm -f $WD/tree_*.root
     echo "First pass"
     find $i/res -name "*.root" | parallel -n10 'hadd -f $WD/tree_{#}.root {} > /dev/null'
     echo "Second pass"
