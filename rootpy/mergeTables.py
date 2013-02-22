@@ -29,7 +29,7 @@ for key in allcols.keys():
         nodesToCreate[key] = allcols[key]
 
 nRows = fi.getNode(nodes[0]).nrows
-newT = of.createTable("/", "events", nodesToCreate, expectedrows=nRows, filters=tables.Filters(complevel=9, complib='zlib', fletcher32=False))
+newT = of.createTable("/", "events", nodesToCreate, expectedrows=nRows, filters=tables.Filters(complevel=0, complib='zlib', fletcher32=False))
 row = newT.row
 for i in range(nRows):
     row.append()
