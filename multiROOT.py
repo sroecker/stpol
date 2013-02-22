@@ -3,7 +3,7 @@ import multiprocessing
 import pickle
 
 def getEntries(cut):
-    fi = ROOT.TFile("data/T_t.root", "READ")
+    fi = ROOT.TFile("~/singletop/data/trees/T_t.root", "READ")
     t = fi.Get("treesDouble").Get("eventTree")
     t.Draw("cosThetaLightJet_cosTheta>>hist", cut, "goff")
     hist = fi.Get("hist")
