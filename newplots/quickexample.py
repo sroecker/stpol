@@ -1,32 +1,43 @@
+import logging
 from plotfw import drawfw
-from plotfw.drawfw import addAutoSample as addSample
 from plotfw.params import Cuts as cutlist
 
-# Set samples
-datasmpl = drawfw.DataSample('WD_SingleEleA1_82_pb.root', 82, directory='/home/joosep/singletop/data/trees/Feb8_A/Iso')
+# Logging
+logging.basicConfig(filename='quickexample.log', level=logging.DEBUG)
 
-smpls = drawfw.SampleList('/home/joosep/singletop/data/trees/Feb8_A/Iso')
-addSample(smpls, 'Dilepton', 'WW', 'WD_WW.root')
-addSample(smpls, 'Dilepton', 'WZ', 'WD_WZ.root')
-addSample(smpls, 'Dilepton', 'ZZ', 'WD_ZZ.root')
-addSample(smpls, 'TTbar', 'TTbar', 'WD_TTbar.root')
+# Set samples
+directory = '/home/joosep/singletop/data/trees/Feb18/Iso'
+
+datasmpls = [
+	drawfw.DataSample( 'SingleEleA1_82_pb.root',  82, directory=directory),
+	drawfw.DataSample('SingleEleC1_495_pb.root', 495, directory=directory)
+]
+
+smplsgen = drawfw.SampleListGenerator(directory)
+smplsgen.add('WJets', 'WJets', 'WJets_inclusive.root')
+smplsgen.add('Diboson', 'WW', 'WW.root')
+smplsgen.add('Diboson', 'WZ', 'WZ.root')
+smpls = smplsgen.getSampleList()
 
 smpls.listSamples() # print sample list
 
 # Set the cut
-#cut = drawfw.methods.Cut('', '')
-cut = cutlist.finalEle
-print 'Cut:', str(cut)
+cut1 = drawfw.methods.Cut('ab_topmass', '_recoTop_0_Mass > 200 && _recoTop_0_Mass < 500') \
+	* cutlist.ele
+cut2 = drawfw.methods.Cut('ab_topmass2', '_recoTop_0_Mass > 0 && _recoTop_0_Mass < 300') \
+	* cutlist.ele
+#cut = cutlist.finalEle
+#print 'Cut:', str(cut)
 
 # Set plots
 plots = [
-	drawfw.PlotParams('_recoTop_0_Mass', (130, 220)),
-	drawfw.PlotParams('abs(_lowestBTagJet_0_Eta)', (2.5, 4.5))
+	drawfw.PlotParams('_recoTop_0_Mass', (0, 500)),
+	drawfw.PlotParams('abs(_lowestBTagJet_0_Eta)', (0, 4.5))
 ]
 
 # Plot
-pltc = drawfw.StackedPlotCreator(datasmpl, smpls)
-ps = pltc.plot(cut, plots)
+pltc = drawfw.StackedPlotCreator(datasmpls, smpls)
+ps = pltc.plot(cut1, plots) + pltc.plot(cut2, plots)
 
 for p in ps:
 	p.save()

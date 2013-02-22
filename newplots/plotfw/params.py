@@ -10,6 +10,8 @@ colors = {
 	"T_s": ROOT.kYellow,
 	"Tbar_s": ROOT.kYellow,
 
+	"DYJets": ROOT.kViolet,
+
 	"WJets": ROOT.kGreen,
 	"W1Jets": ROOT.kGreen+1,
 	"W2Jets": ROOT.kGreen+2,
@@ -49,18 +51,33 @@ class Cuts:
 
 	recoFState = Cut("recoFstate", "_topCount==1")
 	mu  = Cut("mu", "_muonCount==1") \
-	    * Cut("muIso", "_goodSignalMuons_0_relIso<0.12") \
-	    * Cut("looseMuVeto", "_looseVetoMuCount==0") \
-	    * Cut("looseEleVeto", "_looseVetoEleCount==0") \
-	
+		* Cut("muIso", "_goodSignalMuons_0_relIso<0.12") \
+		* Cut("looseMuVeto", "_looseVetoMuCount==0") \
+		* Cut("looseEleVeto", "_looseVetoEleCount==0") \
+
 	ele = Cut("ele", "_electronCount==1") \
-	    * Cut("eleIso", "_goodSignalElectrons_0_relIso<0.3") \
-	    * Cut("eleMVA", "_goodSignalElectrons_0_mvaID>0.9") \
+		* Cut("eleIso", "_goodSignalElectrons_0_relIso<0.3") \
+		* Cut("eleMVA", "_goodSignalElectrons_0_mvaID>0.9") \
+
+	muonID = Cut("muonID",
+		"_muonsWithIso_0_normChi2 > 10 && \
+		 _muonsWithIso_0_track_hitPattern_trackerLayersWithMeasurement > 5 && \
+		 _muonsWithIso_0_globalTrack_hitPattern_numberOfValidMuonHits > 0 && \
+		 _muonsWithIso_0_innerTrack_hitPattern_numberOfValidPixelHits > 0 && \
+		 abs(_muonsWithIso_0_db) > 0.2 && \
+		 abs(_muonsWithIso_0_dz) > 0.5 && \
+		 _muonsWithIso_0_numberOfMatchedStations > 1")
+
+	muonPt = Cut("muonPt", "_muonsWithIso_0_Pt > 26")
+	muonEta = Cut("muonEta", "abs(_muonsWithIso_0_Eta) < 2.1")
+	muonIso = Cut("muonIso", "_muonsWithIso_0_relIso < 0.12")
 
 	jets_1LJ = Cut("1LJ", "_lightJetCount==1")
-	jets_2plusJ = Cut("1plusLJ", "_lightJetCount>=0 && _bJetCount>=0 && (_lightJetCount + _bJetCount)>=2")
+	jets_OK = Cut("jetsOK", "_lightJetCount>=0 && _bJetCount>=0")
+	jets_2plusJ = jets_OK * Cut("2plusLJ", "(_lightJetCount + _bJetCount)>=2")
+	jets_2J = jets_OK * Cut("2J", "(_lightJetCount + _bJetCount)==2")
 	jets_2J1T = Cut("2J1T", "_lightJetCount==1 && _bJetCount==1")
-	jets_2J0T = Cut("2J0T", "_lightJetCount==1 && _bJetCount==0")
+	jets_2J0T = Cut("2J0T", "_lightJetCount==2 && _bJetCount==0")
 	jets_3J1T = Cut("3J1T", "_lightJetCount==2 && _bJetCount==1")
 	jets_3J2T = Cut("3J2T", "_lightJetCount==2 && _bJetCount==2")
 	realSol = Cut("realSol", "solType_recoNuProducerMu==0")

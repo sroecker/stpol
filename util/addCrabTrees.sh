@@ -3,6 +3,9 @@ WD="/tmp/joosep/"${PWD##*/}
 export WD
 mkdir $WD
 for i in `find . -name 'WD_*' -type d`
+WD=/tmp/joosep/${PWD##*/}
+mkdir $WD
+rm -f $WD/*
 do
     echo $i
     rm -f $WD/tree_*.root

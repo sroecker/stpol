@@ -6,6 +6,7 @@ do
     INPUTDS=`cat $i/log/crab.log | grep "CMSSW.datasetpath" | cut -d' ' -f6`
     OUTPUTDS=`grep "<User Dataset Name>" $i/log/crab.log | tail -n1 | cut -f8 -d' '`
     NEVENTS=`grep "Total Events read" $i/log/crab.log | tail -n1 | cut -d' ' -f4`     
+    MERGEDOUT="${i:3}.root"
     crab -c $i -report &> /dev/null
     #if [ ! -f $i/res/lumiSummary.json ]; then crab -c $i -report &> /dev/null; fi
     lumiCalc2.py -i $i/res/lumiSummary.json -o lumi.out overview &> /dev/null
@@ -14,12 +15,11 @@ do
         LUMI=`~/singletop/stpol/util/addLumis.py lumi.out`
         rm lumi.out
     fi
-    if [ -f "$i.root" ]
+    if [ -f $MERGEDOUT ]
     then
-        echo "Moving output file "$i".root"
-        mv "$i.root" $i"_"$LUMI"_pb.root"
+        mv $MERGEDOUT ${MERGEDOUT%.*}"_"$LUMI"_pb.root"
     fi
-    echo "| "$INPUTDS" | "$OUTPUTDS" | "$LUMI" | "$NEVENTS" |"
+    echo "| "$i" | "$INPUTDS" | "$OUTPUTDS" | "$LUMI" | "$NEVENTS" |"
 #    for j in WD_*
 #    do
 #        if [ "$i" != "$j" -a -f $i/res/lumiSummary.json -a -f $j/res/lumiSummary.json ]
