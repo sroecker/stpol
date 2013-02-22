@@ -64,6 +64,11 @@ class Sample(object):
 	def __repr__(self):
 		return self.fname
 
+	@staticmethod
+	def fromOther(other):
+		new = Sample(other.fname, name=other.name, directory=other.directory)
+		return new
+
 	def _openTree(self):
 		fpath = (self.directory+'/' if self.directory is not None else '') + self.fname
 		print 'Opening file: `%s`'%(fpath)

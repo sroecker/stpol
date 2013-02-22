@@ -6,6 +6,8 @@ import string
 import methods,params,plotlog
 from methods import Sample, MCSample, DataSample, SampleGroup, SampleList
 from methods import PlotParams
+import pickle
+import multiprocessing
 
 class SampleListGenerator:
 	"""Helper class that makes it easier to generate sample lists for MC.
@@ -39,33 +41,41 @@ class SampleListGenerator:
 class PlotCreator(object):
 	def __init__(self):
 		pass
-	
+
 	def _applyCut(self, cutstr, s, reset=True):
-		ROOT.gROOT.cd()
-		
+#		ROOT.gROOT.cd()
+		tempSample = Sample.fromOther(s)
+		tempSample.tfile.cd()
+
 		t_cut = time.clock()
 		logging.info('Cutting on `%s`', s.name)
 		t_cut = time.clock()
 
 		if reset:
-			s.tree.SetEventList(0) # reset TTree
+			tempSample.tree.SetEventList(0) # reset TTree
 			#s.tree.SetEntryList(0)
 
-		logging.debug("Drawing event list for sample {0} with cut {1}".format(s.name, cutstr))
-		uniqueName = s.name + "_" + ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(4))
+		logging.debug("Drawing event list for sample {0} with cut {1}".format(tempSample.name, cutstr))
+		uniqueName = tempSample.name + "_" + ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(4))
 		elist_name = "elist_"+uniqueName
-		nEvents = s.tree.Draw(">>%s"%elist_name, cutstr)
+		nEvents = tempSample.tree.Draw(">>%s"%elist_name, cutstr)
 		logging.debug("Done drawing {0} events into list {1}".format(nEvents, elist_name))
-		elist = ROOT.gROOT.Get(elist_name)
-		s.tree.SetEventList(elist)
+		elist = tempSample.tfile.Get(elist_name)
+		#tempSample.tree.SetEventList(elist)
 
-		logging.debug('Cutting on `%s` took %f', s.name, time.clock()-t_cut)
-	
+		retList = pickle.dumps(elist)
+		logging.debug('Cutting on `%s` took %f', tempSample.name, time.clock() - t_cut)
+		del tempSample
+		return retList
+
 	def _applyCuts(self, cutstr, smpls, reset=True):
 		t_cut = time.clock()
-		map(lambda s: self._applyCut(cutstr, s, reset=reset), smpls)
+		p = multiprocessing.Pool(8)
+		evLists = p.map(lambda s: self._applyCut(cutstr, s, reset=reset), smpls)
+		for i in range(len(smpls)):
+			smpls[i].tree.SetEventList(pickle.loads(evLists[i]))
 		logging.debug('Cutting on all took %f', time.clock()-t_cut)
-		
+
 
 class StackedPlotCreator(PlotCreator):
 	"""Class that is used to create stacked plots
@@ -89,14 +99,15 @@ class StackedPlotCreator(PlotCreator):
 			self._data.add(datasamples)
 		else:
 			logging.error('Bad type for `datasamples`!')
-			
+
 
 	def plot(self, cut, plots, cutDescription=""):
 		"""Method takes a cut and list of plots and then returns a list plot objects."""
 		# Apply cuts
 		self._cutstr = cut.cutStr
 		logging.info('Cut string: %s', self._cutstr)
-		
+
+
 		smpls = self._mcs.getSamples() + self._data.getSamples()
 		self._applyCuts(self._cutstr, smpls)
 
@@ -255,19 +266,19 @@ class ShapePlotCreator(PlotCreator):
 	"""Create plots for sample shape comparison."""
 	def __init__(self, samples):
 		self._slist = samples
-	
+
 	def plot(self, cut, plots):
 		"""Method takes a cut and list of plots and then returns a list plot objects."""
 		# Apply cuts
 		self._cutstr = cut.cutStr
 		logging.info('Cut string: %s', self._cutstr)
-		
+
 		smpls = self._slist.getSamples()
 		self._applyCuts(self._cutstr, smpls)
 
 		# Plot
 		return map(self._plot, plots)
-	
+
 	def _plot(self, pp):
 		p = ShapePlot(pp, cutstring=adler32(self._cutstr))
 		plotname = 'plot_cut%s_%s' % (adler32(self._cutstr), pp.getName())
@@ -280,6 +291,7 @@ class ShapePlotCreator(PlotCreator):
 			logging.info('Created histogram: %s', hist_name)
 
 			hist = ROOT.TH1F(hist_name, '', pp.hbins, pp.hmin, pp.hmax)
+			hist.SetLineColor(g.color)
 			#p.mc_histMap[g.name] = hist
 
 			filled_tot = 0.0
@@ -293,7 +305,7 @@ class ShapePlotCreator(PlotCreator):
 
 		#dt_int = p.dt_hist.Integral()
 		p.legend = ShapeGroupLegend(self._slist.groups, p)
-		
+
 		return p
 
 class Plot(object):
@@ -319,7 +331,7 @@ class Plot(object):
 		self.stack.Draw('')
 		self.dt_hist.Draw('E1 SAME')
 		self.legend.Draw('SAME')
-		
+
 		self.cvs.SetLogy(self._pp.doLogY)
 		self.stack.SetTitle(self.plotTitle)
 
