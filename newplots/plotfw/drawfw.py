@@ -9,6 +9,9 @@ from methods import PlotParams
 import pickle
 import multiprocessing
 
+def mp_applyCut(s):
+	return PlotCreator._applyCut(s[0], s[1], s[2])
+
 class SampleListGenerator:
 	"""Helper class that makes it easier to generate sample lists for MC.
 
@@ -42,7 +45,8 @@ class PlotCreator(object):
 	def __init__(self):
 		pass
 
-	def _applyCut(self, cutstr, s, reset=True):
+	@staticmethod
+	def _applyCut(cutstr, s, reset=True):
 #		ROOT.gROOT.cd()
 		tempSample = Sample.fromOther(s)
 		tempSample.tfile.cd()
@@ -70,8 +74,10 @@ class PlotCreator(object):
 
 	def _applyCuts(self, cutstr, smpls, reset=True):
 		t_cut = time.clock()
-		p = multiprocessing.Pool(8)
-		evLists = p.map(lambda s: self._applyCut(cutstr, s, reset=reset), smpls)
+		p = multiprocessing.Pool(24)
+
+		smplArgs = zip([cutstr]*len(smpls), smpls, [reset]*len(smpls))
+		evLists = p.map(mp_applyCut, smplArgs)
 		for i in range(len(smpls)):
 			smpls[i].tree.SetEventList(pickle.loads(evLists[i]))
 		logging.debug('Cutting on all took %f', time.clock()-t_cut)
