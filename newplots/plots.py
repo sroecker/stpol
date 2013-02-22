@@ -29,7 +29,7 @@ if __name__ == "__main__":
 
     #Plot the N-bTag distribution in 2J
     jetPlots2J = [drawfw.PlotParams('_bJetCount', (0, 3), bins=4, plotTitle="N_{b-tags}", doLogY=True)]
-    psMu += pltcMu.plot(cutlist.jets_2J * cutlist.mu, jetPlots2J, cutDescription="mu channel")
+    #psMu += pltcMu.plot(cutlist.jets_2J * cutlist.mu, jetPlots2J, cutDescription="mu channel")
     #psEle += pltcMu.plot(cutlist.jets_2J * cutlist.ele, jetPlots2J, cutDescription="ele channel, 2J")
 
     #MET/MtW distribution
@@ -73,9 +73,12 @@ if __name__ == "__main__":
     sigQCDshapeComp = drawfw.ShapePlotCreator(sigQCD)
     #psMu += sigQCDshapeComp.plot(cutlist.initial, [drawfw.PlotParams("_muonsWithIso_0_relIso", (0, 0.5), doLogY=True)])
 
-    sigData = plotfw.methods.SampleList()
-    sigData.addGroup(smpls.groups["t-channel"])
-    #sigData.addGroup(
+    sigDataMu = plotfw.methods.SampleList()
+    sigDataMu.addGroup(smpls.groups["t-channel"])
+    sigDataMu.addGroup(smplsMu)
+    sigDataMuShapeComp = drawfw.ShapePlotCreator(sigDataMu)
+    psMu += sigDataMuShapeComp.plot(cutlist.initial, [drawfw.PlotParams("_offlinePVCount", (0, 60))])
+
     ps = psMu + psEle
     for p in ps:
         p.save(fmt="pdf")
