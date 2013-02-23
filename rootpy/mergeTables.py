@@ -37,15 +37,15 @@ for key in allcols.keys():
 nRows = fi.getNode(nodes[0]).nrows
 #row = newT.row
 #for i in range(nRows):
-blocksize = 50000
-nBlocks = int(math.ceil(nRows/blocksize))
-print nBlocks
+blocksize = nRows/100
+nBlocks = int(math.ceil(nRows/blocksize))+1
 arrs = []
 for nodeName in nodes:
     node = fi.getNode(nodeName)
-    arrs.append(node[0])
+    arrs.append(node[nRows%nBlocks]) #create rows that don't fit as full blocks
 merged = merge_arrays((arrs), asrecarray=True, flatten=True)
 newT = of.createTable("/", "events", merged, expectedrows=nRows, filters=tables.Filters(complevel=9, complib='blosc', fletcher32=False))
+
 time_elapsed = 0
 times_elapsed = []
 
@@ -54,7 +54,8 @@ for i in range(nBlocks):
     time_1 = time.time()
     arrs = []
     ndots = 100*i/nBlocks
-    sys.stdout.write("\r" + "[" + "."*ndots + " "*(100-ndots) + "] " + str(i*blocksize) + "/" + str(nRows) + " ETA:" + str(int(numpy.mean(times_elapsed)*(nBlocks-i))) + " s")
+    avg_time = numpy.mean(times_elapsed) if len(times_elapsed)>0 else 0
+    sys.stdout.write("\r" + "[" + "."*ndots + " "*(100-ndots) + "] " + str(i*blocksize) + "/" + str(nRows) + " ETA:" + str(int(avg_time*(nBlocks-i))) + " s")
     sys.stdout.flush()
     for nodeName in nodes:
         node = fi.getNode(nodeName)
@@ -66,7 +67,12 @@ for i in range(nBlocks):
     time_2 = time.time()
     time_elapsed = time_2 - time_1
 
+print ""
 print "Put {0} of {1} rows".format(newT.nrows, nRows)
+
+for col in newT.cols:
+    col.createCSIndex()
+    newT.flush()
 #for nodeName in nodes:
 #    node = fi.getNode(nodeName)
 #
