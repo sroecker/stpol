@@ -38,12 +38,12 @@ nRows = fi.getNode(nodes[0]).nrows
 #row = newT.row
 #for i in range(nRows):
 blocksize = nRows/100
-nBlocks = int(math.ceil(nRows/blocksize))+1
+nBlocks = int(nRows/blocksize)
+print nBlocks
 arrs = []
 for nodeName in nodes:
     node = fi.getNode(nodeName)
-    arrs.append(node[nRows%nBlocks]) #create rows that don't fit as full blocks
-merged = merge_arrays((arrs), asrecarray=True, flatten=True)
+    arrs.append(node[:nRows%nBlocks])
 newT = of.createTable("/", "events", merged, expectedrows=nRows, filters=tables.Filters(complevel=9, complib='blosc', fletcher32=False))
 
 time_elapsed = 0
@@ -69,10 +69,16 @@ for i in range(nBlocks):
 
 print ""
 print "Put {0} of {1} rows".format(newT.nrows, nRows)
+print "Creating indexes..."
+i = 0
+for col in newT.colinstances.values():
+    col.createIndex(optlevel=8, kind='medium', filters=tables.Filters(complevel=9, complib='blosc', fletcher32=False))
+    sys.stdout.write("\r" + str(i) + "/" + str(len(newT.colinstances.values())))
+    sys.stdout.flush()
+    i += 1
 
-for col in newT.cols:
-    col.createCSIndex()
-    newT.flush()
+print ""
+print "all done!"
 #for nodeName in nodes:
 #    node = fi.getNode(nodeName)
 #
