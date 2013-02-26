@@ -1,7 +1,32 @@
 import ROOT
 from cross_sections import xs
-from methods import Cut
 
+# Class to handle (concatenate) cuts
+class Cut:
+	def __init__(self, cutName, cutStr):
+		self.cutName = cutName
+		self.cutStr = cutStr
+		#self.cutSequence = [copy.deepcopy(self)]
+
+	def __mul__(self, other):
+		cutName = self.cutName + " & " + other.cutName
+		cutStr = '('+self.cutStr+') && ('+other.cutStr+')'
+		newCut = Cut(cutName, cutStr)
+		#newCut.cutSequence = self.cutSequence + other.cutSequence
+		return newCut
+
+	def __add__(self, other):
+		cutName = self.cutName + " | " + other.cutName
+		cutStr = '('+self.cutStr+') || ('+other.cutStr+')'
+		newCut = Cut(cutName, cutStr)
+		#newCut.cutSequence = self.cutSequence + other.cutSequence
+		return newCut
+
+	def __str__(self):
+		return self.cutName + ":" + self.cutStr
+
+	def __repr__(self):
+		return self.cutName
 colors = {
 	"T_t": ROOT.kRed,
 	"Tbar_t": ROOT.kRed,
@@ -23,8 +48,12 @@ colors = {
 	"ZZ": ROOT.kBlue,
 
 	"TTbar": ROOT.kOrange,
+	"TTJets_FullLept": ROOT.kOrange+1,
+	"TTJets_SemiLept": ROOT.kOrange+2,
 
 	"QCDMu": ROOT.kGray,
+	"GJets1": ROOT.kGray,
+	"GJets2": ROOT.kGray,
 
 	"QCD_Pt_20_30_EMEnriched": ROOT.kGray,
 	"QCD_Pt_30_80_EMEnriched": ROOT.kGray,
