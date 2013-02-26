@@ -13,34 +13,6 @@ import marshal
 def mp_applyCut(s):
 	return PlotCreator._applyCut(s[0], s[1], s[2])
 
-class SampleListGenerator:
-	"""Helper class that makes it easier to generate sample lists for MC.
-
-	It assumes that all the samples are in the directory.
-	It uses the color and cross sections defined in params.py for the
-	corresponding sample and group parameters.
-
-	"""
-	def __init__(self, directory):
-		self._directory = directory
-		self._samplelist = SampleList()
-
-	def add(self, groupname, samplename, fname):
-		if groupname not in self._samplelist.groups:
-			g = methods.SampleGroup(groupname, params.colors[samplename])
-			self._samplelist.addGroup(g)
-
-		# Create the sample
-		if samplename in params.xs:
-			xs = params.xs[samplename]
-		else:
-			logging.warning('Notice: cross section fallback to group (g: %s, s: %s)', groupname, samplename)
-			xs = params.xs[groupname]
-		s = methods.MCSample(fname, xs, samplename, directory=self._directory)
-		self._samplelist.groups[groupname].add(s)
-
-	def getSampleList(self):
-		return self._samplelist
 
 class PlotCreator(object):
 	def __init__(self):
@@ -194,7 +166,9 @@ class StackedPlotCreator(PlotCreator):
 		p.dt_hist = ROOT.TH1F(dt_hist_name, '', pp.hbins, pp.hmin, pp.hmax)
 		p.dt_hist.SetMarkerStyle(20)
 		for d in self._data.getSamples():
-			dt_filled = d.tree.Draw('%s>>+%s'%(pp.var, dt_hist_name), pp.getWeightStr(), 'goff')
+
+			#for data there is no weight necessary
+			dt_filled = d.tree.Draw('%s>>+%s'%(pp.var, dt_hist_name), '', 'goff')
 			total_luminosity += d.luminosity
 			dname = d.name
 			p.log.addProcess(dname, ismc=False)
@@ -276,12 +250,16 @@ class StackedPlotCreator(PlotCreator):
 
 		# Kolmorogov test
 		basemc = ROOT.TH1F('hist_mc_ktbase_%s'%plotname, '', pp.hbins, pp.hmin, pp.hmax)
+		basemc.SetFillStyle(3004)
+		basemc.SetFillColor(ROOT.kBlue+3)
+		basemc.SetLineColor(ROOT.kBlue+3)
+
 		for mc_hist in p.mc_hists:
 			basemc.Add(mc_hist)
 
 		mc_max = basemc.GetMaximum()
 		p.log.addParam('MC binmax', mc_max)
-
+		p.total_mc = basemc
 		p.log.addParam('Kolmogorov test', p.dt_hist.KolmogorovTest(basemc))
 
 		# Stacking the histograms
@@ -386,6 +364,7 @@ class Plot(object):
 	def draw(self):
 		self.stack.Draw('')
 		self.dt_hist.Draw('E1 SAME')
+		self.total_mc.Draw("E4 SAME")
 		self.legend.Draw('SAME')
 
 		self.cvs.SetLogy(self._pp.doLogY)
