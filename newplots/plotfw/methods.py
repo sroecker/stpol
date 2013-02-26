@@ -1,6 +1,7 @@
 import ROOT
 import string
 import types
+import params
 
 def th_sep(i, sep=','):
 	"""Return a string representation of i with thousand separators"""
@@ -18,32 +19,35 @@ def filter_alnum(s):
 	"""Filter out everything except ascii letters and digits"""
 	return filter(lambda x: x in string.ascii_letters+string.digits, s)
 
-# Class to handle (concatenate) cuts
-class Cut:
-	def __init__(self, cutName, cutStr):
-		self.cutName = cutName
-		self.cutStr = cutStr
-		#self.cutSequence = [copy.deepcopy(self)]
+class SampleListGenerator:
+	"""Helper class that makes it easier to generate sample lists for MC.
 
-	def __mul__(self, other):
-		cutName = self.cutName + " & " + other.cutName
-		cutStr = '('+self.cutStr+') && ('+other.cutStr+')'
-		newCut = Cut(cutName, cutStr)
-		#newCut.cutSequence = self.cutSequence + other.cutSequence
-		return newCut
+	It assumes that all the samples are in the directory.
+	It uses the color and cross sections defined in params.py for the
+	corresponding sample and group parameters.
 
-	def __add__(self, other):
-		cutName = self.cutName + " | " + other.cutName
-		cutStr = '('+self.cutStr+') || ('+other.cutStr+')'
-		newCut = Cut(cutName, cutStr)
-		#newCut.cutSequence = self.cutSequence + other.cutSequence
-		return newCut
+	"""
+	def __init__(self, directory):
+		self._directory = directory
+		self._samplelist = SampleList()
 
-	def __str__(self):
-		return self.cutName + ":" + self.cutStr
+	def add(self, groupname, samplename, fname):
+		if groupname not in self._samplelist.groups:
+			g = SampleGroup(groupname, params.colors[samplename])
+			self._samplelist.addGroup(g)
 
-	def __repr__(self):
-		return self.cutName
+		# Create the sample
+		if samplename in params.xs:
+			xs = params.xs[samplename]
+		else:
+			logging.warning('Notice: cross section fallback to group (g: %s, s: %s)', groupname, samplename)
+			xs = params.xs[groupname]
+		s = MCSample(fname, xs, samplename, directory=self._directory)
+		self._samplelist.groups[groupname].add(s)
+
+	def getSampleList(self):
+		return self._samplelist
+
 
 # Data and MC samples are handled by the following classes:
 class Sample(object):
@@ -186,7 +190,7 @@ class PlotParams(object):
 			return "*".join(self.weights)
 
 	def __repr__(self):
-		return "{0} in range {1} with weight {2}".format(self.var, self.r, self.weight)
+		return "{0} in range {1} with weights {2}".format(self.var, self.r, self.weights)
 
 	def getName(self):
 		#return filter_alnum(self._name)
