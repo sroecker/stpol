@@ -1,4 +1,4 @@
-WJets_lo_nnlo_scale_factor = 1.1926710526315789
+WJets_lo_nnlo_scale_factor = 36257.2/30400.0
 
 xs = {
 
@@ -10,11 +10,11 @@ xs = {
 	, "T_tW": 11.1
 	, "Tbar_tW": 11.1
 	, "TTbar": 234
-	, "WJets": 36257.2 #30400.0 inclusive
+	, "WJets": 36257.2 #30400.0 LO
 
 	#FIXME: ttbar branching ratio
-	, "TTJets_SemiLept": (0.676*0.326*2) * 234
-	, "TTJets_FullLept": (0.326**2) * 234
+	, "TTJets_SemiLept": (0.676*0.326*2) * 234.0
+	, "TTJets_FullLept": (0.326**2) * 234.0
 
 	#exclusive sample branching ratios, same as PREP
 	, "W1Jets": 5400.0 * WJets_lo_nnlo_scale_factor
