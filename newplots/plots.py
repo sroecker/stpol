@@ -64,20 +64,20 @@ if __name__ == "__main__":
 
     #Plot cosTheta* etc in the final selection
     finalSelPlots = [drawfw.PlotParams('cosThetaLightJet_cosTheta', (-1, 1), plotTitle="cos #theta_{lj} in muon channel, final selection")]
-#    psMu += pltcMu.plot(cutlist.finalMu, finalSelPlots, cutDescription="mu channel, 2J1T, final selection")
+    #psMu += pltcMu.plot(cutlist.finalMu, finalSelPlots, cutDescription="mu channel, 2J1T, final selection")
     #psEle += pltcEle.plot(cutlist.finalEle, finalSelPlots, cutDescription="ele channel, 2J1T, final selection")
 
     sigQCD = plotfw.methods.SampleList()
     sigQCD.addGroup(smpls.groups["t-channel"])
     sigQCD.addGroup(smpls.groups["QCD"])
     sigQCDshapeComp = drawfw.ShapePlotCreator(sigQCD)
-    #psMu += sigQCDshapeComp.plot(cutlist.initial, [drawfw.PlotParams("_muonsWithIso_0_relIso", (0, 0.5), doLogY=True)])
+    psMu += sigQCDshapeComp.plot(cutlist.initial, [drawfw.PlotParams("_muonsWithIso_0_relIso", (0, 0.5), doLogY=True)])
 
     sigDataMu = plotfw.methods.SampleList()
     sigDataMu.addGroup(smpls.groups["t-channel"])
     sigDataMu.addGroup(smplsMu)
     sigDataMuShapeComp = drawfw.ShapePlotCreator(sigDataMu)
-    psMu += sigDataMuShapeComp.plot(cutlist.initial, [drawfw.PlotParams("_offlinePVCount", (0, 60))])
+    psMu += sigDataMuShapeComp.plot(cutlist.initial, [drawfw.PlotParams("_offlinePVCount", (0, 60)), drawfw.PlotParams("_offlinePVCount", (0, 60), weights=["PUWeight_puWeightProducer"])])
 
     ps = psMu + psEle
     for p in ps:

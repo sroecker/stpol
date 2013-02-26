@@ -8,6 +8,7 @@ from methods import Sample, MCSample, DataSample, SampleGroup, SampleList
 from methods import PlotParams
 import pickle
 import multiprocessing
+import marshal
 
 def mp_applyCut(s):
 	return PlotCreator._applyCut(s[0], s[1], s[2])
@@ -46,14 +47,34 @@ class PlotCreator(object):
 		pass
 
 	@staticmethod
-	def _applyCut(cutstr, s, reset=True):
-#		ROOT.gROOT.cd()
-		tempSample = Sample.fromOther(s)
-		tempSample.tfile.cd()
+	def _uniqueCutStr(cut_str, weight_str):
+		"""
+		Returns a unique hash for the plot_params.weight*cut_str object
+		"""
+		uniq = adler32("({0})*({1})".format(weight_str, cut_str))
+		return uniq
 
+	def _switchBranchesOn(self, var_list):
+		sample_list = self.getSamples()
+		logging.debug("Switching branches ON: {0} for samples {1}".format(var_list, sample_list))
+
+		for sample in sample_list:
+			sample.tree.SetBranchStatus("*", 0)
+
+		for var in var_list:
+			for sample in sample_list:
+				sample.tree.SetBranchStatus(var, 1)
+
+		return
+
+
+	@staticmethod
+	def _applyCut(cutstr, s, reset=True):
 		t_cut = time.clock()
 		logging.info('Cutting on `%s`', s.name)
-		t_cut = time.clock()
+
+		tempSample = Sample.fromOther(s)
+		tempSample.tfile.cd()
 
 		if reset:
 			tempSample.tree.SetEventList(0) # reset TTree
@@ -69,6 +90,7 @@ class PlotCreator(object):
 
 		retList = pickle.dumps(elist)
 		logging.debug('Cutting on `%s` took %f', tempSample.name, time.clock() - t_cut)
+
 		del tempSample
 		return retList
 
@@ -76,11 +98,17 @@ class PlotCreator(object):
 		t_cut = time.clock()
 		p = multiprocessing.Pool(24)
 
+		#Combine the parameters into a single list [(cutstr, sample, do_reset), ... ]
 		smplArgs = zip([cutstr]*len(smpls), smpls, [reset]*len(smpls))
+
+		#Apply the cut on samples with multicore
 		evLists = p.map(mp_applyCut, smplArgs)
+
+		#Load the event lists via pickle and set the trees
 		for i in range(len(smpls)):
 			smpls[i].tree.SetEventList(pickle.loads(evLists[i]))
-		logging.debug('Cutting on all took %f', time.clock()-t_cut)
+		logging.info("Done cutting event lists for cut {0} on samples {1}".format(cutstr, smpls))
+		logging.info('Cutting on all took %f', time.clock()-t_cut)
 
 
 class StackedPlotCreator(PlotCreator):
@@ -111,6 +139,7 @@ class StackedPlotCreator(PlotCreator):
 		"""Method takes a cut and list of plots and then returns a list plot objects."""
 		# Apply cuts
 		self._cutstr = cut.cutStr
+
 		logging.info('Cut string: %s', self._cutstr)
 
 
@@ -118,10 +147,14 @@ class StackedPlotCreator(PlotCreator):
 		self._applyCuts(self._cutstr, smpls)
 
 		# Plot
-		retplots = map(self._plot, plots)
+		retplots = [self._plot(x) for x in plots]
+
 		for p in retplots:
 			p.setPlotTitle(cutDescription)
 		return retplots
+
+	def getSamples(self):
+		return self._mcs.getSamples() + self._data.getSamples()
 
 	def _plot(self, pp):
 		"""Internally used plotting method.
@@ -131,11 +164,12 @@ class StackedPlotCreator(PlotCreator):
 
 		"""
 		print 'Plotting:', pp
+		uniq = PlotCreator._uniqueCutStr(self._cutstr, pp.getWeightStr())
 
-		plotname = 'plot_cut%s_%s' % (adler32(self._cutstr), pp.getName())
+		plotname = 'plot_cut%s_%s' % (uniq, pp.getName())
 		logging.info('Plotting: %s', plotname)
 
-		p = Plot(pp, cutstring=adler32(self._cutstr))
+		p = Plot(pp, cutstring=uniq)
 		p.log.addParam('Variable', pp.var)
 		p.log.addParam('HT min', pp.hmin)
 		p.log.addParam('HT max', pp.hmax)
@@ -160,7 +194,7 @@ class StackedPlotCreator(PlotCreator):
 		p.dt_hist = ROOT.TH1F(dt_hist_name, '', pp.hbins, pp.hmin, pp.hmax)
 		p.dt_hist.SetMarkerStyle(20)
 		for d in self._data.getSamples():
-			dt_filled = d.tree.Draw('%s>>+%s'%(pp.var, dt_hist_name), cut_string, 'goff')
+			dt_filled = d.tree.Draw('%s>>+%s'%(pp.var, dt_hist_name), pp.getWeightStr(), 'goff')
 			total_luminosity += d.luminosity
 			dname = d.name
 			p.log.addProcess(dname, ismc=False)
@@ -216,7 +250,7 @@ class StackedPlotCreator(PlotCreator):
 
 			p.mc_histMap[mc.name] = mc_hist
 
-			mc_filled = mc.tree.Draw('%s>>%s'%(pp.var,hist_name), cut_string, 'goff')
+			mc_filled = mc.tree.Draw('%s>>%s'%(pp.var,hist_name), pp.getWeightStr(), 'goff')
 			p.log.setVariable(mc.name, 'filled', mc_filled)
 
 			# MC scaling
@@ -273,6 +307,9 @@ class ShapePlotCreator(PlotCreator):
 	def __init__(self, samples):
 		self._slist = samples
 
+	def getSamples(self):
+		return self._slist.getSamples()
+
 	def plot(self, cut, plots):
 		"""Method takes a cut and list of plots and then returns a list plot objects."""
 		# Apply cuts
@@ -286,9 +323,18 @@ class ShapePlotCreator(PlotCreator):
 		return map(self._plot, plots)
 
 	def _plot(self, pp):
-		p = ShapePlot(pp, cutstring=adler32(self._cutstr))
-		plotname = 'plot_cut%s_%s' % (adler32(self._cutstr), pp.getName())
+
+		uniq = PlotCreator._uniqueCutStr(self._cutstr, pp.getWeightStr())
+
+		p = ShapePlot(pp, cutstring=uniq)
+		plotname = 'plot_cut%s_%s' % (uniq, pp.getName())
 		logging.info('Plotting: %s', plotname)
+
+		vars_to_switch = []
+		vars_to_switch += [pp.var]
+		if pp.weights is not None:
+			vars_to_switch += pp.weights
+		self._switchBranchesOn(vars_to_switch)
 
 		# Create the histograms
 		for gk in self._slist.groups:
@@ -297,13 +343,17 @@ class ShapePlotCreator(PlotCreator):
 			logging.info('Created histogram: %s', hist_name)
 
 			hist = ROOT.TH1F(hist_name, '', pp.hbins, pp.hmin, pp.hmax)
+			hist.SetStats(False)
 			hist.SetLineColor(g.color)
 			#p.mc_histMap[g.name] = hist
 
 			filled_tot = 0.0
 			for s in g.getSamples():
-				filled = s.tree.Draw('%s>>+%s'%(pp.var, hist_name), '', 'goff')
-				logging.info('Filled for `%s` by `%s`: %f', hist_name, s.name, filled)
+				if isinstance(s, MCSample) and pp.weights is not None and set(pp.weights).intersection(set(s.branches)) != set(pp.weights):
+					logging.error("Sample {0} does not contain the necessary weights: {1}".format(s, set(pp.weights).difference(set(s.branches))))
+
+				filled = s.tree.Draw('%s>>+%s'%(pp.var, hist_name), pp.getWeightStr() if isinstance(s, MCSample) else '', 'goff')
+				logging.info('Filled histogram `%s` from sample `%s` with %f events', hist_name, s.name, filled)
 				filled_tot += filled
 			logging.info('Filled total for `%s` : %f', hist_name, filled_tot)
 			hist.Scale(1/filled_tot)
@@ -378,6 +428,7 @@ class ShapePlot(Plot):
 		for hk,h in self._hists.items():
 			h.Draw('' if first else 'SAME')
 			first = False
+		self.cvs.SetLogy(self._pp.doLogY)
 		self.legend.Draw('SAME')
 
 class GroupLegend:

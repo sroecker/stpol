@@ -1,5 +1,6 @@
 import ROOT
 import string
+import types
 
 def th_sep(i, sep=','):
 	"""Return a string representation of i with thousand separators"""
@@ -161,7 +162,7 @@ class SampleList:
 # Plot parameters
 class PlotParams(object):
 	"""Class that holds the information of what and how to plot."""
-	def __init__(self, var, r, bins=20, name=None, plotTitle=None, doLogY=False, ofname=None):
+	def __init__(self, var, r, bins=20, name=None, plotTitle=None, doLogY=False, ofname=None, weights=None):
 		self.var = var
 		self.r = r; self.hmin = r[0]; self.hmax = r[1]
 		self.bins=bins; self.hbins = bins
@@ -171,9 +172,21 @@ class PlotParams(object):
 		self._name = name if name is not None else filter_alnum(var)
 		self.doLogY = doLogY
 		self._ofname = ofname
+		if isinstance(weights, types.ListType) and not isinstance(weights, types.StringTypes):
+			self.weights = weights
+		elif isinstance(weights, types.StringTypes):
+			self.weights = [weights]
+		else:
+			self.weights = None
+
+	def getWeightStr(self):
+		if self.weights is None:
+			return "1.0"
+		else:
+			return "*".join(self.weights)
 
 	def __repr__(self):
-		return self.var
+		return "{0} in range {1} with weight {2}".format(self.var, self.r, self.weight)
 
 	def getName(self):
 		#return filter_alnum(self._name)

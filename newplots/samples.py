@@ -1,10 +1,11 @@
 from plotfw import drawfw
 import ROOT
 
-_directory = '/home/joosep/singletop/data/trees/Feb18/Iso'
+#_directory = '/home/joosep/singletop/data/trees/Feb18/Iso'
+_directory = '/scratch/joosep/Iso'
 
 datasmplsMu = [
-	drawfw.DataSample('SingleMuAB_5299_pb.root', 5299, name="SingleMuAB", directory=_directory),
+	drawfw.DataSample('SingleMuAB_5269_pb.root', 5299, name="SingleMuAB", directory=_directory),
 	#drawfw.DataSample('SingleMuC_6790_pb.root', 6790, name="SingleMuC", directory=_directory),
 	#drawfw.DataSample('SingleMuD_7274_pb.root', 7247, name="SingleMuD", directory=_directory),
 ]
