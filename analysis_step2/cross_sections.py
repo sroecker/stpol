@@ -1,3 +1,5 @@
+WJets_lo_nnlo_scale_factor = 1.1926710526315789
+
 xs = {
 
 	#Cross-sections from AN2012-273-v7, page 4
@@ -8,17 +10,21 @@ xs = {
 	, "T_tW": 11.1
 	, "Tbar_tW": 11.1
 	, "TTbar": 234
-	, "WJets": 36257.2
+	, "WJets": 36257.2 #30400.0 inclusive
 
 	#FIXME: ttbar branching ratio
 	, "TTJets_SemiLept": (0.676*0.326*2) * 234
 	, "TTJets_FullLept": (0.326**2) * 234
 
 	#exclusive sample branching ratios, same as PREP
-	, "W1Jets": 5400.0
-	, "W2Jets": 1750.0
-	, "W3Jets": 519.0
-	, "W4Jets": 214.0
+	, "W1Jets": 5400.0 * WJets_lo_nnlo_scale_factor
+	, "W2Jets": 1750.0 * WJets_lo_nnlo_scale_factor
+	, "W3Jets": 519.0 * WJets_lo_nnlo_scale_factor
+	, "W4Jets": 214.0 * WJets_lo_nnlo_scale_factor
+
+    #http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=*GJets_HT-*_8TeV-madgraph*
+    , "GJets1": 960.5 #200To400
+	, "GJets2": 107.5 #400ToInf
 
 	, "DYJets": 3503.71
 	, "WW": 54.838
