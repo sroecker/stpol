@@ -1,4 +1,6 @@
+import plotfw
 from plotfw import drawfw
+
 import ROOT
 
 #_directory = '/home/joosep/singletop/data/trees/Feb18/Iso'
@@ -22,8 +24,10 @@ datasmplsEle = [
 smplsEle = drawfw.SampleGroup("ele", ROOT.kBlack, "single ele")
 smplsEle.addList(datasmplsEle)
 
-smplsgen = drawfw.SampleListGenerator(_directory)
-smplsgen.add('TTbar', 'TTbar', 'TTJets_MassiveBinDECAY.root')
+smplsgen = plotfw.methods.SampleListGenerator(_directory)
+#smplsgen.add('TTbar', 'TTbar', 'TTJets_MassiveBinDECAY.root')
+smplsgen.add('TTbar', 'TTJets_FullLept', 'TTJets_FullLept.root')
+smplsgen.add('TTbar', 'TTJets_SemiLept', 'TTJets_SemiLept.root')
 
 smplsgen.add('t-channel', 'T_t', 'T_t.root')
 smplsgen.add('t-channel', 'Tbar_t', 'Tbar_t.root')
@@ -32,7 +36,11 @@ smplsgen.add('s-channel', 'Tbar_s', 'Tbar_s.root')
 smplsgen.add('tW-channel', 'T_tW', 'T_tW.root')
 smplsgen.add('tW-channel', 'Tbar_tW', 'Tbar_tW.root')
 
-smplsgen.add('WJets', 'WJets', 'WJets_inclusive.root')
+#smplsgen.add('WJets', 'WJets', 'WJets_inclusive.root')
+smplsgen.add('WJets', 'W1Jets', 'W1Jets_exclusive.root')
+smplsgen.add('WJets', 'W2Jets', 'W2Jets_exclusive.root')
+smplsgen.add('WJets', 'W3Jets', 'W3Jets_exclusive.root')
+smplsgen.add('WJets', 'W4Jets', 'W4Jets_exclusive.root')
 
 smplsgen.add('DYJets', 'DYJets', 'DYJets.root')
 
@@ -42,16 +50,21 @@ smplsgen.add('diboson', 'ZZ', 'ZZ.root')
 
 smplsgen.add('QCD', 'QCDMu', 'QCDMu.root')
 
+smplsgen.add('QCD', 'GJets1', 'GJets1.root')
+smplsgen.add('QCD', 'GJets2', 'GJets2.root')
+
 smplsgen.add('QCD', 'QCD_Pt_20_30_BCtoE', 'QCD_Pt_20_30_BCtoE.root')
 smplsgen.add('QCD', 'QCD_Pt_30_80_BCtoE', 'QCD_Pt_30_80_BCtoE.root')
 smplsgen.add('QCD', 'QCD_Pt_80_170_BCtoE', 'QCD_Pt_80_170_BCtoE.root')
 smplsgen.add('QCD', 'QCD_Pt_170_250_BCtoE', 'QCD_Pt_170_250_BCtoE.root')
 smplsgen.add('QCD', 'QCD_Pt_250_350_BCtoE', 'QCD_Pt_250_350_BCtoE.root')
+smplsgen.add('QCD', 'QCD_Pt_350_BCtoE', 'QCD_Pt_350_BCtoE.root')
 
 smplsgen.add('QCD', 'QCD_Pt_20_30_EMEnriched', 'QCD_Pt_20_30_EMEnriched.root')
 smplsgen.add('QCD', 'QCD_Pt_30_80_EMEnriched', 'QCD_Pt_30_80_EMEnriched.root')
 smplsgen.add('QCD', 'QCD_Pt_80_170_EMEnriched', 'QCD_Pt_80_170_EMEnriched.root')
-##FIXME: 170_250 is missing
+smplsgen.add('QCD', 'QCD_Pt_170_250_EMEnriched', 'QCD_Pt_170_250_EMEnriched.root')
+smplsgen.add('QCD', 'QCD_Pt_250_350_EMEnriched', 'QCD_Pt_250_350_EMEnriched.root')
 smplsgen.add('QCD', 'QCD_Pt_350_EMEnriched', 'QCD_Pt_350_EMEnriched.root')
 
 smpls = smplsgen.getSampleList()
