@@ -170,7 +170,8 @@ step1_data = [
 ]
 
 step2_newMC = [
-      DS_S2MC("TTbar_FullLept", "/TTJets_FullLeptMGDecays_8TeV-madgraph/joosep-step1_MC_Feb6-243fe90abe1b1cf7bc2119dc7c0b2e28/USER", "TTbar")
+    , DS_S2MC("Tbar_t_ToLeptons", "/TBarToLeptons_t-channel_8TeV-powheg-tauola/joosep-step1_MC_Feb6-243fe90abe1b1cf7bc2119dc7c0b2e28/USER", "Tbar_t")
+    , DS_S2MC("T_t_ToLeptons", "/TToLeptons_t-channel_8TeV-powheg-tauola/joosep-step1_MC_Feb6-243fe90abe1b1cf7bc2119dc7c0b2e28/USER", "T_t")
     , DS_S2MC("WJets_inclusive", "/WJetsToLNu_TuneZ2Star_8TeV-madgraph-tarball/joosep-step1_MC_Feb6-243fe90abe1b1cf7bc2119dc7c0b2e28/USER", "WJets")
 
     , DS_S2MC("W1Jets_exclusive", "/W1JetsToLNu_TuneZ2Star_8TeV-madgraph/jpata-Jan31_WJets_samples-6154e41574fbefb9af6528e169eaecf5/USER", "W1Jets")
