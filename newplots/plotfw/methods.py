@@ -63,6 +63,7 @@ class Sample(object):
 		self.fname = fname
 		self.directory = directory
 		self.name = name
+		self.disabled_weights = []
 
 		self._openTree()
 
@@ -116,10 +117,10 @@ class SampleGroup:
 	Useful to, for example, group samples in a stacked histogram.
 
 	"""
-	def __init__(self, name, color, prettyName=None):
+	def __init__(self, name, color, pretty_name=None):
 		self.name = name
 		self.color = color
-		self.prettyName = prettyName if prettyName is not None else name
+		self.pretty_name = pretty_name if pretty_name is not None else name
 		self.samples = [] # initially there are no samples
 
 	def add(self, s):
@@ -168,7 +169,7 @@ class SampleList:
 # Plot parameters
 class PlotParams(object):
 	"""Class that holds the information of what and how to plot."""
-	def __init__(self, var, r, bins=20, name=None, plotTitle=None, doLogY=False, ofname=None, weights=None):
+	def __init__(self, var, r, bins=20, name=None, plotTitle=None, doLogY=False, ofname=None, weights=None, x_label=None):
 		self.var = var
 		self.r = r; self.hmin = r[0]; self.hmax = r[1]
 		self.bins=bins; self.hbins = bins
@@ -184,12 +185,14 @@ class PlotParams(object):
 			self.weights = [weights]
 		else:
 			self.weights = None
+		self.x_label = self.var if x_label is None else x_label
 
-	def getWeightStr(self):
+	def getWeightStr(self, disabled_weights=[]):
 		if self.weights is None:
 			return "1.0"
 		else:
-			return "*".join(self.weights)
+			weights = list(set(self.weights).difference(set(disabled_weights)))
+			return "*".join(weights)
 
 	def __repr__(self):
 		return "{0} in range {1} with weights {2}".format(self.var, self.r, self.weights)
