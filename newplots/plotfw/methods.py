@@ -98,6 +98,9 @@ class Sample(object):
 	def getTotalEvents(self):
 		return self.tfile.Get('efficiencyAnalyzerMu').Get('muPath').GetBinContent(1)
 
+	def __str__(self):
+		return self.name
+
 class MCSample(Sample):
 	"""Sample with a cross section."""
 	def __init__(self, fname, xs, name=None, directory=None):
@@ -142,6 +145,9 @@ class SampleGroup:
 	def getSamples(self):
 		return self.samples
 
+	def __str__(self):
+		return "{0}: (".format(self.name) + ", ".join(map(str, self.samples)) + ")"
+
 class SampleList:
 	"""List of all sample groups"""
 	def __init__(self):
@@ -165,6 +171,9 @@ class SampleList:
 		for gk in self.groups:
 			samples += self.groups[gk].getSamples()
 		return samples
+
+	def __str__(self):
+		return ", ".join(map(str, self.groups.values()))
 
 # Plot parameters
 class PlotParams(object):
