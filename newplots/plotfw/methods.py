@@ -91,6 +91,8 @@ class Sample(object):
 			trees[0].AddFriend(t)
 			self.branches += [br.GetName() for br in t.GetListOfBranches()]
 		self.tree = trees[0]
+		#self.tree.SetCacheSize(10**7)
+		#self.tree.AddBranchToCache("*")
 
 	def getTotalEvents(self):
 		return self.tfile.Get('efficiencyAnalyzerMu').Get('muPath').GetBinContent(1)
