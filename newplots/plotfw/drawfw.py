@@ -9,6 +9,8 @@ from methods import PlotParams
 import pickle
 import multiprocessing
 import marshal
+import pdb
+import math
 
 def mp_applyCut(s):
 	return PlotCreator._applyCut(s[0], s[1], s[2], s[3])
@@ -230,7 +232,6 @@ class StackedPlotCreator(PlotCreator):
 			mc_hist.SetFillColor(mc.color)
 			mc_hist.SetLineColor(mc.color)
 			mc_hist.SetLineWidth(0)
-			#mc_hist.SetMarkerStyle(21) #for Sumw2 and stack to work together nicely
 			p.mc_hists.append(mc_hist)
 
 			p.mc_histMap[mc.name] = mc_hist
@@ -246,12 +247,15 @@ class StackedPlotCreator(PlotCreator):
 
 			#p.legend.AddEntry(mc_hist, mc.name, 'F')
 
-			mc_int += mc_hist.Integral()
+			err = ROOT.Double()
+			mc_int = mc_hist.IntegralAndError(1, mc_hist.GetNbinsX(), err)
+			#mc_int_total += mc_int
 
 			p.log.setVariable(mc.name, 'totev', total_events)
 			p.log.setVariable(mc.name, 'expev', expected_events)
 			p.log.setVariable(mc.name, 'scf', scale_factor)
 			p.log.setVariable(mc.name, 'int', mc_int)
+			p.log.setVariable(mc.name, 'int_err', err)
 
 		'''
 		if intsc:
@@ -261,7 +265,7 @@ class StackedPlotCreator(PlotCreator):
 
 		# Kolmorogov test
 		basemc = ROOT.TH1F('hist_mc_ktbase_%s'%plotname, '', pp.hbins, pp.hmin, pp.hmax)
-		basemc.SetFillStyle(3004)
+		basemc.SetFillStyle(3004) #show only error band
 		basemc.SetFillColor(ROOT.kBlue+3)
 		basemc.SetLineColor(ROOT.kBlue+3)
 
@@ -272,6 +276,7 @@ class StackedPlotCreator(PlotCreator):
 		p.log.addParam('MC binmax', mc_max)
 		p.total_mc = basemc
 		p.log.addParam('Kolmogorov test', p.dt_hist.KolmogorovTest(basemc))
+		p.log.addParam('Chi2/ndf', p.dt_hist.Chi2Test(basemc, "UW"))
 
 		# Stacking the histograms
 		plot_title = '%s (%s)'%(pp.var, plotname)
@@ -437,11 +442,19 @@ class GroupLegend:
 		self.legend.SetFillStyle(4000)
 		for name, group in groups.items():
 			firstHistoName = groups[name].samples[0].name
-			self.legend.AddEntry(plot.mc_histMap[firstHistoName], group.prettyName, "F")
+			legName = GroupLegend.sampleLegendName(group, plot)
+			self.legend.AddEntry(plot.mc_histMap[firstHistoName], legName, "F")
 		self.legend.AddEntry(plot.dt_hist, "L_{int.} = %.1f fb^{-1}" % (plot.log.getParam("Luminosity")/1000.0))
 
 	def Draw(self, args=""):
 		return self.legend.Draw(args)
+
+	@staticmethod
+	def sampleLegendName(group, plot):
+		name = group.prettyName
+		total_int = sum([plot.log._processes[x.name]["vars"]["int"] for x in group.samples])
+		total_err = math.sqrt(sum(map(lambda x: x**2, [plot.log._processes[x.name]["vars"]["int_err"] for x in group.samples])))
+		return "#splitline{%s}{%s}" % (name, "N_{exp} = {0:.1f} #pm {1:.1f}" % (total_int, total_err))
 
 class ShapeGroupLegend(GroupLegend):
 	def __init__(self, groups, plot, legpos="R"):
