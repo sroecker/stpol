@@ -11,11 +11,12 @@ import multiprocessing
 import marshal
 
 def mp_applyCut(s):
-	return PlotCreator._applyCut(s[0], s[1], s[2])
+	return PlotCreator._applyCut(s[0], s[1], s[2], s[3])
 
 
 class PlotCreator(object):
 	def __init__(self):
+		self.frac_entries = 0.2
 		pass
 
 	@staticmethod
@@ -41,7 +42,7 @@ class PlotCreator(object):
 
 
 	@staticmethod
-	def _applyCut(cutstr, s, reset=True):
+	def _applyCut(cutstr, s, reset=True, frac_entries=1):
 		t_cut = time.clock()
 		logging.info('Cutting on `%s`', s.name)
 
@@ -55,7 +56,7 @@ class PlotCreator(object):
 		logging.debug("Drawing event list for sample {0} with cut {1}".format(tempSample.name, cutstr))
 		uniqueName = tempSample.name + "_" + ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(4))
 		elist_name = "elist_"+uniqueName
-		nEvents = tempSample.tree.Draw(">>%s"%elist_name, cutstr)
+		nEvents = tempSample.tree.Draw(">>%s"%elist_name, cutstr, '', int(float(tempSample.tree.GetEntries())*frac_entries))
 		logging.debug("Done drawing {0} events into list {1}".format(nEvents, elist_name))
 		elist = tempSample.tfile.Get(elist_name)
 		#tempSample.tree.SetEventList(elist)
@@ -68,18 +69,20 @@ class PlotCreator(object):
 
 	def _applyCuts(self, cutstr, smpls, reset=True):
 		t_cut = time.clock()
-		p = multiprocessing.Pool(24)
+		#p = multiprocessing.Pool(24)
 
-		#Combine the parameters into a single list [(cutstr, sample, do_reset), ... ]
-		smplArgs = zip([cutstr]*len(smpls), smpls, [reset]*len(smpls))
+		#Combine the parameters into a single list [(cutstr, sample, do_reset, frac_entries), ... ]
+		smplArgs = zip([cutstr]*len(smpls), smpls, [reset]*len(smpls), [self.frac_entries]*len(smpls))
 
 		#Apply the cut on samples with multicore
-		evLists = p.map(mp_applyCut, smplArgs)
+		#evLists = p.map(mp_applyCut, smplArgs)
+		evLists = map(mp_applyCut, smplArgs)
 
+		logging.debug("Done cutting event lists for cut {0} on samples {1}".format(cutstr, smpls))
 		#Load the event lists via pickle and set the trees
 		for i in range(len(smpls)):
 			smpls[i].tree.SetEventList(pickle.loads(evLists[i]))
-		logging.info("Done cutting event lists for cut {0} on samples {1}".format(cutstr, smpls))
+		logging.debug("Done unpickling and setting event lists")
 		logging.info('Cutting on all took %f', time.clock()-t_cut)
 
 
@@ -92,6 +95,7 @@ class StackedPlotCreator(PlotCreator):
 
 	"""
 	def __init__(self, datasamples, mcsamples):
+		super(StackedPlotCreator, self).__init__()
 		self._mcs = mcsamples
 
 		# if a single data sample is given it does not have to be a list
@@ -165,6 +169,7 @@ class StackedPlotCreator(PlotCreator):
 		dt_hist_name = '%s_hist_data'%plotname
 		p.dt_hist = ROOT.TH1F(dt_hist_name, '', pp.hbins, pp.hmin, pp.hmax)
 		p.dt_hist.SetMarkerStyle(20)
+		p.dt_hist.Sumw2()
 		for d in self._data.getSamples():
 
 			#for data there is no weight necessary
@@ -217,6 +222,7 @@ class StackedPlotCreator(PlotCreator):
 			hist_name = 'hist_%s_mc_%s'%(plotname, mc.name)
 
 			mc_hist = ROOT.TH1F(hist_name, '', pp.hbins, pp.hmin, pp.hmax)
+			mc_hist.Sumw2()
 			mc_hist.SetFillColor(mc.color)
 			mc_hist.SetLineColor(mc.color)
 			mc_hist.SetLineWidth(0)
