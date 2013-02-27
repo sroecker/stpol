@@ -454,7 +454,7 @@ class GroupLegend:
 		name = group.prettyName
 		total_int = sum([plot.log._processes[x.name]["vars"]["int"] for x in group.samples])
 		total_err = math.sqrt(sum(map(lambda x: x**2, [plot.log._processes[x.name]["vars"]["int_err"] for x in group.samples])))
-		return "#splitline{%s}{%s}" % (name, "N_{exp} = {0:.1f} #pm {1:.1f}" % (total_int, total_err))
+		return "#splitline{%s}{%s}" % (name, "N_{{exp}} = {0:.1f} #pm {1:.1f}".format(total_int, total_err))
 
 class ShapeGroupLegend(GroupLegend):
 	def __init__(self, groups, plot, legpos="R"):
