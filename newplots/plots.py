@@ -19,7 +19,7 @@ if __name__ == "__main__":
     preLepPlotsEle = [
         drawfw.PlotParams('_elesWithIso_0_relIso', (0, 0.2), plotTitle="electron rel. iso. before ID", doLogY=True)
     ]
-#    psMu += pltcMu.plot(cutlist.initial, preLepPlotsMu)
+    #psMu += pltcMu.plot(cutlist.initial, preLepPlotsMu)
 #    psEle += pltcEle.plot(cutlist.initial, preLepPlotsEle)
 
     #Plot the NJet distribution in the muon/ele channel
@@ -63,7 +63,10 @@ if __name__ == "__main__":
     #psEle += pltcEle.plot(cutlist.ele * cutlist.jets_2J1T, lightJetPlots, cutDescription="ele. channel, 2J1T")
 
     #Plot cosTheta* etc in the final selection
-    finalSelPlots = [drawfw.PlotParams('cosThetaLightJet_cosTheta', (-1, 1), plotTitle="cos #theta_{lj} in muon channel, final selection")]
+    finalSelPlots = [
+        drawfw.PlotParams('cosThetaLightJet_cosTheta', (-1, 1), plotTitle="cos #theta_{lj}"),
+        drawfw.PlotParams('cosThetaLightJet_cosTheta', (-1, 1), plotTitle="cos #theta_{lj} with PU reweighting", weights="PUWeight_puWeightProducer"),
+            ]
     psMu += pltcMu.plot(cutlist.finalMu, finalSelPlots, cutDescription="mu channel, 2J1T, final selection")
     #psEle += pltcEle.plot(cutlist.finalEle, finalSelPlots, cutDescription="ele channel, 2J1T, final selection")
 
