@@ -69,7 +69,11 @@ smplsgen.add('QCD', 'QCD_Pt_250_350_EMEnriched', 'QCD_Pt_250_350_EMEnriched.root
 smplsgen.add('QCD', 'QCD_Pt_350_EMEnriched', 'QCD_Pt_350_EMEnriched.root')
 
 smpls = smplsgen.getSampleList()
-smpls.groups["TTbar"].prettyName = "t #bar{t}"
+smpls.groups["TTbar"].pretty_name = "t#bar{t} (#rightarrow ll, lj)"
+smpls.groups["WJets"].pretty_name = "W(#rightarrow l#nu) + jets(inc.)"
+
+for sample in smpls.groups["QCD"].samples:
+	sample.disabled_weights = ["bTagWeight_bTagWeightProducer"]
 
 pltcMu = drawfw.StackedPlotCreator(datasmplsMu, smpls)
 pltcEle = drawfw.StackedPlotCreator(datasmplsEle, smpls)
@@ -81,3 +85,7 @@ datasmplsMuTest = [
 	drawfw.DataSample('SingleMuAB_5269_pb.root', 5269, name="SingleMuAB", directory=_directory)
 ]
 pltcMuTest = drawfw.StackedPlotCreator(datasmplsMuTest, smplsTest)
+
+smplsAllMC = plotfw.methods.SampleGroup("allmc", ROOT.kRed, "full MC")
+for group in smpls.groups.values():
+	smplsAllMC.samples += group.samples
