@@ -23,10 +23,11 @@ class Cut:
 		return newCut
 
 	def __str__(self):
-		return self.cutName + ":" + self.cutStr
+		return self.cutName
 
 	def __repr__(self):
 		return self.cutName
+
 colors = {
 	"T_t": ROOT.kRed,
 	"Tbar_t": ROOT.kRed,
