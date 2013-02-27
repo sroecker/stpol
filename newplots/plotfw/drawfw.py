@@ -16,7 +16,7 @@ def mp_applyCut(s):
 
 class PlotCreator(object):
 	def __init__(self):
-		self.frac_entries = 0.2
+		self.frac_entries = 0.1
 		pass
 
 	@staticmethod
@@ -43,6 +43,10 @@ class PlotCreator(object):
 
 	@staticmethod
 	def _applyCut(cutstr, s, reset=True, frac_entries=1):
+		"""
+		Apply the cut 'cutstr' on sample 's'. Optionally reset the tree event list
+		before cutting and process only a limited number of entries.
+		"""
 		t_cut = time.clock()
 		logging.info('Cutting on `%s`', s.name)
 
@@ -226,6 +230,7 @@ class StackedPlotCreator(PlotCreator):
 			mc_hist.SetFillColor(mc.color)
 			mc_hist.SetLineColor(mc.color)
 			mc_hist.SetLineWidth(0)
+			#mc_hist.SetMarkerStyle(21) #for Sumw2 and stack to work together nicely
 			p.mc_hists.append(mc_hist)
 
 			p.mc_histMap[mc.name] = mc_hist
@@ -368,7 +373,7 @@ class Plot(object):
 
 
 	def draw(self):
-		self.stack.Draw('')
+		self.stack.Draw('HIST')
 		self.dt_hist.Draw('E1 SAME')
 		self.total_mc.Draw("E4 SAME")
 		self.legend.Draw('SAME')
