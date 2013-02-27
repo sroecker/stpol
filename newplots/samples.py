@@ -7,19 +7,20 @@ import ROOT
 _directory = '/scratch/joosep/Iso'
 
 datasmplsMu = [
-	drawfw.DataSample('SingleMuAB_5269_pb.root', 5299, name="SingleMuAB", directory=_directory),
-	#drawfw.DataSample('SingleMuC_6790_pb.root', 6790, name="SingleMuC", directory=_directory),
-	#drawfw.DataSample('SingleMuD_7274_pb.root', 7247, name="SingleMuD", directory=_directory),
+	drawfw.DataSample('SingleMuAB_5269_pb.root', 5269, name="SingleMuAB", directory=_directory),
+	drawfw.DataSample('SingleMuC_6655_pb.root', 6655, name="SingleMuC", directory=_directory),
+	drawfw.DataSample('SingleMuD_7104_pb.root', 7104, name="SingleMuD", directory=_directory),
 ]
 
 smplsMu = drawfw.SampleGroup("mu", ROOT.kBlack, "single mu")
 smplsMu.addList(datasmplsMu)
 
 datasmplsEle = [
-	drawfw.DataSample('SingleEleA1_82_pb.root', 82, directory=_directory),
-	drawfw.DataSample('SingleEleC1_495_pb.root', 495, directory=_directory),
-	#drawfw.DataSample('SingleEleC2_6118_pb.root', 6118, directory=_directory),
-	#drawfw.DataSample('SingleEleD_7234_pb.root', 7234, directory=_directory)
+	drawfw.DataSample('SingleEleA1_82_pb.root', 82, name="SingleEleA", directory=_directory),
+	drawfw.DataSample('SingleEleB_5125_pb.root', 5125, name="SingleEleB", directory=_directory),
+	drawfw.DataSample('SingleEleC1_495_pb.root', 495, name="SingleEleC1", directory=_directory),
+	drawfw.DataSample('SingleEleC2_5938_pb.root', 5938, name="SingleEleC2", directory=_directory),
+	drawfw.DataSample('SingleEleD_7002_pb.root', 7002, name="SingleEleD", directory=_directory)
 ]
 smplsEle = drawfw.SampleGroup("ele", ROOT.kBlack, "single ele")
 smplsEle.addList(datasmplsEle)
@@ -72,3 +73,11 @@ smpls.groups["TTbar"].prettyName = "t #bar{t}"
 
 pltcMu = drawfw.StackedPlotCreator(datasmplsMu, smpls)
 pltcEle = drawfw.StackedPlotCreator(datasmplsEle, smpls)
+
+smplsTest = plotfw.methods.SampleList()
+smplsTest.addGroup(smpls.groups["t-channel"])
+smplsTest.addGroup(smpls.groups["TTbar"])
+datasmplsMuTest = [
+	drawfw.DataSample('SingleMuAB_5269_pb.root', 5269, name="SingleMuAB", directory=_directory)
+]
+pltcMuTest = drawfw.StackedPlotCreator(datasmplsMuTest, smplsTest)
