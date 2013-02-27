@@ -6,9 +6,8 @@ import string
 import methods,params,plotlog
 from methods import Sample, MCSample, DataSample, SampleGroup, SampleList
 from methods import PlotParams
-import pickle
+import cPickle as pickle
 import multiprocessing
-import marshal
 import pdb
 import math
 
@@ -18,7 +17,8 @@ def mp_applyCut(s):
 
 class PlotCreator(object):
 	def __init__(self):
-		self.frac_entries = 0.1
+		self.frac_entries = 0.2
+		self.samples = None
 		pass
 
 	@staticmethod
@@ -101,10 +101,10 @@ class PlotCreator(object):
 		"""Method takes a cut and list of plots and then returns a list plot objects."""
 		# Apply cuts
 		self._cutstr = cut.cutStr
-		logging.info("Plotting with Cut({0}), plots: {1}".format(cut, plots))
+		logging.info("Plotting samples {0} with Cut({1}), plots: {2}".format(self.samples, cut, plots))
 		logging.debug('Cut string: %s', self._cutstr)
 
-		smpls = self._slist.getSamples()
+		smpls = self.samples.getSamples()
 		self._applyCuts(self._cutstr, smpls)
 
 		retplots = [self._plot(x) for x in plots]
@@ -127,6 +127,7 @@ class StackedPlotCreator(PlotCreator):
 		super(StackedPlotCreator, self).__init__()
 		self._mcs = mcsamples
 
+
 		# if a single data sample is given it does not have to be a list
 		if isinstance(datasamples, SampleGroup):
 			self._data = datasamples
@@ -139,24 +140,28 @@ class StackedPlotCreator(PlotCreator):
 		else:
 			logging.error('Bad type for `datasamples`!')
 
+		self.samples = SampleList()
+		for group in self._mcs.groups.values():
+			self.samples.addGroup(group)
+		self.samples.addGroup(self._data)
 
-	def plot(self, cut, plots, cutDescription=""):
-		"""Method takes a cut and list of plots and then returns a list plot objects."""
-		# Apply cuts
-		self._cutstr = cut.cutStr
-
-		logging.info('Cut string: %s', self._cutstr)
-
-
-		smpls = self._mcs.getSamples() + self._data.getSamples()
-		self._applyCuts(self._cutstr, smpls)
-
-		# Plot
-		retplots = [self._plot(x) for x in plots]
-
-		for p in retplots:
-			p.setPlotTitle(cutDescription)
-		return retplots
+#	def plot(self, cut, plots, cutDescription=""):
+#		"""Method takes a cut and list of plots and then returns a list plot objects."""
+#		# Apply cuts
+#		self._cutstr = cut.cutStr
+#
+#		logging.info('Cut string: %s', self._cutstr)
+#
+#
+#		smpls = self._mcs.getSamples() + self._data.getSamples()
+#		self._applyCuts(self._cutstr, smpls)
+#
+#		# Plot
+#		retplots = [self._plot(x) for x in plots]
+#
+#		for p in retplots:
+#			p.setPlotTitle(cutDescription)
+#		return retplots
 
 	def getSamples(self):
 		return self._mcs.getSamples() + self._data.getSamples()
@@ -168,7 +173,6 @@ class StackedPlotCreator(PlotCreator):
 		object.
 
 		"""
-		print 'Plotting:', pp
 		unique_id = PlotCreator._uniqueCutStr(self._cutstr, pp.getWeightStr())
 
 		self._switchBranchesOn(pp)
@@ -176,7 +180,7 @@ class StackedPlotCreator(PlotCreator):
 		plotname = 'plot_cut%s_%s' % (unique_id, pp.getName())
 		logging.info('Plotting: %s', plotname)
 
-		plot = StackPlot(pp, unique_id)
+		plot = StackPlot(pp, self.samples, unique_id)
 		plot.log.addParam('Variable', pp.var)
 		plot.log.addParam('HT min', pp.hmin)
 		plot.log.addParam('HT max', pp.hmax)
@@ -295,7 +299,7 @@ class StackedPlotCreator(PlotCreator):
 		plot.log.addParam('MC binmax', mc_max)
 		plot.total_mc_hist = total_mc_hist
 		plot.log.addParam('Kolmogorov test', plot.data_hist.KolmogorovTest(total_mc_hist))
-		plot.log.addParam('Chi2/ndf', plot.data_hist.Chi2Test(total_mc_hist, "UW"))
+		plot.log.addParam('Chi2/ndf', plot.data_hist.Chi2Test(total_mc_hist, "UW CHI2/NDF"))
 
 		# Stacking the histograms
 		plot_title = '%s (%s)'%(pp.var, plotname)
@@ -316,6 +320,7 @@ class ShapePlotCreator(PlotCreator):
 	def __init__(self, samples):
 		super(ShapePlotCreator, self).__init__()
 		self._slist = samples
+		self.samples = self._slist
 
 	def getSamples(self):
 		return self._slist.getSamples()
@@ -325,7 +330,7 @@ class ShapePlotCreator(PlotCreator):
 
 		uniq = PlotCreator._uniqueCutStr(self._cutstr, plot_params.getWeightStr())
 
-		plot = ShapePlot(plot_params, unique_id=uniq)
+		plot = ShapePlot(plot_params, self.samples, unique_id=uniq)
 		plotname = 'plot_cut%s_%s' % (uniq, plot_params.getName())
 		logging.debug('Plotting: %s', plotname)
 
@@ -371,10 +376,11 @@ class Plot(object):
 	logging.
 
 	"""
-	def __init__(self, plot_params, unique_id=None):
+	def __init__(self, plot_params, groups, unique_id):
 		self.log = plotlog.PlotLog()
 		self._plot_params = plot_params
 		self._unique_id = str(unique_id)
+		self.groups = groups
 
 
 	def setPlotTitle(self, cutDescription=""):
@@ -397,6 +403,7 @@ class Plot(object):
 			self.cvs.SetRightMargin(0.26)
 
 		self.draw()
+		#pdb.set_trace()
 		self.cvs.SaveAs(ofname)
 
 		if log:
@@ -410,8 +417,8 @@ class Plot(object):
 
 class StackPlot(Plot):
 
-	def __init__(self, plot_params, unique_id=None):
-		super(StackPlot, self).__init__(plot_params, unique_id)
+	def __init__(self, plot_params, groups, unique_id):
+		super(StackPlot, self).__init__(plot_params, groups, unique_id)
 		self.hist_stack = None
 		self.data_hist = None
 		self.total_mc_hist = None
@@ -437,8 +444,8 @@ class StackPlot(Plot):
 		return
 
 class ShapePlot(Plot):
-	def __init__(self, plot_params, unique_id=None):
-		super(ShapePlot,self).__init__(plot_params, unique_id)
+	def __init__(self, plot_params, groups, unique_id):
+		super(ShapePlot,self).__init__(plot_params, groups, unique_id)
 		self._hists = {}
 
 	def addHist(self, h, name):
@@ -478,6 +485,28 @@ class BaseLegend(object):
 
 	def Draw(self, args=""):
 		return self.legend.Draw(args)
+
+class YieldTable:
+	pos = dict()
+	pos["RL"] = [0.75, 0.0, 0.99, 0.24]
+
+	def __init__(self, samples, plot, location="RL"):
+		self.samples = samples
+		self.plot = plot
+
+		yield_table = dict()
+		for group_name, group in self.groups.groups.items():
+			total_int = sum([plot.log._processes[x.name]["vars"]["int"] for x in group.samples])
+			total_err = math.sqrt(sum(map(lambda x: x**2, [plot.log._processes[x.name]["vars"]["int_err"] for x in group.samples])))
+			yield_table[group_name] = (total_int, total_err)
+
+		cur_pos = pos[location]
+		self.text_pad = ROOT.TPaveText(cur_pos[0], cur_pos[1], cur_pos[2], cur_pos[3])
+		for (name, (total, err)) in yield_table.items():
+			self.text_pad.AddText("{0}: {1:.1f} #pm {2:.1f}".format(name, total, err))
+
+	def draw(self):
+		self.text_pad.Draw()
 
 #class GroupLegend(BaseLegend):
 #
