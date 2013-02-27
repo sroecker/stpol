@@ -13,6 +13,7 @@ datasmplsMu = [
 ]
 
 smplsMu = drawfw.SampleGroup("mu", ROOT.kBlack, "single mu")
+smplsMu.pretty_name = "single #mu^{#pm}"
 smplsMu.addList(datasmplsMu)
 
 datasmplsEle = [
@@ -71,6 +72,7 @@ smplsgen.add('QCD', 'QCD_Pt_350_EMEnriched', 'QCD_Pt_350_EMEnriched.root')
 smpls = smplsgen.getSampleList()
 smpls.groups["TTbar"].pretty_name = "t#bar{t} (#rightarrow ll, lj)"
 smpls.groups["WJets"].pretty_name = "W(#rightarrow l#nu) + jets(inc.)"
+smpls.groups["QCD"].pretty_name = "QCD (MC)"
 
 for sample in smpls.groups["QCD"].samples:
 	sample.disabled_weights = ["bTagWeight_bTagWeightProducer"]
