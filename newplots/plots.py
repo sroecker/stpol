@@ -2,7 +2,7 @@ from plotfw import drawfw
 from plotfw.params import Cuts as cutlist
 import plotfw
 import logging
-logging.basicConfig(level=logging.DEBUG, format="%(asctime)s;%(levelname)s;%(message)s")
+logging.basicConfig(level=logging.INFO, format="%(asctime)s;%(levelname)s;%(message)s")
 import pdb
 from samples import *
 
@@ -64,9 +64,16 @@ if __name__ == "__main__":
 
     #Plot cosTheta* etc in the final selection
     finalSelPlots = [
-        drawfw.PlotParams('cosThetaLightJet_cosTheta', (-1, 1), plotTitle="cos #theta_{lj}"),
-        drawfw.PlotParams('cosThetaLightJet_cosTheta', (-1, 1), plotTitle="cos #theta_{lj} with PU reweighting", weights="PUWeight_puWeightProducer"),
-            ]
+        drawfw.PlotParams('cosThetaLightJet_cosTheta', (-1, 1),
+            plotTitle="cos #theta_{lj}", x_label="#cos #theta_{lj}"
+        ),
+        drawfw.PlotParams('cosThetaLightJet_cosTheta', (-1, 1),
+            plotTitle="cos #theta_{lj} with PU reweighting", weights="PUWeight_puWeightProducer", x_label="#cos #theta_{lj}"
+        ),
+        drawfw.PlotParams('cosThetaLightJet_cosTheta', (-1, 1),
+            plotTitle="cos #theta_{lj} with b-tag reweighting", weights="bTagWeight_bTagWeightProducer", x_label="#cos #theta_{lj}"
+        ),
+    ]
     psMu += pltcMu.plot(cutlist.finalMu, finalSelPlots, cutDescription="mu channel, 2J1T, final selection")
     #psEle += pltcEle.plot(cutlist.finalEle, finalSelPlots, cutDescription="ele channel, 2J1T, final selection")
 
@@ -80,8 +87,38 @@ if __name__ == "__main__":
     sigDataMu.addGroup(smpls.groups["t-channel"])
     sigDataMu.addGroup(smplsMu)
     sigDataMuShapeComp = drawfw.ShapePlotCreator(sigDataMu)
-    #psMu += sigDataMuShapeComp.plot(cutlist.initial, [drawfw.PlotParams("_offlinePVCount", (0, 60)), drawfw.PlotParams("_offlinePVCount", (0, 60), weights=["PUWeight_puWeightProducer"])])
+    psMu += sigDataMuShapeComp.plot(cutlist.initial,
+        [
+            drawfw.PlotParams("_offlinePVCount", (0, 60), plotTitle="reconstructed N_{vtx.} before PU rew."),
+            drawfw.PlotParams("_offlinePVCount", (0, 60), plotTitle="reconstructed N_{vtx.} after PU rew.", weights=["PUWeight_puWeightProducer"])
+        ]
+    )
+
+    allMCDataMu = plotfw.methods.SampleList()
+    allMCDataMu.addGroup(smplsAllMC)
+    allMCDataMu.addGroup(smplsMu)
+    allMCDataMuShapeComp = drawfw.ShapePlotCreator(allMCDataMu)
+    NvtxPlots = [
+        drawfw.PlotParams("_offlinePVCount", (0, 60), plotTitle="reconstructed N_{vtx.} before PU rew."),
+        drawfw.PlotParams("_offlinePVCount", (0, 60), weights=["PUWeight_puWeightProducer"], plotTitle="reconstructed N_{vtx.} after PU rew.")
+    ]
+    psMu += allMCDataMuShapeComp.plot(cutlist.initial, NvtxPlots, cutDescription="skimmed MC")
+    psMu += allMCDataMuShapeComp.plot(cutlist.finalMu, NvtxPlots, cutDescription="muon channel, final sel.")
+
+    sigMainBKG = plotfw.methods.SampleList()
+    sigMainBKG.addGroup(smpls.groups["t-channel"])
+    sigMainBKG.addGroup(smpls.groups["TTbar"])
+    sigMainBKG.addGroup(smpls.groups["WJets"])
+    sigMainBKGComp = drawfw.ShapePlotCreator(sigMainBKG)
+    weightPlots = [
+        drawfw.PlotParams("bTagWeight_bTagWeightProducer", (0.01, 10), doLogY=True, plotTitle="b-tag weight (nominal)"),
+        drawfw.PlotParams("PUWeight_puWeightProducer", (0, 5), doLogY=True, plotTitle="PU weight (nominal)")
+    ]
+    psMu += sigMainBKGComp.plot(cutlist.initial, weightPlots, cutDescription="skimmed MC")
+    psMu += sigMainBKGComp.plot(cutlist.finalMu, weightPlots, cutDescription="muon channel, final sel.")
 
     ps = psMu + psEle
+    i = 1
     for p in ps:
-        p.save(fmt="pdf")
+        p.save(fout=("plot" + str(i)), fmt="pdf")
+        i += 1
