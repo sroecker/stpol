@@ -20,10 +20,12 @@ plots = [
 	drawfw.PlotParams('cosThetaLightJet_cosTheta', (-1, 1), ofname='costheta')
 ]
 
-from samples import pltcMu
+import samples
+samples.split_ttbar = True
+samples.load()
 
 for ck,c in cutlist.items():
 	print 'Cut:', ck
-	ps = pltcMu.plot(c, plots)
+	ps = samples.pltcMu.plot(c, plots)
 	for p in ps:
 		p.save(fout = 'plots_ttbar/ttbar_%s_%s'%(ck,p.getName()), fmt='pdf', log=True)

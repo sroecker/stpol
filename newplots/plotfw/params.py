@@ -23,6 +23,8 @@ colors = {
 	"ZZ": ROOT.kBlue,
 
 	"TTbar": ROOT.kOrange,
+	"TTJets_SemiLept": ROOT.kOrange,
+	"TTJets_FullLept": ROOT.kOrange+3,
 
 	"QCDMu": ROOT.kGray,
 
