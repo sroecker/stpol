@@ -356,6 +356,7 @@ class ShapePlotCreator(PlotCreator):
 		self._switchBranchesOn(plot_params)
 
 		# Create the histograms
+		plot._maxbin = 0.0
 		for group_name, group in self._slist.groups.items():
 			hist_name = 'hist_%s_%s'%(plotname, group.getName())
 			logging.info('Created histogram: %s', hist_name)
@@ -377,22 +378,26 @@ class ShapePlotCreator(PlotCreator):
 					plot_params.getWeightStr(s.disabled_weights) if isinstance(s, MCSample) else '', 'goff'
 				)
 				logging.debug('Filled histogram `%s` from sample `%s` with %f events', hist_name, s.name, filled)
+				filled_tot += filled
 
 				err = ROOT.Double()
 				integral = sample_hist.IntegralAndError(1, sample_hist.GetNbinsX(), err)
-
-				filled_tot += filled
 				plot.log.setVariable(s.name, 'int', integral)
-				plot.log.setVariable(s.name, 'int_err', err)
-
-				logging.debug('Filled total for `%s` : %f' % (hist_name, filled_tot))
-				if filled_tot>0:
-					sample_hist.Scale(1.0/filled_tot)
-				else:
-					logging.warning("Histogram {0} was empty".format(hist))
-					sample_hist.Scale(0)
+				plot.log.setVariable(s.name, 'int_err', float(err))
 
 				hist.Add(sample_hist)
+
+			logging.debug('Filled total for `%s` : %f' % (hist_name, filled_tot))
+
+			hist_integral = hist.Integral()
+			logging.debug('Hist `%s` integral: %f' % (hist_name, hist_integral))
+			if filled_tot>0:
+				hist.Scale(1.0/hist_integral)
+				logging.debug('Hist `%s` integral: %f (after scaling)' % (hist_name, hist.Integral()))
+			else:
+				logging.warning("Histogram {0} was empty".format(hist))
+				hist.Scale(0)
+			plot._maxbin = max(plot._maxbin, hist.GetMaximum())
 			plot.addHist(hist, group.name)
 
 		plot.legend = BaseLegend(self._slist.groups, plot)
@@ -479,6 +484,7 @@ class ShapePlot(Plot):
 	def __init__(self, plot_params, groups, unique_id):
 		super(ShapePlot,self).__init__(plot_params, groups, unique_id)
 		self._hists = {}
+		self._maxbin = None
 
 	def addHist(self, h, name):
 		self._hists[name] = h
@@ -487,6 +493,7 @@ class ShapePlot(Plot):
 		first = True
 		hists = self._hists.values()
 		hists[0].SetTitle(self.plotTitle)
+		hists[0].SetMaximum(1.1*self._maxbin)
 		for hist in hists:
 			hist.Draw('E1' if first else 'E1 SAME')
 			first = False
