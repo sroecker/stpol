@@ -4,7 +4,9 @@ import plotfw
 import logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s;%(levelname)s;%(message)s")
 import pdb
+
 from samples import *
+load()
 
 def reweighted(plot_params):
     out = []
