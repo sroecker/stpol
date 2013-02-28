@@ -5,7 +5,7 @@ import random
 import string
 import methods,params,plotlog
 from methods import Sample, MCSample, DataSample, SampleGroup, SampleList
-from methods import PlotParams
+from methods import PlotParams, SampleListGenerator
 import cPickle as pickle
 import multiprocessing
 import pdb
