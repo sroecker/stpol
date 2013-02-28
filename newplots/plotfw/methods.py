@@ -3,6 +3,8 @@ import string
 import types
 import params
 
+from plotfw.params import Cut # FIXME: temporary hack for backwards comp.
+
 def th_sep(i, sep=','):
 	"""Return a string representation of i with thousand separators"""
 	i = abs(int(i))
