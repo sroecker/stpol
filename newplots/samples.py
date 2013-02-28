@@ -5,7 +5,7 @@ import plotfw
 from plotfw import drawfw
 
 # Parameters with reasonable defaults
-directory = '/home/joosep/singletop/data/trees/Feb18/Iso'
+directory = '/scratch/joosep/Iso' # Old: '/home/joosep/singletop/data/trees/Feb18/Iso'
 fulldata = True
 split_ttbar = False
 
@@ -103,8 +103,11 @@ def load():
 
 	# Test plotcreator
 	smplsTest = plotfw.methods.SampleList()
-	smplsTest.addGroup(smpls.groups["t-channel"])
-	smplsTest.addGroup(smpls.groups["TTbar"])
+	smplsTest.addGroup(smpls.groups['t-channel'])
+	if 'TTbar' in smpls.groups:
+		smplsTest.addGroup(smpls.groups['TTbar'])
+	else:
+		smplsTest.addGroup(smpls.groups['WJets'])
 	datasmplsMuTest = [auto_data_sample('SingleMuAB_5269_pb.root')]
 	pltcMuTest = drawfw.StackedPlotCreator(datasmplsMuTest, smplsTest)
 
