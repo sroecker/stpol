@@ -483,6 +483,12 @@ class BaseLegend(object):
 		self.legend.SetFillStyle(4000)
 
 		plot.setLegendEntries(self.legend)
+		
+		# Old code for reversing:
+		#for name, group in reversed(groups.items()):
+		#	firstHistoName = groups[name].samples[0].name
+		#	self.legend.AddEntry(plot.mc_histMap[firstHistoName], group.prettyName, "F")
+		#self.legend.AddEntry(plot.dt_hist, "L_{int.} = %.1f fb^{-1}" % (plot.log.getParam("Luminosity")/1000.0))
 
 	def Draw(self, args=""):
 		return self.legend.Draw(args)
