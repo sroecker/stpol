@@ -10,7 +10,7 @@ import cPickle as pickle
 import multiprocessing
 import pdb
 import math
-from collections import OrderedDict as dict
+from odict import OrderedDict as dict
 
 def mp_applyCut(s):
 	return PlotCreator._applyCut(s[0], s[1], s[2], s[3])
