@@ -407,7 +407,7 @@ class Plot(object):
 		self.cvs.SaveAs(ofname)
 
 		if log:
-			self.log.save(fout+'.plot.log')
+			self.log.save(fout+'.pylog')
 
 	def getName(self):
 		if self._plot_params._ofname is not None:
