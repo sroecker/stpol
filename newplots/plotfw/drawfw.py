@@ -10,6 +10,7 @@ import cPickle as pickle
 import multiprocessing
 import pdb
 import math
+from collections import OrderedDict as dict
 
 def mp_applyCut(s):
 	return PlotCreator._applyCut(s[0], s[1], s[2], s[3])
@@ -30,7 +31,7 @@ class PlotCreator(object):
 
 	def _switchBranchesOn(self, plot_params):
 		vars_to_switch = []
-		vars_to_switch += [plot_params.var]
+		vars_to_switch += plot_params.vars_to_enable
 		if plot_params.weights is not None:
 			vars_to_switch += plot_params.weights
 
@@ -201,19 +202,29 @@ class StackedPlotCreator(PlotCreator):
 		plot.data_hist.SetMarkerStyle(20)
 		plot.data_hist.Sumw2()
 
+		#plot.log.addProcess(dname, ismc=False)
 		for d in self._data.getSamples():
+			data_hist = ROOT.TH1F(data_hist_name + d.name, '', pp.hbins, pp.hmin, pp.hmax)
+			data_hist.Sumw2()
 
 			#for data there is no weight necessary
-			dt_filled = d.tree.Draw('%s>>+%s'%(pp.var, data_hist_name), '', 'goff')
+			dt_filled = d.tree.Draw('%s>>%s'%(pp.var, data_hist.GetName()), '', 'goff')
 			total_luminosity += d.luminosity
 			dname = d.name
 			plot.log.addProcess(dname, ismc=False)
 			plot.log.setVariable(dname, 'crsec', d.luminosity)
 			plot.log.setVariable(dname, 'fname', d.fname)
 			plot.log.setVariable(dname, 'filled', dt_filled)
-			#plot.log.setVariable(dname, 'int', dt_int)
 
-		dt_int = plot.data_hist.Integral()
+			err = ROOT.Double()
+			dt_int = data_hist.IntegralAndError(1, data_hist.GetNbinsX(), err)
+
+			plot.log.setVariable(dname, 'int', dt_int)
+			plot.log.setVariable(dname, 'int_err', err)
+
+			plot.data_hist.Add(data_hist)
+
+		#dt_int = plot.data_hist.Integral()
 
 		effective_lumi = total_luminosity
 		plot.log.addParam('Luminosity', total_luminosity)
@@ -243,12 +254,13 @@ class StackedPlotCreator(PlotCreator):
 
 		mc_int = 0
 		plot.mc_hists = []
-		plot.mc_group_hists = []
+		plot.mc_group_hists = dict()
 
 
 		for group_name, group in self._mcs.groups.items():
 			group_hist_name = 'hist_%s_mc_group_%s'%(plotname, group_name)
 			mc_group_hist = ROOT.TH1F(group_hist_name, group.pretty_name, pp.hbins, pp.hmin, pp.hmax)
+			mc_group_hist.filled_count = 0
 			mc_group_hist.Sumw2()
 			mc_group_hist.SetFillColor(group.color)
 			mc_group_hist.SetLineColor(group.color)
@@ -266,6 +278,7 @@ class StackedPlotCreator(PlotCreator):
 				#mc_hist.SetLineWidth(0)
 
 				mc_filled = sample.tree.Draw('%s>>%s'%(pp.var, hist_name), pp.getWeightStr(sample.disabled_weights), 'goff')
+				mc_hist.filled_count = mc_filled
 				plot.log.setVariable(sample.name, 'filled', mc_filled)
 
 				# MC scaling to xs
@@ -276,6 +289,7 @@ class StackedPlotCreator(PlotCreator):
 
 				plot.mc_hists.append(mc_hist)
 				mc_group_hist.Add(mc_hist)
+				mc_group_hist.filled_count += mc_hist.filled_count
 
 				err = ROOT.Double()
 				mc_int = mc_hist.IntegralAndError(1, mc_hist.GetNbinsX(), err)
@@ -283,8 +297,8 @@ class StackedPlotCreator(PlotCreator):
 				plot.log.setVariable(sample.name, 'expev', expected_events)
 				plot.log.setVariable(sample.name, 'scf', scale_factor)
 				plot.log.setVariable(sample.name, 'int', mc_int)
-				plot.log.setVariable(sample.name, 'int_err', float(err))
-			plot.mc_group_hists.append(mc_group_hist)
+				plot.log.setVariable(sample.name, 'int_err', err)
+			plot.mc_group_hists[group_name] = mc_group_hist
 
 		# Kolmorogov test
 		total_mc_hist = ROOT.TH1F('hist_mc_ktbase_%s'%plotname, 'MC stat. err.', pp.hbins, pp.hmin, pp.hmax)
@@ -292,7 +306,12 @@ class StackedPlotCreator(PlotCreator):
 		total_mc_hist.SetFillColor(ROOT.kBlue+3)
 		total_mc_hist.SetLineColor(ROOT.kBlue+3)
 
-		for hist in plot.mc_group_hists:
+		sorted_group_hists = dict()
+		for name, val in sorted(plot.mc_group_hists.items(), key=lambda x: x[1].filled_count):
+			sorted_group_hists[name] = val
+		plot.mc_group_hists = sorted_group_hists
+
+		for hist_name, hist in plot.mc_group_hists.items():
 			total_mc_hist.Add(hist)
 
 		mc_max = total_mc_hist.GetMaximum()
@@ -305,7 +324,7 @@ class StackedPlotCreator(PlotCreator):
 		plot_title = '%s (%s)'%(pp.var, plotname)
 		plot.hist_stack = ROOT.THStack('stack_%s'%plotname, plot_title)
 
-		for hist in plot.mc_group_hists:
+		for hist in reversed(plot.mc_group_hists.values()):
 			plot.hist_stack.Add(hist)
 
 		plot.legend = BaseLegend(self._mcs.groups, plot)
@@ -337,32 +356,44 @@ class ShapePlotCreator(PlotCreator):
 		self._switchBranchesOn(plot_params)
 
 		# Create the histograms
-		for gk in self._slist.groups:
-			g = self._slist.groups[gk]
-			hist_name = 'hist_%s_%s'%(plotname, g.getName())
+		for group_name, group in self._slist.groups.items():
+			hist_name = 'hist_%s_%s'%(plotname, group.getName())
 			logging.info('Created histogram: %s', hist_name)
 
-			hist = ROOT.TH1F(hist_name, g.pretty_name, plot_params.hbins, plot_params.hmin, plot_params.hmax)
+			hist = ROOT.TH1F(hist_name, group.pretty_name, plot_params.hbins, plot_params.hmin, plot_params.hmax)
 			hist.Sumw2()
 			hist.SetStats(False)
-			hist.SetLineColor(g.color)
+			hist.SetLineColor(group.color)
 			hist.SetLineWidth(3)
 
 			filled_tot = 0.0
-			for s in g.getSamples():
+			for s in group.getSamples():
+				sample_hist = ROOT.TH1F(hist_name + s.name, group.pretty_name, plot_params.hbins, plot_params.hmin, plot_params.hmax)
+				sample_hist.Sumw2()
+
+				plot.log.addProcess(s.name)
 				filled = s.tree.Draw(
-					'%s>>+%s'%(plot_params.var, hist_name),
+						'%s>>%s'%(plot_params.var, sample_hist.GetName()),
 					plot_params.getWeightStr(s.disabled_weights) if isinstance(s, MCSample) else '', 'goff'
 				)
 				logging.debug('Filled histogram `%s` from sample `%s` with %f events', hist_name, s.name, filled)
+
+				err = ROOT.Double()
+				integral = sample_hist.IntegralAndError(1, sample_hist.GetNbinsX(), err)
+
 				filled_tot += filled
-			logging.debug('Filled total for `%s` : %f' % (hist_name, filled_tot))
-			if filled_tot>0:
-				hist.Scale(1.0/filled_tot)
-			else:
-				logging.warning("Histogram {0} was empty".format(hist))
-				hist.Scale(0)
-			plot.addHist(hist, g.name)
+				plot.log.setVariable(s.name, 'int', integral)
+				plot.log.setVariable(s.name, 'int_err', err)
+
+				logging.debug('Filled total for `%s` : %f' % (hist_name, filled_tot))
+				if filled_tot>0:
+					sample_hist.Scale(1.0/filled_tot)
+				else:
+					logging.warning("Histogram {0} was empty".format(hist))
+					sample_hist.Scale(0)
+
+				hist.Add(sample_hist)
+			plot.addHist(hist, group.name)
 
 		plot.legend = BaseLegend(self._slist.groups, plot)
 
@@ -389,8 +420,10 @@ class Plot(object):
 
 
 	def draw(self):
+		self.yield_table = YieldTable(self.groups, self)
 		self.legend.Draw('SAME')
 		self.cvs.SetLogy(self._plot_params.doLogY)
+		self.yield_table.draw()
 
 	def save(self, w=650, h=400, log=False, fmt='png', fout=None):
 		if fout is None:
@@ -403,7 +436,6 @@ class Plot(object):
 			self.cvs.SetRightMargin(0.26)
 
 		self.draw()
-		#pdb.set_trace()
 		self.cvs.SaveAs(ofname)
 
 		if log:
@@ -438,7 +470,7 @@ class StackPlot(Plot):
 	def setLegendEntries(self, legend):
 		if self.mc_group_hists is None:
 			raise ValueError("mc_group_hists was not set!")
-		for hist in self.mc_group_hists + [self.total_mc_hist]:
+		for hist in self.mc_group_hists.values() + [self.total_mc_hist]:
 			legend.AddEntry(hist, hist.GetTitle(), "F")
 		legend.AddEntry(self.data_hist, self.data_hist.GetTitle())
 		return
@@ -468,7 +500,7 @@ class ShapePlot(Plot):
 class BaseLegend(object):
 	legCoords = dict()
 	legCoords["R_full"] = [0.75, 0.01, 0.99, 0.99]
-	legCoords["R"] = [0.75, 0.25, 0.99, 0.75]
+	legCoords["R"] = [0.75, 0.35, 0.99, 0.95]
 
 	def __init__(self, groups, plot, legpos="R"):
 		self.legpos = legpos
@@ -482,7 +514,7 @@ class BaseLegend(object):
 		self.legend.SetFillStyle(4000)
 
 		plot.setLegendEntries(self.legend)
-		
+
 		# Old code for reversing:
 		#for name, group in reversed(groups.items()):
 		#	firstHistoName = groups[name].samples[0].name
@@ -494,20 +526,25 @@ class BaseLegend(object):
 
 class YieldTable:
 	pos = dict()
-	pos["RL"] = [0.75, 0.0, 0.99, 0.24]
+	#pos["RL"] = [0.75, 0.0, 0.99, 0.24]
+	pos["RL"] = [0.7585, 0.024, 0.997, 0.2768]
 
 	def __init__(self, samples, plot, location="RL"):
 		self.samples = samples
 		self.plot = plot
 
 		yield_table = dict()
-		for group_name, group in self.groups.groups.items():
+		for group_name, group in self.samples.groups.items():
 			total_int = sum([plot.log._processes[x.name]["vars"]["int"] for x in group.samples])
 			total_err = math.sqrt(sum(map(lambda x: x**2, [plot.log._processes[x.name]["vars"]["int_err"] for x in group.samples])))
 			yield_table[group_name] = (total_int, total_err)
 
-		cur_pos = pos[location]
-		self.text_pad = ROOT.TPaveText(cur_pos[0], cur_pos[1], cur_pos[2], cur_pos[3])
+		cur_pos = YieldTable.pos[location]
+		self.text_pad = ROOT.TPaveText(cur_pos[0], cur_pos[1], cur_pos[2], cur_pos[3], "NDC")
+		self.text_pad.SetFillColor(ROOT.kWhite)
+		self.text_pad.SetLabel("event yields")
+		self.text_pad.SetShadowColor(ROOT.kWhite)
+		#self.text_pad.SetTextSize(15)
 		for (name, (total, err)) in yield_table.items():
 			self.text_pad.AddText("{0}: {1:.1f} #pm {2:.1f}".format(name, total, err))
 
