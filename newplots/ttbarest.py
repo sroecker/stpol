@@ -4,6 +4,12 @@ from plotfw.params import Cuts as cuts
 import logging
 logging.basicConfig(level=logging.DEBUG, format="%(levelname)s %(message)s")
 
+# Also log to file `ttbarest.log`
+fileloghandler = logging.FileHandler('ttbarest.log')
+#fileloghandler.setLevel(logging.INFO)
+fileloghandler.setFormatter(logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s'))
+logging.getLogger('').addHandler(fileloghandler)
+
 # Cuts
 cut = cuts.mu * cuts.mlnu * cuts.jetPt * cuts.jetRMS * cuts.etaLJ * cuts.jetEta * cuts.MTmu
 cutlist = {
