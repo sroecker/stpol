@@ -105,13 +105,13 @@ class MCSample(Sample):
 	"""Sample with a cross section."""
 	def __init__(self, fname, xs, name=None, directory=None):
 		super(MCSample,self).__init__(fname, name=name, directory=directory)
-		self.xs = xs
+		self.xs = float(xs)
 
 class DataSample(Sample):
 	"""Sample with a corresponding luminosity"""
 	def __init__(self, fname, lumi, name=None, directory=None):
 		super(DataSample,self).__init__(fname, name=name if name is not None else fname, directory=directory)
-		self.luminosity = lumi
+		self.luminosity = float(lumi)
 
 # Group of samples with the same color and label
 class SampleGroup:
