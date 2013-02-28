@@ -1,5 +1,9 @@
 import ROOT
 import string
+import types
+import params
+
+from plotfw.params import Cut # FIXME: temporary hack for backwards comp.
 
 def th_sep(i, sep=','):
 	"""Return a string representation of i with thousand separators"""
@@ -17,32 +21,35 @@ def filter_alnum(s):
 	"""Filter out everything except ascii letters and digits"""
 	return filter(lambda x: x in string.ascii_letters+string.digits, s)
 
-# Class to handle (concatenate) cuts
-class Cut:
-	def __init__(self, cutName, cutStr):
-		self.cutName = cutName
-		self.cutStr = cutStr
-		#self.cutSequence = [copy.deepcopy(self)]
+class SampleListGenerator:
+	"""Helper class that makes it easier to generate sample lists for MC.
 
-	def __mul__(self, other):
-		cutName = self.cutName + " & " + other.cutName
-		cutStr = '('+self.cutStr+') && ('+other.cutStr+')'
-		newCut = Cut(cutName, cutStr)
-		#newCut.cutSequence = self.cutSequence + other.cutSequence
-		return newCut
+	It assumes that all the samples are in the directory.
+	It uses the color and cross sections defined in params.py for the
+	corresponding sample and group parameters.
 
-	def __add__(self, other):
-		cutName = self.cutName + " | " + other.cutName
-		cutStr = '('+self.cutStr+') || ('+other.cutStr+')'
-		newCut = Cut(cutName, cutStr)
-		#newCut.cutSequence = self.cutSequence + other.cutSequence
-		return newCut
+	"""
+	def __init__(self, directory):
+		self._directory = directory
+		self._samplelist = SampleList()
 
-	def __str__(self):
-		return self.cutName + ":" + self.cutStr
+	def add(self, groupname, samplename, fname):
+		if groupname not in self._samplelist.groups:
+			g = SampleGroup(groupname, params.colors[samplename])
+			self._samplelist.addGroup(g)
 
-	def __repr__(self):
-		return self.cutName
+		# Create the sample
+		if samplename in params.xs:
+			xs = params.xs[samplename]
+		else:
+			logging.warning('Notice: cross section fallback to group (g: %s, s: %s)', groupname, samplename)
+			xs = params.xs[groupname]
+		s = MCSample(fname, xs, samplename, directory=self._directory)
+		self._samplelist.groups[groupname].add(s)
+
+	def getSampleList(self):
+		return self._samplelist
+
 
 # Data and MC samples are handled by the following classes:
 class Sample(object):
@@ -58,11 +65,17 @@ class Sample(object):
 		self.fname = fname
 		self.directory = directory
 		self.name = name
+		self.disabled_weights = []
 
 		self._openTree()
 
 	def __repr__(self):
 		return self.fname
+
+	@staticmethod
+	def fromOther(other):
+		new = Sample(other.fname, name=other.name, directory=other.directory)
+		return new
 
 	def _openTree(self):
 		fpath = (self.directory+'/' if self.directory is not None else '') + self.fname
@@ -81,21 +94,26 @@ class Sample(object):
 			trees[0].AddFriend(t)
 			self.branches += [br.GetName() for br in t.GetListOfBranches()]
 		self.tree = trees[0]
+		#self.tree.SetCacheSize(10**7)
+		#self.tree.AddBranchToCache("*")
 
 	def getTotalEvents(self):
 		return self.tfile.Get('efficiencyAnalyzerMu').Get('muPath').GetBinContent(1)
+
+	def __str__(self):
+		return self.name
 
 class MCSample(Sample):
 	"""Sample with a cross section."""
 	def __init__(self, fname, xs, name=None, directory=None):
 		super(MCSample,self).__init__(fname, name=name, directory=directory)
-		self.xs = xs
+		self.xs = float(xs)
 
 class DataSample(Sample):
 	"""Sample with a corresponding luminosity"""
 	def __init__(self, fname, lumi, name=None, directory=None):
 		super(DataSample,self).__init__(fname, name=name if name is not None else fname, directory=directory)
-		self.luminosity = lumi
+		self.luminosity = float(lumi)
 
 # Group of samples with the same color and label
 class SampleGroup:
@@ -104,10 +122,10 @@ class SampleGroup:
 	Useful to, for example, group samples in a stacked histogram.
 
 	"""
-	def __init__(self, name, color, prettyName=None):
+	def __init__(self, name, color, pretty_name=None):
 		self.name = name
 		self.color = color
-		self.prettyName = prettyName if prettyName is not None else name
+		self.pretty_name = pretty_name if pretty_name is not None else name
 		self.samples = [] # initially there are no samples
 
 	def add(self, s):
@@ -128,6 +146,9 @@ class SampleGroup:
 
 	def getSamples(self):
 		return self.samples
+
+	def __str__(self):
+		return "{0}: (".format(self.name) + ", ".join(map(str, self.samples)) + ")"
 
 class SampleList:
 	"""List of all sample groups"""
@@ -153,10 +174,13 @@ class SampleList:
 			samples += self.groups[gk].getSamples()
 		return samples
 
+	def __str__(self):
+		return ", ".join(map(str, self.groups.values()))
+
 # Plot parameters
 class PlotParams(object):
 	"""Class that holds the information of what and how to plot."""
-	def __init__(self, var, r, bins=20, name=None, plotTitle=None, doLogY=False, ofname=None):
+	def __init__(self, var, r, bins=20, name=None, plotTitle=None, doLogY=False, ofname=None, weights=None, x_label=None):
 		self.var = var
 		self.r = r; self.hmin = r[0]; self.hmax = r[1]
 		self.bins=bins; self.hbins = bins
@@ -166,9 +190,23 @@ class PlotParams(object):
 		self._name = name if name is not None else filter_alnum(var)
 		self.doLogY = doLogY
 		self._ofname = ofname
+		if isinstance(weights, types.ListType) and not isinstance(weights, types.StringTypes):
+			self.weights = weights
+		elif isinstance(weights, types.StringTypes):
+			self.weights = [weights]
+		else:
+			self.weights = None
+		self.x_label = self.var if x_label is None else x_label
+
+	def getWeightStr(self, disabled_weights=[]):
+		if self.weights is None:
+			return "1.0"
+		else:
+			weights = list(set(self.weights).difference(set(disabled_weights)))
+			return "*".join(weights)
 
 	def __repr__(self):
-		return self.var
+		return "{0} in range {1} with weights {2}".format(self.var, self.r, self.weights)
 
 	def getName(self):
 		#return filter_alnum(self._name)

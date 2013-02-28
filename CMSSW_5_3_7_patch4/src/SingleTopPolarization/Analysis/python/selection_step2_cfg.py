@@ -37,18 +37,18 @@ def SingleTopStep2():
                   VarParsing.varType.bool,
                   "Consider anti-isolated region")
         options.register ('doDebug', False,
-				  VarParsing.multiplicity.singleton,
-				  VarParsing.varType.bool,
-				  "Turn on debugging messages")
+                  VarParsing.multiplicity.singleton,
+                  VarParsing.varType.bool,
+                  "Turn on debugging messages")
         options.register ('isMC', True,
-				  VarParsing.multiplicity.singleton,
-				  VarParsing.varType.bool,
-				  "Run on MC"
+                  VarParsing.multiplicity.singleton,
+                  VarParsing.varType.bool,
+                  "Run on MC"
         )
         options.register ('doGenParticlePath', True,
-				  VarParsing.multiplicity.singleton,
-				  VarParsing.varType.bool,
-				  "Run the gen particle paths (only works on specific MC)"
+                  VarParsing.multiplicity.singleton,
+                  VarParsing.varType.bool,
+                  "Run the gen particle paths (only works on specific MC)"
         )
         options.register ('globalTag', "START53_V15::All",
                   VarParsing.multiplicity.singleton,
@@ -508,7 +508,8 @@ def SingleTopStep2():
             cms.InputTag("bTagWeightProducer", "bTagWeightSystLUp"),
             cms.InputTag("bTagWeightProducer", "bTagWeightSystLDown"),
 
-            cms.InputTag("puWeightProducer", "PUWeight"),
+            cms.InputTag("puWeightProducer", "PUWeightN0"),
+            cms.InputTag("puWeightProducer", "PUWeightNtrue"),
         )
     )
 

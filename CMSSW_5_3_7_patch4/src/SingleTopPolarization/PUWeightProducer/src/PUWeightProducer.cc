@@ -83,13 +83,13 @@ PUWeightProducer::PUWeightProducer(const edm::ParameterSet& iConfig)
        _destDistr.push_back((float)destDistr[i]);
    }
 
-   produces<double>("PUWeight");
+   produces<double>("PUWeightNtrue");
+   produces<double>("PUWeightN0");
    produces<double>("nVertices0");
    produces<double>("nVerticesBXPlus1");
    produces<double>("nVerticesBXMinus1");
    produces<double>("nVerticesTrue");
    reweighter = new edm::LumiReWeighting(_srcDistr, _destDistr);
-   //reweighter = new edm::LumiReWeighting(_destDistr, _srcDistr);
 }
 
 
@@ -121,29 +121,33 @@ PUWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       int BX = PVI->getBunchCrossing();
       nPUs++; 
       if(BX == 0) {
-        //Tnpv = PVI->getTrueNumInteractions();
         n0 = PVI->getPU_NumInteractions();
         ntrue = PVI->getTrueNumInteractions();
         LogDebug("produce()") << "true num int = " << ntrue;
       }
       else if(BX == 1) {
-          nm1 = PVI->getPU_NumInteractions();
+          np1 = PVI->getPU_NumInteractions();
       }
       else if(BX == -1) {
-          np1 = PVI->getPU_NumInteractions();
+          nm1 = PVI->getPU_NumInteractions();
       }
    }
    
-   double puWeight = TMath::QuietNaN(); 
+   double puWeight_n0 = TMath::QuietNaN(); 
+   double puWeight_ntrue = TMath::QuietNaN(); 
    if (nPUs>0 && n0>0) {
-      puWeight = reweighter->weight(n0);
+      puWeight_n0 = reweighter->weight(n0);
    }
-   LogDebug("produce()") << "calculated PU weight = " << puWeight;
+   if (nPUs>0 && ntrue>0) {
+      puWeight_ntrue = reweighter->weight(ntrue);
+   }
+   LogDebug("produce()") << "calculated PU weight = " << puWeight_n0;
    iEvent.put(std::auto_ptr<double>(new double(n0)), "nVertices0");   
    iEvent.put(std::auto_ptr<double>(new double(np1)), "nVerticesBXPlus1");   
    iEvent.put(std::auto_ptr<double>(new double(nm1)), "nVerticesBXMinus1");   
    iEvent.put(std::auto_ptr<double>(new double(ntrue)), "nVerticesTrue");   
-   iEvent.put(std::auto_ptr<double>(new double(puWeight)), "PUWeight");   
+   iEvent.put(std::auto_ptr<double>(new double(puWeight_ntrue)), "PUWeightNtrue");   
+   iEvent.put(std::auto_ptr<double>(new double(puWeight_n0)), "PUWeightN0");   
 
  
 }

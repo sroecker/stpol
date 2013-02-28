@@ -67,7 +67,8 @@ https://twiki.cern.ch/twiki/bin/view/CMS/SyncSingleTopLeptonJets2012
 To create the crab.cfg files to run over step1-data, run in the base directory
 >python2.7 $CMSSW_BASE/../util/datasets.py -t your_tag -T $CMSSW_BASE/../crabs/crab_Data_step1.cfg -d S1D -o your_crab_output_dir
 To create the crab.cfg files to run over step2-mc (iso/antiIso), run in the base directory
->python2.7 $CMSSW_BASE/../util/datasets.py -t your_tag -T $CMSSW_BASE/../crabs/crab_MC_step2_local_Iso.cfg -d S2MC -o your_crab_output_dir
+>python2.7 $CMSSW_BASE/../util/datasets.py -t stpol_step2_Iso -T $CMSSW_BASE/../crabs/crab_MC_step2_local_Iso.cfg -d S2newMC -o crabs/step2_MC_Iso 
+>python2.7 $CMSSW_BASE/../util/datasets.py -t stpol_step2_antiIso -T $CMSSW_BASE/../crabs/crab_MC_step2_local_antiIso.cfg -d S2newMC -o crabs/step2_MC_antiIso 
 >python2.7 $CMSSW_BASE/../util/datasets.py -t your_tag -T $CMSSW_BASE/../crabs/crab_Data_step2_Iso.cfg -d S2D -o crabs/step2_Data_Iso
 
 ###Using lumiCalc2.py
