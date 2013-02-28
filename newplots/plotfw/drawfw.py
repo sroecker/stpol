@@ -16,10 +16,9 @@ def mp_applyCut(s):
 
 
 class PlotCreator(object):
-	def __init__(self):
-		self.frac_entries = 0.2
+	def __init__(self, frac = 1.0):
+		self.frac_entries = frac
 		self.samples = None
-		pass
 
 	@staticmethod
 	def _uniqueCutStr(cut_str, weight_str):
