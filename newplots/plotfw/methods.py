@@ -180,7 +180,7 @@ class SampleList:
 # Plot parameters
 class PlotParams(object):
 	"""Class that holds the information of what and how to plot."""
-	def __init__(self, var, r, bins=20, name=None, plotTitle=None, doLogY=False, ofname=None, weights=None, x_label=None):
+	def __init__(self, var, r, bins=20, name=None, plotTitle=None, doLogY=False, ofname=None, weights=None, x_label=None, vars_to_enable=None):
 		self.var = var
 		self.r = r; self.hmin = r[0]; self.hmax = r[1]
 		self.bins=bins; self.hbins = bins
@@ -197,6 +197,10 @@ class PlotParams(object):
 		else:
 			self.weights = None
 		self.x_label = self.var if x_label is None else x_label
+		if vars_to_enable is None:
+			self.vars_to_enable = [var]
+		else:
+			self.vars_to_enable = vars_to_enable
 
 	def getWeightStr(self, disabled_weights=[]):
 		if self.weights is None:
