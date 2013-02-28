@@ -2,7 +2,7 @@ from plotfw import drawfw
 from plotfw.params import Cuts as cuts
 
 import logging
-logging.basicConfig(level=logging.DEBUG, format="%(asctime)s;%(levelname)s;%(message)s")
+logging.basicConfig(level=logging.DEBUG, format="%(levelname)s %(message)s")
 
 # Cuts
 cut = cuts.mu * cuts.mlnu * cuts.jetPt * cuts.jetRMS * cuts.etaLJ * cuts.jetEta * cuts.MTmu
