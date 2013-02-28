@@ -65,8 +65,9 @@ class PlotCreator(object):
 			tempSample.tree.SetEventList(0)
 			tempSample.tree.SetBranchStatus("*", 1)
 
-		logging.debug("Drawing event list for sample {0} with cut {1}".format(tempSample.name, cutstr))
-		uniqueName = tempSample.name + "_" + ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(4))
+		logging.debug("Drawing event list for sample {0}".format(tempSample.name))
+		uniqueName = tempSample.name + '_' + ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(4))
+
 		elist_name = "elist_"+uniqueName
 		nEvents = tempSample.tree.Draw(">>%s"%elist_name, cutstr, '', int(float(tempSample.tree.GetEntries())*frac_entries))
 		logging.debug("Done drawing {0} events into list {1}".format(nEvents, elist_name))
