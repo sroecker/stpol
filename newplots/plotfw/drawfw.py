@@ -283,7 +283,7 @@ class StackedPlotCreator(PlotCreator):
 				plot.log.setVariable(sample.name, 'expev', expected_events)
 				plot.log.setVariable(sample.name, 'scf', scale_factor)
 				plot.log.setVariable(sample.name, 'int', mc_int)
-				plot.log.setVariable(sample.name, 'int_err', err)
+				plot.log.setVariable(sample.name, 'int_err', float(err))
 			plot.mc_group_hists.append(mc_group_hist)
 
 		# Kolmorogov test
