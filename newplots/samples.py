@@ -13,7 +13,7 @@ split_ttbar = False
 pltcMu = None
 pltcEle = None
 pltcMuTest = None
-smplsAllMC = None # FIXME: ???
+smplsAllMC = None
 
 def load():
 	global directory, fulldata, split_ttbar # parameters
@@ -111,8 +111,7 @@ def load():
 	datasmplsMuTest = [auto_data_sample('SingleMuAB_5269_pb.root')]
 	pltcMuTest = drawfw.StackedPlotCreator(datasmplsMuTest, smplsTest)
 
-	# All of MC (?)
-	# FIXME: What is this?
+	# All of MC
 	global smplsAllMC
 	smplsAllMC = plotfw.methods.SampleGroup("allmc", ROOT.kRed, "full MC")
 	for group in smpls.groups.values():
