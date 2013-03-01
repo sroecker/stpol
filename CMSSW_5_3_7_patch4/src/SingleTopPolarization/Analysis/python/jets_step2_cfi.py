@@ -218,7 +218,9 @@ def JetSetup(process, conf):
         else:
             sampleBEffs = Calibrations.BTaggingEfficiency.default
         logger.debug("Using the following calibration coefficients for sample {0}: {1}".format(conf.subChannel, sampleBEffs))
-        process.bTagWeightProducer = cms.EDProducer('BTagSystematicsWeightProducer',
+
+        #The b-tag weight calculation is different for each required n-jet/m-btag bin
+        process.bTagWeightProducerNJMT = cms.EDProducer('BTagSystematicsWeightProducer',
             src=cms.InputTag("goodJets"),
             nJets=cms.uint32(conf.Jets.nJets),
             nTags=cms.uint32(conf.Jets.nBTags),
@@ -227,11 +229,20 @@ def JetSetup(process, conf):
             effL=cms.double(sampleBEffs.eff_l),
             algo=cms.string(conf.Jets.bTagWorkingPoint)
         )
+        process.bTagWeightProducer3J1T = process.bTagWeightProducerNJMT.clone(nJets=cms.uint32(3), nTags=cms.uint32(1))
+        process.bTagWeightProducer3J2T = process.bTagWeightProducerNJMT.clone(nJets=cms.uint32(3), nTags=cms.uint32(2))
+        process.bTagWeightProducer3J0T = process.bTagWeightProducerNJMT.clone(nJets=cms.uint32(3), nTags=cms.uint32(0))
+        process.bTagWeightProducer2J0T = process.bTagWeightProducerNJMT.clone(nJets=cms.uint32(2), nTags=cms.uint32(0))
+
         process.bEffSequence = cms.Sequence(
             process.bJetBTagEffSequence *
             process.cJetBTagEffSequence *
             process.lJetBTagEffSequence *
-            process.bTagWeightProducer
+            process.bTagWeightProducerNJMT *
+            process.bTagWeightProducer3J1T *
+            process.bTagWeightProducer3J2T *
+            process.bTagWeightProducer3J0T *
+            process.bTagWeightProducer2J0T
         )
 
 

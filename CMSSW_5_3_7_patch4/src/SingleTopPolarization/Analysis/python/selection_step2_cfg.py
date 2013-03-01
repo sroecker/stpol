@@ -502,11 +502,35 @@ def SingleTopStep2():
         putNaNs = cms.untracked.bool(False),
         collections = cms.VInputTag(
             #B-tag systematics
-            cms.InputTag("bTagWeightProducer", "bTagWeight"),
-            cms.InputTag("bTagWeightProducer", "bTagWeightSystBCUp"),
-            cms.InputTag("bTagWeightProducer", "bTagWeightSystBCDown"),
-            cms.InputTag("bTagWeightProducer", "bTagWeightSystLUp"),
-            cms.InputTag("bTagWeightProducer", "bTagWeightSystLDown"),
+            cms.InputTag("bTagWeightProducerNJMT", "bTagWeight"),
+            cms.InputTag("bTagWeightProducerNJMT", "bTagWeightSystBCUp"),
+            cms.InputTag("bTagWeightProducerNJMT", "bTagWeightSystBCDown"),
+            cms.InputTag("bTagWeightProducerNJMT", "bTagWeightSystLUp"),
+            cms.InputTag("bTagWeightProducerNJMT", "bTagWeightSystLDown"),
+
+            cms.InputTag("bTagWeightProducer2J1T", "bTagWeight"),
+            cms.InputTag("bTagWeightProducer2J1T", "bTagWeightSystBCUp"),
+            cms.InputTag("bTagWeightProducer2J1T", "bTagWeightSystBCDown"),
+            cms.InputTag("bTagWeightProducer2J1T", "bTagWeightSystLUp"),
+            cms.InputTag("bTagWeightProducer2J1T", "bTagWeightSystLDown"),
+
+            cms.InputTag("bTagWeightProducer2J0T", "bTagWeight"),
+            cms.InputTag("bTagWeightProducer2J0T", "bTagWeightSystBCUp"),
+            cms.InputTag("bTagWeightProducer2J0T", "bTagWeightSystBCDown"),
+            cms.InputTag("bTagWeightProducer2J0T", "bTagWeightSystLUp"),
+            cms.InputTag("bTagWeightProducer2J0T", "bTagWeightSystLDown"),
+
+            cms.InputTag("bTagWeightProducer3J0T", "bTagWeight"),
+            cms.InputTag("bTagWeightProducer3J0T", "bTagWeightSystBCUp"),
+            cms.InputTag("bTagWeightProducer3J0T", "bTagWeightSystBCDown"),
+            cms.InputTag("bTagWeightProducer3J0T", "bTagWeightSystLUp"),
+            cms.InputTag("bTagWeightProducer3J0T", "bTagWeightSystLDown"),
+
+            cms.InputTag("bTagWeightProducer3J1T", "bTagWeight"),
+            cms.InputTag("bTagWeightProducer3J1T", "bTagWeightSystBCUp"),
+            cms.InputTag("bTagWeightProducer3J1T", "bTagWeightSystBCDown"),
+            cms.InputTag("bTagWeightProducer3J1T", "bTagWeightSystLUp"),
+            cms.InputTag("bTagWeightProducer3J1T", "bTagWeightSystLDown"),
 
             cms.InputTag("puWeightProducer", "PUWeightN0"),
             cms.InputTag("puWeightProducer", "PUWeightNtrue"),
