@@ -3,10 +3,16 @@
 CFGFILE=$1
 SRC=$2
 JOBNAME=$3
-num_files=22
+num_files=$4
 
-shift; shift; shift
-flags=$@ # rest of the arguments
+flags=$5 # rest of the arguments
+
+echo "CFGFILE="$CFGFILE
+echo "SRC="$SRC
+echo "JOBNAME="$JOBNAME
+echo "num_files="$num_files
+echo "flags="$flags
+
 echo "Running cmsRun in local batch mode"
 echo "Extra arguments to cmsRun:" $flags
 

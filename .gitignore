@@ -6,7 +6,6 @@
 *.lo
 *.o
 *.pyc
-*__init__.py
 
 # Compiled Dynamic libraries
 *.so
@@ -18,6 +17,21 @@
 
 #ROOT files
 *.root
+trees
 
 #Logs
 *.log
+
+#Xcode files
+*.xcworkspace
+
+#testing stuff
+test*
+
+#crab jobs
+crabs/step*
+
+#related to documentation
+AN
+pres
+
