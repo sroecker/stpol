@@ -102,20 +102,22 @@ def load():
 	pltcEle = drawfw.StackedPlotCreator(datasmplsEle, smpls)
 
 	# Test plotcreator
-	smplsTest = plotfw.methods.SampleList()
-	smplsTest.addGroup(smpls.groups['t-channel'])
-	if 'TTbar' in smpls.groups:
-		smplsTest.addGroup(smpls.groups['TTbar'])
-	else:
-		smplsTest.addGroup(smpls.groups['WJets'])
-	datasmplsMuTest = [auto_data_sample('SingleMuAB_5269_pb.root')]
-	pltcMuTest = drawfw.StackedPlotCreator(datasmplsMuTest, smplsTest)
+	#smplsTest = plotfw.methods.SampleList()
+	#smplsTest.addGroup(smpls.groups['t-channel'])
+	#if 'TTbar' in smpls.groups:
+	#	smplsTest.addGroup(smpls.groups['TTbar'])
+	#else:
+	#	smplsTest.addGroup(smpls.groups['WJets'])
+	#datasmplsMuTest = [auto_data_sample('SingleMuAB_5269_pb.root')]
+	#pltcMuTest = drawfw.StackedPlotCreator(datasmplsMuTest, smplsTest)
 
 	# All of MC
-	global smplsAllMC
+	#global smplsAllMC
 	smplsAllMC = plotfw.methods.SampleGroup("allmc", ROOT.kRed, "full MC")
 	for group in smpls.groups.values():
 		smplsAllMC.samples += group.samples
+
+	return smpls, smplsMu
 #=======
 #import ROOT
 #
