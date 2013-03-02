@@ -173,6 +173,11 @@ class Cuts:
 	MTmu = CutP('MT', '_muAndMETMT > 50')
 	MTele = CutP('MT', '_patMETs_0_Pt>45')
 
+	#Orso = mlnu * jets_2J1T * jetPt * jetRMS * MT * etaLJ#jetEta
+	Orso = mlnu * jets_2J1T * jetPt * jetRMS * etaLJ * jetEta
+	finalMu = mu * recoFState * Orso * MTmu
+	finalEle = ele * recoFState * Orso * MTele
+
 Cuts.muonID.rename('muonID')
 Cuts.jets_OK.rename('jetsOK')
 Cuts.jets_2J1T.rename('2J1T')
