@@ -2,6 +2,7 @@ import ROOT
 import string
 import types
 import params
+import logging
 
 from plotfw.params import Cut # FIXME: temporary hack for backwards comp.
 
@@ -79,7 +80,7 @@ class Sample(object):
 
 	def _openTree(self):
 		fpath = (self.directory+'/' if self.directory is not None else '') + self.fname
-		print 'Opening file: `%s`'%(fpath)
+		logging.info('Opening file: `%s`', fpath)
 		self.tfile = ROOT.TFile(fpath)
 		self.branches = []
 		if self.tfile.IsZombie():
