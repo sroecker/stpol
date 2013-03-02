@@ -22,6 +22,7 @@ class Cut(object):
 		else:
 			self._vars = set(relvars)
 
+		logging.debug('Created cut `%s`: `%s`, `%s`', self.cutName, self.cutStr, self._vars)
 		#self.cutSequence = [copy.deepcopy(self)]
 
 	def __mul__(self, other):
@@ -167,7 +168,7 @@ class Cuts:
 	etaLJ = CutF('#eta_{lj}', 'abs({0})>2.5', ['_lowestBTagJet_0_Eta'])
 	sidebandRegion = invert(mlnu) #sidebandRegion = Cut('!ml#nu', '!(_recoTop_0_Mass>130&&_recoTop_0_Mass<220)')
 	jetPt = CutP(None, '_goodJets_0_Pt>40') * CutP(None, '_goodJets_1_Pt>40')
-	jetEta = Cut('jetEta', 'abs({0})<4.5 && abs({1})<4.5', ['_lowestBTagJet_0_Eta', '_highestBTagJet_0_Eta'])
+	jetEta = CutF('jetEta', 'abs({0})<4.5 && abs({1})<4.5', ['_lowestBTagJet_0_Eta', '_highestBTagJet_0_Eta'])
 	jetRMS = CutP('rms_{lj}', '_lowestBTagJet_0_rms < 0.025')
 	MTmu = CutP('MT', '_muAndMETMT > 50')
 	MTele = CutP('MT', '_patMETs_0_Pt>45')
