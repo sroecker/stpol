@@ -25,14 +25,14 @@ class Cut(object):
 		#self.cutSequence = [copy.deepcopy(self)]
 
 	def __mul__(self, other):
-		cutName = self.cutName + " & " + other.cutName
+		cutName = self.cutName + ' & ' + other.cutName
 		cutStr = '('+self.cutStr+') && ('+other.cutStr+')'
 		newCut = Cut(cutName, cutStr, self._vars|other._vars)
 		#newCut.cutSequence = self.cutSequence + other.cutSequence
 		return newCut
 
 	def __add__(self, other):
-		cutName = self.cutName + " | " + other.cutName
+		cutName = self.cutName + ' | ' + other.cutName
 		cutStr = '('+self.cutStr+') || ('+other.cutStr+')'
 		newCut = Cut(cutName, cutStr, self._vars|other._vars)
 		#newCut.cutSequence = self.cutSequence + other.cutSequence
@@ -80,65 +80,65 @@ def invert(cut):
 	return ret
 
 colors = {
-	"T_t": ROOT.kRed,
-	"Tbar_t": ROOT.kRed,
-	"T_tW": ROOT.kYellow+4,
-	"Tbar_tW": ROOT.kYellow+4,
-	"T_s": ROOT.kYellow,
-	"Tbar_s": ROOT.kYellow,
+	'T_t': ROOT.kRed,
+	'Tbar_t': ROOT.kRed,
+	'T_tW': ROOT.kYellow+4,
+	'Tbar_tW': ROOT.kYellow+4,
+	'T_s': ROOT.kYellow,
+	'Tbar_s': ROOT.kYellow,
 
-	"DYJets": ROOT.kViolet,
+	'DYJets': ROOT.kViolet,
 
-	"WJets": ROOT.kGreen,
-	"W1Jets": ROOT.kGreen+1,
-	"W2Jets": ROOT.kGreen+2,
-	"W3Jets": ROOT.kGreen+3,
-	"W4Jets": ROOT.kGreen+4,
+	'WJets': ROOT.kGreen,
+	'W1Jets': ROOT.kGreen+1,
+	'W2Jets': ROOT.kGreen+2,
+	'W3Jets': ROOT.kGreen+3,
+	'W4Jets': ROOT.kGreen+4,
 
-	"WW": ROOT.kBlue,
-	"WZ": ROOT.kBlue,
-	"ZZ": ROOT.kBlue,
+	'WW': ROOT.kBlue,
+	'WZ': ROOT.kBlue,
+	'ZZ': ROOT.kBlue,
 
-	"TTbar": ROOT.kOrange,
-	"TTJets_FullLept": ROOT.kOrange+1,
-	"TTJets_SemiLept": ROOT.kOrange+2,
+	'TTbar': ROOT.kOrange,
+	'TTJets_FullLept': ROOT.kOrange+1,
+	'TTJets_SemiLept': ROOT.kOrange+2,
 
-	"QCDMu": ROOT.kGray,
-	"GJets1": ROOT.kGray,
-	"GJets2": ROOT.kGray,
+	'QCDMu': ROOT.kGray,
+	'GJets1': ROOT.kGray,
+	'GJets2': ROOT.kGray,
 
-	"QCD_Pt_20_30_EMEnriched": ROOT.kGray,
-	"QCD_Pt_30_80_EMEnriched": ROOT.kGray,
-	"QCD_Pt_80_170_EMEnriched": ROOT.kGray,
-	"QCD_Pt_170_250_EMEnriched": ROOT.kGray,
-	"QCD_Pt_250_350_EMEnriched": ROOT.kGray,
-	"QCD_Pt_350_EMEnriched": ROOT.kGray,
+	'QCD_Pt_20_30_EMEnriched': ROOT.kGray,
+	'QCD_Pt_30_80_EMEnriched': ROOT.kGray,
+	'QCD_Pt_80_170_EMEnriched': ROOT.kGray,
+	'QCD_Pt_170_250_EMEnriched': ROOT.kGray,
+	'QCD_Pt_250_350_EMEnriched': ROOT.kGray,
+	'QCD_Pt_350_EMEnriched': ROOT.kGray,
 
 
-	"QCD_Pt_20_30_BCtoE": ROOT.kGray,
-	"QCD_Pt_30_80_BCtoE": ROOT.kGray,
-	"QCD_Pt_80_170_BCtoE": ROOT.kGray,
-	"QCD_Pt_170_250_BCtoE": ROOT.kGray,
-	"QCD_Pt_250_350_BCtoE": ROOT.kGray,
-	"QCD_Pt_350_BCtoE": ROOT.kGray,
+	'QCD_Pt_20_30_BCtoE': ROOT.kGray,
+	'QCD_Pt_30_80_BCtoE': ROOT.kGray,
+	'QCD_Pt_80_170_BCtoE': ROOT.kGray,
+	'QCD_Pt_170_250_BCtoE': ROOT.kGray,
+	'QCD_Pt_250_350_BCtoE': ROOT.kGray,
+	'QCD_Pt_350_BCtoE': ROOT.kGray,
 
-	"SingleMu": ROOT.kBlack,
-	"SingleEle": ROOT.kBlack,
+	'SingleMu': ROOT.kBlack,
+	'SingleEle': ROOT.kBlack,
 }
 
 # Selection applied as in https://indico.cern.ch/getFile.py/access?contribId=1&resId=0&materialId=slides&confId=228739
 class Cuts:
-	initial = Cut("postSkim", "1==1", relvars = None)
+	initial = Cut('postSkim', '1==1', relvars = None)
 
-	recoFState = CutP("recoFstate", "_topCount==1")
-	mu  = CutP("mu", "_muonCount==1") \
-	    * CutP("muIso", "_goodSignalMuons_0_relIso<0.12") \
-	    * CutP("looseMuVeto", "_looseVetoMuCount==0") \
-	    * CutP("looseEleVeto", "_looseVetoEleCount==0") \
+	recoFState = CutP('recoFstate', '_topCount==1')
+	mu  = CutP('mu', '_muonCount==1') \
+	    * CutP('muIso', '_goodSignalMuons_0_relIso<0.12') \
+	    * CutP('looseMuVeto', '_looseVetoMuCount==0') \
+	    * CutP('looseEleVeto', '_looseVetoEleCount==0') \
 
-	ele = CutP("ele", "_electronCount==1") \
-	    * CutP("eleIso", "_goodSignalElectrons_0_relIso<0.3") \
-	    * CutP("eleMVA", "_goodSignalElectrons_0_mvaID>0.9") \
+	ele = CutP('ele', '_electronCount==1') \
+	    * CutP('eleIso', '_goodSignalElectrons_0_relIso<0.3') \
+	    * CutP('eleMVA', '_goodSignalElectrons_0_mvaID>0.9') \
 
 	muonID = CutP(None, '_muonsWithIso_0_normChi2 > 10') \
 	       * CutP(None, '_muonsWithIso_0_track_hitPattern_trackerLayersWithMeasurement > 5') \
@@ -148,29 +148,29 @@ class Cuts:
 	       * CutF(None, 'abs({0}) > 0.5', ['_muonsWithIso_0_dz']) \
 	       * CutP(None, '_muonsWithIso_0_numberOfMatchedStations > 1')
 
-	muonPt  = CutP("muonPt",  "_muonsWithIso_0_Pt > 26")
-	muonEta = CutF("muonEta", "abs({0}) < 2.1", ['_muonsWithIso_0_Eta'])
-	muonIso = CutP("muonIso", "_muonsWithIso_0_relIso < 0.12")
+	muonPt  = CutP('muonPt',  '_muonsWithIso_0_Pt > 26')
+	muonEta = CutF('muonEta', 'abs({0}) < 2.1', ['_muonsWithIso_0_Eta'])
+	muonIso = CutP('muonIso', '_muonsWithIso_0_relIso < 0.12')
 
-	jets_1LJ = CutP("1LJ", "_lightJetCount==1")
+	jets_1LJ = CutP('1LJ', '_lightJetCount==1')
 	jets_OK = CutP(None, '_lightJetCount>=0') \
 	        * CutP(None, '_bJetCount>=0')
-	jets_2plusJ = jets_OK * CutF("2plusLJ", "({0} + {1})>=2", ['_lightJetCount', '_bJetCount'])
-	jets_2J = jets_OK * CutF("2J", "({0} + {1})==2", ['_lightJetCount', '_bJetCount'])
+	jets_2plusJ = jets_OK * CutF('2plusLJ', '({0} + {1})>=2', ['_lightJetCount', '_bJetCount'])
+	jets_2J = jets_OK * CutF('2J', '({0} + {1})==2', ['_lightJetCount', '_bJetCount'])
 	jets_2J1T = CutP(None, '_lightJetCount==1') * CutP(None, '_bJetCount==1')
 	jets_2J0T = CutP(None, '_lightJetCount==2') * CutP(None, '_bJetCount==0')
 	jets_3J1T = CutP(None, '_lightJetCount==2') * CutP(None, '_bJetCount==1')
 	jets_3J2T = CutP(None, '_lightJetCount==2') * CutP(None, '_bJetCount==2')
-	realSol = CutP("realSol", "solType_recoNuProducerMu==0")
-	cplxSol = CutP("cplxSol", "solType_recoNuProducerMu==1")
+	realSol = CutP('realSol', 'solType_recoNuProducerMu==0')
+	cplxSol = CutP('cplxSol', 'solType_recoNuProducerMu==1')
 	mlnu = CutP(None, '_recoTop_0_Mass>130') * CutP(None, '_recoTop_0_Mass<220')
-	etaLJ = CutF("#eta_{lj}", "abs({0})>2.5", ['_lowestBTagJet_0_Eta'])
-	sidebandRegion = invert(mlnu) #sidebandRegion = Cut("!ml#nu", "!(_recoTop_0_Mass>130&&_recoTop_0_Mass<220)")
+	etaLJ = CutF('#eta_{lj}', 'abs({0})>2.5', ['_lowestBTagJet_0_Eta'])
+	sidebandRegion = invert(mlnu) #sidebandRegion = Cut('!ml#nu', '!(_recoTop_0_Mass>130&&_recoTop_0_Mass<220)')
 	jetPt = CutP(None, '_goodJets_0_Pt>40') * CutP(None, '_goodJets_1_Pt>40')
-	jetEta = Cut("jetEta", "abs({0})<4.5 && abs({1})<4.5", ['_lowestBTagJet_0_Eta', '_highestBTagJet_0_Eta'])
-	jetRMS = CutP("rms_{lj}", "_lowestBTagJet_0_rms < 0.025")
-	MTmu = CutP("MT", "_muAndMETMT > 50")
-	MTele = CutP("MT", "_patMETs_0_Pt>45")
+	jetEta = Cut('jetEta', 'abs({0})<4.5 && abs({1})<4.5', ['_lowestBTagJet_0_Eta', '_highestBTagJet_0_Eta'])
+	jetRMS = CutP('rms_{lj}', '_lowestBTagJet_0_rms < 0.025')
+	MTmu = CutP('MT', '_muAndMETMT > 50')
+	MTele = CutP('MT', '_patMETs_0_Pt>45')
 
 Cuts.muonID.rename('muonID')
 Cuts.jets_OK.rename('jetsOK')
