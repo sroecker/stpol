@@ -161,7 +161,7 @@ class Cuts:
 	jets_2J1T = CutP(None, '_lightJetCount==1') * CutP(None, '_bJetCount==1')
 	jets_2J0T = CutP(None, '_lightJetCount==2') * CutP(None, '_bJetCount==0')
 	jets_3J1T = CutP(None, '_lightJetCount==2') * CutP(None, '_bJetCount==1')
-	jets_3J2T = CutP(None, '_lightJetCount==2') * CutP(None, '_bJetCount==2')
+	jets_3J2T = CutP(None, '_lightJetCount==1') * CutP(None, '_bJetCount==2')
 	realSol = CutP('realSol', 'solType_recoNuProducerMu==0')
 	cplxSol = CutP('cplxSol', 'solType_recoNuProducerMu==1')
 	mlnu = CutP(None, '_recoTop_0_Mass>130') * CutP(None, '_recoTop_0_Mass<220')
