@@ -316,7 +316,7 @@ typedef GenericTreemakerAnalyzer<int, int> IntTreemakerAnalyzer;
 template<> const int IntTreemakerAnalyzer::defaultValue = -1;
 
 //define this as a plug-in
-DEFINE_FWK_MODULE(DoubleTreemakerAnalyzer);
+//DEFINE_FWK_MODULE(DoubleTreemakerAnalyzer);
 DEFINE_FWK_MODULE(FloatTreemakerAnalyzer);
 DEFINE_FWK_MODULE(BoolTreemakerAnalyzer);
 DEFINE_FWK_MODULE(IntTreemakerAnalyzer);

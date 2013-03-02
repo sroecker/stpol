@@ -3,10 +3,14 @@ from plotfw import drawfw
 from plotfw.params import Cuts as cutlist
 
 # Logging
-logging.basicConfig(filename='shapeexample.log', level=logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG, format="%(levelname)s %(message)s")
+# Also log to file `shapeexample.log`
+fileloghandler = logging.FileHandler('shapeexample.log')
+fileloghandler.setFormatter(logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s'))
+logging.getLogger('').addHandler(fileloghandler)
 
 # Set samples
-directory = '/home/joosep/singletop/data/trees/Feb18/Iso'
+directory = '/scratch/joosep/Iso'
 
 smplsgen = drawfw.SampleListGenerator(directory)
 smplsgen.add('WJets', 'WJets', 'WJets_inclusive.root')

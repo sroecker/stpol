@@ -1,20 +1,3 @@
-import FWCore.ParameterSet.Config as cms
-import SingleTopPolarization.Analysis.eventCounting as eventCounting
-
-"""
-This method configures the muon modules.
-process:         the process that obtain the modules (*modified by method*)
-isMC:            'True' - running on MC
-                   'False' - running on data
-muonSrc:        what collection to use for the initial pat::Muon-s
-isoType:        'rhoCorrRelIso' - use the rho corrected relative isolation
-                'deltaBetaCorrRelIso' - use delta beta corrected relative isolation
-metType:        'MtW' - use the W transverse mass cut
-                'MET' - use a simple MET cut
-doDebug:        'True/False' - enable/disable debbuging modules with printout
-reverseIsoCut:    'True' - choose anti-isolated leptons for QCD estimation
-                'False' - choose isolated leptons for QCD estimation (default)
-"""
 def MuonSetup(process, conf = None):
 
     goodMuonCut = 'isPFMuon'
@@ -219,4 +202,3 @@ def MuonPath(process, conf):
         "mBTags"
         ]
     )
-
