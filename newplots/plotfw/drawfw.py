@@ -220,7 +220,7 @@ class StackedPlotCreator(PlotCreator):
 			dt_int = data_hist.IntegralAndError(1, data_hist.GetNbinsX(), err)
 
 			plot.log.setVariable(dname, 'int', dt_int)
-			plot.log.setVariable(dname, 'int_err', err)
+			plot.log.setVariable(dname, 'int_err', float(err))
 
 			plot.data_hist.Add(data_hist)
 
@@ -297,7 +297,7 @@ class StackedPlotCreator(PlotCreator):
 				plot.log.setVariable(sample.name, 'expev', expected_events)
 				plot.log.setVariable(sample.name, 'scf', scale_factor)
 				plot.log.setVariable(sample.name, 'int', mc_int)
-				plot.log.setVariable(sample.name, 'int_err', err)
+				plot.log.setVariable(sample.name, 'int_err', float(err))
 			plot.mc_group_hists[group_name] = mc_group_hist
 
 		# Kolmorogov test
