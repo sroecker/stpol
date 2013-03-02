@@ -1,24 +1,40 @@
+import logging, re, copy
 import ROOT
 from cross_sections import xs
 
 # Class to handle (concatenate) cuts
-class Cut:
-	def __init__(self, cutName, cutStr):
-		self.cutName = cutName
-		self.cutStr = cutStr
+class Cut(object):
+	"""Class that handles cuts.
+
+	Not only does it store information about cuts, it also implements
+	methods to concatenate cuts together properly."""
+
+	def __init__(self, cutName, cutStr, relvars=[]):
+		self.cutName = str(cutName)
+		self.cutStr = str(cutStr)
+
+		if relvars is None:
+			self._vars = set()
+			logging.debug('No relevant variables in cut `%s` (cutstring: `%s`)!', cutName, cutStr)
+		elif len(relvars)==0:
+			self._vars = set()
+			logging.warning('No relevant variables in cut `%s` (cutstring `%s`)!', cutName, cutStr)
+		else:
+			self._vars = set(relvars)
+
 		#self.cutSequence = [copy.deepcopy(self)]
 
 	def __mul__(self, other):
 		cutName = self.cutName + " & " + other.cutName
 		cutStr = '('+self.cutStr+') && ('+other.cutStr+')'
-		newCut = Cut(cutName, cutStr)
+		newCut = Cut(cutName, cutStr, self._vars|other._vars)
 		#newCut.cutSequence = self.cutSequence + other.cutSequence
 		return newCut
 
 	def __add__(self, other):
 		cutName = self.cutName + " | " + other.cutName
 		cutStr = '('+self.cutStr+') || ('+other.cutStr+')'
-		newCut = Cut(cutName, cutStr)
+		newCut = Cut(cutName, cutStr, self._vars|other._vars)
 		#newCut.cutSequence = self.cutSequence + other.cutSequence
 		return newCut
 
@@ -27,6 +43,41 @@ class Cut:
 
 	def __repr__(self):
 		return self.cutName
+
+	def getUsedVariables(self):
+		return list(self._vars)
+
+	def rename(self, name):
+		logging.debug('Renaming `%s` to `%s` (cutstring: `%s`)', self.cutName, name, self.cutStr)
+		self.cutName = name
+
+	def invert(self):
+		logging.debug('Inverting `%s` (`%s`)', self.cutName, self.cutStr)
+		self.cutStr = '!({0})'.format(self.cutStr)
+		logging.debug('Inverted: `%s`', self.cutStr)
+
+class CutF(Cut):
+	"""Cut with string formatting
+	
+	Use the {} string formatting syntax to create cutstring. Allows
+	for the automatic storing of relevant variables."""
+	def __init__(self, cutname, cutformatstring, vars):
+		cutstring = cutformatstring.format(*vars)
+		super(CutF,self).__init__(cutname, cutstring, vars)
+
+class CutP(Cut):
+	"""Parses the variable name automatically.
+	
+	It assumes that the variable name is the leftmost one."""
+	def __init__(self, cutname, cutstring):
+		m=re.match('([A-Za-z0-9_]*)[ ]*([><=]*)[ ]*(.*)', cutstring)
+		logging.debug('In `%s` matching for `%s`', cutstring, m.group(1))
+		super(CutP,self).__init__(cutname, cutstring, [m.group(1)])
+
+def invert(cut):
+	ret = copy.deepcopy(cut)
+	ret.invert()
+	return ret
 
 colors = {
 	"T_t": ROOT.kRed,
