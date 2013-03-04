@@ -1,12 +1,12 @@
 import ROOT
 import logging
 
-logging.basicConfig(level=logging.DEBUG, format="%(asctime)s;%(levelname)s;%(message)s")
+logging.basicConfig(level=logging.INFO, format="%(asctime)s;%(levelname)s;%(message)s")
 
 from plotfw import drawfw
 from plotfw.params import Cuts as cutlist
+import plotfw.methods
 from plotfw.params import Cut
-import plotfw
 import pdb
 import samples
 import os
@@ -53,16 +53,16 @@ if __name__ == "__main__":
     #datadrivenQCD = qcdFile.Get("mtwMass__qcd")
     #datadrivenNonQCD = qcdFile.Get("mtwMass__nonqcd")
 
-    doLepIso = False
-    doNJets = False
-    doNBTags = False
-    doMET = False
-    doBDiscriminators = False
-    doTopMass = False
+    doLepIso = True
+    doNJets = True
+    doNBTags = True
+    doMET = True
+    doBDiscriminators = True
+    doTopMass = True
     doFinalSel = True
     doPVCount = True
-    doEtaLJ = False
-    doWeights = False
+    doEtaLJ = True
+    doWeights = True
 
     psMu = []
     psEle = []

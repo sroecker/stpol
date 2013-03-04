@@ -49,7 +49,7 @@ class PlotCreator(object):
 		Apply the cut 'cutstr' on sample 's'. Optionally reset the tree event list
 		before cutting and process only a limited number of entries.
 		"""
-		t_cut = time.clock()
+		t_cut = time.time()
 		logger.debug('Cutting on `%s`', s.name)
 
 		tempSample = Sample.fromOther(s)
@@ -69,13 +69,13 @@ class PlotCreator(object):
 		#tempSample.tree.SetEventList(elist)
 
 		retList = pickle.dumps(elist)
-		logger.debug('Cutting on `%s` took %f', tempSample.name, time.clock() - t_cut)
+		logger.debug('Cutting on `%s` took %f', tempSample.name, time.time() - t_cut)
 
 		del tempSample
 		return retList
 
 	def _applyCuts(self, cutstr, smpls, reset=True):
-		t_cut = time.clock()
+		t_cut = time.time()
 		p = multiprocessing.Pool(24)
 
 		#Combine the parameters into a single list [(cutstr, sample, do_reset, frac_entries), ... ]
@@ -90,12 +90,12 @@ class PlotCreator(object):
 		for i in range(len(smpls)):
 			smpls[i].tree.SetEventList(pickle.loads(evLists[i]))
 		logger.debug("Done unpickling and setting event lists")
-		logger.info('Cutting on all took %f', time.clock()-t_cut)
+		logger.info('Cutting on all took %f', time.time()-t_cut)
 
 	def plot(self, cut, plots, cutDescription=""):
 		"""Method takes a cut and list of plots and then returns a list plot objects."""
 
-		t0 = time.clock()
+		t0 = time.time()
 		# Apply cuts
 		self._cutstr = cut.cutStr
 		logger.info("Plotting samples {0} with Cut({1}), plots: {2}".format(self.samples, cut, plots))
@@ -112,7 +112,7 @@ class PlotCreator(object):
 		for p in retplots:
 			p.setPlotTitle(cutDescription)
 
-		t1 = time.clock()
+		t1 = time.time()
 		logger.info("Plotting took {0:.1f} seconds".format(t1-t0))
 
 

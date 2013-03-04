@@ -80,7 +80,7 @@ class Sample(object):
 
 	def _openTree(self):
 		fpath = (self.directory+'/' if self.directory is not None else '') + self.fname
-		logging.info('Opening file: `%s`', fpath)
+		logging.debug('Opening file: `%s`', fpath)
 		self.tfile = ROOT.TFile(fpath)
 		self.branches = []
 		if self.tfile.IsZombie():
