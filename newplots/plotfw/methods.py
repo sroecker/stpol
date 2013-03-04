@@ -95,11 +95,11 @@ class Sample(object):
 			trees[0].AddFriend(t)
 			self.branches += [br.GetName() for br in t.GetListOfBranches()]
 		self.tree = trees[0]
-		self.tree.SetCacheSize(10**7)
+		self.tree.SetCacheSize(10**8)
 		self.tree.AddBranchToCache("*")
 
 		for tree in trees:
-			tree.SetCacheSize(10**7)
+			tree.SetCacheSize(10**8)
 			tree.AddBranchToCache("*")
 
 		ROOT.gEnv.SetValue("TFile.AsyncPrefetching", 1)
@@ -220,7 +220,7 @@ class PlotParams(object):
 		vars_to_switch = []
 		vars_to_switch += self.vars_to_enable
 		if self.weights is not None:
-			vars_to_switch += plot_params.weights
+			vars_to_switch += self.weights
 		return vars_to_switch
 
 

@@ -52,13 +52,12 @@ class PlotCreator(object):
 		t_cut = time.clock()
 		logger.debug('Cutting on `%s`', s.name)
 
-		#tempSample = Sample.fromOther(s)
-		tempSample = s
+		tempSample = Sample.fromOther(s)
+		#tempSample = s
 		tempSample.tfile.cd()
 
 		if reset:
 			tempSample.tree.SetEventList(0)
-			tempSample.tree.SetBranchStatus("*", 1)
 
 		logger.debug("Drawing event list for sample {0}".format(tempSample.name))
 		uniqueName = tempSample.name + '_' + ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(4))
@@ -77,14 +76,14 @@ class PlotCreator(object):
 
 	def _applyCuts(self, cutstr, smpls, reset=True):
 		t_cut = time.clock()
-		#p = multiprocessing.Pool(24)
+		p = multiprocessing.Pool(24)
 
 		#Combine the parameters into a single list [(cutstr, sample, do_reset, frac_entries), ... ]
 		smplArgs = zip([cutstr]*len(smpls), smpls, [reset]*len(smpls), [self.frac_entries]*len(smpls))
 
 		#Apply the cut on samples with multicore
-		#evLists = p.map(mp_applyCut, smplArgs)
-		evLists = map(mp_applyCut, smplArgs)
+		evLists = p.map(mp_applyCut, smplArgs)
+		#evLists = map(mp_applyCut, smplArgs)
 
 		logger.debug("Done cutting event lists for cut {0} on samples {1}".format(cutstr, smpls))
 		#Load the event lists via pickle and set the trees
