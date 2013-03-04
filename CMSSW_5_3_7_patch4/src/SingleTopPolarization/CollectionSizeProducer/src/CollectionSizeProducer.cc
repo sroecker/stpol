@@ -5,7 +5,7 @@
 // 
 /**\class CollectionSizeProducer CollectionSizeProducer.cc SingleTopPolarization/CollectionSizeProducer/src/CollectionSizeProducer.cc
 
- Description: [one line class summary]
+ Description: Produces an 'int' containing the size of the input collection.
 
  Implementation:
      [Notes on implementation]
@@ -80,18 +80,6 @@ CollectionSizeProducer<T>::CollectionSizeProducer(const edm::ParameterSet& iConf
 {
 	src = iConfig.getParameter<edm::InputTag>("src");
 	produces<int>();
-   //register your products
-/* Examples
-   produces<ExampleData2>();
-
-   //if do put with a label
-   produces<ExampleData2>("label");
- 
-   //if you want to put into the Run
-   produces<ExampleData2,InRun>();
-*/
-   //now do what ever other initialization is needed
-  
 }
 
 
