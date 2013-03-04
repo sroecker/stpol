@@ -1,7 +1,7 @@
 import ROOT
 import logging
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s;%(levelname)s;%(message)s")
+logging.basicConfig(level=logging.DEBUG, format="%(asctime)s;%(levelname)s;%(message)s")
 
 from plotfw import drawfw
 from plotfw.params import Cuts as cutlist
@@ -46,7 +46,6 @@ def replaceQCD(plot, histQCD, histnonQCD):
 if __name__ == "__main__":
 #    datasmplsMu, datasmplsEle, smpls, samples.pltcMu, pltcEle = initSamples()
     logger.info("Running plots.py")
-    pdb.set_trace()
     smpls, smplsMu = samples.load()
     samples.pltcMu.frac_entries = 1.0
     qcdFile = ROOT.TFile("../mtwMass_fit_2J_1T_SR.root")

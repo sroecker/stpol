@@ -210,6 +210,14 @@ class PlotParams(object):
 			weights = list(set(self.weights).difference(set(disabled_weights)))
 			return "*".join(weights)
 
+	def getVars(self):
+		vars_to_switch = []
+		vars_to_switch += self.vars_to_enable
+		if self.weights is not None:
+			vars_to_switch += plot_params.weights
+		return vars_to_switch
+
+
 	def __repr__(self):
 		return "{0} in range {1} with weights {2}".format(self.var, self.r, self.weights)
 

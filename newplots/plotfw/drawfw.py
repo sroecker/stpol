@@ -29,12 +29,7 @@ class PlotCreator(object):
 		uniq = adler32("({0})*({1})".format(weight_str, cut_str))
 		return uniq
 
-	def _switchBranchesOn(self, plot_params):
-		vars_to_switch = []
-		vars_to_switch += plot_params.vars_to_enable
-		if plot_params.weights is not None:
-			vars_to_switch += plot_params.weights
-
+	def _switchBranchesOn(self, vars_to_switch):
 		sample_list = self.getSamples()
 		logger.debug("Switching branches ON: {0} for samples {1}".format(vars_to_switch, sample_list))
 
@@ -108,6 +103,9 @@ class PlotCreator(object):
 		logger.debug('Cut string: %s', self._cutstr)
 
 		smpls = self.samples.getSamples()
+
+		self._switchBranchesOn(cut._vars)
+
 		self._applyCuts(self._cutstr, smpls)
 
 		retplots = [self._plot(x) for x in plots]
@@ -182,7 +180,7 @@ class StackedPlotCreator(PlotCreator):
 		"""
 		unique_id = PlotCreator._uniqueCutStr(self._cutstr, pp.getWeightStr())
 
-		self._switchBranchesOn(pp)
+		self._switchBranchesOn(pp.getVars())
 
 		plotname = 'plot_cut%s_%s' % (unique_id, pp.getName())
 		logger.info('Plotting: %s', plotname)
@@ -350,7 +348,6 @@ class ShapePlotCreator(PlotCreator):
 	def getSamples(self):
 		return self._slist.getSamples()
 
-
 	def _plot(self, plot_params):
 
 		uniq = PlotCreator._uniqueCutStr(self._cutstr, plot_params.getWeightStr())
@@ -359,7 +356,7 @@ class ShapePlotCreator(PlotCreator):
 		plotname = 'plot_cut%s_%s' % (uniq, plot_params.getName())
 		logger.debug('Plotting: %s', plotname)
 
-		self._switchBranchesOn(plot_params)
+		self._switchBranchesOn(plot_params.getVars())
 
 		# Create the histograms
 		plot._maxbin = 0.0
