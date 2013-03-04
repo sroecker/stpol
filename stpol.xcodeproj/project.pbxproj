@@ -12,7 +12,6 @@
 		A70C271E16AFD8FC00495932 /* step2_newCmdLine_cfg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = step2_newCmdLine_cfg.py; sourceTree = "<group>"; };
 		A70C272916AFF53E00495932 /* crab_Data_step1.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = crab_Data_step1.cfg; path = crabs/crab_Data_step1.cfg; sourceTree = "<group>"; };
 		A70C272A16AFF53E00495932 /* crab_MC_step1.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = crab_MC_step1.cfg; path = crabs/crab_MC_step1.cfg; sourceTree = "<group>"; };
-		A70C272B16AFF53E00495932 /* crab_MC_step2.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = crab_MC_step2.cfg; path = crabs/crab_MC_step2.cfg; sourceTree = "<group>"; };
 		A70C274A16B0501C00495932 /* btagsystematicsweightproducer_cfg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = btagsystematicsweightproducer_cfg.py; sourceTree = "<group>"; };
 		A70C274B16B0501C00495932 /* BuildFile.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
 		A70C274D16B0501C00495932 /* btagsystematicsweightproducer_cfi.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = btagsystematicsweightproducer_cfi.py; sourceTree = "<group>"; };
@@ -28,6 +27,11 @@
 		A73D463316A84B1700703EF6 /* simpleTestFail.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = simpleTestFail.sh; sourceTree = "<group>"; };
 		A73D463416A84B1700703EF6 /* simpleTestSuccess.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = simpleTestSuccess.sh; sourceTree = "<group>"; };
 		A7500F9416A9A7F100279454 /* calcLumis.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = calcLumis.sh; sourceTree = "<group>"; };
+		A768B07B16E4A42A0076ADB3 /* crab_Data_step2_antiIso.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = crab_Data_step2_antiIso.cfg; path = crabs/crab_Data_step2_antiIso.cfg; sourceTree = "<group>"; };
+		A768B07C16E4A42A0076ADB3 /* crab_Data_step2_Iso.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = crab_Data_step2_Iso.cfg; path = crabs/crab_Data_step2_Iso.cfg; sourceTree = "<group>"; };
+		A768B07D16E4A42A0076ADB3 /* crab_MC_step1_glideInRemote.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = crab_MC_step1_glideInRemote.cfg; path = crabs/crab_MC_step1_glideInRemote.cfg; sourceTree = "<group>"; };
+		A768B07E16E4A42A0076ADB3 /* crab_MC_step2_local_antiIso.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = crab_MC_step2_local_antiIso.cfg; path = crabs/crab_MC_step2_local_antiIso.cfg; sourceTree = "<group>"; };
+		A768B07F16E4A42A0076ADB3 /* crab_MC_step2_local_Iso.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = crab_MC_step2_local_Iso.cfg; path = crabs/crab_MC_step2_local_Iso.cfg; sourceTree = "<group>"; };
 		A76CF92716A6B2BE00DC8250 /* analysis_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = analysis_cfg.py; sourceTree = "<group>"; };
 		A76CF92816A6B2BE00DC8250 /* BuildFile.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
 		A76CF92A16A6B2BE00DC8250 /* analysis_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = analysis_cfi.py; sourceTree = "<group>"; };
@@ -211,8 +215,6 @@
 		A78CFD4316B9348800D54BF6 /* patobjectownrefproducer_cfi.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = patobjectownrefproducer_cfi.py; sourceTree = "<group>"; };
 		A78CFD4516B9348800D54BF6 /* PatObjectOwnRefProducer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PatObjectOwnRefProducer.cc; sourceTree = "<group>"; };
 		A7BB7EC316CA77F900B9DD28 /* fastSimValidationPlots.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = fastSimValidationPlots.py; sourceTree = "<group>"; };
-		A7BB7EC416CC503C00B9DD28 /* testSelector.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = testSelector.py; sourceTree = "<group>"; };
-		A7BB7EC516CC510400B9DD28 /* Selector.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = Selector.py; sourceTree = "<group>"; };
 		A7D8670216C8E77C00514DDD /* plots.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = plots.py; sourceTree = "<group>"; };
 		A7EAECBF16D266CB004D032C /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		A7EAECC016D266CB004D032C /* example.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = example.py; sourceTree = "<group>"; };
@@ -230,9 +232,13 @@
 		A70C272C16AFF54400495932 /* crabs */ = {
 			isa = PBXGroup;
 			children = (
+				A768B07B16E4A42A0076ADB3 /* crab_Data_step2_antiIso.cfg */,
+				A768B07C16E4A42A0076ADB3 /* crab_Data_step2_Iso.cfg */,
+				A768B07D16E4A42A0076ADB3 /* crab_MC_step1_glideInRemote.cfg */,
+				A768B07E16E4A42A0076ADB3 /* crab_MC_step2_local_antiIso.cfg */,
+				A768B07F16E4A42A0076ADB3 /* crab_MC_step2_local_Iso.cfg */,
 				A70C272916AFF53E00495932 /* crab_Data_step1.cfg */,
 				A70C272A16AFF53E00495932 /* crab_MC_step1.cfg */,
-				A70C272B16AFF53E00495932 /* crab_MC_step2.cfg */,
 			);
 			name = crabs;
 			sourceTree = "<group>";
@@ -292,8 +298,6 @@
 			isa = PBXGroup;
 			children = (
 				A7EAECBE16D266CB004D032C /* newplots */,
-				A7BB7EC416CC503C00B9DD28 /* testSelector.py */,
-				A7BB7EC516CC510400B9DD28 /* Selector.py */,
 				A70C272C16AFF54400495932 /* crabs */,
 				A73D461C16A83DFB00703EF6 /* util */,
 				A76CFAAB16A6CA8900DC8250 /* build.sh */,
