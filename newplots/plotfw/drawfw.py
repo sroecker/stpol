@@ -14,13 +14,14 @@ from odict import OrderedDict as dict
 
 logger = logging.getLogger(__name__)
 def mp_applyCut(s):
-	return PlotCreator._applyCut(s[0], s[1], s[2], s[3])
+	return PlotCreator._applyCut(s[0], s[1], s[2], s[3], s[4])
 
 
 class PlotCreator(object):
-	def __init__(self, frac = 1.0):
+	def __init__(self, frac = 1.0, n_cores=10):
 		self.frac_entries = frac
 		self.samples = None
+		self.n_cores = n_cores
 	@staticmethod
 	def _uniqueCutStr(cut_str, weight_str):
 		"""
@@ -44,7 +45,7 @@ class PlotCreator(object):
 
 
 	@staticmethod
-	def _applyCut(cutstr, s, reset=True, frac_entries=1):
+	def _applyCut(cutstr, s, reset=True, frac_entries=1, multicore=True):
 		"""
 		Apply the cut 'cutstr' on sample 's'. Optionally reset the tree event list
 		before cutting and process only a limited number of entries.
@@ -52,8 +53,10 @@ class PlotCreator(object):
 		t_cut = time.time()
 		logger.debug('Cutting on `%s`', s.name)
 
-		tempSample = Sample.fromOther(s)
-		#tempSample = s
+		if multicore:
+			tempSample = Sample.fromOther(s)
+		else:
+			tempSample = s
 		tempSample.tfile.cd()
 
 		if reset:
@@ -76,14 +79,17 @@ class PlotCreator(object):
 
 	def _applyCuts(self, cutstr, smpls, reset=True):
 		t_cut = time.time()
-		p = multiprocessing.Pool(24)
 
 		#Combine the parameters into a single list [(cutstr, sample, do_reset, frac_entries), ... ]
-		smplArgs = zip([cutstr]*len(smpls), smpls, [reset]*len(smpls), [self.frac_entries]*len(smpls))
+		smplArgs = zip([cutstr]*len(smpls), smpls, [reset]*len(smpls), [self.frac_entries]*len(smpls), [self.n_cores>1]*len(smpls))
 
 		#Apply the cut on samples with multicore
-		evLists = p.map(mp_applyCut, smplArgs)
-		#evLists = map(mp_applyCut, smplArgs)
+		if self.n_cores>1:
+			logger.debug("Cutting using on %d cores" % self.n_cores)
+			p = multiprocessing.Pool(self.n_cores)
+			evLists = p.map(mp_applyCut, smplArgs)
+		else:
+			evLists = map(mp_applyCut, smplArgs)
 
 		logger.debug("Done cutting event lists for cut {0} on samples {1}".format(cutstr, smpls))
 		#Load the event lists via pickle and set the trees
@@ -142,7 +148,7 @@ class StackedPlotCreator(PlotCreator):
 			self._data = SampleGroup('data', ROOT.kBlack)
 			self._data.add(datasamples)
 		else:
-			logger.error('Bad type for `datasamples`!')
+			raise TypeError('Bad type for `datasamples`!')
 
 		self.samples = SampleList()
 		for group in self._mcs.groups.values():
@@ -431,6 +437,13 @@ class Plot(object):
 		self.legend.Draw('SAME')
 		self.cvs.SetLogy(self._plot_params.doLogY)
 		self.yield_table.draw()
+		if self._plot_params.do_chi2:
+			self.chi2pad = Chi2ValuePad(
+				self.getHistogram(self._plot_params.chi2_a),
+				self.getHistogram(self._plot_params.chi2_b),
+				chi2options=self._plot_params.chi2options
+			)
+			self.chi2pad.draw()
 
 	def save(self, w=650, h=400, log=False, fmt='png', fout=None):
 		if fout is None:
@@ -482,6 +495,18 @@ class StackPlot(Plot):
 		legend.AddEntry(self.data_hist, self.data_hist.GetTitle())
 		return
 
+	def getHistogram(self, name):
+		if name == "data":
+			return self.data_hist
+		elif name == "mc":
+			return self.total_mc_hist
+		elif name in mc_group_hists.keys():
+			return self.mc_group_hists[name]
+		elif name in mc_hists.keys():
+			return self.mc_hists.keys[name]
+		else:
+			raise KeyError("Histogram '{0}' not defined for plot {1}".format(name, self))
+
 class ShapePlot(Plot):
 	def __init__(self, plot_params, groups, unique_id):
 		super(ShapePlot,self).__init__(plot_params, groups, unique_id)
@@ -494,17 +519,22 @@ class ShapePlot(Plot):
 	def draw(self):
 		first = True
 		hists = self._hists.values()
-		hists[0].SetTitle(self.plotTitle)
 		hists[0].SetMaximum(1.1*self._maxbin)
 		for hist in hists:
 			hist.Draw('E1' if first else 'E1 SAME')
 			first = False
 		super(ShapePlot, self).draw()
 
+		#need to set after drawing all other things, since histo title will change, but is used internally
+		hists[0].SetTitle(self.plotTitle)
+
 	def setLegendEntries(self, legend):
 		for hist in self._hists.values():
 			legend.AddEntry(hist, hist.GetTitle())
 		return
+
+	def getHistogram(self, name):
+		return self._hists[name]
 
 class BaseLegend(object):
 	legCoords = dict()
@@ -518,8 +548,8 @@ class BaseLegend(object):
 		self.legend = ROOT.TLegend(coords[0], coords[1], coords[2], coords[3])
 		self.legend.SetFillColor(ROOT.kWhite)
 		self.legend.SetLineColor(ROOT.kWhite)
-		self.legend.SetTextFont(133)
-		self.legend.SetTextSize(10)
+		self.legend.SetTextFont(230)
+		self.legend.SetTextSize(17)
 		self.legend.SetFillStyle(4000)
 
 		plot.setLegendEntries(self.legend)
@@ -551,11 +581,39 @@ class YieldTable:
 		cur_pos = YieldTable.pos[location]
 		self.text_pad = ROOT.TPaveText(cur_pos[0], cur_pos[1], cur_pos[2], cur_pos[3], "NDC")
 		self.text_pad.SetFillColor(ROOT.kWhite)
+		self.text_pad.SetTextFont(220)
+		self.text_pad.SetTextSize(17)
 		self.text_pad.SetLabel("event yields")
 		self.text_pad.SetShadowColor(ROOT.kWhite)
 		#self.text_pad.SetTextSize(15)
 		for (name, (total, err)) in yield_table.items():
 			self.text_pad.AddText("{0}: {1:.1f} #pm {2:.1f}".format(name, total, err))
+
+	def draw(self):
+		self.text_pad.Draw()
+
+class Chi2ValuePad:
+	pos = dict()
+	pos["LU"] = [0.1, 0.8, 0.2, 0.9]
+	pos["RU_inset"] = [0.79, 0.58, 0.69, 0.88]
+	def __init__(self, hist_a, hist_b, location="LU", chi2options=None):
+
+		chi2opt = "CHI2/NDF"
+		if chi2options is None:
+			chi2options = dict()
+			chi2options["weight_type"] = "WW"
+		chi2opt += chi2options["weight_type"]
+
+		self.chi2 = hist_a.Chi2Test(hist_b, chi2opt)
+		cur_pos = Chi2ValuePad.pos[location]
+		self.text_pad = ROOT.TPaveText(cur_pos[0], cur_pos[1], cur_pos[2], cur_pos[3], "NDC")
+		self.text_pad.SetFillColor(ROOT.kWhite)
+		self.text_pad.SetLineColor(ROOT.kWhite)
+		self.text_pad.SetFillStyle(4000)
+		self.text_pad.SetShadowColor(ROOT.kWhite)
+		self.text_pad.SetTextFont(220)
+		self.text_pad.SetTextSize(17)
+		self.text_pad.AddText("#chi^{2}/NDF(%s, %s) = %.1f" % (hist_a.GetTitle(), hist_b.GetTitle(), self.chi2))
 
 	def draw(self):
 		self.text_pad.Draw()

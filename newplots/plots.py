@@ -47,22 +47,23 @@ if __name__ == "__main__":
 #    datasmplsMu, datasmplsEle, smpls, samples.pltcMu, pltcEle = initSamples()
     logger.info("Running plots.py")
     smpls, smplsMu = samples.load()
-    samples.pltcMu.frac_entries = 1.0
-    qcdFile = ROOT.TFile("../mtwMass_fit_2J_1T_SR.root")
+    samples.pltcMu.frac_entries = 0.1
+    samples.pltcMu.n_cores = 1
 
+    #qcdFile = ROOT.TFile("../mtwMass_fit_2J_1T_SR.root")
     #datadrivenQCD = qcdFile.Get("mtwMass__qcd")
     #datadrivenNonQCD = qcdFile.Get("mtwMass__nonqcd")
 
-    doLepIso = True
-    doNJets = True
-    doNBTags = True
-    doMET = True
-    doBDiscriminators = True
-    doTopMass = True
-    doFinalSel = True
+    doLepIso = False
+    doNJets = False
+    doNBTags = False
+    doMET = False
+    doBDiscriminators = False
+    doTopMass = False
+    doFinalSel = False
     doPVCount = True
-    doEtaLJ = True
-    doWeights = True
+    doEtaLJ = False
+    doWeights = False
 
     psMu = []
     psEle = []
@@ -173,6 +174,10 @@ if __name__ == "__main__":
                 drawfw.PlotParams("_offlinePVCount", (0, 60), plotTitle="reconstructed N_{vtx.} after PU rew.(N_{true})",
                     weights=["PUWeightNtrue_puWeightProducer"]),
         ]
+
+        for p in NvtxPlots:
+            p.doChi2Test("t-channel", "mu", chi2options={"weight_type":"WW"})
+
         psMu += sigDataMuShapeComp.plot(cutlist.finalMu, NvtxPlots, cutDescription="muon channel, final sel.")
 
     if doWeights:

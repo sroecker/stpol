@@ -209,12 +209,20 @@ class PlotParams(object):
 		else:
 			self.vars_to_enable = vars_to_enable
 
+		self.do_chi2 = False
+
 	def getWeightStr(self, disabled_weights=[]):
 		if self.weights is None:
 			return "1.0"
 		else:
 			weights = list(set(self.weights).difference(set(disabled_weights)))
 			return "*".join(weights)
+
+	def doChi2Test(self, group_a_name, group_b_name, chi2options=None):
+		self.do_chi2 = True
+		self.chi2_a = group_a_name
+		self.chi2_b = group_b_name
+		self.chi2options = chi2options
 
 	def getVars(self):
 		vars_to_switch = []
