@@ -1,3 +1,6 @@
+import FWCore.ParameterSet.Config as cms
+import SingleTopPolarization.Analysis.eventCounting as eventCounting
+
 def MuonSetup(process, conf = None):
 
     goodMuonCut = 'isPFMuon'
