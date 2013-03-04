@@ -78,6 +78,7 @@ private:
     
     const std::unique_ptr<std::map<BTagSystematicsWeightProducer::Flavour, double>> effs;
     const edm::InputTag jetSrc;
+    const edm::InputTag nJetSrc, nTagSrc;
     const unsigned int nJets, nTags;
     Combinations combs;
     double scaleFactor(BTagSystematicsWeightProducer::Flavour flavour, BTagSystematicsWeightProducer::BTagAlgo algo, double pt, double eta, double& sfUp, double& sfDown);
@@ -317,6 +318,8 @@ double BTagSystematicsWeightProducer::scaleFactor(BTagSystematicsWeightProducer:
 BTagSystematicsWeightProducer::BTagSystematicsWeightProducer(const edm::ParameterSet& iConfig)
 : effs(new std::map<BTagSystematicsWeightProducer::Flavour, double>())
 , jetSrc(iConfig.getParameter<edm::InputTag>("src"))
+, nJetSrc(iConfig.getParameter<edm::InputTag>("nJetSrc"))
+, nTagSrc(iConfig.getParameter<edm::InputTag>("nTagSrc"))
 , nJets(iConfig.getParameter<unsigned int>("nJets"))
 , nTags(iConfig.getParameter<unsigned int>("nTags"))
 {
@@ -334,8 +337,6 @@ BTagSystematicsWeightProducer::BTagSystematicsWeightProducer(const edm::Paramete
         throw cms::Exception("scaleFactor") << "algo " << algo << " not implemented";
     }
     
-    //Precalculate the tagging combinations
-    combinations(nJets, nTags, combs);
     
     produces<double>("bTagWeight");
     produces<double>("bTagWeightSystBCUp");
@@ -393,23 +394,42 @@ BTagSystematicsWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup
     using namespace edm;
     Handle<View<reco::Candidate> > jetsIn;
     iEvent.getByLabel(jetSrc, jetsIn);
+  
+    unsigned int nJets_ev=0;
+    unsigned int nTags_ev=0;
+
+    if (nJets == 0 && nTags == 0) {
+        Handle<int> nJetsIn;
+        iEvent.getByLabel(nJetSrc, nJetsIn);
+        Handle<int> nTagsIn;
+        iEvent.getByLabel(nTagSrc, nTagsIn);
+
+        nJets_ev = *nJetsIn;
+        nTags_ev = *nTagsIn;
+    } else {
+        nJets_ev = nJets;
+        nTags_ev = nTags;
+    }
     
+    //Precalculate the tagging combinations
+    combinations(nJets_ev, nTags_ev, combs);
+
     LogDebug("produce") << "This event has " << jetsIn->size() << " jets";
-    if (nJets >jetsIn->size()) {
-        LogInfo("produce") << "Requested jet selection: " << nJets << " jets of which " << nTags <<
+    if (nJets_ev >jetsIn->size()) {
+        LogInfo("produce") << "Requested jet selection: " << nJets_ev << " jets of which " << nTags_ev <<
             " are to be b-tagged, but event has " << jetsIn->size() << " jets: not enough jets!" << " Skipping event.";
         return;
         //throw cms::Exception("produce") << "Not enough jets in event for b-tag reweighting: " << jetsIn->size() << "<" << nJets;
     }
-    else if (nJets<jetsIn->size()) {
-        LogInfo("produce") << "Requested jet selection: " << nJets << " jets of which " << nTags <<
+    else if (nJets_ev<jetsIn->size()) {
+        LogInfo("produce") << "Requested jet selection: " << nJets_ev << " jets of which " << nTags_ev <<
             " are to be b-tagged, but event has " << jetsIn->size() << " jets: truncating collection!"; 
     }
     
     {
         //Make a list of the pointers to the first nJets jets
         std::vector<const reco::Candidate *> jets;
-        for (unsigned int i=0;i<nJets;i++) {
+        for (unsigned int i=0;i<nJets_ev;i++) {
             jets.push_back(&(jetsIn->at(i)));
         }
         

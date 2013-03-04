@@ -137,6 +137,11 @@ def JetSetup(process, conf):
             cut=cms.string("abs(partonFlavour()) <= 3")
         )
 
+    process.goodJetCount = cms.EDProducer(
+        "CollectionSizeProducer<reco::Candidate>",
+        src = cms.InputTag("goodJets")
+    )
+
 
     process.btaggedJets = cms.EDFilter(
         "CandViewSelector",
@@ -222,27 +227,29 @@ def JetSetup(process, conf):
         #The b-tag weight calculation is different for each required n-jet/m-btag bin
         process.bTagWeightProducerNJMT = cms.EDProducer('BTagSystematicsWeightProducer',
             src=cms.InputTag("goodJets"),
-            nJets=cms.uint32(conf.Jets.nJets),
-            nTags=cms.uint32(conf.Jets.nBTags),
+            nJets=cms.uint32(0),#conf.Jets.nJets),
+            nTags=cms.uint32(0),#conf.Jets.nBTags),
+            nJetSrc=cms.InputTag("goodJetCount"),
+            nTagSrc=cms.InputTag("bJetCount"),
             effB=cms.double(sampleBEffs.eff_b),
             effC=cms.double(sampleBEffs.eff_c),
             effL=cms.double(sampleBEffs.eff_l),
             algo=cms.string(conf.Jets.bTagWorkingPoint)
         )
-        process.bTagWeightProducer3J1T = process.bTagWeightProducerNJMT.clone(nJets=cms.uint32(3), nTags=cms.uint32(1))
-        process.bTagWeightProducer3J2T = process.bTagWeightProducerNJMT.clone(nJets=cms.uint32(3), nTags=cms.uint32(2))
-        process.bTagWeightProducer3J0T = process.bTagWeightProducerNJMT.clone(nJets=cms.uint32(3), nTags=cms.uint32(0))
-        process.bTagWeightProducer2J0T = process.bTagWeightProducerNJMT.clone(nJets=cms.uint32(2), nTags=cms.uint32(0))
+        #process.bTagWeightProducer3J1T = process.bTagWeightProducerNJMT.clone(nJets=cms.uint32(3), nTags=cms.uint32(1))
+        #process.bTagWeightProducer3J2T = process.bTagWeightProducerNJMT.clone(nJets=cms.uint32(3), nTags=cms.uint32(2))
+        #process.bTagWeightProducer3J0T = process.bTagWeightProducerNJMT.clone(nJets=cms.uint32(3), nTags=cms.uint32(0))
+        #process.bTagWeightProducer2J0T = process.bTagWeightProducerNJMT.clone(nJets=cms.uint32(2), nTags=cms.uint32(0))
 
         process.bEffSequence = cms.Sequence(
             process.bJetBTagEffSequence *
             process.cJetBTagEffSequence *
             process.lJetBTagEffSequence *
-            process.bTagWeightProducerNJMT *
-            process.bTagWeightProducer3J1T *
-            process.bTagWeightProducer3J2T *
-            process.bTagWeightProducer3J0T *
-            process.bTagWeightProducer2J0T
+            process.bTagWeightProducerNJMT
+            #process.bTagWeightProducer3J1T *
+            #process.bTagWeightProducer3J2T *
+            #process.bTagWeightProducer3J0T *
+            #process.bTagWeightProducer2J0T
         )
 
 
@@ -252,11 +259,14 @@ def JetSetup(process, conf):
       process.deltaRJets *
       process.goodJets *
 
+      process.goodJetCount *
+
       process.btaggedJets *
-      process.untaggedJets *
-      process.oneUntaggedJet *
       process.bJetCount *
+      process.untaggedJets *
       process.lightJetCount *
+
+      process.oneUntaggedJet *
       process.fwdMostLightJet *
       process.highestBTagJet *
       process.lowestBTagJet
