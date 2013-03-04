@@ -6,6 +6,7 @@ from plotfw import drawfw
 
 # Parameters with reasonable defaults
 directory = '/scratch/joosep/Feb28' # Old: '/home/joosep/singletop/data/trees/Feb18/Iso'
+#directory = '/home/joosep/singletop/data/trees/Feb24/Iso'
 fulldata = True
 split_ttbar = False
 

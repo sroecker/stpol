@@ -12,6 +12,7 @@ import pdb
 import math
 from odict import OrderedDict as dict
 
+logger = logging.getLogger(__name__)
 def mp_applyCut(s):
 	return PlotCreator._applyCut(s[0], s[1], s[2], s[3])
 
@@ -20,7 +21,6 @@ class PlotCreator(object):
 	def __init__(self, frac = 1.0):
 		self.frac_entries = frac
 		self.samples = None
-
 	@staticmethod
 	def _uniqueCutStr(cut_str, weight_str):
 		"""
@@ -36,7 +36,7 @@ class PlotCreator(object):
 			vars_to_switch += plot_params.weights
 
 		sample_list = self.getSamples()
-		logging.debug("Switching branches ON: {0} for samples {1}".format(vars_to_switch, sample_list))
+		logger.debug("Switching branches ON: {0} for samples {1}".format(vars_to_switch, sample_list))
 
 		for sample in sample_list:
 			sample.tree.SetBranchStatus("*", 0)
@@ -55,7 +55,7 @@ class PlotCreator(object):
 		before cutting and process only a limited number of entries.
 		"""
 		t_cut = time.clock()
-		logging.debug('Cutting on `%s`', s.name)
+		logger.debug('Cutting on `%s`', s.name)
 
 		#tempSample = Sample.fromOther(s)
 		tempSample = s
@@ -65,17 +65,17 @@ class PlotCreator(object):
 			tempSample.tree.SetEventList(0)
 			tempSample.tree.SetBranchStatus("*", 1)
 
-		logging.debug("Drawing event list for sample {0}".format(tempSample.name))
+		logger.debug("Drawing event list for sample {0}".format(tempSample.name))
 		uniqueName = tempSample.name + '_' + ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(4))
 
 		elist_name = "elist_"+uniqueName
 		nEvents = tempSample.tree.Draw(">>%s"%elist_name, cutstr, '', int(float(tempSample.tree.GetEntries())*frac_entries))
-		logging.debug("Done drawing {0} events into list {1}".format(nEvents, elist_name))
+		logger.debug("Done drawing {0} events into list {1}".format(nEvents, elist_name))
 		elist = tempSample.tfile.Get(elist_name)
 		#tempSample.tree.SetEventList(elist)
 
 		retList = pickle.dumps(elist)
-		logging.debug('Cutting on `%s` took %f', tempSample.name, time.clock() - t_cut)
+		logger.debug('Cutting on `%s` took %f', tempSample.name, time.clock() - t_cut)
 
 		del tempSample
 		return retList
@@ -91,19 +91,21 @@ class PlotCreator(object):
 		#evLists = p.map(mp_applyCut, smplArgs)
 		evLists = map(mp_applyCut, smplArgs)
 
-		logging.debug("Done cutting event lists for cut {0} on samples {1}".format(cutstr, smpls))
+		logger.debug("Done cutting event lists for cut {0} on samples {1}".format(cutstr, smpls))
 		#Load the event lists via pickle and set the trees
 		for i in range(len(smpls)):
 			smpls[i].tree.SetEventList(pickle.loads(evLists[i]))
-		logging.debug("Done unpickling and setting event lists")
-		logging.info('Cutting on all took %f', time.clock()-t_cut)
+		logger.debug("Done unpickling and setting event lists")
+		logger.info('Cutting on all took %f', time.clock()-t_cut)
 
 	def plot(self, cut, plots, cutDescription=""):
 		"""Method takes a cut and list of plots and then returns a list plot objects."""
+
+		t0 = time.clock()
 		# Apply cuts
 		self._cutstr = cut.cutStr
-		logging.info("Plotting samples {0} with Cut({1}), plots: {2}".format(self.samples, cut, plots))
-		logging.debug('Cut string: %s', self._cutstr)
+		logger.info("Plotting samples {0} with Cut({1}), plots: {2}".format(self.samples, cut, plots))
+		logger.debug('Cut string: %s', self._cutstr)
 
 		smpls = self.samples.getSamples()
 		self._applyCuts(self._cutstr, smpls)
@@ -112,6 +114,10 @@ class PlotCreator(object):
 
 		for p in retplots:
 			p.setPlotTitle(cutDescription)
+
+		t1 = time.clock()
+		logger.info("Plotting took {0:.1f} seconds".format(t1-t0))
+
 
 		return retplots
 
@@ -139,7 +145,7 @@ class StackedPlotCreator(PlotCreator):
 			self._data = SampleGroup('data', ROOT.kBlack)
 			self._data.add(datasamples)
 		else:
-			logging.error('Bad type for `datasamples`!')
+			logger.error('Bad type for `datasamples`!')
 
 		self.samples = SampleList()
 		for group in self._mcs.groups.values():
@@ -151,7 +157,7 @@ class StackedPlotCreator(PlotCreator):
 #		# Apply cuts
 #		self._cutstr = cut.cutStr
 #
-#		logging.info('Cut string: %s', self._cutstr)
+#		logger.info('Cut string: %s', self._cutstr)
 #
 #
 #		smpls = self._mcs.getSamples() + self._data.getSamples()
@@ -179,7 +185,7 @@ class StackedPlotCreator(PlotCreator):
 		self._switchBranchesOn(pp)
 
 		plotname = 'plot_cut%s_%s' % (unique_id, pp.getName())
-		logging.info('Plotting: %s', plotname)
+		logger.info('Plotting: %s', plotname)
 
 		plot = StackPlot(pp, self.samples, unique_id)
 		plot.log.addParam('Variable', pp.var)
@@ -351,7 +357,7 @@ class ShapePlotCreator(PlotCreator):
 
 		plot = ShapePlot(plot_params, self.samples, unique_id=uniq)
 		plotname = 'plot_cut%s_%s' % (uniq, plot_params.getName())
-		logging.debug('Plotting: %s', plotname)
+		logger.debug('Plotting: %s', plotname)
 
 		self._switchBranchesOn(plot_params)
 
@@ -359,7 +365,7 @@ class ShapePlotCreator(PlotCreator):
 		plot._maxbin = 0.0
 		for group_name, group in self._slist.groups.items():
 			hist_name = 'hist_%s_%s'%(plotname, group.getName())
-			logging.info('Created histogram: %s', hist_name)
+			logger.info('Created histogram: %s', hist_name)
 
 			hist = ROOT.TH1F(hist_name, group.pretty_name, plot_params.hbins, plot_params.hmin, plot_params.hmax)
 			hist.Sumw2()
@@ -377,7 +383,7 @@ class ShapePlotCreator(PlotCreator):
 						'%s>>%s'%(plot_params.var, sample_hist.GetName()),
 					plot_params.getWeightStr(s.disabled_weights) if isinstance(s, MCSample) else '', 'goff'
 				)
-				logging.debug('Filled histogram `%s` from sample `%s` with %f events', hist_name, s.name, filled)
+				logger.debug('Filled histogram `%s` from sample `%s` with %f events', hist_name, s.name, filled)
 				filled_tot += filled
 
 				err = ROOT.Double()
@@ -387,15 +393,15 @@ class ShapePlotCreator(PlotCreator):
 
 				hist.Add(sample_hist)
 
-			logging.debug('Filled total for `%s` : %f' % (hist_name, filled_tot))
+			logger.debug('Filled total for `%s` : %f' % (hist_name, filled_tot))
 
 			hist_integral = hist.Integral()
-			logging.debug('Hist `%s` integral: %f' % (hist_name, hist_integral))
+			logger.debug('Hist `%s` integral: %f' % (hist_name, hist_integral))
 			if filled_tot>0:
 				hist.Scale(1.0/hist_integral)
-				logging.debug('Hist `%s` integral: %f (after scaling)' % (hist_name, hist.Integral()))
+				logger.debug('Hist `%s` integral: %f (after scaling)' % (hist_name, hist.Integral()))
 			else:
-				logging.warning("Histogram {0} was empty".format(hist))
+				logger.warning("Histogram {0} was empty".format(hist))
 				hist.Scale(0)
 			plot._maxbin = max(plot._maxbin, hist.GetMaximum())
 			plot.addHist(hist, group.name)
@@ -409,7 +415,7 @@ class Plot(object):
 
 	This class puts everything together (different histograms, legend etc)
 	and allows to export the plot easily. It also handles the metadata
-	logging.
+	logger.
 
 	"""
 	def __init__(self, plot_params, groups, unique_id):
@@ -435,7 +441,7 @@ class Plot(object):
 			fout = self.getName()
 		ofname = fout+'.'+fmt
 
-		logging.info('Saving as: %s', ofname)
+		logger.info('Saving as: %s', ofname)
 		self.cvs = ROOT.TCanvas('tcvs_%s'%fout, '', w, h)
 		if self.legend.legpos == "R":
 			self.cvs.SetRightMargin(0.26)

@@ -1,17 +1,19 @@
 import ROOT
+import logging
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s;%(levelname)s;%(message)s")
+
 from plotfw import drawfw
 from plotfw.params import Cuts as cutlist
 from plotfw.params import Cut
 import plotfw
-import logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s;%(levelname)s;%(message)s")
 import pdb
 import samples
-
 import os
 import random
 import string
 
+logger = logging.getLogger(__name__)
 def reweighted(plot_params):
     out = []
     for pp in plot_params:
@@ -43,12 +45,14 @@ def replaceQCD(plot, histQCD, histnonQCD):
 
 if __name__ == "__main__":
 #    datasmplsMu, datasmplsEle, smpls, samples.pltcMu, pltcEle = initSamples()
+    logger.info("Running plots.py")
+    pdb.set_trace()
     smpls, smplsMu = samples.load()
     samples.pltcMu.frac_entries = 1.0
     qcdFile = ROOT.TFile("../mtwMass_fit_2J_1T_SR.root")
 
-    datadrivenQCD = qcdFile.Get("mtwMass__qcd")
-    datadrivenNonQCD = qcdFile.Get("mtwMass__nonqcd")
+    #datadrivenQCD = qcdFile.Get("mtwMass__qcd")
+    #datadrivenNonQCD = qcdFile.Get("mtwMass__nonqcd")
 
     doLepIso = False
     doNJets = False
@@ -155,7 +159,7 @@ if __name__ == "__main__":
         finalSelPlots = reweighted(finalSelPlots)
         psMu += samples.pltcMu.plot(cutlist.finalMu, finalSelPlots, cutDescription="mu channel, 2J1T, final selection")
 
-        cutMTWDataDriven = Cut("mtwDataDriven", "_muonCount == 1 && _topCount == 1 && cosThetaLightJet_cosTheta==cosThetaLightJet_cosTheta && _goodJets_0_Pt>40 && _goodJets_1_Pt>40 && abs(_lowestBTagJet_0_Eta)>2.5 && _bJetCount == 1 && _lightJetCount == 1 && abs(_recoTop_0_Mass - 172) < 40 && _goodSignalMuons_0_relIso<0.12 && _lowestBTagJet_0_rms<0.025")
+        #cutMTWDataDriven = Cut("mtwDataDriven", "_muonCount == 1 && _topCount == 1 && cosThetaLightJet_cosTheta==cosThetaLightJet_cosTheta && _goodJets_0_Pt>40 && _goodJets_1_Pt>40 && abs(_lowestBTagJet_0_Eta)>2.5 && _bJetCount == 1 && _lightJetCount == 1 && abs(_recoTop_0_Mass - 172) < 40 && _goodSignalMuons_0_relIso<0.12 && _lowestBTagJet_0_rms<0.025")
         #psMu += map(lambda x: replaceQCD(x, datadrivenQCD, datadrivenNonQCD), samples.pltcMu.plot(cutMTWDataDriven, mtwDataDrivenPlot, cutDescription=""))
         #psEle += pltcEle.plot(cutlist.finalEle, finalSelPlots, cutDescription="ele channel, 2J1T, final selection")
 
@@ -169,10 +173,7 @@ if __name__ == "__main__":
                 drawfw.PlotParams("_offlinePVCount", (0, 60), plotTitle="reconstructed N_{vtx.} before PU rew."),
                 drawfw.PlotParams("_offlinePVCount", (0, 60), plotTitle="reconstructed N_{vtx.} after PU rew.(N_{true})",
                     weights=["PUWeightNtrue_puWeightProducer"]),
-                drawfw.PlotParams("_offlinePVCount", (0, 60), plotTitle="reconstructed N_{vtx.} after PU rew.(N_{0})",
-                    weights=["PUWeightN0_puWeightProducer"])
         ]
-        psMu += sigDataMuShapeComp.plot(cutlist.initial, NvtxPlots, cutDescription="skimmed MC")
         psMu += sigDataMuShapeComp.plot(cutlist.finalMu, NvtxPlots, cutDescription="muon channel, final sel.")
 
     if doWeights:
