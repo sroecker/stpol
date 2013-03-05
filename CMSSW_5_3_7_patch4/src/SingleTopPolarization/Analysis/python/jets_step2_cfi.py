@@ -169,7 +169,7 @@ def JetSetup(process, conf):
     #Select the most forward untagged jet by absolute eta
     process.fwdMostLightJet = cms.EDFilter(
         'LargestAbsEtaCandViewProducer',
-        src = cms.InputTag("untaggedJets"),
+        src = cms.InputTag("goodJets"),
         maxNumber = cms.uint32(1)
     )
 
