@@ -1,3 +1,4 @@
+import argparse
 import ROOT
 import logging
 
@@ -48,28 +49,37 @@ if __name__ == "__main__":
 #    datasmplsMu, datasmplsEle, smpls, samples.pltcMu, pltcEle = initSamples()
     logger.info("Running plots.py")
     smpls, smplsMu = samples.load()
+
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-e', '--enable', nargs='+', type=str, required=True)
+    args = parser.parse_args()
+    print args
+
+    n_cores = 10
     samples.pltcMu.frac_entries = 1.0
-    samples.pltcMu.set_n_cores(1)
-    samples.pltcEle.set_n_cores(1)
+    samples.pltcMu.set_n_cores(n_cores)
+    samples.pltcEle.set_n_cores(n_cores)
 
     #qcdFile = ROOT.TFile("../mtwMass_fit_2J_1T_SR.root")
     #datadrivenQCD = qcdFile.Get("mtwMass__qcd")
     #datadrivenNonQCD = qcdFile.Get("mtwMass__nonqcd")
 
-    doReweighted = True
-    doLepIso = False
-    doNJets = False
-    doNBTags = False
-    doMET = False
-    doBDiscriminators = False
-    doTopMass = False
-    doFinalSel = True
-    doPVCount = True
-    doEtaLJ = False
-    doWeights = False
+    doReweighted = "reweight" in args.enable
+    doLepIso = "lepiso" in args.enable
+    doNJets = "njets" in args.enable
+    doNBTags = "ntags" in args.enable
+    doMET = "met" in args.enable
+    doBDiscriminators = "bdiscriminator" in args.enable
+    doTopMass = "topmass" in args.enable
+    doFinalSel = "finalsel" in args.enable
+    doPVCount = "pvcount" in args.enable
+    doEtaLJ = "etalj" in args.enable
+    doWeights = "weights" in args.enable
 
     psMu = []
     psEle = []
+
     if doLepIso:
         sigQCD = plotfw.methods.SampleList()
         sigQCD.addGroup(smpls.groups["t-channel"])
@@ -181,7 +191,7 @@ if __name__ == "__main__":
         sigDataMu = plotfw.methods.SampleList()
         sigDataMu.addGroup(smpls.groups["t-channel"])
         sigDataMu.addGroup(smplsMu)
-        sigDataMuShapeComp = drawfw.ShapePlotCreator(sigDataMu, n_cores=1)
+        sigDataMuShapeComp = drawfw.ShapePlotCreator(sigDataMu, n_cores=n_cores)
         NvtxPlots = [
                 drawfw.PlotParams("_offlinePVCount", (0, 60), plotTitle="reconstructed N_{vtx.} before PU rew."),
         ]
@@ -198,7 +208,7 @@ if __name__ == "__main__":
         allMCDataMu = plotfw.methods.SampleList()
         allMCDataMu.addGroup(smplsAllMC)
         allMCDataMu.addGroup(smplsMu)
-        allMCDataMuShapeComp = drawfw.ShapePlotCreator(allMCDataMu, n_cores=1)
+        allMCDataMuShapeComp = drawfw.ShapePlotCreator(allMCDataMu, n_cores=n_cores)
         psMu += allMCDataMuShapeComp.plot(cutlist.initial, NvtxPlots, cutDescription="skimmed MC")
         psMu += allMCDataMuShapeComp.plot(cutlist.finalMu, NvtxPlots, cutDescription="muon channel, final sel.")
 
@@ -206,7 +216,7 @@ if __name__ == "__main__":
         sigMainBKG.addGroup(smpls.groups["t-channel"])
         sigMainBKG.addGroup(smpls.groups["TTbar"])
         sigMainBKG.addGroup(smpls.groups["WJets"])
-        sigMainBKGComp = drawfw.ShapePlotCreator(sigMainBKG, n_cores=1)
+        sigMainBKGComp = drawfw.ShapePlotCreator(sigMainBKG, n_cores=n_cores)
         weightPlots = [
             drawfw.PlotParams("bTagWeight_bTagWeightProducer", (0.01, 10), doLogY=True, plotTitle="b-tag weight (nominal)"),
             drawfw.PlotParams("PUWeightNtrue_puWeightProducer", (0, 5), doLogY=True, plotTitle="PU weight (N_{true})"),
