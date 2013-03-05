@@ -475,7 +475,7 @@ class Plot(object):
 		self.draw()
 		self.cvs.SaveAs(ofname)
 		self.cvs.SaveAs(ofname.replace(fmt, "svg"))
-		self.cvs.SaveAs(ofname.replace(fmt, "gif"))
+		#self.cvs.SaveAs(ofname.replace(fmt, "gif"))
 
 		if log:
 			self.log.save(fout+'.pylog')
