@@ -593,15 +593,16 @@ class YieldTable:
 
 		yield_table = dict()
 		for group_name, group in self.samples.groups.items():
+			name = group.pretty_name
 			total_int = sum([plot.log._processes[x.name]["vars"]["int"] for x in group.samples])
 			total_err = math.sqrt(sum(map(lambda x: x**2, [plot.log._processes[x.name]["vars"]["int_err"] for x in group.samples])))
-			yield_table[group_name] = (total_int, total_err)
+			yield_table[name] = (total_int, total_err)
 
 		cur_pos = YieldTable.pos[location]
 		self.text_pad = ROOT.TPaveText(cur_pos[0], cur_pos[1], cur_pos[2], cur_pos[3], "NDC")
 		self.text_pad.SetFillColor(ROOT.kWhite)
 		#self.text_pad.SetTextFont(220)
-		self.text_pad.SetTextSize(text_size)
+		self.text_pad.SetTextSize(0.8*text_size)
 		self.text_pad.SetLabel("event yields")
 		self.text_pad.SetShadowColor(ROOT.kWhite)
 		for (name, (total, err)) in yield_table.items():
