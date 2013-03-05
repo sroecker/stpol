@@ -603,7 +603,7 @@ class YieldTable:
 		self.text_pad.SetFillColor(ROOT.kWhite)
 		#self.text_pad.SetTextFont(220)
 		self.text_pad.SetTextSize(0.8*text_size)
-		self.text_pad.SetLabel("event yields")
+		#self.text_pad.SetLabel("event yields")
 		self.text_pad.SetShadowColor(ROOT.kWhite)
 		for (name, (total, err)) in yield_table.items():
 			self.text_pad.AddText("{0}: {1:.1f} #pm {2:.1f}".format(name, total, err))
@@ -622,6 +622,7 @@ class Chi2ValuePad:
 		if chi2options is None:
 			chi2options = dict()
 			chi2options["weight_type"] = "WW"
+			#chi2options["descr"] = "({hist_a_title}, {hist_b_title})"
 		chi2opt += chi2options["weight_type"]
 
 		self.chi2 = hist_a.Chi2Test(hist_b, chi2opt)
@@ -633,7 +634,7 @@ class Chi2ValuePad:
 		self.text_pad.SetShadowColor(ROOT.kWhite)
 		#self.text_pad.SetTextFont(220)
 		self.text_pad.SetTextSize(text_size)
-		self.text_pad.AddText("#chi^{2}/NDF(%s, %s) = %.1f" % (hist_a.GetTitle(), hist_b.GetTitle(), self.chi2))
+		self.text_pad.AddText("#chi^{2}/NDF = %.1f" % (self.chi2))
 
 	def draw(self):
 		self.text_pad.Draw()
