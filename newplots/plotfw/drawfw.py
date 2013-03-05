@@ -361,8 +361,8 @@ class StackedPlotCreator(PlotCreator):
 
 class ShapePlotCreator(PlotCreator):
 	"""Create plots for sample shape comparison."""
-	def __init__(self, samples):
-		super(ShapePlotCreator, self).__init__()
+	def __init__(self, samples, **kwargs):
+		super(ShapePlotCreator, self).__init__(**kwargs)
 		self._slist = samples
 		self.samples = self._slist
 
@@ -488,8 +488,8 @@ class Plot(object):
 
 class StackPlot(Plot):
 
-	def __init__(self, plot_params, groups, unique_id):
-		super(StackPlot, self).__init__(plot_params, groups, unique_id)
+	def __init__(self, plot_params, groups, unique_id, **kwargs):
+		super(StackPlot, self).__init__(plot_params, groups, unique_id, **kwargs)
 		self.hist_stack = None
 		self.data_hist = None
 		self.total_mc_hist = None
