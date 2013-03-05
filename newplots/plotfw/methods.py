@@ -95,14 +95,17 @@ class Sample(object):
 			trees[0].AddFriend(t)
 			self.branches += [br.GetName() for br in t.GetListOfBranches()]
 		self.tree = trees[0]
+
+
+		#caching stuff
 		self.tree.SetCacheSize(10**8)
 		self.tree.AddBranchToCache("*")
-
 		for tree in trees:
 			tree.SetCacheSize(10**8)
 			tree.AddBranchToCache("*")
-
 		ROOT.gEnv.SetValue("TFile.AsyncPrefetching", 1)
+
+		#self.perfstats = ROOT.TTreePerfStats(self.name, self.tree)
 
 	def getTotalEvents(self):
 		return self.tfile.Get('efficiencyAnalyzerMu').Get('muPath').GetBinContent(1)

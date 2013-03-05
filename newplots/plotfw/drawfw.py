@@ -12,6 +12,8 @@ import pdb
 import math
 from odict import OrderedDict as dict
 
+text_size = 0.025
+
 logger = logging.getLogger(__name__)
 def mp_applyCut(s):
 	return PlotCreator._applyCut(s[0], s[1], s[2], s[3], s[4])
@@ -21,7 +23,8 @@ class PlotCreator(object):
 	def __init__(self, frac = 1.0, n_cores=10):
 		self.frac_entries = frac
 		self.samples = None
-		self.n_cores = n_cores
+		self.set_n_cores(n_cores)
+
 	@staticmethod
 	def _uniqueCutStr(cut_str, weight_str):
 		"""
@@ -29,6 +32,14 @@ class PlotCreator(object):
 		"""
 		uniq = adler32("({0})*({1})".format(weight_str, cut_str))
 		return uniq
+
+	def set_n_cores(self, n_cores):
+		self.n_cores = n_cores
+		self.run_multicore = self.n_cores > 1
+		if self.run_multicore:
+			logger.info("Switching to multicore mode: n_cores=%d" % self.n_cores)
+		else:
+			logger.info("Switching to single core mode")
 
 	def _switchBranchesOn(self, vars_to_switch):
 		sample_list = self.getSamples()
@@ -81,7 +92,12 @@ class PlotCreator(object):
 		t_cut = time.time()
 
 		#Combine the parameters into a single list [(cutstr, sample, do_reset, frac_entries), ... ]
-		smplArgs = zip([cutstr]*len(smpls), smpls, [reset]*len(smpls), [self.frac_entries]*len(smpls), [self.n_cores>1]*len(smpls))
+		smplArgs = zip([cutstr]*len(smpls),
+			smpls,
+			[reset]*len(smpls),
+			[self.frac_entries]*len(smpls),
+			[self.run_multicore]*len(smpls)
+		)
 
 		#Apply the cut on samples with multicore
 		if self.n_cores>1:
@@ -454,9 +470,12 @@ class Plot(object):
 		self.cvs = ROOT.TCanvas('tcvs_%s'%fout, '', w, h)
 		if self.legend.legpos == "R":
 			self.cvs.SetRightMargin(0.26)
+		self.cvs.SetBottomMargin(0.25)
 
 		self.draw()
 		self.cvs.SaveAs(ofname)
+		self.cvs.SaveAs(ofname.replace(fmt, "svg"))
+		self.cvs.SaveAs(ofname.replace(fmt, "gif"))
 
 		if log:
 			self.log.save(fout+'.pylog')
@@ -548,8 +567,8 @@ class BaseLegend(object):
 		self.legend = ROOT.TLegend(coords[0], coords[1], coords[2], coords[3])
 		self.legend.SetFillColor(ROOT.kWhite)
 		self.legend.SetLineColor(ROOT.kWhite)
-		self.legend.SetTextFont(230)
-		self.legend.SetTextSize(17)
+		#self.legend.SetTextFont(230)
+		self.legend.SetTextSize(text_size)
 		self.legend.SetFillStyle(4000)
 
 		plot.setLegendEntries(self.legend)
@@ -581,11 +600,10 @@ class YieldTable:
 		cur_pos = YieldTable.pos[location]
 		self.text_pad = ROOT.TPaveText(cur_pos[0], cur_pos[1], cur_pos[2], cur_pos[3], "NDC")
 		self.text_pad.SetFillColor(ROOT.kWhite)
-		self.text_pad.SetTextFont(220)
-		self.text_pad.SetTextSize(17)
+		#self.text_pad.SetTextFont(220)
+		self.text_pad.SetTextSize(text_size)
 		self.text_pad.SetLabel("event yields")
 		self.text_pad.SetShadowColor(ROOT.kWhite)
-		#self.text_pad.SetTextSize(15)
 		for (name, (total, err)) in yield_table.items():
 			self.text_pad.AddText("{0}: {1:.1f} #pm {2:.1f}".format(name, total, err))
 
@@ -596,7 +614,8 @@ class Chi2ValuePad:
 	pos = dict()
 	pos["LU"] = [0.1, 0.8, 0.2, 0.9]
 	pos["RU_inset"] = [0.79, 0.58, 0.69, 0.88]
-	def __init__(self, hist_a, hist_b, location="LU", chi2options=None):
+	pos["RL"] = [0.1, 0.1, 0.2, 0.2]
+	def __init__(self, hist_a, hist_b, location="RL", chi2options=None):
 
 		chi2opt = "CHI2/NDF"
 		if chi2options is None:
@@ -611,8 +630,8 @@ class Chi2ValuePad:
 		self.text_pad.SetLineColor(ROOT.kWhite)
 		self.text_pad.SetFillStyle(4000)
 		self.text_pad.SetShadowColor(ROOT.kWhite)
-		self.text_pad.SetTextFont(220)
-		self.text_pad.SetTextSize(17)
+		#self.text_pad.SetTextFont(220)
+		self.text_pad.SetTextSize(text_size)
 		self.text_pad.AddText("#chi^{2}/NDF(%s, %s) = %.1f" % (hist_a.GetTitle(), hist_b.GetTitle(), self.chi2))
 
 	def draw(self):
