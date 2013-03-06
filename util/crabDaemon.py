@@ -208,6 +208,10 @@ def parseDir(d, resub, ofile):
 
         statuses = CrabStatus.getStatus(d)
         jobsToResub = filter(lambda x: x.requiresResub(), statuses)
+        jobsSuccess = filter(lambda x: x.N in gotJobIDs and not x.requiresResub(), statuses)
+        for j in jobsSuccess:
+            jobLog(ofile, crabdir, j, "get", "DONE")
+
         if len(jobsToResub)==0:
             break
         print "Resubmitting {0} jobs: {1}".format(len(jobsToResub), JobStatus.indices(jobsToResub))

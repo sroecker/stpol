@@ -86,7 +86,9 @@ def SingleTopStep2():
         Config.doDebug = options.doDebug
         Config.isMC = options.isMC
 
-
+    if Config.isMC:
+        logging.info("Changing jet source from %s to smearedPatJetsWithOwnRef" % Config.Jets.source)
+        Config.Jets.source = "smearedPatJetsWithOwnRef"
 
     print "Configuration"
     print Config._toStr()

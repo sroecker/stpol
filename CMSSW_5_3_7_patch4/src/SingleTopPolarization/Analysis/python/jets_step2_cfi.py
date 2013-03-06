@@ -292,8 +292,8 @@ def JetSetup(process, conf):
     #if conf.isMC:
     #    process.jetSequence.insert(process.jetSequence.index(process.noPUJets)+1, process.smearedJets)
     if conf.doDebug:
-        process.sourceJetAnalyzer = cms.EDAnalyzer("SimpleJetAnalyzer", interestingCollections=cms.untracked.VInputTag(conf.Jets.source))
-        process.jetSequence.insert(0, process.sourceJetAnalyzer)
+        #process.sourceJetAnalyzer = cms.EDAnalyzer("SimpleJetAnalyzer", interestingCollections=cms.untracked.VInputTag(conf.Jets.source))
+        #process.jetSequence.insert(0, process.sourceJetAnalyzer)
         process.jetAnalyzer = cms.EDAnalyzer("SimpleJetAnalyzer", interestingCollections=cms.untracked.VInputTag(conf.Jets.source, "goodJets"))
         process.jetSequence += process.jetAnalyzer
 

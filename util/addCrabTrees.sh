@@ -1,5 +1,5 @@
 #!/bin/bash
-WD="/tmp/joosep/"${PWD##*/}
+WD="/scratch/joosep/"${PWD##*/}
 export WD
 mkdir $WD
 for i in `find . -name 'WD_*' -type d`
