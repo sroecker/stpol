@@ -47,7 +47,7 @@ class Config(C):
     doDebug = False
 
     #Whether to output CMSSW-specific trees
-    skipPatTupleOutput = False
+    skipPatTupleOutput = True
 
     #Whether to run over grid (without command-line arguments)
     onGrid = False
