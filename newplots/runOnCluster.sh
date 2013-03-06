@@ -7,4 +7,4 @@ cd $WORKDIR
 source setenv.sh
 
 cd newplots
-python plots.py
+python plots.py "$@"
