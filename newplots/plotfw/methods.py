@@ -80,7 +80,7 @@ class Sample(object):
 
 	def _openTree(self):
 		fpath = (self.directory+'/' if self.directory is not None else '') + self.fname
-		logging.info('Opening file: `%s`', fpath)
+		logging.debug('Opening file: `%s`', fpath)
 		self.tfile = ROOT.TFile(fpath)
 		self.branches = []
 		if self.tfile.IsZombie():
@@ -95,14 +95,17 @@ class Sample(object):
 			trees[0].AddFriend(t)
 			self.branches += [br.GetName() for br in t.GetListOfBranches()]
 		self.tree = trees[0]
-		self.tree.SetCacheSize(10**7)
+
+
+		#caching stuff
+		self.tree.SetCacheSize(10**8)
 		self.tree.AddBranchToCache("*")
-
 		for tree in trees:
-			tree.SetCacheSize(10**7)
+			tree.SetCacheSize(10**8)
 			tree.AddBranchToCache("*")
-
 		ROOT.gEnv.SetValue("TFile.AsyncPrefetching", 1)
+
+		#self.perfstats = ROOT.TTreePerfStats(self.name, self.tree)
 
 	def getTotalEvents(self):
 		return self.tfile.Get('efficiencyAnalyzerMu').Get('muPath').GetBinContent(1)
@@ -209,12 +212,28 @@ class PlotParams(object):
 		else:
 			self.vars_to_enable = vars_to_enable
 
+		self.do_chi2 = False
+
 	def getWeightStr(self, disabled_weights=[]):
 		if self.weights is None:
 			return "1.0"
 		else:
 			weights = list(set(self.weights).difference(set(disabled_weights)))
 			return "*".join(weights)
+
+	def doChi2Test(self, group_a_name, group_b_name, chi2options=None):
+		self.do_chi2 = True
+		self.chi2_a = group_a_name
+		self.chi2_b = group_b_name
+		self.chi2options = chi2options
+
+	def getVars(self):
+		vars_to_switch = []
+		vars_to_switch += self.vars_to_enable
+		if self.weights is not None:
+			vars_to_switch += self.weights
+		return vars_to_switch
+
 
 	def __repr__(self):
 		return "{0} in range {1} with weights {2}".format(self.var, self.r, self.weights)

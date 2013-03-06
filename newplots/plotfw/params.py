@@ -59,7 +59,7 @@ class Cut(object):
 
 class CutF(Cut):
 	"""Cut with string formatting
-	
+
 	Use the {} string formatting syntax to create cutstring. Allows
 	for the automatic storing of relevant variables."""
 	def __init__(self, cutname, cutformatstring, vars):
@@ -68,7 +68,7 @@ class CutF(Cut):
 
 class CutP(Cut):
 	"""Parses the variable name automatically.
-	
+
 	It assumes that the variable name is the leftmost one."""
 	def __init__(self, cutname, cutstring):
 		m=re.match('([A-Za-z0-9_]*)[ ]*([><=]*)[ ]*(.*)', cutstring)

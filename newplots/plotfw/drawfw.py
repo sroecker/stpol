@@ -12,14 +12,18 @@ import pdb
 import math
 from odict import OrderedDict as dict
 
+text_size = 0.025
+
+logger = logging.getLogger(__name__)
 def mp_applyCut(s):
-	return PlotCreator._applyCut(s[0], s[1], s[2], s[3])
+	return PlotCreator._applyCut(s[0], s[1], s[2], s[3], s[4])
 
 
 class PlotCreator(object):
-	def __init__(self, frac = 1.0):
+	def __init__(self, frac = 1.0, n_cores=10):
 		self.frac_entries = frac
 		self.samples = None
+		self.set_n_cores(n_cores)
 
 	@staticmethod
 	def _uniqueCutStr(cut_str, weight_str):
@@ -29,14 +33,17 @@ class PlotCreator(object):
 		uniq = adler32("({0})*({1})".format(weight_str, cut_str))
 		return uniq
 
-	def _switchBranchesOn(self, plot_params):
-		vars_to_switch = []
-		vars_to_switch += plot_params.vars_to_enable
-		if plot_params.weights is not None:
-			vars_to_switch += plot_params.weights
+	def set_n_cores(self, n_cores):
+		self.n_cores = n_cores
+		self.run_multicore = self.n_cores > 1
+		if self.run_multicore:
+			logger.info("Switching to multicore mode: n_cores=%d" % self.n_cores)
+		else:
+			logger.info("Switching to single core mode")
 
+	def _switchBranchesOn(self, vars_to_switch):
 		sample_list = self.getSamples()
-		logging.debug("Switching branches ON: {0} for samples {1}".format(vars_to_switch, sample_list))
+		logger.debug("Switching branches ON: {0} for samples {1}".format(vars_to_switch, sample_list))
 
 		for sample in sample_list:
 			sample.tree.SetBranchStatus("*", 0)
@@ -49,69 +56,87 @@ class PlotCreator(object):
 
 
 	@staticmethod
-	def _applyCut(cutstr, s, reset=True, frac_entries=1):
+	def _applyCut(cutstr, s, reset=True, frac_entries=1, multicore=True):
 		"""
 		Apply the cut 'cutstr' on sample 's'. Optionally reset the tree event list
 		before cutting and process only a limited number of entries.
 		"""
-		t_cut = time.clock()
-		logging.debug('Cutting on `%s`', s.name)
+		t_cut = time.time()
+		logger.debug('Cutting on `%s`', s.name)
 
-		#tempSample = Sample.fromOther(s)
-		tempSample = s
+		if multicore:
+			tempSample = Sample.fromOther(s)
+		else:
+			tempSample = s
 		tempSample.tfile.cd()
 
 		if reset:
 			tempSample.tree.SetEventList(0)
-			tempSample.tree.SetBranchStatus("*", 1)
 
-		logging.debug("Drawing event list for sample {0}".format(tempSample.name))
+		logger.debug("Drawing event list for sample {0}".format(tempSample.name))
 		uniqueName = tempSample.name + '_' + ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(4))
 
 		elist_name = "elist_"+uniqueName
 		nEvents = tempSample.tree.Draw(">>%s"%elist_name, cutstr, '', int(float(tempSample.tree.GetEntries())*frac_entries))
-		logging.debug("Done drawing {0} events into list {1}".format(nEvents, elist_name))
+		logger.debug("Done drawing {0} events into list {1}".format(nEvents, elist_name))
 		elist = tempSample.tfile.Get(elist_name)
 		#tempSample.tree.SetEventList(elist)
 
 		retList = pickle.dumps(elist)
-		logging.debug('Cutting on `%s` took %f', tempSample.name, time.clock() - t_cut)
+		logger.debug('Cutting on `%s` took %f', tempSample.name, time.time() - t_cut)
 
 		del tempSample
 		return retList
 
 	def _applyCuts(self, cutstr, smpls, reset=True):
-		t_cut = time.clock()
-		#p = multiprocessing.Pool(24)
+		t_cut = time.time()
 
 		#Combine the parameters into a single list [(cutstr, sample, do_reset, frac_entries), ... ]
-		smplArgs = zip([cutstr]*len(smpls), smpls, [reset]*len(smpls), [self.frac_entries]*len(smpls))
+		smplArgs = zip([cutstr]*len(smpls),
+			smpls,
+			[reset]*len(smpls),
+			[self.frac_entries]*len(smpls),
+			[self.run_multicore]*len(smpls)
+		)
 
 		#Apply the cut on samples with multicore
-		#evLists = p.map(mp_applyCut, smplArgs)
-		evLists = map(mp_applyCut, smplArgs)
+		if self.n_cores>1:
+			logger.debug("Cutting using on %d cores" % self.n_cores)
+			p = multiprocessing.Pool(self.n_cores)
+			evLists = p.map(mp_applyCut, smplArgs)
+		else:
+			evLists = map(mp_applyCut, smplArgs)
 
-		logging.debug("Done cutting event lists for cut {0} on samples {1}".format(cutstr, smpls))
+		logger.debug("Done cutting event lists for cut {0} on samples {1}".format(cutstr, smpls))
 		#Load the event lists via pickle and set the trees
 		for i in range(len(smpls)):
 			smpls[i].tree.SetEventList(pickle.loads(evLists[i]))
-		logging.debug("Done unpickling and setting event lists")
-		logging.info('Cutting on all took %f', time.clock()-t_cut)
+		logger.debug("Done unpickling and setting event lists")
+		logger.info('Cutting on all took %f', time.time()-t_cut)
 
 	def plot(self, cut, plots, cutDescription=""):
 		"""Method takes a cut and list of plots and then returns a list plot objects."""
+
+		t0 = time.time()
 		# Apply cuts
 		self._cutstr = cut.cutStr
-		logging.info("Plotting samples {0} with Cut({1}), plots: {2}".format(self.samples, cut, plots))
-		logging.debug('Cut string: %s', self._cutstr)
+		logger.info("Plotting samples {0} with Cut({1}), plots: {2}".format(self.samples, cut, plots))
+		logger.debug('Cut string: %s', self._cutstr)
 
 		smpls = self.samples.getSamples()
+
+		self._switchBranchesOn(cut._vars)
+
 		self._applyCuts(self._cutstr, smpls)
 
 		retplots = [self._plot(x) for x in plots]
 
 		for p in retplots:
 			p.setPlotTitle(cutDescription)
+
+		t1 = time.time()
+		logger.info("Plotting took {0:.1f} seconds".format(t1-t0))
+
 
 		return retplots
 
@@ -139,7 +164,7 @@ class StackedPlotCreator(PlotCreator):
 			self._data = SampleGroup('data', ROOT.kBlack)
 			self._data.add(datasamples)
 		else:
-			logging.error('Bad type for `datasamples`!')
+			raise TypeError('Bad type for `datasamples`!')
 
 		self.samples = SampleList()
 		for group in self._mcs.groups.values():
@@ -151,7 +176,7 @@ class StackedPlotCreator(PlotCreator):
 #		# Apply cuts
 #		self._cutstr = cut.cutStr
 #
-#		logging.info('Cut string: %s', self._cutstr)
+#		logger.info('Cut string: %s', self._cutstr)
 #
 #
 #		smpls = self._mcs.getSamples() + self._data.getSamples()
@@ -176,10 +201,10 @@ class StackedPlotCreator(PlotCreator):
 		"""
 		unique_id = PlotCreator._uniqueCutStr(self._cutstr, pp.getWeightStr())
 
-		self._switchBranchesOn(pp)
+		self._switchBranchesOn(pp.getVars())
 
 		plotname = 'plot_cut%s_%s' % (unique_id, pp.getName())
-		logging.info('Plotting: %s', plotname)
+		logger.info('Plotting: %s', plotname)
 
 		plot = StackPlot(pp, self.samples, unique_id)
 		plot.log.addParam('Variable', pp.var)
@@ -336,14 +361,13 @@ class StackedPlotCreator(PlotCreator):
 
 class ShapePlotCreator(PlotCreator):
 	"""Create plots for sample shape comparison."""
-	def __init__(self, samples):
-		super(ShapePlotCreator, self).__init__()
+	def __init__(self, samples, **kwargs):
+		super(ShapePlotCreator, self).__init__(**kwargs)
 		self._slist = samples
 		self.samples = self._slist
 
 	def getSamples(self):
 		return self._slist.getSamples()
-
 
 	def _plot(self, plot_params):
 
@@ -351,15 +375,15 @@ class ShapePlotCreator(PlotCreator):
 
 		plot = ShapePlot(plot_params, self.samples, unique_id=uniq)
 		plotname = 'plot_cut%s_%s' % (uniq, plot_params.getName())
-		logging.debug('Plotting: %s', plotname)
+		logger.debug('Plotting: %s', plotname)
 
-		self._switchBranchesOn(plot_params)
+		self._switchBranchesOn(plot_params.getVars())
 
 		# Create the histograms
 		plot._maxbin = 0.0
 		for group_name, group in self._slist.groups.items():
 			hist_name = 'hist_%s_%s'%(plotname, group.getName())
-			logging.info('Created histogram: %s', hist_name)
+			logger.info('Created histogram: %s', hist_name)
 
 			hist = ROOT.TH1F(hist_name, group.pretty_name, plot_params.hbins, plot_params.hmin, plot_params.hmax)
 			hist.Sumw2()
@@ -377,7 +401,7 @@ class ShapePlotCreator(PlotCreator):
 						'%s>>%s'%(plot_params.var, sample_hist.GetName()),
 					plot_params.getWeightStr(s.disabled_weights) if isinstance(s, MCSample) else '', 'goff'
 				)
-				logging.debug('Filled histogram `%s` from sample `%s` with %f events', hist_name, s.name, filled)
+				logger.debug('Filled histogram `%s` from sample `%s` with %f events', hist_name, s.name, filled)
 				filled_tot += filled
 
 				err = ROOT.Double()
@@ -387,15 +411,15 @@ class ShapePlotCreator(PlotCreator):
 
 				hist.Add(sample_hist)
 
-			logging.debug('Filled total for `%s` : %f' % (hist_name, filled_tot))
+			logger.debug('Filled total for `%s` : %f' % (hist_name, filled_tot))
 
 			hist_integral = hist.Integral()
-			logging.debug('Hist `%s` integral: %f' % (hist_name, hist_integral))
+			logger.debug('Hist `%s` integral: %f' % (hist_name, hist_integral))
 			if filled_tot>0:
 				hist.Scale(1.0/hist_integral)
-				logging.debug('Hist `%s` integral: %f (after scaling)' % (hist_name, hist.Integral()))
+				logger.debug('Hist `%s` integral: %f (after scaling)' % (hist_name, hist.Integral()))
 			else:
-				logging.warning("Histogram {0} was empty".format(hist))
+				logger.warning("Histogram {0} was empty".format(hist))
 				hist.Scale(0)
 			plot._maxbin = max(plot._maxbin, hist.GetMaximum())
 			plot.addHist(hist, group.name)
@@ -409,7 +433,7 @@ class Plot(object):
 
 	This class puts everything together (different histograms, legend etc)
 	and allows to export the plot easily. It also handles the metadata
-	logging.
+	logger.
 
 	"""
 	def __init__(self, plot_params, groups, unique_id):
@@ -429,19 +453,29 @@ class Plot(object):
 		self.legend.Draw('SAME')
 		self.cvs.SetLogy(self._plot_params.doLogY)
 		self.yield_table.draw()
+		if self._plot_params.do_chi2:
+			self.chi2pad = Chi2ValuePad(
+				self.getHistogram(self._plot_params.chi2_a),
+				self.getHistogram(self._plot_params.chi2_b),
+				chi2options=self._plot_params.chi2options
+			)
+			self.chi2pad.draw()
 
 	def save(self, w=650, h=400, log=False, fmt='png', fout=None):
 		if fout is None:
 			fout = self.getName()
 		ofname = fout+'.'+fmt
 
-		logging.info('Saving as: %s', ofname)
+		logger.info('Saving as: %s', ofname)
 		self.cvs = ROOT.TCanvas('tcvs_%s'%fout, '', w, h)
 		if self.legend.legpos == "R":
 			self.cvs.SetRightMargin(0.26)
+		self.cvs.SetBottomMargin(0.25)
 
 		self.draw()
 		self.cvs.SaveAs(ofname)
+		self.cvs.SaveAs(ofname.replace(fmt, "svg"))
+		#self.cvs.SaveAs(ofname.replace(fmt, "gif"))
 
 		if log:
 			self.log.save(fout+'.pylog')
@@ -454,8 +488,8 @@ class Plot(object):
 
 class StackPlot(Plot):
 
-	def __init__(self, plot_params, groups, unique_id):
-		super(StackPlot, self).__init__(plot_params, groups, unique_id)
+	def __init__(self, plot_params, groups, unique_id, **kwargs):
+		super(StackPlot, self).__init__(plot_params, groups, unique_id, **kwargs)
 		self.hist_stack = None
 		self.data_hist = None
 		self.total_mc_hist = None
@@ -480,6 +514,18 @@ class StackPlot(Plot):
 		legend.AddEntry(self.data_hist, self.data_hist.GetTitle())
 		return
 
+	def getHistogram(self, name):
+		if name == "data":
+			return self.data_hist
+		elif name == "mc":
+			return self.total_mc_hist
+		elif name in mc_group_hists.keys():
+			return self.mc_group_hists[name]
+		elif name in mc_hists.keys():
+			return self.mc_hists.keys[name]
+		else:
+			raise KeyError("Histogram '{0}' not defined for plot {1}".format(name, self))
+
 class ShapePlot(Plot):
 	def __init__(self, plot_params, groups, unique_id):
 		super(ShapePlot,self).__init__(plot_params, groups, unique_id)
@@ -492,17 +538,22 @@ class ShapePlot(Plot):
 	def draw(self):
 		first = True
 		hists = self._hists.values()
-		hists[0].SetTitle(self.plotTitle)
 		hists[0].SetMaximum(1.1*self._maxbin)
 		for hist in hists:
 			hist.Draw('E1' if first else 'E1 SAME')
 			first = False
 		super(ShapePlot, self).draw()
 
+		#need to set after drawing all other things, since histo title will change, but is used internally
+		hists[0].SetTitle(self.plotTitle)
+
 	def setLegendEntries(self, legend):
 		for hist in self._hists.values():
 			legend.AddEntry(hist, hist.GetTitle())
 		return
+
+	def getHistogram(self, name):
+		return self._hists[name]
 
 class BaseLegend(object):
 	legCoords = dict()
@@ -516,8 +567,8 @@ class BaseLegend(object):
 		self.legend = ROOT.TLegend(coords[0], coords[1], coords[2], coords[3])
 		self.legend.SetFillColor(ROOT.kWhite)
 		self.legend.SetLineColor(ROOT.kWhite)
-		self.legend.SetTextFont(133)
-		self.legend.SetTextSize(10)
+		#self.legend.SetTextFont(230)
+		self.legend.SetTextSize(text_size)
 		self.legend.SetFillStyle(4000)
 
 		plot.setLegendEntries(self.legend)
@@ -542,18 +593,47 @@ class YieldTable:
 
 		yield_table = dict()
 		for group_name, group in self.samples.groups.items():
+			name = group.pretty_name
 			total_int = sum([plot.log._processes[x.name]["vars"]["int"] for x in group.samples])
 			total_err = math.sqrt(sum(map(lambda x: x**2, [plot.log._processes[x.name]["vars"]["int_err"] for x in group.samples])))
-			yield_table[group_name] = (total_int, total_err)
+			yield_table[name] = (total_int, total_err)
 
 		cur_pos = YieldTable.pos[location]
 		self.text_pad = ROOT.TPaveText(cur_pos[0], cur_pos[1], cur_pos[2], cur_pos[3], "NDC")
 		self.text_pad.SetFillColor(ROOT.kWhite)
+		#self.text_pad.SetTextFont(220)
+		self.text_pad.SetTextSize(0.8*text_size)
 		self.text_pad.SetLabel("event yields")
 		self.text_pad.SetShadowColor(ROOT.kWhite)
-		#self.text_pad.SetTextSize(15)
 		for (name, (total, err)) in yield_table.items():
 			self.text_pad.AddText("{0}: {1:.1f} #pm {2:.1f}".format(name, total, err))
+
+	def draw(self):
+		self.text_pad.Draw()
+
+class Chi2ValuePad:
+	pos = dict()
+	pos["LU"] = [0.1, 0.8, 0.2, 0.9]
+	pos["RU_inset"] = [0.79, 0.58, 0.69, 0.88]
+	pos["RL"] = [0.1, 0.1, 0.2, 0.2]
+	def __init__(self, hist_a, hist_b, location="RL", chi2options=None):
+
+		chi2opt = "CHI2/NDF"
+		if chi2options is None:
+			chi2options = dict()
+			chi2options["weight_type"] = "WW"
+		chi2opt += chi2options["weight_type"]
+
+		self.chi2 = hist_a.Chi2Test(hist_b, chi2opt)
+		cur_pos = Chi2ValuePad.pos[location]
+		self.text_pad = ROOT.TPaveText(cur_pos[0], cur_pos[1], cur_pos[2], cur_pos[3], "NDC")
+		self.text_pad.SetFillColor(ROOT.kWhite)
+		self.text_pad.SetLineColor(ROOT.kWhite)
+		self.text_pad.SetFillStyle(4000)
+		self.text_pad.SetShadowColor(ROOT.kWhite)
+		#self.text_pad.SetTextFont(220)
+		self.text_pad.SetTextSize(text_size)
+		self.text_pad.AddText("#chi^{2}/NDF(%s, %s) = %.1f" % (hist_a.GetTitle(), hist_b.GetTitle(), self.chi2))
 
 	def draw(self):
 		self.text_pad.Draw()

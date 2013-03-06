@@ -1,34 +1,37 @@
 import ROOT
+import logging
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s;%(levelname)s;%(message)s")
+
 from plotfw import drawfw
 from plotfw.params import Cuts as cutlist
+import plotfw.methods
 from plotfw.params import Cut
-import plotfw
-import logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s;%(levelname)s;%(message)s")
 import pdb
 import samples
-
 import os
 import random
 import string
 
+logger = logging.getLogger(__name__)
 def reweighted(plot_params):
     out = []
     for pp in plot_params:
+        out.append(pp)
         plot_PUrew = drawfw.PlotParams(pp.var, pp.r,
                 bins=pp.bins, plotTitle=pp.plotTitle + " with PU(N_{true}) rew.",
-                doLogY=pp.doLogY, weights=["PUWeightNtrue_puWeightProducer"], vars_to_enable=pp.vars_to_enable, x_label=pp.x_label)
-        plot_bTagrew = drawfw.PlotParams(pp.var, pp.r,
-                bins=pp.bins, plotTitle=pp.plotTitle + " with bTag rew.",
-                doLogY=pp.doLogY, weights=["bTagWeight_bTagWeightProducer"], vars_to_enable=pp.vars_to_enable, x_label=pp.x_label)
-        plot_bTagPUrew = drawfw.PlotParams(pp.var, pp.r,
-                bins=pp.bins, plotTitle=pp.plotTitle + " with PU(N_{true}), bTag rew.",
-                doLogY=pp.doLogY, weights=["bTagWeight_bTagWeightProducer", "PUWeightNtrue_puWeightProducer"],
-                vars_to_enable=pp.vars_to_enable, x_label=pp.x_label)
-        out.append(pp)
+                doLogY=pp.doLogY, weights=["PUWeightNtrue_puWeightProducer"], vars_to_enable=pp.vars_to_enable, x_label=pp.x_label
+        )
         out.append(plot_PUrew)
-        out.append(plot_bTagrew)
-        out.append(plot_bTagPUrew)
+        #plot_bTagrew = drawfw.PlotParams(pp.var, pp.r,
+        #        bins=pp.bins, plotTitle=pp.plotTitle + " with bTag rew.",
+        #        doLogY=pp.doLogY, weights=["bTagWeight_bTagWeightProducer"], vars_to_enable=pp.vars_to_enable, x_label=pp.x_label)
+        #out.append(plot_bTagrew)
+        #plot_bTagPUrew = drawfw.PlotParams(pp.var, pp.r,
+        #        bins=pp.bins, plotTitle=pp.plotTitle + " with PU(N_{true}), bTag rew.",
+        #        doLogY=pp.doLogY, weights=["bTagWeight_bTagWeightProducer", "PUWeightNtrue_puWeightProducer"],
+        #        vars_to_enable=pp.vars_to_enable, x_label=pp.x_label)
+        #out.append(plot_bTagPUrew)
     return out
 
 def replaceQCD(plot, histQCD, histnonQCD):
@@ -43,13 +46,17 @@ def replaceQCD(plot, histQCD, histnonQCD):
 
 if __name__ == "__main__":
 #    datasmplsMu, datasmplsEle, smpls, samples.pltcMu, pltcEle = initSamples()
+    logger.info("Running plots.py")
     smpls, smplsMu = samples.load()
     samples.pltcMu.frac_entries = 1.0
-    qcdFile = ROOT.TFile("../mtwMass_fit_2J_1T_SR.root")
+    samples.pltcMu.set_n_cores(1)
+    samples.pltcEle.set_n_cores(1)
 
-    datadrivenQCD = qcdFile.Get("mtwMass__qcd")
-    datadrivenNonQCD = qcdFile.Get("mtwMass__nonqcd")
+    #qcdFile = ROOT.TFile("../mtwMass_fit_2J_1T_SR.root")
+    #datadrivenQCD = qcdFile.Get("mtwMass__qcd")
+    #datadrivenNonQCD = qcdFile.Get("mtwMass__nonqcd")
 
+    doReweighted = True
     doLepIso = False
     doNJets = False
     doNBTags = False
@@ -81,7 +88,9 @@ if __name__ == "__main__":
         jetPlots = [drawfw.PlotParams('_lightJetCount + _bJetCount', (1, 6),
             bins=6, plotTitle="N_{jets}", doLogY=False, vars_to_enable=["_lightJetCount", "_bJetCount"], x_label="N_{jets}")
         ]
-        jetPlots = reweighted(jetPlots)
+
+        if doReweighted:
+            jetPlots = reweighted(jetPlots)
         psMu += samples.pltcMu.plot(cutlist.jets_OK * cutlist.mu * cutlist.MTmu, jetPlots, cutDescription="mu channel, M_{t}(W)>50 GeV")
         #psEle += samples.pltcMu.plot(cutlist.jets_OK * cutlist.ele, jetPlots, cutDescription="ele channel")
 
@@ -89,7 +98,8 @@ if __name__ == "__main__":
     if doNBTags:
         #Plot the N-bTag distribution in 2J
         jetPlots2J = [drawfw.PlotParams('_bJetCount', (0, 3), bins=4, plotTitle="N_{b-tags}", doLogY=False, x_label="N_{b-tags}")]
-        jetPlots2J = reweighted(jetPlots2J)
+        if doReweighted:
+            jetPlots2J = reweighted(jetPlots2J)
         psMu += samples.pltcMu.plot(cutlist.jets_2J * cutlist.mu * cutlist.MTmu, jetPlots2J, cutDescription="mu channel, 2J, M_{t}(W)>50 GeV")
         #psEle += samples.pltcMu.plot(cutlist.jets_2J * cutlist.ele, jetPlots2J, cutDescription="ele channel, 2J")
 
@@ -97,7 +107,8 @@ if __name__ == "__main__":
         #MET/MtW distribution
         metPlotsMu = [drawfw.PlotParams('_muAndMETMT', (0, 150), plotTitle="M_{t}(W)", x_label="M_{t}(W) [GeV]")]
         metPlotsEle = [drawfw.PlotParams('_patMETs_0_Pt', (0, 150), plotTitle="MET", x_label="MET [GeV]")]
-        metPlotsMu = reweighted(metPlotsMu)
+        if doReweighted:
+            metPlotsMu = reweighted(metPlotsMu)
         psMu += samples.pltcMu.plot(cutlist.mu * cutlist.jets_2J, metPlotsMu, cutDescription="mu channel, 2J")
         #psEle += pltcEle.plot(cutlist.ele * cutlist.jets_2J, metPlotsEle, cutDescription="ele. channel, 2J")
 
@@ -110,7 +121,8 @@ if __name__ == "__main__":
             drawfw.PlotParams('_lowestBTagJet_0_bDiscriminator', (0, 10),
                 plotTitle="TCHP discriminator of the light jet", doLogY=True, x_label=bDiscrLabel),
         ]
-        jetbDiscrPlots = reweighted(jetbDiscrPlots)
+        if doReweighted:
+            jetbDiscrPlots = reweighted(jetbDiscrPlots)
         psMu += samples.pltcMu.plot(cutlist.mu * cutlist.jets_2J * cutlist.MTmu, jetbDiscrPlots, cutDescription="mu channel, 2J, M_{t}(W)>50 GeV")
         #psEle += samples.pltcMu.plot(cutlist.ele * cutlist.jets_2J * cutlist.MTele, jetbDiscrPlots, cutDescription="ele channel, 2J, MET>45 GeV")
 
@@ -119,7 +131,8 @@ if __name__ == "__main__":
         topMassPlots = [
             drawfw.PlotParams('_recoTop_0_Mass', (100, 500), plotTitle="M_{bl#nu}", x_label="M_{bl#nu}"),
         ]
-        topMassPlots = reweighted(topMassPlots)
+        if doReweighted:
+            topMassPlots = reweighted(topMassPlots)
         psMu += samples.pltcMu.plot(cutlist.mu * cutlist.jets_2J1T * cutlist.etaLJ * cutlist.MTmu,
                 topMassPlots, cutDescription="mu channel, 2J1T, |#eta|_{lj}>2.5, M_{t}(W)>50 GeV")
         #psEle += pltcEle.plot(cutlist.ele * cutlist.jets_2J1T, lightJetPlots, cutDescription="ele. channel, 2J1T, MET>45 GeV")
@@ -135,7 +148,8 @@ if __name__ == "__main__":
             drawfw.PlotParams('_lowestBTagJet_0_rms', (0, 0.15),
                 plotTitle="rms of the light jet constituents", doLogY=True, x_label=etaljLabel)
         ]
-        lightJetPlots = reweighted(lightJetPlots)
+        if doReweighted:
+            lightJetPlots = reweighted(lightJetPlots)
         psMu += samples.pltcMu.plot(cutlist.mu * cutlist.jets_2J1T, lightJetPlots, cutDescription="mu channel, 2J1T")
         #psEle += pltcEle.plot(cutlist.ele * cutlist.jets_2J1T, lightJetPlots, cutDescription="ele. channel, 2J1T")
 
@@ -143,7 +157,7 @@ if __name__ == "__main__":
         #Plot cosTheta* etc in the final selection
         finalSelPlots = [
             drawfw.PlotParams('cosThetaLightJet_cosTheta', (-1, 1),
-                plotTitle="cos #theta_{lj}", x_label="#cos #theta_{lj}"
+                plotTitle="cos #theta_{lj}", x_label="cos #theta_{lj}"
             )
         ]
 
@@ -152,10 +166,13 @@ if __name__ == "__main__":
                 plotTitle="M_{t}(W)", x_label="M_{t}(W) [GeV]"
             )
         ]
-        finalSelPlots = reweighted(finalSelPlots)
+        if doReweighted:
+            finalSelPlots = reweighted(finalSelPlots)
+        for p in finalSelPlots:
+            p.doChi2Test("mc", "data", chi2options={"weight_type":"WW"})
         psMu += samples.pltcMu.plot(cutlist.finalMu, finalSelPlots, cutDescription="mu channel, 2J1T, final selection")
 
-        cutMTWDataDriven = Cut("mtwDataDriven", "_muonCount == 1 && _topCount == 1 && cosThetaLightJet_cosTheta==cosThetaLightJet_cosTheta && _goodJets_0_Pt>40 && _goodJets_1_Pt>40 && abs(_lowestBTagJet_0_Eta)>2.5 && _bJetCount == 1 && _lightJetCount == 1 && abs(_recoTop_0_Mass - 172) < 40 && _goodSignalMuons_0_relIso<0.12 && _lowestBTagJet_0_rms<0.025")
+        #cutMTWDataDriven = Cut("mtwDataDriven", "_muonCount == 1 && _topCount == 1 && cosThetaLightJet_cosTheta==cosThetaLightJet_cosTheta && _goodJets_0_Pt>40 && _goodJets_1_Pt>40 && abs(_lowestBTagJet_0_Eta)>2.5 && _bJetCount == 1 && _lightJetCount == 1 && abs(_recoTop_0_Mass - 172) < 40 && _goodSignalMuons_0_relIso<0.12 && _lowestBTagJet_0_rms<0.025")
         #psMu += map(lambda x: replaceQCD(x, datadrivenQCD, datadrivenNonQCD), samples.pltcMu.plot(cutMTWDataDriven, mtwDataDrivenPlot, cutDescription=""))
         #psEle += pltcEle.plot(cutlist.finalEle, finalSelPlots, cutDescription="ele channel, 2J1T, final selection")
 
@@ -164,22 +181,24 @@ if __name__ == "__main__":
         sigDataMu = plotfw.methods.SampleList()
         sigDataMu.addGroup(smpls.groups["t-channel"])
         sigDataMu.addGroup(smplsMu)
-        sigDataMuShapeComp = drawfw.ShapePlotCreator(sigDataMu)
+        sigDataMuShapeComp = drawfw.ShapePlotCreator(sigDataMu, n_cores=1)
         NvtxPlots = [
                 drawfw.PlotParams("_offlinePVCount", (0, 60), plotTitle="reconstructed N_{vtx.} before PU rew."),
-                drawfw.PlotParams("_offlinePVCount", (0, 60), plotTitle="reconstructed N_{vtx.} after PU rew.(N_{true})",
-                    weights=["PUWeightNtrue_puWeightProducer"]),
-                drawfw.PlotParams("_offlinePVCount", (0, 60), plotTitle="reconstructed N_{vtx.} after PU rew.(N_{0})",
-                    weights=["PUWeightN0_puWeightProducer"])
         ]
-        psMu += sigDataMuShapeComp.plot(cutlist.initial, NvtxPlots, cutDescription="skimmed MC")
+        if doReweighted:
+            NvtxPlots.append(drawfw.PlotParams("_offlinePVCount", (0, 60), plotTitle="reconstructed N_{vtx.} after PU rew.(N_{true})",
+                    weights=["PUWeightNtrue_puWeightProducer"]))
+
+        for p in NvtxPlots:
+            p.doChi2Test("t-channel", "mu", chi2options={"weight_type":"WW"})
+
         psMu += sigDataMuShapeComp.plot(cutlist.finalMu, NvtxPlots, cutDescription="muon channel, final sel.")
 
     if doWeights:
         allMCDataMu = plotfw.methods.SampleList()
         allMCDataMu.addGroup(smplsAllMC)
         allMCDataMu.addGroup(smplsMu)
-        allMCDataMuShapeComp = drawfw.ShapePlotCreator(allMCDataMu)
+        allMCDataMuShapeComp = drawfw.ShapePlotCreator(allMCDataMu, n_cores=1)
         psMu += allMCDataMuShapeComp.plot(cutlist.initial, NvtxPlots, cutDescription="skimmed MC")
         psMu += allMCDataMuShapeComp.plot(cutlist.finalMu, NvtxPlots, cutDescription="muon channel, final sel.")
 
@@ -187,7 +206,7 @@ if __name__ == "__main__":
         sigMainBKG.addGroup(smpls.groups["t-channel"])
         sigMainBKG.addGroup(smpls.groups["TTbar"])
         sigMainBKG.addGroup(smpls.groups["WJets"])
-        sigMainBKGComp = drawfw.ShapePlotCreator(sigMainBKG)
+        sigMainBKGComp = drawfw.ShapePlotCreator(sigMainBKG, n_cores=1)
         weightPlots = [
             drawfw.PlotParams("bTagWeight_bTagWeightProducer", (0.01, 10), doLogY=True, plotTitle="b-tag weight (nominal)"),
             drawfw.PlotParams("PUWeightNtrue_puWeightProducer", (0, 5), doLogY=True, plotTitle="PU weight (N_{true})"),
@@ -201,5 +220,5 @@ if __name__ == "__main__":
     ofdir = "plots_out_" + ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(4))
     os.mkdir(ofdir)
     for p in ps:
-        p.save(fout=(ofdir + "/plot" + str(i)), fmt="pdf")
+        p.save(fout=(ofdir + "/plot" + str(i)), fmt="pdf", log=True)
         i += 1
