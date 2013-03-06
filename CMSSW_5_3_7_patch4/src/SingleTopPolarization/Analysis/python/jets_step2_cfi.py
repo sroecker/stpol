@@ -38,6 +38,14 @@ def JetSetup(process, conf):
             PUidVars = cms.InputTag("puJetId", "", "PAT"),
             isOriginal=cms.bool(True)
         )
+    else:
+        process.noPUJets = cms.EDProducer('CleanNoPUJetProducer',
+            jetSrc = cms.InputTag(conf.Jets.source),
+            PUidMVA = cms.InputTag("puJetMva", "fullDiscriminant", "PAT"),
+            PUidFlag = cms.InputTag("puJetMva", "fullId", "PAT"),
+            PUidVars = cms.InputTag("puJetId", "", "PAT"),
+            isOriginal=cms.bool(False)
+        )
 
 
 #    if conf.isMC:

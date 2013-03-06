@@ -204,7 +204,7 @@ def SingleTopStep1(
 
           'keep edmMergeableCounter_*_*_*', # Keep the lumi-block counter information
           'keep edmTriggerResults_TriggerResults__HLT', #Keep the trigger results
-          'keep recoGenParticles_genParticles__SIM', #keep all the genParticles
+          'keep *_genParticles__*', #keep all the genParticles
           'keep recoVertexs_offlinePrimaryVertices__RECO', #keep the offline PV-s
 
           # Jets

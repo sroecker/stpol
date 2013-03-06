@@ -452,8 +452,8 @@ BTagSystematicsWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup
             
             LogDebug("combLoop") << "Looping over " << jets.size() << " jets";
             for (const auto* pjet_ : jets) {
-                const auto& jet_ = *pjet_;
-                pat::Jet& jet = (pat::Jet&)jet_;
+                //const auto& jet_ = *pjet_;
+                const pat::Jet& jet = static_cast<const pat::Jet&>(*pjet_);
                 
                 bool inComb = std::find(comb.begin(), comb.end(), jetIdx) != comb.end();
                 LogDebug("jetLoop") << "Considering jet with index " << jetIdx;

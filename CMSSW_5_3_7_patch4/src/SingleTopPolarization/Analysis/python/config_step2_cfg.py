@@ -47,7 +47,7 @@ class Config(C):
     doDebug = False
 
     #Whether to output CMSSW-specific trees
-    skipPatTupleOutput = True
+    skipPatTupleOutput = False
 
     #Whether to run over grid (without command-line arguments)
     onGrid = False
@@ -65,7 +65,8 @@ class Config(C):
         ptCut = 40
         etaCut = 4.7
 
-        source = "selectedPatJets"
+        #source = "selectedPatJets"
+        source = "selectedPatJetsForMETtype1p2CorrEnDown"
 
         class BTagDiscriminant:
             TCHP = "trackCountingHighPurBJetTags"
@@ -109,6 +110,8 @@ class Config(C):
         relIsoCutRangeIsolatedRegion = [0.0, 0.12]
         relIsoCutRangeAntiIsolatedRegion = [0.12, 0.5]
         looseVetoRelIsoCut = 0.2
+        #source = "muonsWithID"
+        source = "shiftedMuonsWithIDenDown"
 
     class Electrons(Leptons):
         pt = "ecalDrivenMomentum.Pt()"
@@ -118,6 +121,7 @@ class Config(C):
         relIsoCutRangeAntiIsolatedRegion = [0.1, 0.5]
         looseVetoRelIsoCut = 0.15
         transverseMassType = "MET"
+        source = "electronsWithID"
 
 
     Electrons.relIsoType = Leptons.RelativeIsolation.rhoCorrRelIso

@@ -12,7 +12,7 @@ process.MessageLogger = cms.Service("MessageLogger",
         ),
 )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
-
+process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
         'file:/hdfs/cms/store/user/jpata/T_t-channel_TuneZ2star_8TeV-powheg-tauola/stpol_v3_1/33f82354a36574c1158b3181d92c6119/step1_Skim_10_1_TYz.root'

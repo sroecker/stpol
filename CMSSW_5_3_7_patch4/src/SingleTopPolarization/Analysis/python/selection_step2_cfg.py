@@ -6,6 +6,7 @@ from FWCore.ParameterSet.VarParsing import VarParsing
 import SingleTopPolarization.Analysis.pileUpDistributions as pileUpDistributions
 
 import logging
+
 #BTag working points from https://twiki.cern.ch/twiki/bin/viewauth/CMS/BTagPerformanceOP#B_tagging_Operating_Points_for_5
 #TODO: place in proper class
 #TrackCountingHighPur     TCHPT   3.41
@@ -98,6 +99,12 @@ def SingleTopStep2():
     process = cms.Process("STPOLSEL2")
     eventCounting.countProcessed(process)
 
+    process.load("Configuration.Geometry.GeometryIdeal_cff")
+    process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
+    from Configuration.AlCa.autoCond import autoCond
+    process.GlobalTag.globaltag = cms.string(options.globalTag)
+    process.load("Configuration.StandardSequences.MagneticField_cff")
+
     if Config.doDebug:
         process.load("FWCore.MessageLogger.MessageLogger_cfi")
         process.MessageLogger = cms.Service("MessageLogger",
@@ -108,7 +115,7 @@ def SingleTopStep2():
         )
         logging.basicConfig(level=logging.DEBUG)
     else:
-        process.load("FWCore.MessageService.MessageLogger_cfi")
+        process.load("FWCore.MessageLogger.MessageLogger_cfi")
         process.MessageLogger.cerr.FwkReport.reportEvery = 1000
         process.MessageLogger.cerr.threshold = cms.untracked.string("ERROR")
         logging.basicConfig(level=logging.ERROR)
@@ -121,6 +128,7 @@ def SingleTopStep2():
         # replace 'myfile.root' with the source file you want to use
         fileNames=cms.untracked.vstring("")
     )
+
 
     #-------------------------------------------------
     # Jets
@@ -136,14 +144,14 @@ def SingleTopStep2():
     #Embed the corrected isolations to the leptons
     process.muonsWithIso = cms.EDProducer(
       'MuonIsolationProducer',
-      leptonSrc = cms.InputTag("muonsWithID"),
+      leptonSrc = cms.InputTag(Config.Muons.source),
       rhoSrc = cms.InputTag("kt6PFJets", "rho"),
       dR = cms.double(0.4)
     )
 
     process.elesWithIso = cms.EDProducer(
       'ElectronIsolationProducer',
-      leptonSrc = cms.InputTag("electronsWithID"),
+      leptonSrc = cms.InputTag(Config.Electrons.source),
       rhoSrc = cms.InputTag("kt6PFJets", "rho"),
       dR = cms.double(0.3)
     )
@@ -620,6 +628,25 @@ def SingleTopStep2():
         src = cms.InputTag("looseVetoElectrons")
     )
 
+    if Config.isMC:
+
+        #Embed the reference to the original jet in the jets, which is constant during the propagation
+        process.patJetsWithOwnRef = cms.EDProducer('PatObjectOwnRefProducer<pat::Jet>',
+            src=cms.InputTag("selectedPatJets")
+        )
+        from PhysicsTools.PatUtils.tools.metUncertaintyTools import runMEtUncertainties
+        runMEtUncertainties(process,
+             electronCollection=cms.InputTag("electronsWithID"),
+             photonCollection=None,
+             muonCollection=cms.InputTag("muonsWithID"),
+             tauCollection="", # "" means emtpy, None means cleanPatTaus
+             jetCollection=cms.InputTag("patJetsWithOwnRef"),
+             addToPatDefaultSequence=False
+        )
+        process.metUncertaintyPath = cms.Path(
+            process.patJetsWithOwnRef *
+            process.metUncertaintySequence
+        )
 
     if Config.doMuon:
         from SingleTopPolarization.Analysis.muons_step2_cfi import MuonPath
