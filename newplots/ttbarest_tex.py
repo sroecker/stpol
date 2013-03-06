@@ -4,12 +4,19 @@ import cPickle
 files = [
 	('3J1T', 'costheta', '$\\cos(\\theta)$'),
 	('3J1T', 'topmass', 'Top mass'),
-	('3J1T', 'toppt', 'Top $p_t$'),
-	('3J1T', 'bjeteta', '$\\eta$ of lowest b-tag jet'),
+	#('3J1T', 'toppt', 'Top $p_t$'),
+	('3J1T', 'bjeteta', 'light jet $\\eta$'),
 	('3J2T', 'costheta', '$\\cos(\\theta)$'),
 	('3J2T', 'topmass', 'Top mass'),
-	('3J2T', 'toppt', 'Top $p_t$'),
-	('3J2T', 'bjeteta', '$\\eta$ of lowest b-tag jet')
+	#('3J2T', 'toppt', 'Top $p_t$'),
+	('3J2T', 'bjeteta', 'light jet $\\eta$'),
+
+	('3J1T', 'costheta_b', '$\\cos(\\theta)$ (w b-weight)'),
+	('3J1T', 'topmass_b', 'Top mass (w b-weight)'),
+	('3J1T', 'bjeteta_b', 'light jet $\\eta$ (w b-weight)'),
+	('3J2T', 'costheta_b', '$\\cos(\\theta)$ (w b-weight)'),
+	('3J2T', 'topmass_b', 'Top mass (w b-weight)'),
+	('3J2T', 'bjeteta_b', 'light jet $\\eta$ (w b-weight)')
 ]
 
 for f in files:
