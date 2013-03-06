@@ -69,6 +69,7 @@ class PlotCreator(object):
 		else:
 			tempSample = s
 		tempSample.tfile.cd()
+		perfstats = ROOT.TTreePerfStats(tempSample.name, tempSample.tree)
 
 		if reset:
 			tempSample.tree.SetEventList(0)
@@ -84,7 +85,7 @@ class PlotCreator(object):
 
 		retList = pickle.dumps(elist)
 		logger.debug('Cutting on `%s` took %f', tempSample.name, time.time() - t_cut)
-
+		perfstats.SaveAs("perf_" + str(adler32(tempSample.name + cutstr)) + ".root")
 		del tempSample
 		return retList
 
@@ -310,7 +311,8 @@ class StackedPlotCreator(PlotCreator):
 				expected_events = sample.xs * effective_lumi
 				total_events = sample.getTotalEvents()
 				scale_factor = float(expected_events)/float(total_events)
-				mc_hist.Scale(scale_factor)
+				#mc_hist.Scale(scale_factor)
+				sample.scaleToLumi(mc_hist, effective_lumi)
 
 				plot.mc_hists.append(mc_hist)
 				mc_group_hist.Add(mc_hist)
@@ -392,35 +394,37 @@ class ShapePlotCreator(PlotCreator):
 			hist.SetLineWidth(3)
 
 			filled_tot = 0.0
-			for s in group.getSamples():
-				sample_hist = ROOT.TH1F(hist_name + s.name, group.pretty_name, plot_params.hbins, plot_params.hmin, plot_params.hmax)
+			for sample in group.getSamples():
+				sample_hist = ROOT.TH1F(hist_name + sample.name, group.pretty_name, plot_params.hbins, plot_params.hmin, plot_params.hmax)
 				sample_hist.Sumw2()
 
-				plot.log.addProcess(s.name)
-				filled = s.tree.Draw(
+				plot.log.addProcess(sample.name)
+				filled = sample.tree.Draw(
 						'%s>>%s'%(plot_params.var, sample_hist.GetName()),
-					plot_params.getWeightStr(s.disabled_weights) if isinstance(s, MCSample) else '', 'goff'
+					plot_params.getWeightStr(sample.disabled_weights) if isinstance(sample, MCSample) else '', 'goff'
 				)
-				logger.debug('Filled histogram `%s` from sample `%s` with %f events', hist_name, s.name, filled)
+				logger.debug('Filled histogram `%s` from sample `%s` with %f events', hist_name, sample.name, filled)
 				filled_tot += filled
 
 				err = ROOT.Double()
 				integral = sample_hist.IntegralAndError(1, sample_hist.GetNbinsX(), err)
-				plot.log.setVariable(s.name, 'int', integral)
-				plot.log.setVariable(s.name, 'int_err', float(err))
-
+				plot.log.setVariable(sample.name, 'int', integral)
+				plot.log.setVariable(sample.name, 'int_err', float(err))
+				if plot_params.normalize_to == "lumi":
+					sample.scaleToLumi(mc_hist, 20000.0)
 				hist.Add(sample_hist)
 
 			logger.debug('Filled total for `%s` : %f' % (hist_name, filled_tot))
 
-			hist_integral = hist.Integral()
-			logger.debug('Hist `%s` integral: %f' % (hist_name, hist_integral))
-			if filled_tot>0:
-				hist.Scale(1.0/hist_integral)
-				logger.debug('Hist `%s` integral: %f (after scaling)' % (hist_name, hist.Integral()))
-			else:
-				logger.warning("Histogram {0} was empty".format(hist))
-				hist.Scale(0)
+			if plot_params.normalize_to == "unity":
+				hist_integral = hist.Integral()
+				logger.debug('Hist `%s` integral: %f' % (hist_name, hist_integral))
+				if filled_tot>0:
+					hist.Scale(1.0/hist_integral)
+					logger.debug('Hist `%s` integral: %f (after scaling)' % (hist_name, hist.Integral()))
+				else:
+					logger.warning("Histogram {0} was empty".format(hist))
+					hist.Scale(0)
 			plot._maxbin = max(plot._maxbin, hist.GetMaximum())
 			plot.addHist(hist, group.name)
 
@@ -549,7 +553,10 @@ class ShapePlot(Plot):
 
 	def setLegendEntries(self, legend):
 		for hist in self._hists.values():
-			legend.AddEntry(hist, hist.GetTitle())
+			legName = hist.GetTitle()
+			if self._plot_params.stat_opts == "legend":
+				legName = "#splitline{%s}{mean=%.2f}" % (hist.GetTitle(), hist.GetMean())
+			legend.AddEntry(hist, legName)
 		return
 
 	def getHistogram(self, name):
