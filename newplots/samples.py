@@ -5,8 +5,9 @@ import plotfw
 from plotfw import drawfw
 
 # Parameters with reasonable defaults
-#directory = '/scratch/joosep/Feb28' # Old: '/home/joosep/singletop/data/trees/Feb18/Iso'
-directory = '/home/joosep/singletop/data/trees/Feb28'
+#directory = '/home/joosep/singletop/data/trees/Feb28'
+#directory = '/hdfs/local/joosep/stpol/trees/Mar6/Iso'
+directory = '/home/joosep/singletop/data/trees/Mar6/Iso'
 fulldata = True
 split_ttbar = False
 
@@ -118,7 +119,7 @@ def load():
 	for group in smpls.groups.values():
 		smplsAllMC.samples += group.samples
 
-	return smpls, smplsMu
+	return smpls, smplsMu, smplsAllMC
 #=======
 #import ROOT
 #
