@@ -81,7 +81,7 @@ class Sample(object):
 	def _openTree(self):
 		fpath = (self.directory+'/' if self.directory is not None else '') + self.fname
 		logging.debug('Opening file: `%s`', fpath)
-		self.tfile = ROOT.TFile(fpath)
+		self.tfile = ROOT.TFile(fpath, "READ")
 		self.branches = []
 		if self.tfile.IsZombie():
 			raise IOError('Error: file `%s` not found!'%fpath)
@@ -105,8 +105,6 @@ class Sample(object):
 			tree.AddBranchToCache("*")
 		ROOT.gEnv.SetValue("TFile.AsyncPrefetching", 1)
 
-		#self.perfstats = ROOT.TTreePerfStats(self.name, self.tree)
-
 	def getTotalEvents(self):
 		return self.tfile.Get('efficiencyAnalyzerMu').Get('muPath').GetBinContent(1)
 
@@ -118,6 +116,14 @@ class MCSample(Sample):
 	def __init__(self, fname, xs, name=None, directory=None):
 		super(MCSample,self).__init__(fname, name=name, directory=directory)
 		self.xs = float(xs)
+
+	def scaleToLumi(self, hist, lumi):
+		# MC scaling to xs
+		expected_events = self.xs * lumi
+		total_events = self.getTotalEvents()
+		scale_factor = float(expected_events)/float(total_events)
+		hist.Scale(scale_factor)
+
 
 class DataSample(Sample):
 	"""Sample with a corresponding luminosity"""
@@ -190,7 +196,9 @@ class SampleList:
 # Plot parameters
 class PlotParams(object):
 	"""Class that holds the information of what and how to plot."""
-	def __init__(self, var, r, bins=20, name=None, plotTitle=None, doLogY=False, ofname=None, weights=None, x_label=None, vars_to_enable=None):
+	def __init__(self, var, r,
+		bins=20, name=None, plotTitle=None, doLogY=False, ofname=None, weights=None,
+		x_label=None, vars_to_enable=None, normalize_to="lumi"):
 		self.var = var
 		self.r = r; self.hmin = r[0]; self.hmax = r[1]
 		self.bins=bins; self.hbins = bins
@@ -213,6 +221,8 @@ class PlotParams(object):
 			self.vars_to_enable = vars_to_enable
 
 		self.do_chi2 = False
+		self.normalize_to = normalize_to
+		self.stat_opts = None
 
 	def getWeightStr(self, disabled_weights=[]):
 		if self.weights is None:
@@ -220,6 +230,9 @@ class PlotParams(object):
 		else:
 			weights = list(set(self.weights).difference(set(disabled_weights)))
 			return "*".join(weights)
+
+	def putStats(self):
+		self.stat_opts = "legend"
 
 	def doChi2Test(self, group_a_name, group_b_name, chi2options=None):
 		self.do_chi2 = True
