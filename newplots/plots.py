@@ -2,7 +2,7 @@ import argparse
 import ROOT
 import logging
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s;%(levelname)s;%(message)s")
+logging.basicConfig(level=logging.DEBUG, format="%(asctime)s;%(levelname)s;%(message)s")
 
 from plotfw import drawfw
 from plotfw.params import Cuts as cutlist
@@ -24,15 +24,15 @@ def reweighted(plot_params):
                 doLogY=pp.doLogY, weights=["PUWeightNtrue_puWeightProducer"], vars_to_enable=pp.vars_to_enable, x_label=pp.x_label
         )
         out.append(plot_PUrew)
-        #plot_bTagrew = drawfw.PlotParams(pp.var, pp.r,
-        #        bins=pp.bins, plotTitle=pp.plotTitle + " with bTag rew.",
-        #        doLogY=pp.doLogY, weights=["bTagWeight_bTagWeightProducer"], vars_to_enable=pp.vars_to_enable, x_label=pp.x_label)
-        #out.append(plot_bTagrew)
-        #plot_bTagPUrew = drawfw.PlotParams(pp.var, pp.r,
-        #        bins=pp.bins, plotTitle=pp.plotTitle + " with PU(N_{true}), bTag rew.",
-        #        doLogY=pp.doLogY, weights=["bTagWeight_bTagWeightProducer", "PUWeightNtrue_puWeightProducer"],
-        #        vars_to_enable=pp.vars_to_enable, x_label=pp.x_label)
-        #out.append(plot_bTagPUrew)
+        plot_bTagrew = drawfw.PlotParams(pp.var, pp.r,
+                bins=pp.bins, plotTitle=pp.plotTitle + " with bTag rew.",
+                doLogY=pp.doLogY, weights=["bTagWeight_bTagWeightProducerNJMT"], vars_to_enable=pp.vars_to_enable, x_label=pp.x_label)
+        out.append(plot_bTagrew)
+        plot_bTagPUrew = drawfw.PlotParams(pp.var, pp.r,
+                bins=pp.bins, plotTitle=pp.plotTitle + " with PU(N_{true}), bTag rew.",
+                doLogY=pp.doLogY, weights=["bTagWeight_bTagWeightProducerNJMT", "PUWeightNtrue_puWeightProducer"],
+                vars_to_enable=pp.vars_to_enable, x_label=pp.x_label)
+        out.append(plot_bTagPUrew)
     return out
 
 def replaceQCD(plot, histQCD, histnonQCD):
@@ -48,16 +48,22 @@ def replaceQCD(plot, histQCD, histnonQCD):
 if __name__ == "__main__":
 #    datasmplsMu, datasmplsEle, smpls, samples.pltcMu, pltcEle = initSamples()
     logger.info("Running plots.py")
-    smpls, smplsMu = samples.load()
+    smpls, smplsMu, smplsAllMC = samples.load()
 
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-e', '--enable', nargs='+', type=str, required=True)
+    parser.add_argument('-n', '--n_cores', type=int, default=1)
+    parser.add_argument('-p', '--percent', type=int, default=100)
     args = parser.parse_args()
     print args
 
-    n_cores = 10
-    samples.pltcMu.frac_entries = 1.0
+    n_cores = args.n_cores
+    logging.info("Using %d cores" % n_cores)
+    frac_entries = float(args.percent)/100.0
+    logging.info("Running on %.2f/1.0 of events" % frac_entries)
+    samples.pltcMu.frac_entries = frac_entries
+    samples.pltcEle.frac_entries = frac_entries
     samples.pltcMu.set_n_cores(n_cores)
     samples.pltcEle.set_n_cores(n_cores)
 
@@ -203,14 +209,14 @@ if __name__ == "__main__":
             p.doChi2Test("t-channel", "mu", chi2options={"weight_type":"WW"})
 
         psMu += sigDataMuShapeComp.plot(cutlist.finalMu, NvtxPlots, cutDescription="muon channel, final sel.")
+        #allMCDataMu = plotfw.methods.SampleList()
+        #allMCDataMu.addGroup(smplsAllMC)
+        #allMCDataMu.addGroup(smplsMu)
+        #allMCDataMuShapeComp = drawfw.ShapePlotCreator(allMCDataMu, n_cores=n_cores)
+        #psMu += allMCDataMuShapeComp.plot(cutlist.initial, NvtxPlots, cutDescription="skimmed MC")
+        #psMu += allMCDataMuShapeComp.plot(cutlist.finalMu, NvtxPlots, cutDescription="muon channel, final sel.")
 
     if doWeights:
-        allMCDataMu = plotfw.methods.SampleList()
-        allMCDataMu.addGroup(smplsAllMC)
-        allMCDataMu.addGroup(smplsMu)
-        allMCDataMuShapeComp = drawfw.ShapePlotCreator(allMCDataMu, n_cores=n_cores)
-        psMu += allMCDataMuShapeComp.plot(cutlist.initial, NvtxPlots, cutDescription="skimmed MC")
-        psMu += allMCDataMuShapeComp.plot(cutlist.finalMu, NvtxPlots, cutDescription="muon channel, final sel.")
 
         sigMainBKG = plotfw.methods.SampleList()
         sigMainBKG.addGroup(smpls.groups["t-channel"])
@@ -218,10 +224,12 @@ if __name__ == "__main__":
         sigMainBKG.addGroup(smpls.groups["WJets"])
         sigMainBKGComp = drawfw.ShapePlotCreator(sigMainBKG, n_cores=n_cores)
         weightPlots = [
-            drawfw.PlotParams("bTagWeight_bTagWeightProducer", (0.01, 10), doLogY=True, plotTitle="b-tag weight (nominal)"),
-            drawfw.PlotParams("PUWeightNtrue_puWeightProducer", (0, 5), doLogY=True, plotTitle="PU weight (N_{true})"),
-            drawfw.PlotParams("PUWeightN0_puWeightProducer", (0, 5), doLogY=True, plotTitle="PU weight (N_{0})")
+            drawfw.PlotParams("bTagWeight_bTagWeightProducerNJMT", (0.8, 1.2), doLogY=True, plotTitle="b-tag weight (nominal)", normalize_to="unity"),
+    #        drawfw.PlotParams("PUWeightNtrue_puWeightProducer", (0, 5), doLogY=False, plotTitle="PU weight (N_{true})", normalize_to="unity"),
+    #        drawfw.PlotParams("PUWeightN0_puWeightProducer", (0, 5), doLogY=True, plotTitle="PU weight (N_{0})")
         ]
+        for p in weightPlots:
+            p.putStats()
         psMu += sigMainBKGComp.plot(cutlist.initial, weightPlots, cutDescription="skimmed MC")
         psMu += sigMainBKGComp.plot(cutlist.finalMu, weightPlots, cutDescription="muon channel, final sel.")
 
