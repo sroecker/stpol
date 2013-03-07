@@ -133,21 +133,21 @@ class Cuts:
 
 	recoFState = CutP('recoFstate', '_topCount==1')
 	mu  = CutP('mu', '_muonCount==1') \
-	    * CutP('muIso', '_goodSignalMuons_0_relIso<0.12') \
-	    * CutP('looseMuVeto', '_looseVetoMuCount==0') \
-	    * CutP('looseEleVeto', '_looseVetoEleCount==0') \
+		* CutP('muIso', '_goodSignalMuons_0_relIso<0.12') \
+		* CutP('looseMuVeto', '_looseVetoMuCount==0') \
+		* CutP('looseEleVeto', '_looseVetoEleCount==0') \
 
 	ele = CutP('ele', '_electronCount==1') \
-	    * CutP('eleIso', '_goodSignalElectrons_0_relIso<0.3') \
-	    * CutP('eleMVA', '_goodSignalElectrons_0_mvaID>0.9') \
+		* CutP('eleIso', '_goodSignalElectrons_0_relIso<0.3') \
+		* CutP('eleMVA', '_goodSignalElectrons_0_mvaID>0.9') \
 
 	muonID = CutP(None, '_muonsWithIso_0_normChi2 > 10') \
-	       * CutP(None, '_muonsWithIso_0_track_hitPattern_trackerLayersWithMeasurement > 5') \
-	       * CutP(None, '_muonsWithIso_0_globalTrack_hitPattern_numberOfValidMuonHits > 0') \
-	       * CutP(None, '_muonsWithIso_0_innerTrack_hitPattern_numberOfValidPixelHits > 0') \
-	       * CutF(None, 'abs({0}) > 0.2', ['_muonsWithIso_0_db']) \
-	       * CutF(None, 'abs({0}) > 0.5', ['_muonsWithIso_0_dz']) \
-	       * CutP(None, '_muonsWithIso_0_numberOfMatchedStations > 1')
+		   * CutP(None, '_muonsWithIso_0_track_hitPattern_trackerLayersWithMeasurement > 5') \
+		   * CutP(None, '_muonsWithIso_0_globalTrack_hitPattern_numberOfValidMuonHits > 0') \
+		   * CutP(None, '_muonsWithIso_0_innerTrack_hitPattern_numberOfValidPixelHits > 0') \
+		   * CutF(None, 'abs({0}) > 0.2', ['_muonsWithIso_0_db']) \
+		   * CutF(None, 'abs({0}) > 0.5', ['_muonsWithIso_0_dz']) \
+		   * CutP(None, '_muonsWithIso_0_numberOfMatchedStations > 1')
 
 	muonPt  = CutP('muonPt',  '_muonsWithIso_0_Pt > 26')
 	muonEta = CutF('muonEta', 'abs({0}) < 2.1', ['_muonsWithIso_0_Eta'])
@@ -155,9 +155,10 @@ class Cuts:
 
 	jets_1LJ = CutP('1LJ', '_lightJetCount==1')
 	jets_OK = CutP(None, '_lightJetCount>=0') \
-	        * CutP(None, '_bJetCount>=0')
+			* CutP(None, '_bJetCount>=0')
 	jets_2plusJ = jets_OK * CutF('2plusLJ', '({0} + {1})>=2', ['_lightJetCount', '_bJetCount'])
 	jets_2J = jets_OK * CutF('2J', '({0} + {1})==2', ['_lightJetCount', '_bJetCount'])
+	jets_3J = jets_OK * CutF('3J', '({0} + {1})==3', ['_lightJetCount', '_bJetCount'])
 	jets_2J1T = CutP(None, '_lightJetCount==1') * CutP(None, '_bJetCount==1')
 	jets_2J0T = CutP(None, '_lightJetCount==2') * CutP(None, '_bJetCount==0')
 	jets_3J1T = CutP(None, '_lightJetCount==2') * CutP(None, '_bJetCount==1')
