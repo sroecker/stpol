@@ -7,7 +7,7 @@ from plotfw import drawfw
 # Parameters with reasonable defaults
 #directory = '/home/joosep/singletop/data/trees/Feb28'
 #directory = '/hdfs/local/joosep/stpol/trees/Mar6/Iso'
-directory = '/home/joosep/singletop/data/trees/Mar6/Iso'
+directory = '/home/joosep/singletop/data/trees/Mar6_1/Iso'
 fulldata = True
 split_ttbar = False
 
@@ -49,7 +49,7 @@ def load():
 	# Monte Carlo samples
 	smplsgen = drawfw.SampleListGenerator(directory)
 
-	#smplsgen.add('TTbar', 'TTbar', 'TTJets_MassiveBinDECAY.root')
+#smplsgen.add('TTbar', 'TTbar', 'TTJets_MassiveBinDECAY.root')
 	smplsgen.add('TTJets_SemiLept' if split_ttbar else 'TTbar', 'TTJets_SemiLept', 'TTJets_SemiLept.root')
 	smplsgen.add('TTJets_FullLept' if split_ttbar else 'TTbar', 'TTJets_FullLept', 'TTJets_FullLept.root')
 
@@ -96,8 +96,45 @@ def load():
 	# add some pretty names
 	if 'TTbar' in smpls.groups:
 		smpls.groups['TTbar'].pretty_name = "t#bar{t} (#rightarrow ll, lj)"
-	smpls.groups["WJets"].pretty_name = "W(#rightarrow l#nu) + jets(inc.)"
+	smpls.groups["WJets"].pretty_name = "W(#rightarrow l#nu) + jets(excl.)"
 	smpls.groups["QCD"].pretty_name = "QCD (MC)"
+
+	#Get WJets inclusive + exclusive samples
+	smplsgenWJets = drawfw.SampleListGenerator(directory)
+	smplsgenWJets.add('WJets_inclusive', 'WJets', 'WJets_inclusive.root')
+	smplsgenWJets.add('W1Jets', 'W1Jets', 'W1Jets_exclusive.root')
+	smplsgenWJets.add('W2Jets', 'W2Jets', 'W2Jets_exclusive.root')
+	smplsgenWJets.add('W3Jets', 'W3Jets', 'W3Jets_exclusive.root')
+	smplsgenWJets.add('W4Jets', 'W4Jets', 'W4Jets_exclusive.root')
+	smplsWJets_all = smplsgenWJets.getSampleList()
+	sample_WJets_exclusive = smplsWJets_all.groups["W1Jets"] + smplsWJets_all.groups["W2Jets"] + smplsWJets_all.groups["W3Jets"] + smplsWJets_all.groups["W4Jets"]
+	sample_WJets_exclusive.pretty_name = "W(#rightarrow l#nu) + jets (excl.)"
+	sample_WJets_exclusive.name = "WJets_exclusive"
+	smplsWJets_all.groups["WJets_inclusive"].pretty_name = "W(#rightarrow l#nu) + jets (incl.)"
+	smplsWJets_all.groups["WJets_inclusive"].name = "WJets_inclusive"
+	sample_WJets_exclusive.color = ROOT.kRed
+	smplsWJets_all.groups["WJets_inclusive"].color = ROOT.kBlue
+	smplsWJets_incl_excl = plotfw.methods.SampleList()
+	smplsWJets_incl_excl.addGroup(sample_WJets_exclusive)
+	smplsWJets_incl_excl.addGroup(smplsWJets_all.groups["WJets_inclusive"])
+	#smplsWJets_incl_excl.addGroup(smplsMu)
+
+	smplsgenTTbar = drawfw.SampleListGenerator(directory)
+	smplsgenTTbar.add('TTJets_SemiLept', 'TTJets_SemiLept', 'TTJets_SemiLept.root')
+	smplsgenTTbar.add('TTJets_FullLept', 'TTJets_FullLept', 'TTJets_FullLept.root')
+	smplsgenTTbar.add('TTbar', 'TTbar', 'TTJets_MassiveBinDECAY.root')
+	smplsTTbar_all = smplsgenTTbar.getSampleList()
+	smplsTTbar_exclusive = smplsTTbar_all.groups["TTJets_SemiLept"] + smplsTTbar_all.groups["TTJets_FullLept"]
+	smplsTTbar_exclusive.name = "TTbar_exclusive"
+	smplsTTbar_exclusive.pretty_name = "TTbar exclusive"
+	smplsTTbar_exclusive.color = ROOT.kRed
+	smplsTTbar_inclusive = smplsTTbar_all.groups["TTbar"]
+	smplsTTbar_inclusive.name = "TTbar_inclusive"
+	smplsTTbar_inclusive.pretty_name = "TTbar inclusive"
+	smplsTTbar_inclusive.color = ROOT.kBlue
+	smplsTTbar_incl_excl = plotfw.methods.SampleList()
+	smplsTTbar_incl_excl.addGroup(smplsTTbar_exclusive)
+	smplsTTbar_incl_excl.addGroup(smplsTTbar_inclusive)
 
 	# Output the plotcreators
 	pltcMu = drawfw.StackedPlotCreator(datasmplsMu, smpls)
@@ -119,7 +156,7 @@ def load():
 	for group in smpls.groups.values():
 		smplsAllMC.samples += group.samples
 
-	return smpls, smplsMu, smplsAllMC
+	return smpls, smplsMu, smplsAllMC, smplsWJets_incl_excl, smplsTTbar_incl_excl
 #=======
 #import ROOT
 #
