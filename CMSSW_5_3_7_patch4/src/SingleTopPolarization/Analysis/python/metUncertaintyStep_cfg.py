@@ -16,6 +16,10 @@ from Configuration.AlCa.autoCond import autoCond
 process.GlobalTag.globaltag = cms.string(options.globalTag)
 process.load("Configuration.StandardSequences.MagneticField_cff")
 
+process.load("FWCore.MessageLogger.MessageLogger_cfi")
+process.MessageLogger.cerr.FwkReport.reportEvery = 1000
+process.MessageLogger.cerr.threshold = cms.untracked.string("ERROR")
+
 process.source = cms.Source("PoolSource",
     # replace 'myfile.root' with the source file you want to use
     fileNames=cms.untracked.vstring("")
@@ -50,6 +54,11 @@ process.out = cms.OutputModule("PoolOutputModule",
     outputCommands=cms.untracked.vstring(
         #'drop *',
         'keep *',
+        'drop patJets_*__STPOLSEL1B',
+        'keep patJets_smearedPatJetsWithOwnRefResDown__STPOLSEL1B',
+        'keep patJets_smearedPatJetsWithOwnRefResUp__STPOLSEL1B',
+        'keep patJets_shiftedPatJetsWithOwnRefEnUpForCorrMEt__STPOLSEL1B',
+        'keep patJets_shiftedPatJetsWithOwnRefEnDownForCorrMEt__STPOLSEL1B',
         'drop recoPFCandidates_*_pfCandidates_PAT',
         'drop recoPFMETs_pfMET__PAT',
         'drop recoPFMETs_pfMet__RECO',
