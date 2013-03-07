@@ -838,6 +838,7 @@ def SingleTopStep2():
             outputCommands=cms.untracked.vstring(
                 #'drop *',
                 'drop *',
+                'keep edmMergeableCounter_*__*',
                 'keep floats_patMETNTupleProducer_*_STPOLSEL2',
                 'keep floats_recoTopNTupleProducer_*_STPOLSEL2',
                 'keep floats_recoNuNTupleProducer_*_STPOLSEL2',
