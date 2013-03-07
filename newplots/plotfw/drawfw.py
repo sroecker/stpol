@@ -516,7 +516,7 @@ class StackPlot(Plot):
 		self.hist_stack.GetYaxis().SetTitle('Events / bin')
 
 		self.data_hist.Draw('E1 SAME')
-		self.total_mc_hist.Draw("E4 SAME")
+		self.total_mc_hist.Draw("E2 SAME")
 		super(StackPlot, self).draw()
 
 	def setLegendEntries(self, legend):
