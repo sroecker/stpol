@@ -412,6 +412,7 @@ BTagSystematicsWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup
     }
     
     //Precalculate the tagging combinations
+    combs.clear();
     combinations(nJets_ev, nTags_ev, combs);
 
     LogDebug("produce") << "This event has " << jetsIn->size() << " jets";
