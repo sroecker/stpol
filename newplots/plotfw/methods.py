@@ -5,6 +5,7 @@ import params
 import logging
 
 from plotfw.params import Cut # FIXME: temporary hack for backwards comp.
+import copy
 
 def th_sep(i, sep=','):
 	"""Return a string representation of i with thousand separators"""
@@ -147,6 +148,9 @@ class SampleGroup:
 	def add(self, s):
 		self.samples.append(s)
 
+	def getNames(self):
+		return [x.name for x in self.samples]
+
 	def addList(self, sl):
 		for sample in sl:
 			self.add(sample)
@@ -165,6 +169,16 @@ class SampleGroup:
 
 	def __str__(self):
 		return "{0}: (".format(self.name) + ", ".join(map(str, self.samples)) + ")"
+
+	def __add__(self, other):
+		if not isinstance(other, SampleGroup):
+			raise TypeError("Can't add instance of type %s to SampleGroup" % str(type(other)))
+		out = SampleGroup(self.name, self.color, self.pretty_name)
+		for sample in self.samples + other.samples:
+			if sample.name in out.getNames():
+				raise ValueError("Sample %s is already in group" % str(sample))
+			out.add(sample)
+		return out
 
 class SampleList:
 	"""List of all sample groups"""
@@ -192,6 +206,19 @@ class SampleList:
 
 	def __str__(self):
 		return ", ".join(map(str, self.groups.values()))
+
+	def __add__(self, other):
+		if not isinstance(other, SampleList):
+			raise TypeError("Can't add object of type %s to SampleList" % str(type(other)))
+		out = SampleList()
+		for name, group in self.groups:
+			out.addGroup(group)
+		for name, group in other.groups:
+			if name in self.groups.keys():
+				raise KeyError("Group %s is already in SampleList" % name)
+			out.addGroup(group)
+		return out
+
 
 # Plot parameters
 class PlotParams(object):
