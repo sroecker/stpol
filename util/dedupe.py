@@ -1,7 +1,7 @@
 import re
 import sys
 import pdb
-pat = re.compile(".*output_Skim_([0-9]+)_([0-9]+)_.*")
+pat = re.compile(".*_([0-9]+)_([0-9]+)_.root")
 lines = open(sys.argv[1]).readlines()
 lines.sort()
 
