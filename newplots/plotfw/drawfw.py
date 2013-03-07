@@ -69,7 +69,9 @@ class PlotCreator(object):
 		else:
 			tempSample = s
 		tempSample.tfile.cd()
-		perfstats = ROOT.TTreePerfStats(tempSample.name, tempSample.tree)
+
+		if logger.getEffectiveLevel()==logging.DEBUG:
+			perfstats = ROOT.TTreePerfStats(tempSample.name, tempSample.tree)
 
 		if reset:
 			tempSample.tree.SetEventList(0)
@@ -85,7 +87,10 @@ class PlotCreator(object):
 
 		retList = pickle.dumps(elist)
 		logger.debug('Cutting on `%s` took %f', tempSample.name, time.time() - t_cut)
-		perfstats.SaveAs("perf_" + str(adler32(tempSample.name + cutstr)) + ".root")
+
+		if logger.getEffectiveLevel()==logging.DEBUG:
+			perfstats.SaveAs("perf_" + str(adler32(tempSample.name + cutstr)) + ".root")
+
 		del tempSample
 		return retList
 
@@ -406,12 +411,14 @@ class ShapePlotCreator(PlotCreator):
 				logger.debug('Filled histogram `%s` from sample `%s` with %f events', hist_name, sample.name, filled)
 				filled_tot += filled
 
+				if plot_params.normalize_to == "lumi" and hasattr(sample, "scaleToLumi"):
+					sample.scaleToLumi(sample_hist, 20000.0)
+
 				err = ROOT.Double()
 				integral = sample_hist.IntegralAndError(1, sample_hist.GetNbinsX(), err)
 				plot.log.setVariable(sample.name, 'int', integral)
 				plot.log.setVariable(sample.name, 'int_err', float(err))
-				if plot_params.normalize_to == "lumi":
-					sample.scaleToLumi(mc_hist, 20000.0)
+
 				hist.Add(sample_hist)
 
 			logger.debug('Filled total for `%s` : %f' % (hist_name, filled_tot))
@@ -465,10 +472,12 @@ class Plot(object):
 			)
 			self.chi2pad.draw()
 
-	def save(self, w=650, h=400, log=False, fmt='png', fout=None):
+	def save(self, w=650, h=400, log=False, fmt='png', fout=None, ofdir=None):
+		if ofdir is None:
+			ofdir = "."
 		if fout is None:
 			fout = self.getName()
-		ofname = fout+'.'+fmt
+		ofname = ofdir + "/" + fout+'.'+fmt
 
 		logger.info('Saving as: %s', ofname)
 		self.cvs = ROOT.TCanvas('tcvs_%s'%fout, '', w, h)
