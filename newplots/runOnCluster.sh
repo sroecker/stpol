@@ -7,4 +7,4 @@ cd $WORKDIR
 source setenv.sh
 
 cd newplots
-python plots.py "$@"
+python plots.py -o "plots_out_cluster_"$SLURM_JOB_ID "$@"
