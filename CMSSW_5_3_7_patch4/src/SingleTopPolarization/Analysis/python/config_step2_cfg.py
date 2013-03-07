@@ -28,6 +28,8 @@ class Config(C):
 
     channel = Channel.background
 
+    metSource = "patMETs"
+
     #Whether to run the muon channel
     doMuon = True
 
@@ -47,7 +49,7 @@ class Config(C):
     doDebug = False
 
     #Whether to output CMSSW-specific trees
-    skipPatTupleOutput = True
+    skipPatTupleOutput = False
 
     #Whether to run over grid (without command-line arguments)
     onGrid = False

@@ -15,7 +15,7 @@ import random
 import string
 
 logger = logging.getLogger(__name__)
-def reweighted(plot_params, do_pu=True, do_btag=True):
+def reweighted(plot_params, do_pu=True, do_btag=False):
     out = []
     for pp in plot_params:
         out.append(pp)
@@ -89,7 +89,7 @@ if __name__ == "__main__":
     doEtaLJ = "etalj" in args.enable
     doWeights = "weights" in args.enable
     doWJetsControl = "wjets_control" in args.enable
-    doTTBarCOntrol = "ttbar_control" in args.enable
+    doTTbarControl = "ttbar_control" in args.enable
     doBWeightControl = "bweight_control" in args.enable
 
     psMu = []
@@ -110,8 +110,11 @@ if __name__ == "__main__":
 
     if doNJets:
         #Plot the NJet distribution in the muon/ele channel
-        jetPlots = [drawfw.PlotParams('_lightJetCount + _bJetCount', (1, 6),
-            bins=6, plotTitle="N_{jets}", doLogY=False, vars_to_enable=["_lightJetCount", "_bJetCount"], x_label="N_{jets}")
+        jetPlots = [
+            drawfw.PlotParams(
+                '_lightJetCount + _bJetCount', (1, 6),
+                bins=6, plotTitle="N_{jets}", doLogY=False, vars_to_enable=["_lightJetCount", "_bJetCount"], x_label="N_{jets}", doLogY=True
+            )
         ]
 
         if doReweighted:
@@ -122,7 +125,7 @@ if __name__ == "__main__":
 
     if doNBTags:
         #Plot the N-bTag distribution in 2J
-        jetPlots2J = [drawfw.PlotParams('_bJetCount', (0, 3), bins=4, plotTitle="N_{b-tags}", doLogY=False, x_label="N_{b-tags}")]
+        jetPlots2J = [drawfw.PlotParams('_bJetCount', (0, 3), bins=4, plotTitle="N_{b-tags}", doLogY=False, x_label="N_{b-tags}", doLogY=True)]
         if doReweighted:
             jetPlots2J = reweighted(jetPlots2J)
         psMu += samples.pltcMu.plot(cutlist.jets_2J * cutlist.mu * cutlist.MTmu, jetPlots2J, cutDescription="mu channel, 2J, M_{t}(W)>50 GeV")
@@ -154,7 +157,7 @@ if __name__ == "__main__":
     if doTopMass:
         #top mass plot
         topMassPlots = [
-            drawfw.PlotParams('_recoTop_0_Mass', (100, 500), plotTitle="M_{bl#nu}", x_label="M_{bl#nu}"),
+            drawfw.PlotParams('_recoTop_0_Mass', (100, 500), plotTitle="M_{bl#nu}", x_label="M_{bl#nu}", doLogY=True),
         ]
         if doReweighted:
             topMassPlots = reweighted(topMassPlots)
@@ -259,20 +262,23 @@ if __name__ == "__main__":
             drawfw.PlotParams("_highestBTagJet_0_Eta", (-5, 5), doLogY=False, plotTitle="#eta_{b-jet}", normalize_to="lumi"),
             drawfw.PlotParams("bTagWeight_bTagWeightProducerNJMT", (0.1, 2), plotTitle="b-weight (nominal)", normalize_to="lumi"),
         ]
-        for p in ttbarComp:
+        for p in ttbarPlots:
             p.doChi2Test("TTbar_inclusive", "TTbar_exclusive", chi2options={"weight_type":"WW"})
-        psMu += ttbarComp.plot(cutlist.initial * cutlist.jets_3J1T * cutlist.mu * cutlist.MTmu, wjetsPlots, cutDescription="3J1T, muon channel, M_{t}(W)>50 GeV")
+        psMu += ttbarComp.plot(cutlist.initial * cutlist.jets_3J1T * cutlist.mu * cutlist.MTmu, ttbarPlots, cutDescription="3J1T, muon channel, M_{t}(W)>50 GeV")
 
     if doBWeightControl:
         bWeightPlots = [
-            drawfw.PlotParams("_bJetCount", (0, 3), bins=4, plotTitle="N_{b-tags}", normalize_to="lumi"),
+            drawfw.PlotParams("_bJetCount", (0, 3), bins=3, plotTitle="N_{b-tags}", normalize_to="lumi"),
             drawfw.PlotParams("_lowestBTagJet_0_Eta", (-5, 5), plotTitle="#eta_{lj}", normalize_to="lumi"),
             drawfw.PlotParams("_highestBTagJet_0_Eta", (-5, 5), plotTitle="#eta_{b-jet}", normalize_to="lumi"),
             drawfw.PlotParams("bTagWeight_bTagWeightProducerNJMT", (0.1, 2), plotTitle="b-weight (nominal)", normalize_to="lumi"),
         ]
         if doReweighted:
             bWeightPlots = reweighted(bWeightPlots)
-        psMu += samples.pltcMu.plot(cutlist.initial*cutlist.jets_3J*cutlist.mu*cutlist.MTmu, bWeightPlots, cutDescription="3J, muon channel, M_{t}(W)>50 GeV")
+        for p in bWeightPlots:
+            p.doChi2Test("mc", "data", chi2options={"weight_type": "WW"})
+        psMu += samples.pltcMu.plot(cutlist.initial*cutlist.jets_3J2T*cutlist.mu*cutlist.MTmu, bWeightPlots, cutDescription="3J2T, muon channel, M_{t}(W)>50 GeV")
+        psMu += samples.pltcMu.plot(cutlist.finalMu, bWeightPlots, cutDescription="muon channel, final selection")
 
     ps = psMu + psEle
     i = 1

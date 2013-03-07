@@ -207,6 +207,16 @@ def SingleTopStep2():
         )
         return ret
 
+    def ntupleCollection(items):
+        varVPSet = cms.VPSet()
+        for item in items:
+            pset = cms.untracked.PSet(
+                tag=cms.untracked.string(item[0]),
+                quantity=cms.untracked.string(item[1])
+            )
+            varVPSet.append(pset)
+        return varVPSet
+
     process.treesMu = cms.EDAnalyzer('MuonCandViewTreemakerAnalyzer',
         collections = cms.untracked.VPSet(
             treeCollection(
@@ -587,6 +597,136 @@ def SingleTopStep2():
 
     process.treeSequence = cms.Sequence(process.treesMu*process.treesEle*process.treesDouble*process.treesBool*process.treesCands*process.treesJets*process.treesInt*process.treesDoubleWeight)
 
+    process.recoTopNTupleProducer = cms.EDProducer(
+        "CandViewNtpProducer2",
+        src = cms.InputTag("recoTop"),
+        lazyParser = cms.untracked.bool(True),
+        prefix = cms.untracked.string(""),
+        #eventInfo = cms.untracked.bool(True),
+        variables = ntupleCollection(
+            [
+                ["Pt", "pt"],
+                ["Eta", "eta"],
+                ["Phi", "phi"],
+                ["Mass", "mass"],
+            ]
+      )
+    )
+    process.recoNuNTupleProducer = cms.EDProducer(
+        "CandViewNtpProducer2",
+        src = cms.InputTag("recoNu"),
+        lazyParser = cms.untracked.bool(True),
+        prefix = cms.untracked.string(""),
+        #eventInfo = cms.untracked.bool(True),
+        variables = ntupleCollection(
+            [
+                ["Pt", "pt"],
+                ["Eta", "eta"],
+                ["Phi", "phi"],
+                ["Px", "p4().Px()"],
+                ["Py", "p4().Py()"],
+                ["Pz", "p4().Pz()"],
+            ]
+      )
+    )
+
+    process.trueNuNTupleProducer = process.recoNuNTupleProducer.clone(
+        src=cms.InputTag("genParticleSelector", "trueNeutrino", "STPOLSEL2"),
+    )
+    process.trueTopNTupleProducer = process.recoTopNTupleProducer.clone(
+        src=cms.InputTag("genParticleSelector", "trueTop", "STPOLSEL2"),
+    )
+    process.patMETNTupleProducer = process.recoTopNTupleProducer.clone(
+        src=cms.InputTag(Config.metSource),
+    )
+    process.trueLeptonNTupleProducer = process.recoTopNTupleProducer.clone(
+        src=cms.InputTag("genParticleSelector", "trueLepton", "STPOLSEL2"),
+    )
+    process.trueLightJetNTupleProducer = process.recoTopNTupleProducer.clone(
+        src=cms.InputTag("genParticleSelector", "trueLightJet", "STPOLSEL2"),
+    )
+    process.goodSignalMuonsNTupleProducer = cms.EDProducer(
+        "CandViewNtpProducer2",
+        src = cms.InputTag("goodSignalMuons"),
+        lazyParser = cms.untracked.bool(True),
+        prefix = cms.untracked.string(""),
+        #eventInfo = cms.untracked.bool(True),
+        variables = ntupleCollection(
+            [
+                ["Pt", "pt"],
+                ["Eta", "eta"],
+                ["Phi", "phi"],
+                ["relIso", "userFloat('%s')" % Config.Muons.relIsoType],
+                ["Charge", "charge"],
+                ["genPdgId", "? genParticlesSize() > 0 ? genParticle(0).pdgId() : 0"],
+                ["normChi2", "? globalTrack().isNonnull() ? normChi2 : -1.0"],
+                ["trackhitPatterntrackerLayersWithMeasurement", "userFloat('track_hitPattern_trackerLayersWithMeasurement')"],
+                ["globalTrackhitPatternnumberOfValidMuonHits", "userFloat('globalTrack_hitPattern_numberOfValidMuonHits')"],
+                ["innerTrackhitPatternnumberOfValidPixelHits", "userFloat('innerTrack_hitPattern_numberOfValidPixelHits')"],
+                ["db", "dB"],
+                ["dz", "userFloat('dz')"],
+                ["numberOfMatchedStations", "numberOfMatchedStations"],
+            ]
+      )
+    )
+    process.goodSignalElectronsNTupleProducer = cms.EDProducer(
+        "CandViewNtpProducer2",
+        src = cms.InputTag("goodSignalElectrons"),
+        lazyParser = cms.untracked.bool(True),
+        prefix = cms.untracked.string(""),
+        #eventInfo = cms.untracked.bool(True),
+        variables = ntupleCollection(
+                [
+                    ["Pt", "%s" % Config.Electrons.pt],
+                    ["Eta", "eta"],
+                    ["Phi", "phi"],
+                    ["relIso", "userFloat('%s')" % Config.Electrons.relIsoType],
+                    ["mvaID", "electronID('mvaTrigV0')"],
+                    ["Charge", "charge"],
+                    ["superClustereta", "superCluster.eta"],
+                    ["passConversionVeto", "passConversionVeto()"],
+                    ["gsfTracktrackerExpectedHitsInnernumberOfHits", "userInt('gsfTrack_trackerExpectedHitsInner_numberOfHits')"]
+                ]
+      )
+    )
+    process.goodJetsNTupleProducer = cms.EDProducer(
+        "CandViewNtpProducer2",
+        src = cms.InputTag("goodJets"),
+        lazyParser = cms.untracked.bool(True),
+        prefix = cms.untracked.string(""),
+        eventInfo = cms.untracked.bool(False),
+        variables = ntupleCollection(
+                [
+                    ["Pt", "pt"],
+                    ["Eta", "eta"],
+                    ["Phi", "phi"],
+                    ["Mass", "mass"],
+                    #["bDiscriminator", "bDiscriminator('%s')" % Config.Jets.bTagDiscriminant],
+                    ["bDiscriminatorTCHP", "bDiscriminator('%s')" % Config.Jets.BTagDiscriminant.TCHP],
+                    #["bDiscriminatorCSV_MVA", "bDiscriminator('%s')" % Config.Jets.BTagDiscriminant.CSV_MVA],
+                    ["rms", "userFloat('rms')"],
+                    ["partonFlavour", "partonFlavour()"],
+                    ["deltaR", "userFloat('deltaR')"]
+                ]
+        )
+    )
+    process.lowestBTagJetNTupleProducer = process.goodJetsNTupleProducer.clone(src=cms.InputTag("lowestBTagJet"))
+    process.highestBTagJetNTupleProducer = process.goodJetsNTupleProducer.clone(src=cms.InputTag("highestBTagJet"))
+
+    process.treeSequenceNew = cms.Sequence(
+        process.patMETNTupleProducer *
+        process.recoTopNTupleProducer *
+        process.recoNuNTupleProducer *
+        process.trueTopNTupleProducer *
+        process.trueNuNTupleProducer *
+        process.trueLeptonNTupleProducer *
+        process.trueLightJetNTupleProducer *
+        process.goodJetsNTupleProducer *
+        process.lowestBTagJetNTupleProducer *
+        process.highestBTagJetNTupleProducer *
+        process.goodSignalMuonsNTupleProducer *
+        process.goodSignalElectronsNTupleProducer
+    )
     #-----------------------------------------------
     # Flavour analyzer
     #-----------------------------------------------
@@ -630,25 +770,24 @@ def SingleTopStep2():
         src = cms.InputTag("looseVetoElectrons")
     )
 
-    if Config.isMC:
-
-        #Embed the reference to the original jet in the jets, which is constant during the propagation
-        process.patJetsWithOwnRef = cms.EDProducer('PatObjectOwnRefProducer<pat::Jet>',
-            src=cms.InputTag("selectedPatJets")
-        )
-        from PhysicsTools.PatUtils.tools.metUncertaintyTools import runMEtUncertainties
-        runMEtUncertainties(process,
-             electronCollection=cms.InputTag("electronsWithID"),
-             photonCollection=None,
-             muonCollection=cms.InputTag("muonsWithID"),
-             tauCollection="", # "" means emtpy, None means cleanPatTaus
-             jetCollection=cms.InputTag("patJetsWithOwnRef"),
-             addToPatDefaultSequence=False
-        )
-        process.metUncertaintyPath = cms.Path(
-            process.patJetsWithOwnRef *
-            process.metUncertaintySequence
-        )
+    #if Config.isMC:
+        ##Embed the reference to the original jet in the jets, which is constant during the propagation
+        #process.patJetsWithOwnRef = cms.EDProducer('PatObjectOwnRefProducer<pat::Jet>',
+        #    src=cms.InputTag("selectedPatJets")
+        #)
+        #from PhysicsTools.PatUtils.tools.metUncertaintyTools import runMEtUncertainties
+        #runMEtUncertainties(process,
+        #     electronCollection=cms.InputTag("electronsWithID"),
+        #     photonCollection=None,
+        #     muonCollection=cms.InputTag("muonsWithID"),
+        #     tauCollection="", # "" means emtpy, None means cleanPatTaus
+        #     jetCollection=cms.InputTag("patJetsWithOwnRef"),
+        #     addToPatDefaultSequence=False
+        #)
+        #process.metUncertaintyPath = cms.Path(
+        #    process.patJetsWithOwnRef *
+        #    process.metUncertaintySequence
+        #)
 
     if Config.doMuon:
         from SingleTopPolarization.Analysis.muons_step2_cfi import MuonPath
@@ -682,7 +821,7 @@ def SingleTopStep2():
 
     process.eventIDProducer = cms.EDProducer('EventIDProducer'
     )
-    process.treePath = cms.Path(process.eventIDProducer * process.offlinePVCount *  process.treeSequence)
+    process.treePath = cms.Path(process.eventIDProducer * process.offlinePVCount *  process.treeSequence * process.treeSequenceNew)
     if Config.isMC and Config.subChannel=="WJets":
         process.treePath += process.flavourAnalyzer
 
@@ -691,19 +830,40 @@ def SingleTopStep2():
     #-----------------------------------------------
     if not Config.skipPatTupleOutput:
         process.out = cms.OutputModule("PoolOutputModule",
+            dropMetaData=cms.untracked.string("ALL"),
             fileName=cms.untracked.string('out_step2.root'),
              SelectEvents=cms.untracked.PSet(
                  SelectEvents=cms.vstring([])
              ),
             outputCommands=cms.untracked.vstring(
                 #'drop *',
-                'keep *',
-                'keep *_recoTop_*_*',
-                'keep *_goodSignalMuons_*_*',
-                'keep *_goodSignalElectrons_*_*',
-                'keep *_goodJets_*_*',
-                'keep *_bTaggedJets_*_*',
-                'keep *_untaggedJets_*_*',
+                'drop *',
+                'keep floats_patMETNTupleProducer_*_STPOLSEL2',
+                'keep floats_recoTopNTupleProducer_*_STPOLSEL2',
+                'keep floats_recoNuNTupleProducer_*_STPOLSEL2',
+                'keep floats_trueTopNTupleProducer_*_STPOLSEL2',
+                'keep floats_trueNuNTupleProducer_*_STPOLSEL2',
+                'keep floats_trueLeptonNTupleProducer_*_STPOLSEL2',
+                'keep floats_goodSignalMuonsNTupleProducer_*_STPOLSEL2',
+                'keep floats_goodSignalElectronsNTupleProducer_*_STPOLSEL2',
+                'keep floats_goodJetsNTupleProducer_*_STPOLSEL2',
+                'keep floats_lowestBTagJetNTupleProducer_*_STPOLSEL2',
+                'keep floats_highestBTagJetNTupleProducer_*_STPOLSEL2',
+                'keep double_*__STPOLSEL2',
+                'keep double_cosTheta_*_STPOLSEL2',
+                'keep double_cosThetaProducerTrueAll_*_STPOLSEL2',
+                'keep double_cosThetaProducerTrueTop_*_STPOLSEL2',
+                'keep double_cosThetaProducerTrueLepton_*_STPOLSEL2',
+                'keep double_cosThetaProducerTrueJet_*_STPOLSEL2',
+                'keep double_bTagWeightProducerNJMT_*_STPOLSEL2',
+                'keep int_*__STPOLSEL2',
+                #'keep *',
+                #'keep *_recoTop_*_*',
+                #'keep *_goodSignalMuons_*_*',
+                #'keep *_goodSignalElectrons_*_*',
+                #'keep *_goodJets_*_*',
+                #'keep *_bTaggedJets_*_*',
+                #'keep *_untaggedJets_*_*',
             )
         )
         process.outpath = cms.EndPath(process.out)

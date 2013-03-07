@@ -71,6 +71,9 @@ To create the crab.cfg files to run over step2-mc (iso/antiIso), run in the base
 >python2.7 $CMSSW_BASE/../util/datasets.py -t stpol_step2_antiIso -T $CMSSW_BASE/../crabs/crab_MC_step2_local_antiIso.cfg -d S2newMC -o crabs/step2_MC_antiIso 
 >python2.7 $CMSSW_BASE/../util/datasets.py -t your_tag -T $CMSSW_BASE/../crabs/crab_Data_step2_Iso.cfg -d S2D -o crabs/step2_Data_Iso
 
+#To run the met uncertainty precalculation
+>python $CMSSW_BASE/../util/datasets.py -t stpol_step1B -T /home/joosep/singletop/stpol/crabs/crab_MC_step1B_local.cfg -d S2newMC -o crabs/step1B_MC_Mar8
+
 ###Using lumiCalc2.py
 To calculate the integrated luminosity from crab jobs, do the following
 >crab -c YOUR_DIR -report
