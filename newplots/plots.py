@@ -2,7 +2,7 @@ import argparse
 import ROOT
 import logging
 
-logging.basicConfig(level=logging.DEBUG, format="%(asctime)s;%(levelname)s;%(message)s")
+logging.basicConfig(level=logging.INFO, format="%(asctime)s;%(levelname)s;%(message)s")
 
 from plotfw import drawfw
 from plotfw.params import Cuts as cutlist
@@ -15,24 +15,30 @@ import random
 import string
 
 logger = logging.getLogger(__name__)
-def reweighted(plot_params):
+def reweighted(plot_params, do_pu=True, do_btag=True):
     out = []
     for pp in plot_params:
         out.append(pp)
-        plot_PUrew = drawfw.PlotParams(pp.var, pp.r,
-                bins=pp.bins, plotTitle=pp.plotTitle + " with PU(N_{true}) rew.",
-                doLogY=pp.doLogY, weights=["PUWeightNtrue_puWeightProducer"], vars_to_enable=pp.vars_to_enable, x_label=pp.x_label
-        )
-        out.append(plot_PUrew)
-        plot_bTagrew = drawfw.PlotParams(pp.var, pp.r,
-                bins=pp.bins, plotTitle=pp.plotTitle + " with bTag rew.",
-                doLogY=pp.doLogY, weights=["bTagWeight_bTagWeightProducerNJMT"], vars_to_enable=pp.vars_to_enable, x_label=pp.x_label)
-        out.append(plot_bTagrew)
-        plot_bTagPUrew = drawfw.PlotParams(pp.var, pp.r,
-                bins=pp.bins, plotTitle=pp.plotTitle + " with PU(N_{true}), bTag rew.",
-                doLogY=pp.doLogY, weights=["bTagWeight_bTagWeightProducerNJMT", "PUWeightNtrue_puWeightProducer"],
-                vars_to_enable=pp.vars_to_enable, x_label=pp.x_label)
-        out.append(plot_bTagPUrew)
+
+        if do_pu:
+            plot_PUrew = drawfw.PlotParams(pp.var, pp.r,
+                    bins=pp.bins, plotTitle=pp.plotTitle + " with PU(N_{true}) rew.",
+                    doLogY=pp.doLogY, weights=["PUWeightNtrue_puWeightProducer"], vars_to_enable=pp.vars_to_enable, x_label=pp.x_label
+            )
+            out.append(plot_PUrew)
+
+        if do_btag:
+            plot_bTagrew = drawfw.PlotParams(pp.var, pp.r,
+                    bins=pp.bins, plotTitle=pp.plotTitle + " with bTag rew.",
+                    doLogY=pp.doLogY, weights=["bTagWeight_bTagWeightProducerNJMT"], vars_to_enable=pp.vars_to_enable, x_label=pp.x_label)
+            out.append(plot_bTagrew)
+
+        if do_pu and do_btag:
+            plot_bTagPUrew = drawfw.PlotParams(pp.var, pp.r,
+                    bins=pp.bins, plotTitle=pp.plotTitle + " with PU(N_{true}), bTag rew.",
+                    doLogY=pp.doLogY, weights=["bTagWeight_bTagWeightProducerNJMT", "PUWeightNtrue_puWeightProducer"],
+                    vars_to_enable=pp.vars_to_enable, x_label=pp.x_label)
+            out.append(plot_bTagPUrew)
     return out
 
 def replaceQCD(plot, histQCD, histnonQCD):
@@ -48,11 +54,11 @@ def replaceQCD(plot, histQCD, histnonQCD):
 if __name__ == "__main__":
 #    datasmplsMu, datasmplsEle, smpls, samples.pltcMu, pltcEle = initSamples()
     logger.info("Running plots.py")
-    smpls, smplsMu, smplsAllMC = samples.load()
-
+    smpls, smplsMu, smplsAllMC, smplsWJets_incl_excl, smplsTTbar_incl_excl = samples.load()
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-e', '--enable', nargs='+', type=str, required=True)
+    parser.add_argument('-o', '--ofdir', type=str, default="plots_out_" + ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(4)))
     parser.add_argument('-n', '--n_cores', type=int, default=1)
     parser.add_argument('-p', '--percent', type=int, default=100)
     args = parser.parse_args()
@@ -82,6 +88,9 @@ if __name__ == "__main__":
     doPVCount = "pvcount" in args.enable
     doEtaLJ = "etalj" in args.enable
     doWeights = "weights" in args.enable
+    doWJetsControl = "wjets_control" in args.enable
+    doTTBarCOntrol = "ttbar_control" in args.enable
+    doBWeightControl = "bweight_control" in args.enable
 
     psMu = []
     psEle = []
@@ -166,7 +175,7 @@ if __name__ == "__main__":
         ]
         if doReweighted:
             lightJetPlots = reweighted(lightJetPlots)
-        psMu += samples.pltcMu.plot(cutlist.mu * cutlist.jets_2J1T, lightJetPlots, cutDescription="mu channel, 2J1T")
+        psMu += samples.pltcMu.plot(cutlist.mu * cutlist.jets_2J1T * cutlist.MTmu, lightJetPlots, cutDescription="mu channel, 2J1T, M_{t}(W)>50 GeV")
         #psEle += pltcEle.plot(cutlist.ele * cutlist.jets_2J1T, lightJetPlots, cutDescription="ele. channel, 2J1T")
 
     if doFinalSel:
@@ -224,19 +233,50 @@ if __name__ == "__main__":
         sigMainBKG.addGroup(smpls.groups["WJets"])
         sigMainBKGComp = drawfw.ShapePlotCreator(sigMainBKG, n_cores=n_cores)
         weightPlots = [
-            drawfw.PlotParams("bTagWeight_bTagWeightProducerNJMT", (0.8, 1.2), doLogY=True, plotTitle="b-tag weight (nominal)", normalize_to="unity"),
+            drawfw.PlotParams("bTagWeight_bTagWeightProducerNJMT", (0.8, 1.2), doLogY=False, plotTitle="b-tag weight (nominal)", normalize_to="unity"),
+            drawfw.PlotParams("bTagWeight_bTagWeightProducerNJMT", (0.8, 1.2), doLogY=False, plotTitle="b-tag weight (nominal)", normalize_to="lumi"),
     #        drawfw.PlotParams("PUWeightNtrue_puWeightProducer", (0, 5), doLogY=False, plotTitle="PU weight (N_{true})", normalize_to="unity"),
     #        drawfw.PlotParams("PUWeightN0_puWeightProducer", (0, 5), doLogY=True, plotTitle="PU weight (N_{0})")
         ]
         for p in weightPlots:
             p.putStats()
-        psMu += sigMainBKGComp.plot(cutlist.initial, weightPlots, cutDescription="skimmed MC")
+        #psMu += sigMainBKGComp.plot(cutlist.initial, weightPlots, cutDescription="skimmed MC")
         psMu += sigMainBKGComp.plot(cutlist.finalMu, weightPlots, cutDescription="muon channel, final sel.")
+
+    if doWJetsControl:
+        wjetsComp = drawfw.ShapePlotCreator(smplsWJets_incl_excl, n_cores=n_cores)
+        wjetsPlots = [
+            drawfw.PlotParams("_lowestBTagJet_0_Eta", (-5, 5), doLogY=False, plotTitle="#eta_{lj}", normalize_to="lumi"),
+        ]
+        for p in wjetsPlots:
+            p.doChi2Test("WJets_inclusive", "WJets_exclusive", chi2options={"weight_type":"WW"})
+        psMu += wjetsComp.plot(cutlist.initial * cutlist.jets_2J0T * cutlist.mu * cutlist.MTmu, wjetsPlots, cutDescription="2J0T, muon channel, M_{t}(W)>50 GeV")
+
+    if doTTbarControl:
+        ttbarComp = drawfw.ShapePlotCreator(smplsTTbar_incl_excl, n_cores=n_cores)
+        ttbarPlots = [
+            drawfw.PlotParams("_lowestBTagJet_0_Eta", (-5, 5), doLogY=False, plotTitle="#eta_{lj}", normalize_to="lumi"),
+            drawfw.PlotParams("_highestBTagJet_0_Eta", (-5, 5), doLogY=False, plotTitle="#eta_{b-jet}", normalize_to="lumi"),
+            drawfw.PlotParams("bTagWeight_bTagWeightProducerNJMT", (0.1, 2), plotTitle="b-weight (nominal)", normalize_to="lumi"),
+        ]
+        for p in ttbarComp:
+            p.doChi2Test("TTbar_inclusive", "TTbar_exclusive", chi2options={"weight_type":"WW"})
+        psMu += ttbarComp.plot(cutlist.initial * cutlist.jets_3J1T * cutlist.mu * cutlist.MTmu, wjetsPlots, cutDescription="3J1T, muon channel, M_{t}(W)>50 GeV")
+
+    if doBWeightControl:
+        bWeightPlots = [
+            drawfw.PlotParams("_bJetCount", (0, 3), bins=4, plotTitle="N_{b-tags}", normalize_to="lumi"),
+            drawfw.PlotParams("_lowestBTagJet_0_Eta", (-5, 5), plotTitle="#eta_{lj}", normalize_to="lumi"),
+            drawfw.PlotParams("_highestBTagJet_0_Eta", (-5, 5), plotTitle="#eta_{b-jet}", normalize_to="lumi"),
+            drawfw.PlotParams("bTagWeight_bTagWeightProducerNJMT", (0.1, 2), plotTitle="b-weight (nominal)", normalize_to="lumi"),
+        ]
+        if doReweighted:
+            bWeightPlots = reweighted(bWeightPlots)
+        psMu += samples.pltcMu.plot(cutlist.initial*cutlist.jets_3J*cutlist.mu*cutlist.MTmu, bWeightPlots, cutDescription="3J, muon channel, M_{t}(W)>50 GeV")
 
     ps = psMu + psEle
     i = 1
-    ofdir = "plots_out_" + ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(4))
-    os.mkdir(ofdir)
+    os.mkdir(args.ofdir)
     for p in ps:
-        p.save(fout=(ofdir + "/plot" + str(i)), fmt="pdf", log=True)
+        p.save(ofdir=args.ofdir, fmt="pdf", log=True)
         i += 1
