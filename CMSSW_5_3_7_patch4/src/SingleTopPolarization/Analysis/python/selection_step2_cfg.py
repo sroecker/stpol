@@ -119,7 +119,7 @@ def SingleTopStep2():
     else:
         process.load("FWCore.MessageLogger.MessageLogger_cfi")
         process.MessageLogger.cerr.FwkReport.reportEvery = 1000
-        process.MessageLogger.cerr.threshold = cms.untracked.string("ERROR")
+        process.MessageLogger.cerr.threshold = cms.untracked.string("INFO")
         logging.basicConfig(level=logging.ERROR)
 
     process.maxEvents = cms.untracked.PSet(input=cms.untracked.int32(-1))
@@ -830,7 +830,7 @@ def SingleTopStep2():
     #-----------------------------------------------
     if not Config.skipPatTupleOutput:
         process.out = cms.OutputModule("PoolOutputModule",
-            dropMetaData=cms.untracked.string("ALL"),
+            dropMetaData=cms.untracked.string("DROPPED"),
             fileName=cms.untracked.string('out_step2.root'),
              SelectEvents=cms.untracked.PSet(
                  SelectEvents=cms.vstring([])
