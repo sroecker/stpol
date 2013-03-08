@@ -19,6 +19,9 @@ addpkg DataFormats/StdDictionaries   V00-02-14
 addpkg FWCore/GuiBrowsers            V00-00-70
 addpkg RecoParticleFlow/PFProducer   V15-02-06
 
+addpkg CommonTools/CandAlgos V00-01-03 
+addpkg CommonTools/UtilAlgos V00-02-07
+
 addpkg PhysicsTools/PatUtils                V03-09-26
 addpkg CommonTools/RecoUtils                V00-00-14
 addpkg CommonTools/RecoAlgos                V00-03-24
