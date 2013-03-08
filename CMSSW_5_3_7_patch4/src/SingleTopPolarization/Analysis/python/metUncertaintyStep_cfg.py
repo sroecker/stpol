@@ -18,7 +18,8 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
-process.MessageLogger.cerr.threshold = cms.untracked.string("ERROR")
+process.MessageLogger.cerr.threshold = cms.untracked.string("INFO")
+process.options = cms.untracked.PSet(wantSummary=cms.untracked.bool(True))
 
 process.source = cms.Source("PoolSource",
     # replace 'myfile.root' with the source file you want to use
@@ -46,8 +47,8 @@ process.metUncertaintyPath = cms.Path(
 )
 
 process.out = cms.OutputModule("PoolOutputModule",
-    dropMetaData=cms.untracked.string("ALL"),
-    fileName=cms.untracked.string('out_step1_1.root'),
+    dropMetaData=cms.untracked.string("DROPPED"),
+    fileName=cms.untracked.string('out_step1B.root'),
      SelectEvents=cms.untracked.PSet(
          SelectEvents=cms.vstring([])
      ),
@@ -55,6 +56,13 @@ process.out = cms.OutputModule("PoolOutputModule",
         #'drop *',
         'keep *',
         'drop patJets_*__STPOLSEL1B',
+        'drop recoPFCandidates_pfCandsNotInJet__STPOLSEL1B',
+        'drop patJets_selectedPatJets__PAT',
+        'drop *_pfCandidateToVertexAssociation__STPOLSEL1B',
+        'drop recoVertexs_selectedPrimaryVertexHighestPtTrackSumForPFMEtCorrType0__STPOLSEL1B',
+        'drop recoVertexsToManyrecoTracksWithQuantityfloatAssociation_trackToVertexAssociation__STPOLSEL1B',
+        'drop *_selectedVerticesForPFMEtCorrType0__STPOLSEL1B',
+        'keep patJets_smearedPatJetsWithOwnRef__STPOLSEL1B',
         'keep patJets_smearedPatJetsWithOwnRefResDown__STPOLSEL1B',
         'keep patJets_smearedPatJetsWithOwnRefResUp__STPOLSEL1B',
         'keep patJets_shiftedPatJetsWithOwnRefEnUpForCorrMEt__STPOLSEL1B',
@@ -73,4 +81,3 @@ process.out = cms.OutputModule("PoolOutputModule",
 )
 process.out.fileName = cms.untracked.string(options.outputFile)
 process.outpath = cms.EndPath(process.out)
-process.options = cms.untracked.PSet(wantSummary=cms.untracked.bool(True))
