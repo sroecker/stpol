@@ -144,19 +144,27 @@ def SingleTopStep2():
     #-------------------------------------------------
 
     #Embed the corrected isolations to the leptons
+    process.skimmedMuons = cms.EDFilter("CandViewSelector",
+      src=cms.InputTag(Config.Muons.source), cut=cms.string("pt>20")
+    )
     process.muonsWithIso = cms.EDProducer(
       'MuonIsolationProducer',
-      leptonSrc = cms.InputTag(Config.Muons.source),
+      leptonSrc = cms.InputTag("skimmedMuons"),
       rhoSrc = cms.InputTag("kt6PFJets", "rho"),
       dR = cms.double(0.4)
     )
+    process.muIsoSequence = cms.Sequence(process.skimmedMuons*process.muonsWithIso)
 
+    process.skimmedElectrons = cms.EDFilter("CandViewSelector",
+      src=cms.InputTag(Config.Electrons.source), cut=cms.string("pt>20")
+    )
     process.elesWithIso = cms.EDProducer(
       'ElectronIsolationProducer',
-      leptonSrc = cms.InputTag(Config.Electrons.source),
+      leptonSrc = cms.InputTag("skimmedElectrons"),
       rhoSrc = cms.InputTag("kt6PFJets", "rho"),
       dR = cms.double(0.3)
     )
+    process.eleIsoSequence = cms.Sequence(process.skimmedElectrons*process.elesWithIso)
 
     from SingleTopPolarization.Analysis.muons_step2_cfi import MuonSetup
     MuonSetup(process, Config)
@@ -751,7 +759,8 @@ def SingleTopStep2():
     if Config.isMC and options.doGenParticlePath:
         from SingleTopPolarization.Analysis.partonStudy_step2_cfi import PartonStudySetup
         PartonStudySetup(process)
-        process.partonPath = cms.Path(process.commonPartonSequence)
+        process.partonPath = cms.Path()
+        #process.partonPath = cms.Path(process.commonPartonSequence)
         if Config.channel==Config.Channel.signal:
             process.partonPath += process.partonStudyTrueSequence
 
@@ -821,7 +830,12 @@ def SingleTopStep2():
 
     process.eventIDProducer = cms.EDProducer('EventIDProducer'
     )
-    process.treePath = cms.Path(process.eventIDProducer * process.offlinePVCount *  process.treeSequence * process.treeSequenceNew)
+    process.treePath = cms.Path(
+        process.eventIDProducer *
+        process.offlinePVCount *
+       # process.treeSequence *
+        process.treeSequenceNew
+    )
     if Config.isMC and Config.subChannel=="WJets":
         process.treePath += process.flavourAnalyzer
 

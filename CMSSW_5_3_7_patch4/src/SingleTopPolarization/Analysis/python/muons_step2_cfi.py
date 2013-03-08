@@ -137,8 +137,8 @@ def MuonPath(process, conf):
     ))
 
     process.muPath = cms.Path(
-        process.muonsWithIso *
-        process.elesWithIso *
+        process.muIsoSequence *
+        process.eleIsoSequence *
 
         process.muPathPreCount *
 

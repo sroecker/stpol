@@ -21,6 +21,7 @@ addpkg RecoParticleFlow/PFProducer   V15-02-06
 
 addpkg CommonTools/CandAlgos V00-01-03 
 addpkg CommonTools/UtilAlgos V00-02-07
+addpkg CommonTools/Utils V00-04-04
 
 addpkg PhysicsTools/PatUtils                V03-09-26
 addpkg CommonTools/RecoUtils                V00-00-14

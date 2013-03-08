@@ -171,13 +171,21 @@ LeptonIsolationProducer<T>::produce(edm::Event& iEvent, const edm::EventSetup& i
 {
     using namespace edm;
     
-    Handle<std::vector<T> > leptons;
+    Handle<View<reco::Candidate> > leptons;
     Handle<double> rho;
     
     iEvent.getByLabel(leptonSource,leptons);
     iEvent.getByLabel(rhoSource,rho);
-    
-    std::auto_ptr<std::vector<T> > outLeptons(new std::vector<T>(*leptons));
+    assert(leptons.isValid()); 
+    assert(rho.isValid()); 
+
+    std::auto_ptr<std::vector<T> > outLeptons(new std::vector<T>());
+    for (auto& lepton : *leptons) {
+
+        //We assume the lepton is of type T and make a copy
+        const T* elem = static_cast<const T*>(&lepton);
+        outLeptons->push_back(T(*elem));
+    }
     
     for (auto& lepton : *outLeptons) {
         //Set the correted pt and eta
