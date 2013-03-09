@@ -131,48 +131,48 @@ colors = {
 class Cuts:
 	initial = Cut('postSkim', '1==1', relvars = None)
 
-	recoFState = CutP('recoFstate', '_topCount==1')
-	mu  = CutP('mu', '_muonCount==1') \
-		* CutP('muIso', '_goodSignalMuons_0_relIso<0.12') \
-		* CutP('looseMuVeto', '_looseVetoMuCount==0') \
-		* CutP('looseEleVeto', '_looseVetoEleCount==0') \
+	recoFState = CutP('recoFstate', 'int_topCount__STPOLSEL2.obj.obj==1')
+	mu  = CutP('mu', 'int_muonCount__STPOLSEL2.obj==1') \
+		* CutP('muIso', 'floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.obj[0]<0.12') \
+		* CutP('looseMuVeto', 'int_looseVetoMuCount__STPOLSEL2.obj==0') \
+		* CutP('looseEleVeto', 'int_looseVetoEleCount__STPOLSEL2.obj==0') \
 
-	ele = CutP('ele', '_electronCount==1') \
-		* CutP('eleIso', '_goodSignalElectrons_0_relIso<0.3') \
-		* CutP('eleMVA', '_goodSignalElectrons_0_mvaID>0.9') \
+	ele = CutP('ele', 'int_electronCount__STPOLSEL2.obj==1') \
+		* CutP('eleIso', 'floats_goodSignalElectronsNTupleProducer_relIso_STPOLSEL2.obj[0]<0.3') \
+		* CutP('eleMVA', 'floats_goodSignalElectronsNTupleProducer_mvaID_STPOLSEL2.obj[0]>0.9') \
 
-	muonID = CutP(None, '_muonsWithIso_0_normChi2 > 10') \
-		   * CutP(None, '_muonsWithIso_0_track_hitPattern_trackerLayersWithMeasurement > 5') \
-		   * CutP(None, '_muonsWithIso_0_globalTrack_hitPattern_numberOfValidMuonHits > 0') \
-		   * CutP(None, '_muonsWithIso_0_innerTrack_hitPattern_numberOfValidPixelHits > 0') \
-		   * CutF(None, 'abs({0}) > 0.2', ['_muonsWithIso_0_db']) \
-		   * CutF(None, 'abs({0}) > 0.5', ['_muonsWithIso_0_dz']) \
-		   * CutP(None, '_muonsWithIso_0_numberOfMatchedStations > 1')
+	muonID = CutP(None, 'floats_goodSignalMuonsNTupleProducer_normChi2_STPOLSEL2.obj[0] > 10') \
+		   * CutP(None, 'floats_goodSignalMuonsNTupleProducer_trackhitPatterntrackerLayersWithMeasurement_STPOLSEL2.obj[0] > 5') \
+		   * CutP(None, 'floats_goodSignalMuonsNTupleProducer_innerTrackhitPatternnumberOfValidPixelHits_STPOLSEL2.obj[0] > 0') \
+		   * CutP(None, 'floats_goodSignalMuonsNTupleProducer_globalTrackhitPatternnumberOfValidMuonHits_STPOLSEL2.obj> 0') \
+		   * CutF(None, 'abs({0}) > 0.2', ['floats_goodSignalMuonsNTupleProducer_db_STPOLSEL2.obj[0]']) \
+		   * CutF(None, 'abs({0}) > 0.5', ['floats_goodSignalMuonsNTupleProducer_dz_STPOLSEL2.obj[0]']) \
+		   * CutP(None, 'floats_goodSignalMuonsNTupleProducer_numberOfMatchedStations_STPOLSEL2.obj[0] > 1')
 
-	muonPt  = CutP('muonPt',  '_muonsWithIso_0_Pt > 26')
-	muonEta = CutF('muonEta', 'abs({0}) < 2.1', ['_muonsWithIso_0_Eta'])
-	muonIso = CutP('muonIso', '_muonsWithIso_0_relIso < 0.12')
+	muonPt  = CutP('muonPt',  'floats_goodSignalMuonsNTupleProducer_Pt_STPOLSEL2.obj[0] > 26')
+	muonEta = CutF('muonEta', 'abs({0}) < 2.1', ['floats_goodSignalMuonsNTupleProducer_Eta_STPOLSEL2.obj[0]'])
+	muonIso = CutP('muonIso', 'floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.obj[0] < 0.12')
 
-	jets_1LJ = CutP('1LJ', '_lightJetCount==1')
-	jets_OK = CutP(None, '_lightJetCount>=0') \
-			* CutP(None, '_bJetCount>=0')
-	jets_2plusJ = jets_OK * CutF('2plusLJ', '({0} + {1})>=2', ['_lightJetCount', '_bJetCount'])
-	jets_2J = jets_OK * CutF('2J', '({0} + {1})==2', ['_lightJetCount', '_bJetCount'])
-	jets_3J = jets_OK * CutF('3J', '({0} + {1})==3', ['_lightJetCount', '_bJetCount'])
-	jets_2J1T = CutP(None, '_lightJetCount==1') * CutP(None, '_bJetCount==1')
-	jets_2J0T = CutP(None, '_lightJetCount==2') * CutP(None, '_bJetCount==0')
-	jets_3J1T = CutP(None, '_lightJetCount==2') * CutP(None, '_bJetCount==1')
-	jets_3J2T = CutP(None, '_lightJetCount==1') * CutP(None, '_bJetCount==2')
-	realSol = CutP('realSol', 'solType_recoNuProducerMu==0')
-	cplxSol = CutP('cplxSol', 'solType_recoNuProducerMu==1')
-	mlnu = CutP(None, '_recoTop_0_Mass>130') * CutP(None, '_recoTop_0_Mass<220')
-	etaLJ = CutF('#eta_{lj}', 'abs({0})>2.5', ['_lowestBTagJet_0_Eta'])
+	jets_1LJ = CutP('1LJ', 'int_lightJetCount__STPOLSEL2.obj ==1')
+	jets_OK = CutP(None, 'int_lightJetCount__STPOLSEL2.obj>=0') \
+			* CutP(None, 'int_bJetCount__STPOLSEL2.obj>=0')
+	jets_2plusJ = jets_OK * CutF('2plusLJ', '({0} + {1})>=2', ['int_lightJetCount__STPOLSEL2.obj', 'int_bJetCount__STPOLSEL2.obj'])
+	jets_2J = jets_OK * CutF('2J', '({0} + {1})==2', ['int_lightJetCount__STPOLSEL2.obj', 'int_bJetCount__STPOLSEL2.obj'])
+	jets_3J = jets_OK * CutF('3J', '({0} + {1})==3', ['int_lightJetCount__STPOLSEL2.obj', 'int_bJetCount__STPOLSEL2.obj'])
+	jets_2J1T = CutP(None, 'int_lightJetCount__STPOLSEL2.obj==1') * CutP(None, 'int_bJetCount__STPOLSEL2.obj==1')
+	jets_2J0T = CutP(None, 'int_lightJetCount__STPOLSEL2.obj==2') * CutP(None, 'int_bJetCount__STPOLSEL2.obj==0')
+	jets_3J1T = CutP(None, 'int_lightJetCount__STPOLSEL2.obj==2') * CutP(None, 'int_bJetCount__STPOLSEL2.obj==1')
+	jets_3J2T = CutP(None, 'int_lightJetCount__STPOLSEL2.obj==1') * CutP(None, 'int_bJetCount__STPOLSEL2.obj==2')
+	#realSol = CutP('realSol', 'solType_recoNuProducerMu==0')
+	#cplxSol = CutP('cplxSol', 'solType_recoNuProducerMu==1')
+	mlnu = CutP(None, 'floats_recoTopNTupleProducer_Mass_STPOLSEL2.obj[0]>130') * CutP(None, 'floats_recoTopNTupleProducer_Mass_STPOLSEL2.obj[0]<220')
+	etaLJ = CutF('#eta_{lj}', 'abs({0})>2.5', ['floats_lowestBTagJetNTupleProducer_Eta_STPOLSEL2.obj[0]'])
 	sidebandRegion = invert(mlnu) #sidebandRegion = Cut('!ml#nu', '!(_recoTop_0_Mass>130&&_recoTop_0_Mass<220)')
-	jetPt = CutP(None, '_goodJets_0_Pt>40') * CutP(None, '_goodJets_1_Pt>40')
-	jetEta = CutF('jetEta', 'abs({0})<4.5 && abs({1})<4.5', ['_lowestBTagJet_0_Eta', '_highestBTagJet_0_Eta'])
-	jetRMS = CutP('rms_{lj}', '_lowestBTagJet_0_rms < 0.025')
-	MTmu = CutP('MT', '_muAndMETMT > 50')
-	MTele = CutP('MT', '_patMETs_0_Pt>45')
+	jetPt = CutP(None, 'floats_goodJetsNTupleProducer_Pt_STPOLSEL2.obj[0]>40') * CutP(None, 'floats_goodJetsNTupleProducer_Pt_STPOLSEL2.obj[1]>40')
+	jetEta = CutF('jetEta', 'abs({0})<4.5 && abs({1})<4.5', ['floats_lowestBTagJetNTupleProducer_Eta_STPOLSEL2.obj[0]', 'floats_highestBTagJetNTupleProducer_Eta_STPOLSEL2.obj[0]'])
+	jetRMS = CutP('rms_{lj}', 'floats_lowestBTagJetNTupleProducer_rms_STPOLSEL2.obj[0] < 0.025')
+	MTmu = CutP('MT', 'double_muAndMETMT__STPOLSEL2.obj > 50')
+	MTele = CutP('MT', 'floats_patMETNTupleProducer_Eta_STPOLSEL2.obj[0]>45')
 
 	#Orso = mlnu * jets_2J1T * jetPt * jetRMS * MT * etaLJ#jetEta
 	Orso = mlnu * jets_2J1T * jetPt * jetRMS * etaLJ * jetEta

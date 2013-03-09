@@ -3,6 +3,7 @@ import string
 import types
 import params
 import logging
+import glob
 
 from plotfw.params import Cut # FIXME: temporary hack for backwards comp.
 import copy
@@ -112,6 +113,35 @@ class Sample(object):
 	def __str__(self):
 		return self.name
 
+class MultiSample:
+	def __init__(self, fname, name=None, directory=None):
+		self.name = name if name is not None else fname
+		self.fname = fname
+		self.directory = directory
+
+	def _openTree(self):
+		fpath = (self.directory+'/' if self.directory is not None else '') + self.fname
+		logging.debug('Opening file: `%s`', fpath)
+		files = glob.glob(fpath)
+		self.event_chain = ROOT.TChain(self.name + "_Events", self.name)
+		self.lumi_chain = ROOT.TChain(self.name + "_Lumi", self.name)
+		for fi in files:
+			self.event_chain.AddFile(fi + "/Events")
+			self.lumi_chain.AddFile(fi + "/LuminosityBlocks")
+
+		#caching stuff
+		self.event_chain.SetCacheSize(10**7)
+		self.event_chain.AddBranchToCache("*")
+		ROOT.gEnv.SetValue("TFile.AsyncPrefetching", 1)
+
+	def getTotalEvents(self):
+		tot = 0
+		for lumi in self.lumi_chain:
+			tot += lumi.edmMergeableCounter_PATTotalEventsProcessedCount__PAT.product().value
+		return tot
+
+	def __str__(self):
+		return self.name
 class MCSample(Sample):
 	"""Sample with a cross section."""
 	def __init__(self, fname, xs, name=None, directory=None):
