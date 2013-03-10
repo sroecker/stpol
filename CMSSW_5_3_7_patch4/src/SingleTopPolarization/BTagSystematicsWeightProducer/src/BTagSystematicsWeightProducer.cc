@@ -426,128 +426,131 @@ BTagSystematicsWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup
         LogInfo("produce") << "Requested jet selection: " << nJets_ev << " jets of which " << nTags_ev <<
             " are to be b-tagged, but event has " << jetsIn->size() << " jets: truncating collection!"; 
     }
+    LogDebug("produce") << "nJets=" << nJets_ev << " nTags=" << nTags_ev;
     
-    {
-        //Make a list of the pointers to the first nJets jets
-        std::vector<const reco::Candidate *> jets;
-        for (unsigned int i=0;i<nJets_ev;i++) {
-            jets.push_back(&(jetsIn->at(i)));
-        }
+    //Make a list of the pointers to the first nJets jets
+    std::vector<const reco::Candidate *> jets;
+    for (unsigned int i=0;i<nJets_ev;i++) {
+        jets.push_back(&(jetsIn->at(i)));
+    }
+    
+    LogDebug("produce") << "Looping over " << combs.size() << " combinations";
+
+    for(std::vector<unsigned int>& comb : combs) {
+        LogDebug("combLoop") << "Considering the following jets as b-tagged: " << vec_to_str<unsigned int>(comb);
+
+        unsigned int jetIdx = 0;
+
+
+        //prob. that this comb passed b-tagging in mc/data
+        double p_mc = 1.0;
+        double p_data = 1.0;
         
-        LogDebug("produce") << "Looping over " << combs.size() << " combinations";
-
-        for(std::vector<unsigned int>& comb : combs) {
-            LogDebug("combLoop") << "Considering the following jets as b-tagged: " << vec_to_str<unsigned int>(comb);
-
-            unsigned int jetIdx = 0;
-
-
-            //prob. that this comb passed b-tagging in mc/data
-            double p_mc = 1.0;
-            double p_data = 1.0;
+        double p_data_bcUp = 1.0;
+        double p_data_bcDown = 1.0;
+        double p_data_lUp = 1.0;
+        double p_data_lDown = 1.0;
+        
+        LogDebug("combLoop") << "Looping over " << jets.size() << " jets";
+        for (const auto* pjet_ : jets) {
+            //const auto& jet_ = *pjet_;
+            const pat::Jet& jet = static_cast<const pat::Jet&>(*pjet_);
             
-            double p_data_bcUp = 1.0;
-            double p_data_bcDown = 1.0;
-            double p_data_lUp = 1.0;
-            double p_data_lDown = 1.0;
-            
-            LogDebug("combLoop") << "Looping over " << jets.size() << " jets";
-            for (const auto* pjet_ : jets) {
-                //const auto& jet_ = *pjet_;
-                const pat::Jet& jet = static_cast<const pat::Jet&>(*pjet_);
+            bool inComb = std::find(comb.begin(), comb.end(), jetIdx) != comb.end();
+            LogDebug("jetLoop") << "Considering jet with index " << jetIdx;
+
+            if(inComb) LogDebug("jetLoop") << "Jet " << jetIdx << " is in b-tag combination.";
+           
+            //Calculates the probability of this jet to pass-btagging in data and mc.
+            //p_data and p_mc are modified on the fly.
+            auto prob = [&, &p_mc, &p_data, inComb, jet, this] (BTagSystematicsWeightProducer::Flavour flavour) {
+                LogDebug("produce") << "prob(): flavour=" << flavour;
                 
-                bool inComb = std::find(comb.begin(), comb.end(), jetIdx) != comb.end();
-                LogDebug("jetLoop") << "Considering jet with index " << jetIdx;
-
-                if(inComb) LogDebug("jetLoop") << "Jet " << jetIdx << " is in b-tag combination.";
-               
-                //Calculates the probability of this jet to pass-btagging in data and mc.
-                //p_data and p_mc are modified on the fly.
-                auto prob = [&, &p_mc, &p_data, inComb, jet, this] (BTagSystematicsWeightProducer::Flavour flavour) {
-                    LogDebug("produce") << "prob(): flavour=" << flavour;
-                    
-                    //Returns x if _inComb==true, (1-x) otherwise
-                    //That means that if the jet is considered as a b-tag, the probability associated with b-tagging
-                    //is the measured flavour/sample-dependent probability of a jet to be b-tagged (eff_flavour).
-                    //Otherwise, the probability of NOT b-tagging is 1-eff_flavour. 
-                    auto eff = [] (double x, bool _inComb) -> double {
-                        return _inComb ? x : 1.0 - x;
-                    };
-                    
-                    //The probability associated with a jet is eff if the jet is in the combination of b-tagged jets, (1-eff) otherwise
-                    double e = eff( ((*effs)[flavour]), inComb);
-                    
-                    //per-event jet probabilities multiply
-                    p_mc = p_mc * e;
-                    
-                    //Calculate the pt, eta and flavour dependent scale factors, including the flavour-dependent variations.
-                    double sfUp, sfDown;
-                    double sf = scaleFactor(flavour, BTagSystematicsWeightProducer::bTagAlgo, jet.pt(), jet.eta(), sfUp, sfDown);
-                    
-                    if (inComb) LogDebug("produce") << "pass b-tagging e=" << e << " sf=" << sf << " sfUp=" << sfUp << " sfDown=" << sfDown;
-                    else LogDebug("produce") << "fail b-tagging e=" << e << " sf=" << sf << " sfUp=" << sfUp << " sfDown=" << sfDown;
-
-                    p_data = p_data * e * sf;
-                    LogDebug("produce") << "p_mc=" << p_mc << " p_data=" << p_data;
-                    if( flavour == BTagSystematicsWeightProducer::b || flavour == BTagSystematicsWeightProducer::c ) {
-                        p_data_lUp = p_data_lUp * e * sf;
-                        p_data_lDown = p_data_lDown * e * sf;
-                        p_data_bcUp = p_data_bcUp * e * sfUp;
-                        p_data_bcDown = p_data_bcDown * e * sfDown;
-                        LogDebug("produce") << "p_data_bcUp=" << p_data_bcUp << " p_data_bcDown=" << p_data_bcDown;
-                    }
-                    else if(flavour == BTagSystematicsWeightProducer::l) {
-                        p_data_lUp = p_data_lUp * e * sfUp;
-                        p_data_lDown = p_data_lDown * e * sfDown;
-                        p_data_bcUp = p_data_bcUp * e * sf;
-                        p_data_bcDown = p_data_bcDown * e * sf;
-                        LogDebug("produce") << "p_data_lUp=" << p_data_lUp << " p_data_lDown=" << p_data_lDown;
-                    }
+                //Returns x if _inComb==true, (1-x) otherwise
+                //That means that if the jet is considered as a b-tag, the probability associated with b-tagging
+                //is the measured flavour/sample-dependent probability of a jet to be b-tagged (eff_flavour).
+                //Otherwise, the probability of NOT b-tagging is 1-eff_flavour. 
+                auto eff = [] (double x, bool _inComb) -> double {
+                    return _inComb ? x : 1.0 - x;
                 };
                 
-                if(abs(jet.partonFlavour()) == 5) { //b-jet
-                    prob(BTagSystematicsWeightProducer::b); //multiply the probability corresponding to the b-jet
+                //The probability associated with a jet is eff if the jet is in the combination of b-tagged jets, (1-eff) otherwise
+                double e = eff( ((*effs)[flavour]), inComb);
+                
+                //per-event jet probabilities multiply
+                p_mc = p_mc * e;
+                
+                //Calculate the pt, eta and flavour dependent scale factors, including the flavour-dependent variations.
+                double sfUp, sfDown;
+                double sf = scaleFactor(flavour, BTagSystematicsWeightProducer::bTagAlgo, jet.pt(), jet.eta(), sfUp, sfDown);
+                
+                if (inComb) LogDebug("produce") << "pass b-tagging e=" << e << " sf=" << sf << " sfUp=" << sfUp << " sfDown=" << sfDown;
+                else LogDebug("produce") << "fail b-tagging e=" << e << " sf=" << sf << " sfUp=" << sfUp << " sfDown=" << sfDown;
+
+                p_data = p_data * e * sf;
+                LogDebug("produce") << "p_mc=" << p_mc << " p_data=" << p_data;
+                if( flavour == BTagSystematicsWeightProducer::b || flavour == BTagSystematicsWeightProducer::c ) {
+                    p_data_lUp = p_data_lUp * e * sf;
+                    p_data_lDown = p_data_lDown * e * sf;
+                    p_data_bcUp = p_data_bcUp * e * sfUp;
+                    p_data_bcDown = p_data_bcDown * e * sfDown;
+                    LogDebug("produce") << "p_data_bcUp=" << p_data_bcUp << " p_data_bcDown=" << p_data_bcDown;
                 }
-                else if(abs(jet.partonFlavour())==4) { //c-jet
-                    prob(BTagSystematicsWeightProducer::c);
+                else if(flavour == BTagSystematicsWeightProducer::l) {
+                    p_data_lUp = p_data_lUp * e * sfUp;
+                    p_data_lDown = p_data_lDown * e * sfDown;
+                    p_data_bcUp = p_data_bcUp * e * sf;
+                    p_data_bcDown = p_data_bcDown * e * sf;
+                    LogDebug("produce") << "p_data_lUp=" << p_data_lUp << " p_data_lDown=" << p_data_lDown;
                 }
-                else if(abs(jet.partonFlavour())!=4 && abs(jet.partonFlavour())!=5) { //light jet, hermetic definition
-                    prob(BTagSystematicsWeightProducer::l);
-                }
-                LogDebug("jetLoop") << "Jet flavour=" << jet.partonFlavour() << " p_mc=" << p_mc << " p_data=" << p_data;    
-                jetIdx++;
+            };
+            
+            if(abs(jet.partonFlavour()) == 5) { //b-jet
+                prob(BTagSystematicsWeightProducer::b); //multiply the probability corresponding to the b-jet
+                LogDebug("jetLoop") << "flavour is b-jet";
             }
-            
-            LogDebug("produce") <<
-                "combination probs p_mc=" << p_mc << " p_data=" << p_data
-                << " p_data_bcUp=" << p_data_bcUp  << " p_data_bcDown=" << p_data_bcDown
-                << " p_data_lUp=" << p_data_lUp  << " p_data_lDown=" << p_data_lDown;
-            //Probabilities of different combinations add
-            P_mc += p_mc;
-            P_data += p_data;
-            
-            
-            P_data_bcUp += p_data_bcUp;
-            P_data_bcDown += p_data_bcDown;
-            P_data_lUp += p_data_lUp;
-            P_data_lDown += p_data_lDown;
-            
+            else if(abs(jet.partonFlavour())==4) { //c-jet
+                prob(BTagSystematicsWeightProducer::c);
+                LogDebug("jetLoop") << "flavour is c-jet";
+            }
+            else if(abs(jet.partonFlavour())!=4 && abs(jet.partonFlavour())!=5) { //light jet, hermetic definition
+                prob(BTagSystematicsWeightProducer::l);
+                LogDebug("jetLoop") << "flavour is l-jet";
+            }
+            LogDebug("jetLoop") << "Jet " << "pt=" << jet.pt() << " eta=" << jet.eta()
+            << "flavour=" << jet.partonFlavour() << " p_mc=" << p_mc << " p_data=" << p_data;    
+            jetIdx++;
         }
-        LogDebug("produce") << "event prob P_mc=" << P_mc << " P_data=" << P_data << " P_data_bcUp=" << P_data_bcUp << " P_data_bcDown=" << P_data_bcDown << " P_data_lUp=" << P_data_lUp << " P_data_lDown=" << P_data_lDown;
         
-        double w = P_data/P_mc;
-        double w_bcUp = P_data_bcUp/P_mc;
-        double w_bcDown = P_data_bcDown/P_mc;
-        double w_lUp = P_data_lUp/P_mc;
-        double w_lDown = P_data_lDown/P_mc;
-        LogDebug("produce") << "event weights w=" << w << " w_bcUp=" << w_bcUp << " w_bcDown=" << w_bcDown << " w_lUp=" << w_lUp << " w_lDown=" << w_lDown;
+        LogDebug("produce") <<
+            "combination probs p_mc=" << p_mc << " p_data=" << p_data
+            << " p_data_bcUp=" << p_data_bcUp  << " p_data_bcDown=" << p_data_bcDown
+            << " p_data_lUp=" << p_data_lUp  << " p_data_lDown=" << p_data_lDown;
+        //Probabilities of different combinations add
+        P_mc += p_mc;
+        P_data += p_data;
         
-        iEvent.put(std::auto_ptr<double>(new double(w)), "bTagWeight");
-        iEvent.put(std::auto_ptr<double>(new double(w_bcUp)), "bTagWeightSystBCUp");
-        iEvent.put(std::auto_ptr<double>(new double(w_bcDown)), "bTagWeightSystBCDown");
-        iEvent.put(std::auto_ptr<double>(new double(w_lUp)), "bTagWeightSystLUp");
-        iEvent.put(std::auto_ptr<double>(new double(w_lDown)), "bTagWeightSystLDown");
+        
+        P_data_bcUp += p_data_bcUp;
+        P_data_bcDown += p_data_bcDown;
+        P_data_lUp += p_data_lUp;
+        P_data_lDown += p_data_lDown;
+        
     }
+    LogDebug("produce") << "event prob P_mc=" << P_mc << " P_data=" << P_data << " P_data_bcUp=" << P_data_bcUp << " P_data_bcDown=" << P_data_bcDown << " P_data_lUp=" << P_data_lUp << " P_data_lDown=" << P_data_lDown;
+    
+    double w = P_data/P_mc;
+    double w_bcUp = P_data_bcUp/P_mc;
+    double w_bcDown = P_data_bcDown/P_mc;
+    double w_lUp = P_data_lUp/P_mc;
+    double w_lDown = P_data_lDown/P_mc;
+    LogDebug("produce") << "event weights w=" << w << " w_bcUp=" << w_bcUp << " w_bcDown=" << w_bcDown << " w_lUp=" << w_lUp << " w_lDown=" << w_lDown;
+    
+    iEvent.put(std::auto_ptr<double>(new double(w)), "bTagWeight");
+    iEvent.put(std::auto_ptr<double>(new double(w_bcUp)), "bTagWeightSystBCUp");
+    iEvent.put(std::auto_ptr<double>(new double(w_bcDown)), "bTagWeightSystBCDown");
+    iEvent.put(std::auto_ptr<double>(new double(w_lUp)), "bTagWeightSystLUp");
+    iEvent.put(std::auto_ptr<double>(new double(w_lDown)), "bTagWeightSystLDown");
     
     
 }

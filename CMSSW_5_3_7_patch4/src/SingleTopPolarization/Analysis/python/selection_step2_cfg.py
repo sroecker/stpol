@@ -128,7 +128,8 @@ def SingleTopStep2():
 
     process.source = cms.Source("PoolSource",
         # replace 'myfile.root' with the source file you want to use
-        fileNames=cms.untracked.vstring("")
+        fileNames=cms.untracked.vstring(""),
+        #cacheSize = cms.untracked.uint32(100*1024*1024),
     )
 
 
@@ -144,8 +145,11 @@ def SingleTopStep2():
     #-------------------------------------------------
 
     #Embed the corrected isolations to the leptons
-    process.skimmedMuons = cms.EDFilter("CandViewSelector",
-      src=cms.InputTag(Config.Muons.source), cut=cms.string("pt>20")
+    #process.muonClones = cms.EDProducer("MuonShallowCloneProducer",
+    #    src = cms.InputTag(Config.Muons.source)
+    #)
+    process.skimmedMuons = cms.EDFilter("PtMinCandViewCloneSelector",
+      src=cms.InputTag(Config.Muons.source), ptMin=cms.double(20)
     )
     process.muonsWithIso = cms.EDProducer(
       'MuonIsolationProducer',
@@ -155,8 +159,8 @@ def SingleTopStep2():
     )
     process.muIsoSequence = cms.Sequence(process.skimmedMuons*process.muonsWithIso)
 
-    process.skimmedElectrons = cms.EDFilter("CandViewSelector",
-      src=cms.InputTag(Config.Electrons.source), cut=cms.string("pt>20")
+    process.skimmedElectrons = cms.EDFilter("PtMinCandViewCloneSelector",
+      src=cms.InputTag(Config.Electrons.source), ptMin=cms.double(20)
     )
     process.elesWithIso = cms.EDProducer(
       'ElectronIsolationProducer',

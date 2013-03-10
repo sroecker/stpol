@@ -4,23 +4,27 @@ import numpy
 import time
 import datetime
 import sys
+import glob
+import scipy
+import scipy.stats
+import scipy.stats.mstats
 
 class TimeStats:
-	def __init__(self, minimum, maximum, mean, median):
+	def __init__(self, minimum, maximum, mean, quantiles):
 		self.minimum = minimum
 		self.maximum = maximum
 		self.mean = mean
-		self.median = median
+		self.quantiles = quantiles
 
 	def __str__(self):
-		s = "min=%s max=%s mean=%s med=%s" % (self.minimum, self.maximum, self.mean, self.median)
+		s = "min=%s max=%s mean=%s quantiles[0.25, 0.5, 0.75, 0.95]=%s" % (self.minimum, self.maximum, self.mean, [str(s) for s in self.quantiles])
 		return s
 class JobStats:
 	def __init__(self, task):
 		completed = filter(lambda j: j.isCompleted(), task.jobs)
 		needs_get = filter(lambda j: j.needsGet(), task.jobs)
 		pending = filter(lambda j: j.isPending(), task.jobs)
-		median_submissions = int(numpy.median(map(lambda j: j.n_submission, task.jobs)))
+		quantiles_submissions = scipy.stats.mstats.mquantiles(map(lambda j: j.n_submission, task.jobs), prob=[0.25, 0.5, 0.75, 0.95])
 
 		max_submissions = numpy.max(map(lambda j: j.n_submission, task.jobs))
 		needs_resubmit = filter(lambda j: j.needsResubmit(), task.jobs)
@@ -29,7 +33,7 @@ class JobStats:
 		self.jobs_to_get = len(needs_get)
 		self.jobs_pending = len(pending)
 		self.jobs_to_resubmit = len(needs_resubmit)
-		self.median_submissions = median_submissions
+		self.quantiles_submissions = [int(x) for x in quantiles_submissions]
 		self.max_submissions = max_submissions
 		self.time_stats_success =  Task.timeStats(filter(lambda x: x.isCompleted(), task.jobs))
 		self.time_stats_fail = Task.timeStats(filter(lambda x: x.needsResubmit(), task.jobs))
@@ -45,7 +49,7 @@ class JobStats:
 			self.jobs_to_resubmit,
 			self.jobs_pending
 		)
-		s += "Submissions: med %d, max %d\n" % (self.median_submissions, self.max_submissions)
+		s += "Submissions: quantiles[0.25, 0.5, 0.75, 0.95]=%s, max %d\n" % (self.quantiles_submissions, self.max_submissions)
 		s += "Successful job timing: %s\n" % str(self.time_stats_success)
 		s += "Failed job timing: %s\n" % str(self.time_stats_fail)
 		s += "Return codes for failed: %s\n" % str(self.fail_codes)
@@ -54,7 +58,13 @@ class Task:
 	def __init__(self):
 		self.prev_jobs = []
 		self.jobs = []
-		self.name = None
+		self.name = ""
+
+	def __add__(self, other):
+		new_task = Task()
+		new_task.jobs = self.jobs + other.jobs
+		new_task.name = self.name + " and " + other.name
+		return new_task
 
 	@staticmethod
 	def parseJob(args):
@@ -87,11 +97,11 @@ class Task:
 		)
 		if len(times)==0:
 			return None
-		median_time = datetime.timedelta(seconds=int(numpy.median(times)))
+		quantiles_time = [datetime.timedelta(seconds=x) for x in scipy.stats.mstats.mquantiles(times, prob=[0.25, 0.5, 0.75, 0.95])]
 		mean_time = datetime.timedelta(seconds=int(numpy.mean(times)))
 		min_time = datetime.timedelta(seconds=int(numpy.min(times)))
 		max_time = datetime.timedelta(seconds=int(numpy.max(times)))
-		return TimeStats(min_time, max_time, mean_time, median_time)
+		return TimeStats(min_time, max_time, mean_time, quantiles_time)
 
 	@staticmethod
 	def retCodes(jobs):
@@ -165,6 +175,16 @@ def get(node, name, f):
 		return f(val.nodeValue)
 
 
-t = Task()
-t.updateJobs(sys.argv[1])
-t.printStats()
+reports = glob.glob(sys.argv[1])
+
+if len(reports)==1:
+	t = Task()
+	t.updateJobs(reports[0])
+	t.printStats()
+elif len(reports)>1:
+	t_tot = Task()
+	for r in reports:
+		t = Task()
+		t.updateJobs(r)
+		t_tot += t
+	t_tot.printStats()
