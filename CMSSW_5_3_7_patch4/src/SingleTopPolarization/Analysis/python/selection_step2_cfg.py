@@ -129,7 +129,7 @@ def SingleTopStep2():
     process.source = cms.Source("PoolSource",
         # replace 'myfile.root' with the source file you want to use
         fileNames=cms.untracked.vstring(""),
-        #cacheSize = cms.untracked.uint32(100*1024*1024),
+        cacheSize = cms.untracked.uint32(10*1024*1024),
     )
 
 
