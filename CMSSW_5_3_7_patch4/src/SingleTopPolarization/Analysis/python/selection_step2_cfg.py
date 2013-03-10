@@ -636,19 +636,19 @@ def SingleTopStep2():
         process.patJetsWithOwnRef = cms.EDProducer('PatObjectOwnRefProducer<pat::Jet>',
             src=cms.InputTag("selectedPatJets")
         )
-        from PhysicsTools.PatUtils.tools.metUncertaintyTools import runMEtUncertainties
-        runMEtUncertainties(process,
-             electronCollection=cms.InputTag("electronsWithID"),
-             photonCollection=None,
-             muonCollection=cms.InputTag("muonsWithID"),
-             tauCollection="", # "" means emtpy, None means cleanPatTaus
-             jetCollection=cms.InputTag("patJetsWithOwnRef"),
-             addToPatDefaultSequence=False
-        )
-        process.metUncertaintyPath = cms.Path(
-            process.patJetsWithOwnRef *
-            process.metUncertaintySequence
-        )
+        #from PhysicsTools.PatUtils.tools.metUncertaintyTools import runMEtUncertainties
+        #runMEtUncertainties(process,
+        #     electronCollection=cms.InputTag("electronsWithID"),
+        #     photonCollection=None,
+        #     muonCollection=cms.InputTag("muonsWithID"),
+        #     tauCollection="", # "" means emtpy, None means cleanPatTaus
+        #     jetCollection=cms.InputTag("patJetsWithOwnRef"),
+        #     addToPatDefaultSequence=False
+        #)
+        #process.metUncertaintyPath = cms.Path(
+        #    process.patJetsWithOwnRef *
+        #    process.metUncertaintySequence
+        #)
 
     if Config.doMuon:
         from SingleTopPolarization.Analysis.muons_step2_cfi import MuonPath
