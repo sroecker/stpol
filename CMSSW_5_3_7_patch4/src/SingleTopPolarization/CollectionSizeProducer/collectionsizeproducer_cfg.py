@@ -13,18 +13,18 @@ process.source = cms.Source("PoolSource",
     )
 )
 
-# Producers
-process.muonCollectionSizeProducer = cms.EDProducer('CollectionSizeProducer<reco::Muon>',
-	vectorTag = cms.InputTag("muons")
-)
+process.options = cms.untracked.PSet(wantSummary=cms.untracked.bool(True))
 
-process.photonCollectionSizeProducer = cms.EDProducer('CollectionSizeProducer<reco::Photon>',
-	vectorTag = cms.InputTag("photons")
+# Producers
+process.vertexCollectionSizeProducer = cms.EDProducer('CollectionSizeProducer<reco::Vertex>',
+	src = cms.InputTag("offlinePrimaryVertices")
 )
 
 # Path
-process.p = cms.Path(process.muonCollectionSizeProducer
-                    *process.photonCollectionSizeProducer)
+process.p = cms.Path(
+    process.vertexCollectionSizeProducer
+#                    *process.photonCollectionSizeProducer
+)
 
 process.out = cms.OutputModule("PoolOutputModule",
     fileName = cms.untracked.string('myOutputFile.root')
