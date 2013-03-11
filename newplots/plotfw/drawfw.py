@@ -303,7 +303,8 @@ class StackPlotCreator(PlotCreator):
 
 		plot.legend = BaseLegend(self._mcs.groups, plot)
 
-		plot.hist_stack.SetMaximum(1.1*max(data_max, mc_max))
+		ymax = pp._ymax if pp._ymax is not None else 1.1*max(data_max, mc_max)
+		plot.hist_stack.SetMaximum(ymax)
 
 		# return the plot object where it can be drawn etc.
 		return plot

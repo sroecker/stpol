@@ -362,7 +362,7 @@ class PlotParams(object):
 
 	def __init__(self, var, r,
 		bins=20, name=None, plotTitle=None, doLogY=False, ofname=None, weights=None,
-		x_label=None, vars_to_enable=None, normalize_to="lumi"):
+		x_label=None, vars_to_enable=None, normalize_to="lumi", ymax=None):
 		self.var = var
 		self.r = r; self.hmin = r[0]; self.hmax = r[1]
 		self.bins=bins; self.hbins = bins
@@ -387,6 +387,8 @@ class PlotParams(object):
 		self.do_chi2 = False
 		self.normalize_to = normalize_to
 		self.stat_opts = None
+		
+		self._ymax = ymax
 
 	def getVarStr(self):
 		return self.var.var
