@@ -93,6 +93,11 @@ def MuonSetup(process, conf = None):
         process.muAndMETMT*
         process.goodMETs
     )
+
+    process.muonWeightsProducer = cms.EDProducer("MuonEfficiencyProducer",
+        src=cms.InputTag("goodSignalMuons")
+    )
+
     #Either use MET cut or MtW cut
     if conf.Muons.transverseMassType == conf.Leptons.WTransverseMassType.MET:
         if conf.Leptons.cutOnTransverseMass:
@@ -162,6 +167,9 @@ def MuonPath(process, conf):
 
         #Select mu and MET invariant transverse mass OR the MET
         process.metMuSequence *
+
+        #Add muon scale factors
+        process.muonWeightsProducer *
 
         process.mBTags *
 

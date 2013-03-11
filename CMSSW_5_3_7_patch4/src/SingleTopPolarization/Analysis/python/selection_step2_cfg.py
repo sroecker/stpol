@@ -543,7 +543,14 @@ def SingleTopStep2():
             #cms.InputTag("bTagWeightProducer3J1T", "bTagWeightSystLDown"),
 
             #cms.InputTag("puWeightProducer", "PUWeightN0"),
-            cms.InputTag("puWeightProducer", "PUWeightNtrue")
+            cms.InputTag("puWeightProducer", "PUWeightNtrue"),
+   
+            cms.InputTag("muonWeightsProducer", "muonIDWeight"),
+            cms.InputTag("muonWeightsProducer", "muonIDWeightUp"),
+            cms.InputTag("muonWeightsProducer", "muonIDWeightDown"),
+            cms.InputTag("muonWeightsProducer", "muonIsoWeight"),
+            cms.InputTag("muonWeightsProducer", "muonIsoWeightUp"),
+            cms.InputTag("muonWeightsProducer", "muonIsoWeightDown")            
         )
     )
 
