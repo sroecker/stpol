@@ -69,6 +69,7 @@ class PlotCreator(object):
 		else:
 			tempSample = s
 		tempSample.tfile.cd()
+		perfstats = ROOT.TTreePerfStats(tempSample.name, tempSample.tree)
 
 		if logger.getEffectiveLevel()==logging.DEBUG:
 			perfstats = ROOT.TTreePerfStats(tempSample.name, tempSample.tree)
@@ -419,6 +420,8 @@ class ShapePlotCreator(PlotCreator):
 				plot.log.setVariable(sample.name, 'int', integral)
 				plot.log.setVariable(sample.name, 'int_err', float(err))
 
+				if plot_params.normalize_to == "lumi":
+					sample.scaleToLumi(mc_hist, 20000.0)
 				hist.Add(sample_hist)
 
 			logger.debug('Filled total for `%s` : %f' % (hist_name, filled_tot))
