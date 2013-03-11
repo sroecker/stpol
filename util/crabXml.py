@@ -97,7 +97,7 @@ class Task:
 		)
 		if len(times)==0:
 			return None
-		quantiles_time = [datetime.timedelta(seconds=x) for x in scipy.stats.mstats.mquantiles(times, prob=[0.25, 0.5, 0.75, 0.95])]
+		quantiles_time = [datetime.timedelta(seconds=int(x)) for x in scipy.stats.mstats.mquantiles(times, prob=[0.25, 0.5, 0.75, 0.95])]
 		mean_time = datetime.timedelta(seconds=int(numpy.mean(times)))
 		min_time = datetime.timedelta(seconds=int(numpy.min(times)))
 		max_time = datetime.timedelta(seconds=int(numpy.max(times)))
