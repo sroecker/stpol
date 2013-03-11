@@ -263,7 +263,7 @@ def JetSetup(process, conf):
 
     process.jetSequence = cms.Sequence(
       #process.skimJets *
-      #process.noPUJets *
+      process.noPUJets *
       process.deltaRJets *
       process.goodJets *
 
