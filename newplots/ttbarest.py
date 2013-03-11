@@ -19,20 +19,17 @@ cutlist = {
 }
 
 # Set plots
-enabled_vars = ['*']
-weights   = ["PUWeightNtrue_puWeightProducer"]
-weights_b = weights+["bTagWeight_bTagWeightProducer"]
+enabled_vars = ['_lowestBTagJet_0_Eta']
+weights   = ['PUWeightNtrue_puWeightProducer']
+weights_b = weights+['bTagWeight_bTagWeightProducerNJMT']
 #weights = None
 plots = [
-	drawfw.PlotParams('cosThetaLightJet_cosTheta', (-1, 1), ofname='costheta',   vars_to_enable=enabled_vars, weights=weights),
-	drawfw.PlotParams('_recoTop_0_Mass', (0, 500), bins=20, ofname='topmass',    vars_to_enable=enabled_vars, weights=weights),
+	drawfw.PlotParams('cosThetaLightJet_cosTheta', (-1, 1), ofname='costheta',   vars_to_enable=None, weights=weights),
+	drawfw.PlotParams('_recoTop_0_Mass', (0, 500), bins=20, ofname='topmass',    vars_to_enable=None, weights=weights),
 	drawfw.PlotParams('abs(_lowestBTagJet_0_Eta)', (0, 5),  ofname='bjeteta',    vars_to_enable=enabled_vars, weights=weights),
-	drawfw.PlotParams('cosThetaLightJet_cosTheta', (-1, 1), ofname='costheta_b', vars_to_enable=enabled_vars, weights=weights_b),
-	drawfw.PlotParams('_recoTop_0_Mass', (0, 500), bins=20, ofname='topmass_b',  vars_to_enable=enabled_vars, weights=weights_b),
+	drawfw.PlotParams('cosThetaLightJet_cosTheta', (-1, 1), ofname='costheta_b', vars_to_enable=None, weights=weights_b),
+	drawfw.PlotParams('_recoTop_0_Mass', (0, 500), bins=20, ofname='topmass_b',  vars_to_enable=None, weights=weights_b),
 	drawfw.PlotParams('abs(_lowestBTagJet_0_Eta)', (0, 5),  ofname='bjeteta_b',  vars_to_enable=enabled_vars, weights=weights_b),
-	#drawfw.PlotParams('_recoTop_0_Mass', (130, 220), bins=9, ofname='topmass', vars_to_enable=enabled_vars, weights=weights),
-	#drawfw.PlotParams('abs(_lowestBTagJet_0_Eta)', (2.5, 4.5), ofname='bjeteta', vars_to_enable=enabled_vars, weights=weights),
-	#drawfw.PlotParams('_recoTop_0_Pt', (0, 300), bins=15, ofname='toppt', vars_to_enable=enabled_vars, weights=weights),
 ]
 
 # Set up samples
