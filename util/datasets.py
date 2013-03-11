@@ -169,6 +169,53 @@ step1_data = [
       "/SingleElectron/Run2012D-PromptReco-v1/AOD", "Run2012D-PromptReco-v1", "FT_P_V42_AN3::All", [-1, -1])
 ]
 
+step1B = [
+      DS_S2MC("Tbar_t_ToLeptons", "/TBarToLeptons_t-channel_8TeV-powheg-tauola/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "Tbar_t")
+    , DS_S2MC("T_t_ToLeptons", "FIXME", "T_t")
+    , DS_S2MC("WJets_inclusive", "/WJetsToLNu_TuneZ2Star_8TeV-madgraph-tarball/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "WJets")
+
+    , DS_S2MC("W1Jets_exclusive", "/W1JetsToLNu_TuneZ2Star_8TeV-madgraph/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "W1Jets")
+    , DS_S2MC("W2Jets_exclusive", "/W2JetsToLNu_TuneZ2Star_8TeV-madgraph/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "W2Jets")
+    , DS_S2MC("W3Jets_exclusive", "/W3JetsToLNu_TuneZ2Star_8TeV-madgraph/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "W3Jets")
+    , DS_S2MC("W4Jets_exclusive", "/W4JetsToLNu_TuneZ2Star_8TeV-madgraph/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "W4Jets")
+
+    , DS_S2MC("DYJets", "/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "DYJets")
+    , DS_S2MC("QCDMu", "/QCD_Pt_20_MuEnrichedPt_15_TuneZ2star_8TeV_pythia6/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "QCDMu")
+
+    , DS_S2MC("QCD_Pt_20_30_BCtoE", "/QCD_Pt_20_30_BCtoE_TuneZ2star_8TeV_pythia6/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "QCD_Pt_20_30_BCtoE")
+    , DS_S2MC("QCD_Pt_20_30_EMEnriched", "/QCD_Pt_20_30_EMEnriched_TuneZ2star_8TeV_pythia6/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "QCD_Pt_20_30_EMEnriched")
+
+    , DS_S2MC("QCD_Pt_30_80_BCtoE", "/QCD_Pt_30_80_BCtoE_TuneZ2star_8TeV_pythia6/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "QCD_Pt_30_80_BCtoE")
+    , DS_S2MC("QCD_Pt_30_80_EMEnriched", "/QCD_Pt_30_80_EMEnriched_TuneZ2star_8TeV_pythia6/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "QCD_Pt_30_80_EMEnriched")
+
+    , DS_S2MC("QCD_Pt_80_170_BCtoE", "/QCD_Pt_80_170_BCtoE_TuneZ2star_8TeV_pythia6/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "QCD_Pt_80_170_BCtoE")
+    , DS_S2MC("QCD_Pt_80_170_EMEnriched", "/QCD_Pt_80_170_EMEnriched_TuneZ2star_8TeV_pythia6/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "QCD_Pt_80_170_EMEnriched")
+
+    , DS_S2MC("QCD_Pt_170_250_BCtoE", "/QCD_Pt_170_250_BCtoE_TuneZ2star_8TeV_pythia6/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "QCD_Pt_170_250_BCtoE")
+    , DS_S2MC("QCD_Pt_170_250_EMEnriched", "/QCD_Pt_170_250_EMEnriched_TuneZ2star_8TeV_pythia6/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "QCD_Pt_170_250_EMEnriched")
+
+    , DS_S2MC("QCD_Pt_250_350_BCtoE", "/QCD_Pt_250_350_BCtoE_TuneZ2star_8TeV_pythia6/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "QCD_Pt_250_350_BCtoE")
+    , DS_S2MC("QCD_Pt_250_350_EMEnriched", "/QCD_Pt_250_350_EMEnriched_TuneZ2star_8TeV_pythia6/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "QCD_Pt_250_350_EMEnriched")
+
+    , DS_S2MC("QCD_Pt_350_BCtoE", "/QCD_Pt_350_BCtoE_TuneZ2star_8TeV_pythia6/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "QCD_Pt_350_BCtoE")
+    , DS_S2MC("QCD_Pt_350_EMEnriched", "/QCD_Pt_350_EMEnriched_TuneZ2star_8TeV_pythia6/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "QCD_Pt_350_EMEnriched")
+
+    , DS_S2MC("GJets1", "/GJets_HT-200To400_8TeV-madgraph/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "GJets_HT-200To400")
+    , DS_S2MC("GJets2", "/GJets_HT-400ToInf_8TeV-madgraph/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "GJets_HT-400ToInf")
+
+    , DS_S2MC("Tbar_s", "/Tbar_s-channel_TuneZ2star_8TeV-powheg-tauola/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "Tbar_s")
+    , DS_S2MC("Tbar_t", "/Tbar_t-channel_TuneZ2star_8TeV-powheg-tauola/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "Tbar_t")
+    , DS_S2MC("Tbar_tW", "/Tbar_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "Tbar_tW")
+    , DS_S2MC("T_s", "/T_s-channel_TuneZ2star_8TeV-powheg-tauola/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "T_s")
+    , DS_S2MC("T_t", "/T_t-channel_TuneZ2star_8TeV-powheg-tauola/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "T_t")
+    , DS_S2MC("T_tW", "/T_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "T_tW")
+    , DS_S2MC("TTJets_FullLept", "/TTJets_FullLeptMGDecays_8TeV-madgraph/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "TTbar")
+    , DS_S2MC("TTJets_MassiveBinDECAY", "/TTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "TTbar")
+    , DS_S2MC("TTJets_SemiLept", "/TTJets_SemiLeptMGDecays_8TeV-madgraph/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "TTbar")
+    , DS_S2MC("WW", "/WW_TuneZ2star_8TeV_pythia6_tauola/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "WW")
+    , DS_S2MC("WZ", "/WZ_TuneZ2star_8TeV_pythia6_tauola/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "WZ")
+    , DS_S2MC("ZZ", "/ZZ_TuneZ2star_8TeV_pythia6_tauola/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "ZZ")
+]
 step2_newMC = [
      DS_S2MC("Tbar_t_ToLeptons", "/TBarToLeptons_t-channel_8TeV-powheg-tauola/joosep-step1_MC_Feb6-243fe90abe1b1cf7bc2119dc7c0b2e28/USER", "Tbar_t")
     , DS_S2MC("T_t_ToLeptons", "/TToLeptons_t-channel_8TeV-powheg-tauola/joosep-step1_MC_Feb6-243fe90abe1b1cf7bc2119dc7c0b2e28/USER", "T_t")
@@ -369,11 +416,12 @@ Possible dataset sets to process
 possible_ds = {
     "S1D": step1_data,
     "S1MC": step1_MC,
-    "S2MC": step2_MC,
-    "S2newMC": step2_newMC,
-    "S2D": step2_data,
-    "S2newD": step2_newData,
-    "S2FSIM": step2_FastSimValid
+    #"S2MC": step2_MC,
+    #"S2newMC": step2_newMC,
+    #"S2D": step2_data,
+    "S2D": step2_newData,
+    "S2MC": step1B,
+    #"S2FSIM": step2_FastSimValid
     }
 
 if __name__=="__main__":
