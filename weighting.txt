@@ -1,0 +1,98 @@
+nJets=3 nTags=2
+Looping over 3 combinations
+Considering the following jets as b-tagged: (0, 1)
+	Looping over 3 jets
+	Considering jet with index 0
+		Jet 0 is in b-tag combination.
+		prob(): flavour=0
+		sf=0.911502
+		pass b-tagging e=0.431 sf=0.911502 sfUp=0.939567 sfDown=0.883437
+		p_mc=0.431 p_data=0.392857
+		p_data_bcUp=0.404953 p_data_bcDown=0.380761
+		flavour is b-jet
+		Jet pt=53.9999 eta=0.0619492 flavour=-5 p_mc=0.431 p_data=0.392857
+
+	Considering jet with index 1
+		Jet 1 is in b-tag combination.
+		prob(): flavour=0
+		sf=0.912
+		pass b-tagging e=0.431 sf=0.912 sfUp=0.940065 sfDown=0.883935
+		p_mc=0.185761 p_data=0.154421
+		p_data_bcUp=0.164074 p_data_bcDown=0.145061
+		flavour is b-jet
+		Jet pt=54.4961 eta=1.0442 flavour=5 p_mc=0.185761 p_data=0.154421
+
+	Considering jet with index 2
+		prob(): flavour=2
+		sf=1.21737
+		fail b-tagging e=0.99889 sf=1.21737 sfUp=1.41308 sfDown=1.02162
+		p_mc=0.185555 p_data=0.187779
+		p_data_lUp=0.217967 p_data_lDown=0.157585
+		flavour is l-jet
+		Jet pt=40.5056 eta=-0.471931 flavour=0 p_mc=0.185555 p_data=0.187779
+	combination probs p_mc=0.185555 p_data=0.187779 p_data_bcUp=0.199517 p_data_bcDown=0.176396 p_data_lUp=0.217967 p_data_lDown=0.157585
+
+Considering the following jets as b-tagged: (0, 2)
+	Looping over 3 jets
+	Considering jet with index 0
+		Jet 0 is in b-tag combination.
+		prob(): flavour=0
+		sf=0.911502
+		pass b-tagging e=0.431 sf=0.911502 sfUp=0.939567 sfDown=0.883437
+		p_mc=0.431 p_data=0.392857
+		flavour is b-jet
+		Jet pt=53.9999 eta=0.0619492 flavour=-5 p_mc=0.431 p_data=0.392857
+
+	Considering jet with index 1
+		prob(): flavour=0
+		sf=0.912
+		fail b-tagging e=0.569 sf=0.912 sfUp=0.940065 sfDown=0.883935
+		p_mc=0.245239 p_data=0.203865
+		flavour is b-jet
+		Jet pt=54.4961 eta=1.0442 flavour=5 p_mc=0.245239 p_data=0.203865
+
+	Considering jet with index 2
+		Jet 2 is in b-tag combination.
+		prob(): flavour=2
+		sf=1.21737
+		pass b-tagging e=0.00111 sf=1.21737 sfUp=1.41308 sfDown=1.02162
+		p_mc=0.000272215 p_data=0.000275478
+		p_data_lUp=0.000319766 p_data_lDown=0.000231183
+		flavour is l-jet
+		Jet pt=40.5056 eta=-0.471931 flavour=0 p_mc=0.000272215 p_data=0.000275478
+	combination probs p_mc=0.000272215 p_data=0.000275478 p_data_bcUp=0.000292698 p_data_bcDown=0.000258779 p_data_lUp=0.000319766 p_data_lDown=0.000231183
+
+Considering the following jets as b-tagged: (1, 2)
+	Looping over 3 jets
+	Considering jet with index 0
+		prob(): flavour=0
+		sf=0.911502
+		fail b-tagging e=0.569 sf=0.911502 sfUp=0.939567 sfDown=0.883437
+		p_mc=0.569 p_data=0.518645
+		p_data_bcUp=0.534614 p_data_bcDown=0.502676
+		flavour is b-jet
+		Jet pt=53.9999 eta=0.0619492 flavour=-5 p_mc=0.569 p_data=0.518645
+
+	Considering jet with index 1
+		Jet 1 is in b-tag combination.
+		prob(): flavour=0
+		sf=0.912
+		pass b-tagging e=0.431 sf=0.912 sfUp=0.940065 sfDown=0.883935
+		p_mc=0.245239 p_data=0.203865
+		p_data_bcUp=0.216608 p_data_bcDown=0.191507
+		flavour is b-jet
+		Jet pt=54.4961 eta=1.0442 flavour=5 p_mc=0.245239 p_data=0.203865
+
+	Considering jet with index 2
+		Jet 2 is in b-tag combination.
+		prob(): flavour=2
+		sf=1.21737
+		pass b-tagging e=0.00111 sf=1.21737 sfUp=1.41308 sfDown=1.02162
+		p_mc=0.000272215 p_data=0.000275478
+		p_data_lUp=0.000319766 p_data_lDown=0.000231183
+		flavour is l-jet
+		Jet pt=40.5056 eta=-0.471931 flavour=0 p_mc=0.000272215 p_data=0.000275478
+	combination probs p_mc=0.000272215 p_data=0.000275478 p_data_bcUp=0.000292698 p_data_bcDown=0.000258779 p_data_lUp=0.000319766 p_data_lDown=0.000231183
+
+event prob P_mc=0.186099(sum over p_mc) P_data=0.18833(sum over p_data) P_data_bcUp=0.200102 P_data_bcDown=0.176914 P_data_lUp=0.218607 P_data_lDown=0.158047
+event weights w=1.01198(P_data/P_mc) w_bcUp=1.07524 w_bcDown=0.950643 w_lUp=1.17468 w_lDown=0.849264
