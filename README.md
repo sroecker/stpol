@@ -65,11 +65,12 @@ https://twiki.cern.ch/twiki/bin/view/CMS/SyncSingleTopLeptonJets2012
 
 ##CRAB
 To create the crab.cfg files to run over step1-data, run in the base directory
->python2.7 $CMSSW_BASE/../util/datasets.py -t your_tag -T $CMSSW_BASE/../crabs/crab_Data_step1.cfg -d S1D -o your_crab_output_dir
+>python $CMSSW_BASE/../util/datasets.py -t your_tag -T $CMSSW_BASE/../crabs/crab_Data_step1.cfg -d S1D -o your_crab_output_dir
 To create the crab.cfg files to run over step2-mc (iso/antiIso), run in the base directory
->python2.7 $CMSSW_BASE/../util/datasets.py -t stpol_step2_Iso -T $CMSSW_BASE/../crabs/crab_MC_step2_local_Iso.cfg -d S2newMC -o crabs/step2_MC_Iso 
->python2.7 $CMSSW_BASE/../util/datasets.py -t stpol_step2_antiIso -T $CMSSW_BASE/../crabs/crab_MC_step2_local_antiIso.cfg -d S2newMC -o crabs/step2_MC_antiIso 
->python2.7 $CMSSW_BASE/../util/datasets.py -t your_tag -T $CMSSW_BASE/../crabs/crab_Data_step2_Iso.cfg -d S2D -o crabs/step2_Data_Iso
+>python $CMSSW_BASE/../util/datasets.py -t stpol_step2_Iso -T $CMSSW_BASE/../crabs/crab_MC_step2_local_Iso.cfg -d S2MC -o crabs/step2_MC_Iso 
+>python $CMSSW_BASE/../util/datasets.py -t stpol_step2_antiIso -T $CMSSW_BASE/../crabs/crab_MC_step2_local_antiIso.cfg -d S2MC -o crabs/step2_MC_antiIso 
+>python $CMSSW_BASE/../util/datasets.py -t stpol_step2_Iso -T $CMSSW_BASE/../crabs/crab_Data_step2_Iso.cfg -d S2D -o crabs/step2_Data_Iso
+>python $CMSSW_BASE/../util/datasets.py -t stpol_step2_antiIso -T $CMSSW_BASE/../crabs/crab_Data_step2_antiIso.cfg -d S2D -o crabs/step2_Data_antiIso
 
 #To run the met uncertainty precalculation
 >python $CMSSW_BASE/../util/datasets.py -t stpol_step1B -T /home/joosep/singletop/stpol/crabs/crab_MC_step1B_local.cfg -d S2newMC -o crabs/step1B_MC_Mar8
