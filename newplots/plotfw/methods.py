@@ -118,13 +118,20 @@ class MultiSample:
 		self.name = name if name is not None else fname
 		self.fname = fname
 		self.directory = directory
+		self._openTree()
 
+	def branches(self):
+		return [br.GetName() for br in self.tree.GetListOfBranches()]
 	def _openTree(self):
 		fpath = (self.directory+'/' if self.directory is not None else '') + self.fname
 		logging.debug('Opening file: `%s`', fpath)
 		files = glob.glob(fpath)
 		self.event_chain = ROOT.TChain(self.name + "_Events", self.name)
 		self.lumi_chain = ROOT.TChain(self.name + "_Lumi", self.name)
+		if len(files)==0:
+			raise Exception("File list is empty")
+
+		self.tfile = files[0]
 		for fi in files:
 			self.event_chain.AddFile(fi + "/Events")
 			self.lumi_chain.AddFile(fi + "/LuminosityBlocks")
@@ -133,7 +140,7 @@ class MultiSample:
 		self.event_chain.SetCacheSize(10**7)
 		self.event_chain.AddBranchToCache("*")
 		ROOT.gEnv.SetValue("TFile.AsyncPrefetching", 1)
-
+		self.tree = self.event_chain
 	def getTotalEvents(self):
 		tot = 0
 		for lumi in self.lumi_chain:
@@ -169,11 +176,15 @@ class SampleGroup:
 	Useful to, for example, group samples in a stacked histogram.
 
 	"""
-	def __init__(self, name, color, pretty_name=None):
+	def __init__(self, name, color, pretty_name=None, samples=None):
 		self.name = name
 		self.color = color
 		self.pretty_name = pretty_name if pretty_name is not None else name
-		self.samples = [] # initially there are no samples
+		self.samples = samples if samples is not None else []
+
+	@staticmethod
+	def fromList(samples):
+		return [SampleGroup(s.name, params.colors[s.name], samples=[s]) for s in samples]
 
 	def add(self, s):
 		self.samples.append(s)
@@ -217,6 +228,9 @@ class SampleList:
 
 	def addGroup(self, g):
 		self.groups[g.getName()] = g
+
+	def addGroups(self, groups):
+		map(self.addGroup, groups)
 
 	#def addSample(self, gn, s):
 	#	self.groups[gn].add(s)
