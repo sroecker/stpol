@@ -24,6 +24,7 @@ class PlotCreator(object):
 		self.frac_entries = frac
 		self.samples = None
 		self.set_n_cores(n_cores)
+		self._file = ROOT.TFile("temp.root", "RECREATE")
 
 	@staticmethod
 	def _uniqueCutStr(cut_str, weight_str):
@@ -55,69 +56,48 @@ class PlotCreator(object):
 		return
 
 
-	@staticmethod
-	def _applyCut(cutstr, s, reset=True, frac_entries=1, multicore=True):
+	def _applyCut(self, cutstr, sample, reset=True, frac_entries=1, multicore=True):
 		"""
 		Apply the cut 'cutstr' on sample 's'. Optionally reset the tree event list
 		before cutting and process only a limited number of entries.
 		"""
 		t_cut = time.time()
-		logger.debug('Cutting on `%s`', s.name)
+		logger.debug('Cutting on `%s`', sample.name)
 
-		if multicore:
-			tempSample = Sample.fromOther(s)
-		else:
-			tempSample = s
-		tempSample.tfile.cd()
+		self._file.cd()
+		#ROOT.gROOT.cd()
+		#tempSample.tfile.cd()
 
 		if logger.getEffectiveLevel()==logging.DEBUG:
-			perfstats = ROOT.TTreePerfStats(tempSample.name, tempSample.tree)
+			perfstats = ROOT.TTreePerfStats(sample.name, sample.tree)
 
 		if reset:
-			tempSample.tree.SetEventList(0)
+			sample.tree.SetEventList(0)
 
-		logger.debug("Drawing event list for sample {0}".format(tempSample.name))
-		uniqueName = tempSample.name + '_' + ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(4))
+		logger.debug("Drawing event list for sample {0}".format(sample.name))
+		uniqueName = sample.name + '_' + ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(4))
 
 		elist_name = "elist_"+uniqueName
-		nEvents = tempSample.tree.Draw(">>%s"%elist_name, cutstr, '', int(float(tempSample.tree.GetEntries())*frac_entries))
+		nEvents = sample.tree.Draw(">>%s"%elist_name, cutstr, '', int(float(sample.tree.GetEntries())*frac_entries))
 		logger.debug("Done drawing {0} events into list {1}".format(nEvents, elist_name))
-		elist = tempSample.tfile.Get(elist_name)
-		#tempSample.tree.SetEventList(elist)
+		elist = self._file.Get(elist_name)
+		sample.tree.SetEventList(elist)
 
-		retList = pickle.dumps(elist)
-		logger.debug('Cutting on `%s` took %f', tempSample.name, time.time() - t_cut)
+		#retList = pickle.dumps(elist)
+		#logger.debug('Cutting on `%s` took %f', tempSample.name, time.time() - t_cut)
 
-		if logger.getEffectiveLevel()==logging.DEBUG:
-			perfstats.SaveAs("perf_" + str(adler32(tempSample.name + cutstr)) + ".root")
+		#if logger.getEffectiveLevel()==logging.DEBUG:
+		#	perfstats.SaveAs("perf_" + str(adler32(tempSample.name + cutstr)) + ".root")
 
-		del tempSample
-		return retList
+		#del tempSample
+		return elist
 
 	def _applyCuts(self, cutstr, smpls, reset=True):
 		t_cut = time.time()
 
-		#Combine the parameters into a single list [(cutstr, sample, do_reset, frac_entries), ... ]
-		smplArgs = zip([cutstr]*len(smpls),
-			smpls,
-			[reset]*len(smpls),
-			[self.frac_entries]*len(smpls),
-			[self.run_multicore]*len(smpls)
-		)
+		for sample in smpls:
+			self._applyCut(cutstr, sample)
 
-		#Apply the cut on samples with multicore
-		if self.n_cores>1:
-			logger.debug("Cutting using on %d cores" % self.n_cores)
-			p = multiprocessing.Pool(self.n_cores)
-			evLists = p.map(mp_applyCut, smplArgs)
-		else:
-			evLists = map(mp_applyCut, smplArgs)
-
-		logger.debug("Done cutting event lists for cut {0} on samples {1}".format(cutstr, smpls))
-		#Load the event lists via pickle and set the trees
-		for i in range(len(smpls)):
-			smpls[i].tree.SetEventList(pickle.loads(evLists[i]))
-		logger.debug("Done unpickling and setting event lists")
 		logger.info('Cutting on all took %f', time.time()-t_cut)
 
 	def plot(self, cut, plots, cutDescription=""):
@@ -131,9 +111,9 @@ class PlotCreator(object):
 
 		smpls = self.samples.getSamples()
 
-		self._switchBranchesOn(cut._vars)
+		#self._switchBranchesOn(cut._vars)
 
-		self._applyCuts(self._cutstr, smpls)
+		#self._applyCuts(self._cutstr, smpls)
 
 		retplots = [self._plot(x) for x in plots]
 
@@ -207,7 +187,7 @@ class StackedPlotCreator(PlotCreator):
 		"""
 		unique_id = PlotCreator._uniqueCutStr(self._cutstr, pp.getWeightStr())
 
-		self._switchBranchesOn(pp.getVars())
+		#self._switchBranchesOn(pp.getVars())
 
 		plotname = 'plot_cut%s_%s' % (unique_id, pp.getName())
 		logger.info('Plotting: %s', plotname)
@@ -218,8 +198,7 @@ class StackedPlotCreator(PlotCreator):
 		plot.log.addParam('HT max', pp.hmax)
 		plot.log.addParam('HT bins', pp.hbins)
 
-		cut_string = ''
-		plot.log.setCuts([''], cut_string)
+		plot.log.setCuts([''], self._cutstr)
 
 		# Create log variables
 		plot.log.addVariable('filled', 'Events filled')
@@ -302,13 +281,18 @@ class StackedPlotCreator(PlotCreator):
 				plot.log.setVariable(sample.name, 'fname', sample.fname)
 				hist_name = group_hist_name + "_" + sample.name
 
-				mc_hist = ROOT.TH1F(hist_name, group.pretty_name, pp.hbins, pp.hmin, pp.hmax)
-				mc_hist.Sumw2()
+				#mc_hist = ROOT.TH1F(hist_name, group.pretty_name, pp.hbins, pp.hmin, pp.hmax)
+				#mc_hist.Sumw2()
 				#mc_hist.SetFillColor(group.color)
 				#mc_hist.SetLineColor(group.color)
 				#mc_hist.SetLineWidth(0)
+				self._file.cd()
+				draw_str = '%s>>%s(%d, %d, %d)'%(pp.var, hist_name, pp.hbins, pp.hmin, pp.hmax)
+				print "Draw_str=" + draw_str
+				mc_filled = sample.tree.Draw(draw_str, pp.getWeightStr(sample.disabled_weights), 'goff')
 
-				mc_filled = sample.tree.Draw('%s>>%s'%(pp.var, hist_name), pp.getWeightStr(sample.disabled_weights), 'goff')
+				mc_hist = self._file.Get(hist_name)
+				mc_hist.Sumw2()
 				mc_hist.filled_count = mc_filled
 				plot.log.setVariable(sample.name, 'filled', mc_filled)
 
@@ -384,7 +368,7 @@ class ShapePlotCreator(PlotCreator):
 		plotname = 'plot_cut%s_%s' % (uniq, plot_params.getName())
 		logger.debug('Plotting: %s', plotname)
 
-		self._switchBranchesOn(plot_params.getVars())
+		#self._switchBranchesOn(plot_params.getVars())
 
 		# Create the histograms
 		plot._maxbin = 0.0
@@ -404,9 +388,12 @@ class ShapePlotCreator(PlotCreator):
 				sample_hist.Sumw2()
 
 				plot.log.addProcess(sample.name)
+
+				weight_str = plot_params.getWeightStr(sample.disabled_weights) if isinstance(sample, MCSample) else '1.0'
+				cutweight_str = "(" + weight_str + ")*(" + self._cutstr + ")"
+
 				filled = sample.tree.Draw(
-						'%s>>%s'%(plot_params.var, sample_hist.GetName()),
-					plot_params.getWeightStr(sample.disabled_weights) if isinstance(sample, MCSample) else '', 'goff'
+						'%s>>%s'%(plot_params.var, sample_hist.GetName()), cutweight_str, 'goff'
 				)
 				logger.debug('Filled histogram `%s` from sample `%s` with %f events', hist_name, sample.name, filled)
 				filled_tot += filled
@@ -552,6 +539,7 @@ class ShapePlot(Plot):
 		first = True
 		hists = self._hists.values()
 		hists[0].SetMaximum(1.1*self._maxbin)
+		hists[0].GetXaxis().SetTitle(self._plot_params.x_label)
 		for hist in hists:
 			hist.Draw('E1' if first else 'E1 SAME')
 			first = False
@@ -564,7 +552,7 @@ class ShapePlot(Plot):
 		for hist in self._hists.values():
 			legName = hist.GetTitle()
 			if self._plot_params.stat_opts == "legend":
-				legName = "#splitline{%s}{mean=%.2f}" % (hist.GetTitle(), hist.GetMean())
+				legName = "#splitline{%s}{mean=%.2f rms=%.2f}" % (hist.GetTitle(), hist.GetMean(), hist.GetRMS())
 			legend.AddEntry(hist, legName)
 		return
 
