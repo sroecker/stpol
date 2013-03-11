@@ -477,18 +477,22 @@ class Plot(object):
 			ofdir = "."
 		if fout is None:
 			fout = self.getName()
-		ofname = ofdir + "/" + fout+'.'+fmt
 
-		logger.info('Saving as: %s', ofname)
 		self.cvs = ROOT.TCanvas('tcvs_%s'%fout, '', w, h)
 		if self.legend.legpos == "R":
 			self.cvs.SetRightMargin(0.26)
 		self.cvs.SetBottomMargin(0.25)
 
 		self.draw()
-		self.cvs.SaveAs(ofname)
-		self.cvs.SaveAs(ofname.replace(fmt, "svg"))
-		#self.cvs.SaveAs(ofname.replace(fmt, "gif"))
+
+		# Convert fmt to a list
+		if fmt is not list:
+			fmt = [str(fmt)]
+
+		for fmtx in fmt:
+			ofname = ofdir + "/" + fout+'.'+fmtx
+			logger.info('Saving as: %s', ofname)
+			self.cvs.SaveAs(ofname)
 
 		if log:
 			self.log.save(fout+'.pylog')
