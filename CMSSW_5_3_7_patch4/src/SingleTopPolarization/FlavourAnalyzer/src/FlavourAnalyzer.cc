@@ -63,7 +63,9 @@ FlavourAnalyzer::FlavourAnalyzer(const edm::ParameterSet &cfg):
      cfg.getParameter<bool>("saveLightPartons") : false),
     saveGenJets(cfg.exists("saveGenJets") ? cfg.getParameter<bool>("saveGenJets") : false),
     classify(cfg.exists("classify") ? cfg.getParameter<bool>("classify") : true)
-{}
+{
+    produces<unsigned int>("simpleClass");
+}
 
 
 FlavourAnalyzer::~FlavourAnalyzer()
@@ -145,7 +147,7 @@ void FlavourAnalyzer::endJob()
 {}
 
 
-void FlavourAnalyzer::analyze(const edm::Event &event, const edm::EventSetup &eventSetup)
+void FlavourAnalyzer::produce(edm::Event &event, const edm::EventSetup &eventSetup)
 {
     // Get the generator particles collection from the event
     Handle<View<GenParticle> > genParticles;
@@ -509,6 +511,7 @@ void FlavourAnalyzer::analyze(const edm::Event &event, const edm::EventSetup &ev
             classDecision = HFClass::Light;
             simpleClassDecision = HFClass::SLight;
         }
+        event.put(std::auto_ptr<unsigned int>(new unsigned int(static_cast<unsigned int>(simpleClassDecision))), "simpleClass");
     }
     
     

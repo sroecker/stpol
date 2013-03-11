@@ -10,7 +10,7 @@
 #ifndef SINGLE_TOP_FLAVOUR_ANALYZER
 #define SINGLE_TOP_FLAVOUR_ANALYZER
 
-#include <FWCore/Framework/interface/EDAnalyzer.h>
+#include <FWCore/Framework/interface/EDProducer.h>
 #include <FWCore/Framework/interface/Event.h>
 #include <FWCore/ParameterSet/interface/ParameterSet.h>
 #include <FWCore/Utilities/interface/InputTag.h>
@@ -21,7 +21,7 @@
 #include <TTree.h>
 
 
-class FlavourAnalyzer: public edm::EDAnalyzer
+class FlavourAnalyzer: public edm::EDProducer
 {
     public:
         FlavourAnalyzer(const edm::ParameterSet &);
@@ -30,7 +30,7 @@ class FlavourAnalyzer: public edm::EDAnalyzer
     private:
         void beginJob();
         void endJob();
-        void analyze(const edm::Event &, const edm::EventSetup &);
+        virtual void produce(edm::Event &, const edm::EventSetup &);
         void performClassification();
         
         edm::InputTag const genParticlesSrc;
