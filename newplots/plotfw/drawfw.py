@@ -64,9 +64,12 @@ class PlotCreator(object):
 		t_cut = time.time()
 		logger.debug('Cutting on `%s`', sample.name)
 
-		self._file.cd()
-		#ROOT.gROOT.cd()
-		#tempSample.tfile.cd()
+		if multicore:
+			tempSample = Sample.fromOther(s)
+		else:
+			tempSample = s
+		tempSample.tfile.cd()
+		perfstats = ROOT.TTreePerfStats(tempSample.name, tempSample.tree)
 
 		if logger.getEffectiveLevel()==logging.DEBUG:
 			perfstats = ROOT.TTreePerfStats(sample.name, sample.tree)
@@ -406,6 +409,8 @@ class ShapePlotCreator(PlotCreator):
 				plot.log.setVariable(sample.name, 'int', integral)
 				plot.log.setVariable(sample.name, 'int_err', float(err))
 
+				if plot_params.normalize_to == "lumi":
+					sample.scaleToLumi(mc_hist, 20000.0)
 				hist.Add(sample_hist)
 
 			logger.debug('Filled total for `%s` : %f' % (hist_name, filled_tot))
@@ -464,18 +469,22 @@ class Plot(object):
 			ofdir = "."
 		if fout is None:
 			fout = self.getName()
-		ofname = ofdir + "/" + fout+'.'+fmt
 
-		logger.info('Saving as: %s', ofname)
 		self.cvs = ROOT.TCanvas('tcvs_%s'%fout, '', w, h)
 		if self.legend.legpos == "R":
 			self.cvs.SetRightMargin(0.26)
 		self.cvs.SetBottomMargin(0.25)
 
 		self.draw()
-		self.cvs.SaveAs(ofname)
-		self.cvs.SaveAs(ofname.replace(fmt, "svg"))
-		#self.cvs.SaveAs(ofname.replace(fmt, "gif"))
+
+		# Convert fmt to a list
+		if fmt is not list:
+			fmt = [str(fmt)]
+
+		for fmtx in fmt:
+			ofname = ofdir + "/" + fout+'.'+fmtx
+			logger.info('Saving as: %s', ofname)
+			self.cvs.SaveAs(ofname)
 
 		if log:
 			self.log.save(fout+'.pylog')

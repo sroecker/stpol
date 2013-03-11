@@ -565,7 +565,14 @@ def SingleTopStep2():
             #cms.InputTag("bTagWeightProducer3J1T", "bTagWeightSystLDown"),
 
             #cms.InputTag("puWeightProducer", "PUWeightN0"),
-            cms.InputTag("puWeightProducer", "PUWeightNtrue")
+            cms.InputTag("puWeightProducer", "PUWeightNtrue"),
+
+            cms.InputTag("muonWeightsProducer", "muonIDWeight"),
+            cms.InputTag("muonWeightsProducer", "muonIDWeightUp"),
+            cms.InputTag("muonWeightsProducer", "muonIDWeightDown"),
+            cms.InputTag("muonWeightsProducer", "muonIsoWeight"),
+            cms.InputTag("muonWeightsProducer", "muonIsoWeightUp"),
+            cms.InputTag("muonWeightsProducer", "muonIsoWeightDown")
         )
     )
 
@@ -782,25 +789,6 @@ def SingleTopStep2():
         "CollectionSizeProducer<reco::Candidate>",
         src = cms.InputTag("looseVetoElectrons")
     )
-
-    #if Config.isMC:
-        ##Embed the reference to the original jet in the jets, which is constant during the propagation
-        #process.patJetsWithOwnRef = cms.EDProducer('PatObjectOwnRefProducer<pat::Jet>',
-        #    src=cms.InputTag("selectedPatJets")
-        #)
-        #from PhysicsTools.PatUtils.tools.metUncertaintyTools import runMEtUncertainties
-        #runMEtUncertainties(process,
-        #     electronCollection=cms.InputTag("electronsWithID"),
-        #     photonCollection=None,
-        #     muonCollection=cms.InputTag("muonsWithID"),
-        #     tauCollection="", # "" means emtpy, None means cleanPatTaus
-        #     jetCollection=cms.InputTag("patJetsWithOwnRef"),
-        #     addToPatDefaultSequence=False
-        #)
-        #process.metUncertaintyPath = cms.Path(
-        #    process.patJetsWithOwnRef *
-        #    process.metUncertaintySequence
-        #)
 
     if Config.doMuon:
         from SingleTopPolarization.Analysis.muons_step2_cfi import MuonPath
