@@ -744,7 +744,7 @@ def SingleTopStep2():
     #-----------------------------------------------
 
     if Config.isMC and Config.subChannel=="WJets":
-        process.flavourAnalyzer = cms.EDAnalyzer('FlavourAnalyzer',
+        process.flavourAnalyzer = cms.EDProducer('FlavourAnalyzer',
             genParticles = cms.InputTag('genParticles'),
             generator = cms.InputTag('generator'),
             genJets = cms.InputTag('selectedPatJets', 'genJets'),
@@ -849,6 +849,7 @@ def SingleTopStep2():
     if not Config.skipPatTupleOutput:
         process.out = cms.OutputModule("PoolOutputModule",
             dropMetaData=cms.untracked.string("DROPPED"),
+            splitLevel=cms.untracked.int32(99),
             fileName=cms.untracked.string('out_step2.root'),
              SelectEvents=cms.untracked.PSet(
                  SelectEvents=cms.vstring([])
@@ -857,6 +858,7 @@ def SingleTopStep2():
                 #'drop *',
                 'drop *',
                 'keep edmMergeableCounter_*__*',
+                'keep *_flavourAnalyzer_*_STPOLSEL2',
                 'keep floats_patMETNTupleProducer_*_STPOLSEL2',
                 'keep floats_recoTopNTupleProducer_*_STPOLSEL2',
                 'keep floats_recoNuNTupleProducer_*_STPOLSEL2',
