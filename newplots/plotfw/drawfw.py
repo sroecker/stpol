@@ -15,6 +15,10 @@ from odict import OrderedDict as dict
 text_size = 0.025
 
 logger = logging.getLogger(__name__)
+
+def getProofOutput(proof, name):
+	return proof.GetOutputList().FindObject(name)
+
 def mp_applyCut(s):
 	return PlotCreator._applyCut(s[0], s[1], s[2], s[3], s[4])
 
@@ -24,7 +28,8 @@ class PlotCreator(object):
 		self.frac_entries = frac
 		self.samples = None
 		self.set_n_cores(n_cores)
-		self._file = ROOT.TFile("temp.root", "RECREATE")
+		self._file = ROOT.TProofOutputFile("temp.root", "M")
+		self.apply_cut_before_plot = False
 
 	@staticmethod
 	def _uniqueCutStr(cut_str, weight_str):
@@ -64,27 +69,25 @@ class PlotCreator(object):
 		t_cut = time.time()
 		logger.debug('Cutting on `%s`', sample.name)
 
-		if multicore:
-			tempSample = Sample.fromOther(s)
-		else:
-			tempSample = s
-		tempSample.tfile.cd()
-		perfstats = ROOT.TTreePerfStats(tempSample.name, tempSample.tree)
-
 		if logger.getEffectiveLevel()==logging.DEBUG:
 			perfstats = ROOT.TTreePerfStats(sample.name, sample.tree)
 
-		if reset:
-			sample.tree.SetEventList(0)
+		#if reset:
+		#	sample.tree.SetEventList(0)
 
 		logger.debug("Drawing event list for sample {0}".format(sample.name))
 		uniqueName = sample.name + '_' + ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(4))
 
 		elist_name = "elist_"+uniqueName
-		nEvents = sample.tree.Draw(">>%s"%elist_name, cutstr, '', int(float(sample.tree.GetEntries())*frac_entries))
+		cut = ROOT.TCut(cutstr)
+		nEvents = sample.tree.Draw(">>%s"%elist_name, cutstr)#, 'entrylist', int(float(sample.tree.GetEntries())*frac_entries))
 		logger.debug("Done drawing {0} events into list {1}".format(nEvents, elist_name))
-		elist = self._file.Get(elist_name)
-		sample.tree.SetEventList(elist)
+		elist = getProofOutput(self.proof, elist_name)
+		if not elist:
+			raise Exception("Failed to get event list from PROOF")
+		ROOT.gROOT.cd()
+		elist_clone = elist.Clone()
+		sample.tree.SetEventList(elist_clone)
 
 		#retList = pickle.dumps(elist)
 		#logger.debug('Cutting on `%s` took %f', tempSample.name, time.time() - t_cut)
@@ -116,9 +119,10 @@ class PlotCreator(object):
 
 		#self._switchBranchesOn(cut._vars)
 
-		#self._applyCuts(self._cutstr, smpls)
+		if self.apply_cut_before_plot:
+			self._applyCuts(self._cutstr, smpls)
 
-		retplots = [self._plot(x) for x in plots]
+		retplots = [self._plot(x, cut) for x in plots]
 
 		for p in retplots:
 			p.setPlotTitle(cutDescription)
@@ -190,13 +194,13 @@ class StackedPlotCreator(PlotCreator):
 		"""
 		unique_id = PlotCreator._uniqueCutStr(self._cutstr, pp.getWeightStr())
 
-		#self._switchBranchesOn(pp.getVars())
+		self._switchBranchesOn(pp.getVars())
 
 		plotname = 'plot_cut%s_%s' % (unique_id, pp.getName())
 		logger.info('Plotting: %s', plotname)
 
 		plot = StackPlot(pp, self.samples, unique_id)
-		plot.log.addParam('Variable', pp.var)
+		plot.log.addParam('Variable', pp.getVarStr())
 		plot.log.addParam('HT min', pp.hmin)
 		plot.log.addParam('HT max', pp.hmax)
 		plot.log.addParam('HT bins', pp.hbins)
@@ -221,7 +225,7 @@ class StackedPlotCreator(PlotCreator):
 			data_hist.Sumw2()
 
 			#for data there is no weight necessary
-			dt_filled = d.tree.Draw('%s>>%s'%(pp.var, data_hist.GetName()), '', 'goff')
+			dt_filled = d.tree.Draw('%s>>%s'%(pp.getVarStr(), data_hist.GetName()), '', 'goff')
 			total_luminosity += d.luminosity
 			dname = d.name
 			plot.log.addProcess(dname, ismc=False)
@@ -289,12 +293,11 @@ class StackedPlotCreator(PlotCreator):
 				#mc_hist.SetFillColor(group.color)
 				#mc_hist.SetLineColor(group.color)
 				#mc_hist.SetLineWidth(0)
-				self._file.cd()
-				draw_str = '%s>>%s(%d, %d, %d)'%(pp.var, hist_name, pp.hbins, pp.hmin, pp.hmax)
+				draw_str = '%s>>%s(%d,%d,%d)'%(pp.getVarStr(), hist_name, pp.hbins, pp.hmin, pp.hmax)
 				print "Draw_str=" + draw_str
 				mc_filled = sample.tree.Draw(draw_str, pp.getWeightStr(sample.disabled_weights), 'goff')
-
-				mc_hist = self._file.Get(hist_name)
+				pdb.set_trace()
+				#mc_hist = self.proof.GetOutput(hist_name)
 				mc_hist.Sumw2()
 				mc_hist.filled_count = mc_filled
 				plot.log.setVariable(sample.name, 'filled', mc_filled)
@@ -340,7 +343,7 @@ class StackedPlotCreator(PlotCreator):
 		plot.log.addParam('Chi2/ndf', plot.data_hist.Chi2Test(total_mc_hist, "UW CHI2/NDF"))
 
 		# Stacking the histograms
-		plot_title = '%s (%s)'%(pp.var, plotname)
+		plot_title = '%s (%s)'%(pp.getVarStr(), plotname)
 		plot.hist_stack = ROOT.THStack('stack_%s'%plotname, plot_title)
 
 		for hist in reversed(plot.mc_group_hists.values()):
@@ -363,21 +366,21 @@ class ShapePlotCreator(PlotCreator):
 	def getSamples(self):
 		return self._slist.getSamples()
 
-	def _plot(self, plot_params):
+	def _plot(self, plot_params, cut):
 
-		uniq = PlotCreator._uniqueCutStr(self._cutstr, plot_params.getWeightStr())
+		uniq = PlotCreator._uniqueCutStr(cut.cutStr, plot_params.getWeightStr())
 
 		plot = ShapePlot(plot_params, self.samples, unique_id=uniq)
 		plotname = 'plot_cut%s_%s' % (uniq, plot_params.getName())
 		logger.debug('Plotting: %s', plotname)
 
-		#self._switchBranchesOn(plot_params.getVars())
+		self._switchBranchesOn(plot_params.getVars() + cut.getUsedVariables())
 
 		# Create the histograms
 		plot._maxbin = 0.0
 		for group_name, group in self._slist.groups.items():
 			hist_name = 'hist_%s_%s'%(plotname, group.getName())
-			logger.info('Created histogram: %s', hist_name)
+			logger.info('Creating histogram: %s', hist_name)
 
 			hist = ROOT.TH1F(hist_name, group.pretty_name, plot_params.hbins, plot_params.hmin, plot_params.hmax)
 			hist.Sumw2()
@@ -387,17 +390,20 @@ class ShapePlotCreator(PlotCreator):
 
 			filled_tot = 0.0
 			for sample in group.getSamples():
-				sample_hist = ROOT.TH1F(hist_name + sample.name, group.pretty_name, plot_params.hbins, plot_params.hmin, plot_params.hmax)
-				sample_hist.Sumw2()
+				sample_hist_name = hist_name + sample.name
+				#sample_hist = ROOT.TH1F(hist_name + sample.name, group.pretty_name, plot_params.hbins, plot_params.hmin, plot_params.hmax)
+				#sample_hist.Sumw2()
 
 				plot.log.addProcess(sample.name)
 
 				weight_str = plot_params.getWeightStr(sample.disabled_weights) if isinstance(sample, MCSample) else '1.0'
-				cutweight_str = "(" + weight_str + ")*(" + self._cutstr + ")"
+				cutweight_str = "(" + weight_str + ")*(" + cut.cutStr + ")"
 
 				filled = sample.tree.Draw(
-						'%s>>%s'%(plot_params.var, sample_hist.GetName()), cutweight_str, 'goff'
+						'%s>>%s(%d, %d, %d)'%(plot_params.getVarStr(), sample_hist_name, plot_params.hbins, plot_params.hmin, plot_params.hmax), weight_str if self.apply_cut_before_plot else cutweight_str, 'goff'
 				)
+				sample_hist = getProofOutput(self.proof, sample_hist_name)
+				sample_hist.Sumw2()
 				logger.debug('Filled histogram `%s` from sample `%s` with %f events', hist_name, sample.name, filled)
 				filled_tot += filled
 
@@ -409,8 +415,6 @@ class ShapePlotCreator(PlotCreator):
 				plot.log.setVariable(sample.name, 'int', integral)
 				plot.log.setVariable(sample.name, 'int_err', float(err))
 
-				if plot_params.normalize_to == "lumi":
-					sample.scaleToLumi(mc_hist, 20000.0)
 				hist.Add(sample_hist)
 
 			logger.debug('Filled total for `%s` : %f' % (hist_name, filled_tot))
@@ -469,22 +473,18 @@ class Plot(object):
 			ofdir = "."
 		if fout is None:
 			fout = self.getName()
+		ofname = ofdir + "/" + fout+'.'+fmt
 
+		logger.info('Saving as: %s', ofname)
 		self.cvs = ROOT.TCanvas('tcvs_%s'%fout, '', w, h)
 		if self.legend.legpos == "R":
 			self.cvs.SetRightMargin(0.26)
 		self.cvs.SetBottomMargin(0.25)
 
 		self.draw()
-
-		# Convert fmt to a list
-		if fmt is not list:
-			fmt = [str(fmt)]
-
-		for fmtx in fmt:
-			ofname = ofdir + "/" + fout+'.'+fmtx
-			logger.info('Saving as: %s', ofname)
-			self.cvs.SaveAs(ofname)
+		self.cvs.SaveAs(ofname)
+		self.cvs.SaveAs(ofname.replace(fmt, "svg"))
+		#self.cvs.SaveAs(ofname.replace(fmt, "gif"))
 
 		if log:
 			self.log.save(fout+'.pylog')

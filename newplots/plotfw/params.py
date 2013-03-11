@@ -2,6 +2,9 @@ import logging, re, copy
 import ROOT
 from cross_sections import xs
 
+def parent_branch(v):
+	return v.split(".")[0] + "*"
+
 # Class to handle (concatenate) cuts
 class Cut(object):
 	"""Class that handles cuts.
@@ -64,6 +67,7 @@ class CutF(Cut):
 	for the automatic storing of relevant variables."""
 	def __init__(self, cutname, cutformatstring, vars):
 		cutstring = cutformatstring.format(*vars)
+		vars = [v.split(".")[0] for v in vars]
 		super(CutF,self).__init__(cutname, cutstring, vars)
 
 class CutP(Cut):
@@ -71,9 +75,10 @@ class CutP(Cut):
 
 	It assumes that the variable name is the leftmost one."""
 	def __init__(self, cutname, cutstring):
-		m=re.match('([A-Za-z0-9_]*)[ ]*([><=]*)[ ]*(.*)', cutstring)
+		#m=re.match('([A-Za-z0-9_]*)[ ]*([><=]*)[ ]*(.*)', cutstring)
+		m=re.match('([^><=]*)[ ]*([><=]*)[ ]*(.*)', cutstring)
 		logging.debug('In `%s` matching for `%s`', cutstring, m.group(1))
-		super(CutP,self).__init__(cutname, cutstring, [m.group(1)])
+		super(CutP,self).__init__(cutname, cutstring, [parent_branch(m.group(1))])
 
 def invert(cut):
 	ret = copy.deepcopy(cut)
@@ -131,7 +136,7 @@ colors = {
 class Cuts:
 	initial = Cut('postSkim', '1==1', relvars = None)
 
-	recoFState = CutP('recoFstate', 'int_topCount__STPOLSEL2.obj.obj==1')
+	recoFState = CutP('recoFstate', 'int_topCount__STPOLSEL2.obj==1')
 	mu  = CutP('mu', 'int_muonCount__STPOLSEL2.obj==1') \
 		* CutP('muIso', 'floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.obj[0]<0.12') \
 		* CutP('looseMuVeto', 'int_looseVetoMuCount__STPOLSEL2.obj==0') \
@@ -189,3 +194,17 @@ Cuts.jets_3J2T.rename('3J2T')
 Cuts.mlnu.rename('ml#nu')
 Cuts.sidebandRegion.rename('!ml#nu')
 Cuts.jetPt.rename('jetPt')
+
+class Var:
+	def __init__(self, var, name=None, units=None):
+		self.var = var
+		self.name = name if name is not None else var
+		self.units = units if units is not None else "u"
+	def __str__(self):
+		return self.name + "(" + self.var + ")"
+
+
+class Vars:
+	cos_theta = Var("double_cosTheta_cosThetaLightJet_STPOLSEL2.obj", "cos #theta_{lj}")
+	b_weight = dict()
+	b_weight["nominal"] = Var("double_bTagWeightProducerNJMT_bTagWeight_STPOLSEL2.obj", "b-weight (nominal)")

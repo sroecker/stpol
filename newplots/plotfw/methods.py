@@ -6,6 +6,7 @@ import logging
 import glob
 
 from plotfw.params import Cut # FIXME: temporary hack for backwards comp.
+from plotfw.params import parent_branch
 import copy
 
 def th_sep(i, sep=','):
@@ -266,7 +267,12 @@ class SampleList:
 
 # Plot parameters
 class PlotParams(object):
-	"""Class that holds the information of what and how to plot."""
+	"""
+	Class that holds the information of what and how to plot.
+	var - the variable to plot (type Var)
+	r - a tuple with (lower, upper) range for the plot
+	"""
+
 	def __init__(self, var, r,
 		bins=20, name=None, plotTitle=None, doLogY=False, ofname=None, weights=None,
 		x_label=None, vars_to_enable=None, normalize_to="lumi"):
@@ -275,8 +281,8 @@ class PlotParams(object):
 		self.bins=bins; self.hbins = bins
 		self.plotTitle=plotTitle
 		if self.plotTitle is None:
-			self.plotTitle = self.var
-		self._name = name if name is not None else filter_alnum(var)
+			self.plotTitle = self.var.name
+		self._name = name if name is not None else filter_alnum(self.getVarStr())
 		self.doLogY = doLogY
 		self._ofname = ofname
 		if isinstance(weights, types.ListType) and not isinstance(weights, types.StringTypes):
@@ -285,15 +291,18 @@ class PlotParams(object):
 			self.weights = [weights]
 		else:
 			self.weights = None
-		self.x_label = self.var if x_label is None else x_label
+		self.x_label = x_label if x_label is not None else self.var.name + " [" + self.var.units + "]"
 		if vars_to_enable is None:
-			self.vars_to_enable = [var]
+			self.vars_to_enable = [parent_branch(self.getVarStr())]
 		else:
 			self.vars_to_enable = vars_to_enable
 
 		self.do_chi2 = False
 		self.normalize_to = normalize_to
 		self.stat_opts = None
+
+	def getVarStr(self):
+		return self.var.var
 
 	def getWeightStr(self, disabled_weights=[]):
 		if self.weights is None:
@@ -316,11 +325,13 @@ class PlotParams(object):
 		vars_to_switch += self.vars_to_enable
 		if self.weights is not None:
 			vars_to_switch += self.weights
+
+		vars_to_switch = [parent_branch(v) for v in vars_to_switch]
 		return vars_to_switch
 
 
 	def __repr__(self):
-		return "{0} in range {1} with weights {2}".format(self.var, self.r, self.weights)
+		return "PlotParams: {0} in range {1} with weights {2}".format(self.var, self.r, self.weights)
 
 	def getName(self):
 		#return filter_alnum(self._name)
