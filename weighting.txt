@@ -4,7 +4,6 @@ Considering the following jets as b-tagged: (0, 1)
 	Looping over 3 jets
 	Considering jet with index 0
 		Jet 0 is in b-tag combination.
-		prob(): flavour=0
 		sf=0.911502
 		pass b-tagging e=0.431 sf=0.911502 sfUp=0.939567 sfDown=0.883437
 		p_mc=0.431 p_data=0.392857
@@ -14,7 +13,6 @@ Considering the following jets as b-tagged: (0, 1)
 
 	Considering jet with index 1
 		Jet 1 is in b-tag combination.
-		prob(): flavour=0
 		sf=0.912
 		pass b-tagging e=0.431 sf=0.912 sfUp=0.940065 sfDown=0.883935
 		p_mc=0.185761 p_data=0.154421
@@ -23,7 +21,6 @@ Considering the following jets as b-tagged: (0, 1)
 		Jet pt=54.4961 eta=1.0442 flavour=5 p_mc=0.185761 p_data=0.154421
 
 	Considering jet with index 2
-		prob(): flavour=2
 		sf=1.21737
 		fail b-tagging e=0.99889 sf=1.21737 sfUp=1.41308 sfDown=1.02162
 		p_mc=0.185555 p_data=0.187779
@@ -36,7 +33,6 @@ Considering the following jets as b-tagged: (0, 2)
 	Looping over 3 jets
 	Considering jet with index 0
 		Jet 0 is in b-tag combination.
-		prob(): flavour=0
 		sf=0.911502
 		pass b-tagging e=0.431 sf=0.911502 sfUp=0.939567 sfDown=0.883437
 		p_mc=0.431 p_data=0.392857
@@ -44,7 +40,6 @@ Considering the following jets as b-tagged: (0, 2)
 		Jet pt=53.9999 eta=0.0619492 flavour=-5 p_mc=0.431 p_data=0.392857
 
 	Considering jet with index 1
-		prob(): flavour=0
 		sf=0.912
 		fail b-tagging e=0.569 sf=0.912 sfUp=0.940065 sfDown=0.883935
 		p_mc=0.245239 p_data=0.203865
@@ -53,7 +48,6 @@ Considering the following jets as b-tagged: (0, 2)
 
 	Considering jet with index 2
 		Jet 2 is in b-tag combination.
-		prob(): flavour=2
 		sf=1.21737
 		pass b-tagging e=0.00111 sf=1.21737 sfUp=1.41308 sfDown=1.02162
 		p_mc=0.000272215 p_data=0.000275478
@@ -65,7 +59,6 @@ Considering the following jets as b-tagged: (0, 2)
 Considering the following jets as b-tagged: (1, 2)
 	Looping over 3 jets
 	Considering jet with index 0
-		prob(): flavour=0
 		sf=0.911502
 		fail b-tagging e=0.569 sf=0.911502 sfUp=0.939567 sfDown=0.883437
 		p_mc=0.569 p_data=0.518645
@@ -75,7 +68,6 @@ Considering the following jets as b-tagged: (1, 2)
 
 	Considering jet with index 1
 		Jet 1 is in b-tag combination.
-		prob(): flavour=0
 		sf=0.912
 		pass b-tagging e=0.431 sf=0.912 sfUp=0.940065 sfDown=0.883935
 		p_mc=0.245239 p_data=0.203865
@@ -85,7 +77,6 @@ Considering the following jets as b-tagged: (1, 2)
 
 	Considering jet with index 2
 		Jet 2 is in b-tag combination.
-		prob(): flavour=2
 		sf=1.21737
 		pass b-tagging e=0.00111 sf=1.21737 sfUp=1.41308 sfDown=1.02162
 		p_mc=0.000272215 p_data=0.000275478
