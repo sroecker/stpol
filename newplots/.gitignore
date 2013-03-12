@@ -15,3 +15,6 @@
 
 # List of plots for Tex
 plotlist
+
+#output
+plots_out*
