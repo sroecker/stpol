@@ -11,6 +11,7 @@ from plotfw.params import Cut # FIXME: temporary hack for backwards comp.
 from plotfw.params import parent_branch
 import plotfw.cross_sections
 import copy
+from zlib import adler32
 
 def th_sep(i, sep=','):
 	"""Return a string representation of i with thousand separators"""
@@ -125,6 +126,8 @@ class MultiSample(object):
 		self.disabled_weights = []
 		self._openTree()
 
+		self.entryListCache = dict()
+
 	def branches(self):
 		return [br.GetName() for br in self.tree.GetListOfBranches()]
 
@@ -134,21 +137,40 @@ class MultiSample(object):
 		for var in vars_to_switch:
 			self.tree.SetBranchStatus(var, 1)
 		return
+	def cacheEntryList(self, cut):
+		self._switchBranchesOn(cut.getUsedVariables())
+		self.tree.SetEntryList(0)
+		if cut.cutStr not in self.entryListCache.keys():
+			logging.debug("Caching entry list with cut %s" % (cut))
+			entry_list_name = "%s_%s" % (self.name, adler32(cut.cutStr))
+			ROOT.gROOT.cd()
+			self.tree.Draw(">>%s" % entry_list_name, cut.cutStr, "entrylist")
+			elist = ROOT.gROOT.Get(entry_list_name)
+			self.entryListCache[cut.cutStr] = elist
+			self.tree.SetEntryList(elist)
+		else:
+			logging.debug("Loading entry list from cache" % (var, cut))
+			elist = self.entryListCache[cut.cutStr]
+			self.tree.SetEntryList(elist)
 
 	def getColumn(self, var, cut, dtype="f"):
-		self.tree.SetProof(False)
-		self._switchBranchesOn([var.var] + cut.getUsedVariables())
-		N = self.tree.Draw(var.var, cut.cutStr, "goff")
+		logging.info("Getting column %s" % var)
+
+        self.cacheEntryList(cut)
+		self._switchBranchesOn([var.var])
+		N = self.tree.Draw(var.var, "", "goff")
 		if N <= 0:
 			raise Exception("Could not get column")
 		buf = self.tree.GetV1()
 		arr = ROOT.TArrayD(N, buf)
+		logging.debug("Column retrieved, copying to numpy array")
 		out = numpy.copy(numpy.frombuffer(arr.GetArray(), count=arr.GetSize(), dtype=dtype))
-
 		return out
 
 	def drawHist(self, hist_name, plot_params, cut=None, proof=None):
-		hist_name += "_" + self.name
+		logging.info("Drawing histogram %s" % hist_name)
+
+        hist_name += "_" + self.name
 		if proof is not None:
 			logging.debug("Output will be in ROOT.TProof instance %s" % str(proof))
 			self.tree.SetProof(True)
@@ -157,11 +179,15 @@ class MultiSample(object):
 			ROOT.gROOT.cd()
 		if cut is None:
 			cut = plotfw.params.Cuts.inital
+
+		self.cacheEntryList(cut)
+		self._switchBranchesOn([plot_params.var.var])
+
 		draw_cmd = "%s >> %s(%d, %d, %d)" % (plot_params.var.var, hist_name, plot_params.hbins, plot_params.hmin, plot_params.hmax)
 		weight_str = plot_params.getWeightStr(self.disabled_weights)
 		cutweight_str = "(" + weight_str + ")*(" + cut.cutStr + ")"
 		logging.debug("Calling TChain.Draw(%s, %s)" % (draw_cmd, cutweight_str))
-		N = self.tree.Draw(draw_cmd, cutweight_str, "goff")
+		N = self.tree.Draw(draw_cmd, weight_str, "goff")
 		if int(N) == -1:
 			raise Exeption("Failed to draw histogram")
 		if proof is not None:
@@ -188,7 +214,7 @@ class MultiSample(object):
 			self.lumi_chain.AddFile(fi + "/LuminosityBlocks")
 
 		#caching stuff
-		self.event_chain.SetCacheSize(10**7)
+		self.event_chain.SetCacheSize(100*1024*1024)
 		self.event_chain.AddBranchToCache("*")
 		ROOT.gEnv.SetValue("TFile.AsyncPrefetching", 1)
 		self.tree = self.event_chain

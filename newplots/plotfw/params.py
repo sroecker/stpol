@@ -175,19 +175,20 @@ class Cuts:
     etaLJ = CutF('#eta_{lj}', 'abs({0})>2.5', ['floats_lowestBTagJetNTupleProducer_Eta_STPOLSEL2.obj[0]'])
     sidebandRegion = invert(mlnu) #sidebandRegion = Cut('!ml#nu', '!(_recoTop_0_Mass>130&&_recoTop_0_Mass<220)')
     jetPt = CutP(None, 'floats_goodJetsNTupleProducer_Pt_STPOLSEL2.obj[0]>40') * CutP(None, 'floats_goodJetsNTupleProducer_Pt_STPOLSEL2.obj[1]>40')
-    jetEta = CutF('jetEta', 'abs({0})<4.5 && abs({1})<4.5', ['floats_lowestBTagJetNTupleProducer_Eta_STPOLSEL2.obj[0]', 'floats_highestBTagJetNTupleProducer_Eta_STPOLSEL2.obj[0]'])
+    #jetEta = CutF('jetEta', 'abs({0})<4.5 && abs({1})<4.5', ['floats_lowestBTagJetNTupleProducer_Eta_STPOLSEL2.obj[0]', 'floats_highestBTagJetNTupleProducer_Eta_STPOLSEL2.obj[0]'])
+    jetEta = CutF('jetEta', 'abs({0})<4.5 && abs({1})<4.5', ['floats_goodJetsNTupleProducer_Eta_STPOLSEL2.obj[0]', 'floats_goodJetsNTupleProducer_Eta_STPOLSEL2.obj[1]'])
     jetRMS = CutP('rms_{lj}', 'floats_lowestBTagJetNTupleProducer_rms_STPOLSEL2.obj[0] < 0.025')
     MTmu = CutP('MT', 'double_muAndMETMT__STPOLSEL2.obj > 50')
     MTele = CutP('MT', 'floats_patMETNTupleProducer_Eta_STPOLSEL2.obj[0]>45')
 
     #Orso = mlnu * jets_2J1T * jetPt * jetRMS * MT * etaLJ#jetEta
-    Orso = mlnu * jets_2J1T * jetPt * jetRMS * etaLJ * jetEta
-    finalMu_2J0T = mu * recoFState * MTmu * mlnu * jets_2J0T * jetPt * jetRMS * etaLJ * jetEta
-    finalMu_2J1T = mu * recoFState * MTmu * mlnu * jets_2J1T * jetPt * jetRMS * etaLJ * jetEta
-    finalMu_3J0T = mu * recoFState * MTmu * mlnu * jets_3J0T * jetPt * jetRMS * etaLJ * jetEta
-    finalMu_3J1T = mu * recoFState * MTmu * mlnu * jets_3J1T * jetPt * jetRMS * etaLJ * jetEta
-    finalMu_3J2T = mu * recoFState * MTmu * mlnu * jets_3J2T * jetPt * jetRMS * etaLJ * jetEta
-    finalMu = mu * recoFState * Orso * MTmu
+    Orso = mlnu *  jetPt * jetRMS * etaLJ * jetEta
+    finalMu_2J0T = mu * MTmu * mlnu * jetPt * etaLJ * jetEta * jets_2J0T
+    finalMu_2J1T = mu * MTmu * mlnu * jetPt * etaLJ * jetEta * jets_2J1T
+    finalMu_3J0T = mu * MTmu * mlnu * jetPt * etaLJ * jetEta * jets_3J0T
+    finalMu_3J1T = mu * MTmu * mlnu * jetPt * etaLJ * jetEta * jets_3J1T
+    finalMu_3J2T = mu * MTmu * mlnu * jetPt * etaLJ * jetEta * jets_3J2T
+    finalMu_2J1T = mu * recoFState * Orso * jets_2J1T * MTmu
     finalEle = ele * recoFState * Orso * MTele
 
 Cuts.muonID.rename('muonID')

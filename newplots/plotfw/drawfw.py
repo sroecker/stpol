@@ -108,9 +108,9 @@ class PlotCreator(object):
 
 		smpls = self.samples.getSamples()
 
-		if self.proof is None:
-			#self._switchBranchesOn(cut._vars)
-			self._applyCuts(self._cutstr, smpls)
+	#	if self.proof is None:
+	#		#self._switchBranchesOn(cut._vars)
+	#		self._applyCuts(self._cutstr, smpls)
 
 		retplots = [self._plot(x, cut) for x in plots]
 
