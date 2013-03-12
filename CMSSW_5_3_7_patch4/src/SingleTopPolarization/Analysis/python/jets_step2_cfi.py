@@ -192,7 +192,7 @@ def JetSetup(process, conf):
 
     #Take the jet with the lowest overall b-discriminator value as the light jet
     process.lowestBTagJet = process.highestBTagJet.clone(
-        src = cms.InputTag("untaggedJets"),
+        src = cms.InputTag("goodJets"),
         reverse = cms.bool(True)
     )
 
