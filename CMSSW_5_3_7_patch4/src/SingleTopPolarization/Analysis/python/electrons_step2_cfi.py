@@ -184,8 +184,8 @@ def ElectronPath(process, conf):
 
         process.mBTags *
 
-        process.topRecoSequenceEle *
-        process.efficiencyAnalyzerEle
+        process.topRecoSequenceEle
+#        process.efficiencyAnalyzerEle
     )
 
     #Insert debugging modules for printout

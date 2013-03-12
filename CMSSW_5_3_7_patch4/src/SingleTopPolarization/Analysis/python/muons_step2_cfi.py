@@ -174,8 +174,8 @@ def MuonPath(process, conf):
         process.mBTags *
 
         #Reconstruct the neutrino, the top quark and calculate the cosTheta* variable
-        process.topRecoSequenceMu *
-        process.efficiencyAnalyzerMu
+        process.topRecoSequenceMu
+#        process.efficiencyAnalyzerMu
     )
 
     #Only do the parton identification in the signal channel

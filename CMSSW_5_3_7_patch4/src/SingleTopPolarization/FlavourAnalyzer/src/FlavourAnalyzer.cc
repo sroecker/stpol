@@ -74,72 +74,72 @@ FlavourAnalyzer::~FlavourAnalyzer()
 
 void FlavourAnalyzer::beginJob()
 {
-    tree = fs->make<TTree>("FlavorTree", "");
-    
-    if (classify)
-    {
-        tree->Branch("class", &classDecision);
-        tree->Branch("simpleClass", &simpleClassDecision);
-    }
-    
-    tree->Branch("nChains", &nChains_);
-    tree->Branch("pdgId", pdgId_, "pdgId[nChains]/I");
-    tree->Branch("flavourSource", flavourSource_, "flavourSource[nChains]/I");
-    
-    if (!minimalisticChains)
-    {
-        tree->Branch("pt", pt_, "pt[nChains]/F");
-        tree->Branch("eta", eta_, "eta[nChains]/F");
-        tree->Branch("phi", phi_, "phi[nChains]/F");
-        tree->Branch("energy", energy_, "energy[nChains]/F");
-        tree->Branch("length2", length2_, "length2[nChains]/I");
-        tree->Branch("length3", length3_, "length3[nChains]/I");
-        tree->Branch("nParents", nParents_, "nParents[nChains]/I");
-        tree->Branch("nParentsGlobal", &nParentsGlobal_);
-        tree->Branch("parentsPdgId", parentsPdgId_, "parentsPdgId[nParentsGlobal]/I");
-        tree->Branch("nSisters", nSisters_, "nSisters[nChains]/I");
-        tree->Branch("nSistersGlobal", &nSistersGlobal_);
-        tree->Branch("sisters", sisters_, "sisters[nSistersGlobal]/I");
-    }
-    
-    
-    if (savePDFInfo)
-    {
-        tree->Branch("processId", &processId_);
-        
-        tree->Branch("pdfIdFirst", &pdfIdFirst_);
-        tree->Branch("xFirst", &xFirst_);
-        tree->Branch("ptFirst", &ptFirst_);
-        tree->Branch("etaFirst", &etaFirst_);
-        tree->Branch("phiFirst", &phiFirst_);
-        tree->Branch("energyFirst", &energyFirst_);
-        
-        tree->Branch("pdfIdSecond", &pdfIdSecond_);
-        tree->Branch("xSecond", &xSecond_);
-        tree->Branch("ptSecond", &ptSecond_);
-        tree->Branch("etaSecond", &etaSecond_);
-        tree->Branch("phiSecond", &phiSecond_);
-        tree->Branch("energySecond", &energySecond_);
-    }
-    
-    if (saveLightPartons)
-    {
-        tree->Branch("nLight", &nLight_);
-        tree->Branch("pdgIdLight", pdgIdLight_, "pdgIdLight[nLight]/I");
-        tree->Branch("ptLight", ptLight_, "ptLight[nLight]/F");
-        tree->Branch("etaLight", etaLight_, "etaLight[nLight]/F");
-        tree->Branch("phiLight", phiLight_, "phiLight[nLight]/F");
-        tree->Branch("energyLight", energyLight_, "energyLight[nLight]/F");
-    }
-    
-    if (saveGenJets)
-    {
-        tree->Branch("nJets", &nJets);
-        tree->Branch("ptJet", ptJet_, "ptJet[nJets]/F");
-        tree->Branch("etaJet", etaJet_, "etaJet[nJets]/F");
-        tree->Branch("phiJet", phiJet_, "phiJet[nJets]/F");
-        tree->Branch("energyJet", energyJet_, "energyJet[nJets]/F");
-    }
+    //tree = fs->make<TTree>("FlavorTree", "");
+    //
+    //if (classify)
+    //{
+    //    tree->Branch("class", &classDecision);
+    //    tree->Branch("simpleClass", &simpleClassDecision);
+    //}
+    //
+    //tree->Branch("nChains", &nChains_);
+    //tree->Branch("pdgId", pdgId_, "pdgId[nChains]/I");
+    //tree->Branch("flavourSource", flavourSource_, "flavourSource[nChains]/I");
+    //
+    //if (!minimalisticChains)
+    //{
+    //    tree->Branch("pt", pt_, "pt[nChains]/F");
+    //    tree->Branch("eta", eta_, "eta[nChains]/F");
+    //    tree->Branch("phi", phi_, "phi[nChains]/F");
+    //    tree->Branch("energy", energy_, "energy[nChains]/F");
+    //    tree->Branch("length2", length2_, "length2[nChains]/I");
+    //    tree->Branch("length3", length3_, "length3[nChains]/I");
+    //    tree->Branch("nParents", nParents_, "nParents[nChains]/I");
+    //    tree->Branch("nParentsGlobal", &nParentsGlobal_);
+    //    tree->Branch("parentsPdgId", parentsPdgId_, "parentsPdgId[nParentsGlobal]/I");
+    //    tree->Branch("nSisters", nSisters_, "nSisters[nChains]/I");
+    //    tree->Branch("nSistersGlobal", &nSistersGlobal_);
+    //    tree->Branch("sisters", sisters_, "sisters[nSistersGlobal]/I");
+    //}
+    //
+    //
+    //if (savePDFInfo)
+    //{
+    //    tree->Branch("processId", &processId_);
+    //    
+    //    tree->Branch("pdfIdFirst", &pdfIdFirst_);
+    //    tree->Branch("xFirst", &xFirst_);
+    //    tree->Branch("ptFirst", &ptFirst_);
+    //    tree->Branch("etaFirst", &etaFirst_);
+    //    tree->Branch("phiFirst", &phiFirst_);
+    //    tree->Branch("energyFirst", &energyFirst_);
+    //    
+    //    tree->Branch("pdfIdSecond", &pdfIdSecond_);
+    //    tree->Branch("xSecond", &xSecond_);
+    //    tree->Branch("ptSecond", &ptSecond_);
+    //    tree->Branch("etaSecond", &etaSecond_);
+    //    tree->Branch("phiSecond", &phiSecond_);
+    //    tree->Branch("energySecond", &energySecond_);
+    //}
+    //
+    //if (saveLightPartons)
+    //{
+    //    tree->Branch("nLight", &nLight_);
+    //    tree->Branch("pdgIdLight", pdgIdLight_, "pdgIdLight[nLight]/I");
+    //    tree->Branch("ptLight", ptLight_, "ptLight[nLight]/F");
+    //    tree->Branch("etaLight", etaLight_, "etaLight[nLight]/F");
+    //    tree->Branch("phiLight", phiLight_, "phiLight[nLight]/F");
+    //    tree->Branch("energyLight", energyLight_, "energyLight[nLight]/F");
+    //}
+    //
+    //if (saveGenJets)
+    //{
+    //    tree->Branch("nJets", &nJets);
+    //    tree->Branch("ptJet", ptJet_, "ptJet[nJets]/F");
+    //    tree->Branch("etaJet", etaJet_, "etaJet[nJets]/F");
+    //    tree->Branch("phiJet", phiJet_, "phiJet[nJets]/F");
+    //    tree->Branch("energyJet", energyJet_, "energyJet[nJets]/F");
+    //}
 }
 
 
@@ -628,7 +628,7 @@ void FlavourAnalyzer::produce(edm::Event &event, const edm::EventSetup &eventSet
     
     
     // Now everything is calculated
-    tree->Fill();
+    //tree->Fill();
 }
 
 

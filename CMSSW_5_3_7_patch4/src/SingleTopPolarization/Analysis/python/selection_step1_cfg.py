@@ -217,15 +217,15 @@ def SingleTopStep1(
           'drop *',
 
           'keep edmMergeableCounter_*_*_*', # Keep the lumi-block counter information
-          'keep edmTriggerResults_TriggerResults__HLT', #Keep the trigger results
+          'keep edmTriggerResults_TriggerResults__*', #Keep the trigger results
           'keep *_genParticles__*', #keep all the genParticles
-          'keep recoVertexs_offlinePrimaryVertices__RECO', #keep the offline PV-s
-          'keep recoVertexs_goodOfflinePrimaryVertices__RECO', #keep the offline PV-s
+          'keep recoVertexs_offlinePrimaryVertices__*', #keep the offline PV-s
+          'keep recoVertexs_goodOfflinePrimaryVertices__*', #keep the offline PV-s
 
           # Jets
-          'keep patJets_selectedPatJets__PAT',
-          'keep double_*_rho_RECO', #For rho-corr rel iso
-          'keep recoGenJets_selectedPatJets_genJets_PAT', #For Jet MC smearing we need to keep the genJets
+          'keep patJets_selectedPatJets__*',
+          'keep double_*_rho_*', #For rho-corr rel iso
+          'keep recoGenJets_selectedPatJets_genJets_*', #For Jet MC smearing we need to keep the genJets
           "keep *_puJetId_*_*", # input variables
           "keep *_puJetMva_*_*", # final MVAs and working point flags
           'keep *_jetClones__PAT',

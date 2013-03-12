@@ -767,6 +767,10 @@ def SingleTopStep2():
     from SingleTopPolarization.Analysis.hlt_step2_cfi import HLTSetup
     HLTSetup(process, Config)
 
+    if Config.isMC:
+        process.pdfInfo = cms.EDProducer("PDFInfoDumper",
+        )
+        process.pdfPath = cms.Path(process.pdfInfo)
     if Config.isMC and options.doGenParticlePath:
         from SingleTopPolarization.Analysis.partonStudy_step2_cfi import PartonStudySetup
         PartonStudySetup(process)
@@ -866,6 +870,7 @@ def SingleTopStep2():
                 'keep double_cosThetaProducerTrueJet_*_STPOLSEL2',
                 'keep double_bTagWeightProducerNJMT_*_STPOLSEL2',
                 'keep int_*__STPOLSEL2',
+                'keep *_pdfInfo_*_STPOLSEL2',
                 #'keep *',
                 #'keep *_recoTop_*_*',
                 #'keep *_goodSignalMuons_*_*',
@@ -899,12 +904,12 @@ def SingleTopStep2():
     else:
         outFile = "step2.root"
 
-    process.TFileService = cms.Service(
-        "TFileService",
-        fileName=cms.string(outFile.replace(".root", "_trees.root")),
-    )
+    #process.TFileService = cms.Service(
+    #    "TFileService",
+    #    fileName=cms.string(outFile.replace(".root", "_trees.root")),
+    #)
 
-    print "Output trees: %s" % process.TFileService.fileName.value()
+    #print "Output trees: %s" % process.TFileService.fileName.value()
     if hasattr(process, "out"):
         print "Output patTuples: %s" % process.out.fileName.value()
     print 80*"-"
