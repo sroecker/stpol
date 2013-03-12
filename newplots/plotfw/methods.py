@@ -149,7 +149,7 @@ class MultiSample(object):
 			self.entryListCache[cut.cutStr] = elist
 			self.tree.SetEntryList(elist)
 		else:
-			logging.debug("Loading entry list from cache" % (var, cut))
+			logging.debug("Loading entry list from cache: %s" % (cut))
 			elist = self.entryListCache[cut.cutStr]
 			self.tree.SetEntryList(elist)
 
@@ -184,9 +184,9 @@ class MultiSample(object):
 		self._switchBranchesOn([plot_params.var.var])
 
 		draw_cmd = "%s >> %s(%d, %d, %d)" % (plot_params.var.var, hist_name, plot_params.hbins, plot_params.hmin, plot_params.hmax)
-		weight_str = plot_params.getWeightStr(self.disabled_weights)
+		weight_str = plot_params.getWeightStr(disabled_weights=self.disabled_weights)
 		cutweight_str = "(" + weight_str + ")*(" + cut.cutStr + ")"
-		logging.debug("Calling TChain.Draw(%s, %s)" % (draw_cmd, cutweight_str))
+		logging.debug("Calling TChain.Draw(%s, %s)" % (draw_cmd, weight_str))
 		N = self.tree.Draw(draw_cmd, weight_str, "goff")
 		if int(N) == -1:
 			raise Exeption("Failed to draw histogram")
