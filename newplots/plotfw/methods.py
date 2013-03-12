@@ -4,9 +4,12 @@ import types
 import params
 import logging
 import glob
+import numpy
+import pdb
 
 from plotfw.params import Cut # FIXME: temporary hack for backwards comp.
 from plotfw.params import parent_branch
+import plotfw.cross_sections
 import copy
 
 def th_sep(i, sep=','):
@@ -114,15 +117,62 @@ class Sample(object):
 	def __str__(self):
 		return self.name
 
-class MultiSample:
+class MultiSample(object):
 	def __init__(self, fname, name=None, directory=None):
 		self.name = name if name is not None else fname
 		self.fname = fname
 		self.directory = directory
+		self.disabled_weights = []
 		self._openTree()
 
 	def branches(self):
 		return [br.GetName() for br in self.tree.GetListOfBranches()]
+
+	def _switchBranchesOn(self, vars_to_switch):
+		self.tree.SetBranchStatus("*", 0)
+		logging.debug("Switching variables on: %s" % vars_to_switch)
+		for var in vars_to_switch:
+			self.tree.SetBranchStatus(var, 1)
+		return
+
+	def getColumn(self, var, cut, dtype="f"):
+		self.tree.SetProof(False)
+		self._switchBranchesOn([var.var] + cut.getUsedVariables())
+		N = self.tree.Draw(var.var, cut.cutStr, "goff")
+		if N <= 0:
+			raise Exception("Could not get column")
+		buf = self.tree.GetV1()
+		arr = ROOT.TArrayD(N, buf)
+		out = numpy.copy(numpy.frombuffer(arr.GetArray(), count=arr.GetSize(), dtype=dtype))
+
+		return out
+
+	def drawHist(self, hist_name, plot_params, cut=None, proof=None):
+		hist_name += "_" + self.name
+		if proof is not None:
+			logging.debug("Output will be in ROOT.TProof instance %s" % str(proof))
+			self.tree.SetProof(True)
+		else:
+			self.tree.SetProof(False)
+			ROOT.gROOT.cd()
+		if cut is None:
+			cut = plotfw.params.Cuts.inital
+		draw_cmd = "%s >> %s(%d, %d, %d)" % (plot_params.var.var, hist_name, plot_params.hbins, plot_params.hmin, plot_params.hmax)
+		weight_str = plot_params.getWeightStr(self.disabled_weights)
+		cutweight_str = "(" + weight_str + ")*(" + cut.cutStr + ")"
+		logging.debug("Calling TChain.Draw(%s, %s)" % (draw_cmd, cutweight_str))
+		N = self.tree.Draw(draw_cmd, cutweight_str, "goff")
+		if int(N) == -1:
+			raise Exeption("Failed to draw histogram")
+		if proof is not None:
+			hist = proof.GetOutputList().FindObject(hist_name)
+		else:
+			hist = ROOT.gROOT.Get(hist_name)
+		ROOT.gROOT.cd()
+		clone_hist = hist.Clone(hist_name)
+		clone_hist.Sumw2()
+		return N, clone_hist
+
 	def _openTree(self):
 		fpath = (self.directory+'/' if self.directory is not None else '') + self.fname
 		logging.debug('Opening file: `%s`', fpath)
@@ -150,11 +200,11 @@ class MultiSample:
 
 	def __str__(self):
 		return self.name
-class MCSample(Sample):
+class MCSample(MultiSample):
 	"""Sample with a cross section."""
-	def __init__(self, fname, xs, name=None, directory=None):
+	def __init__(self, fname, xs=None, name=None, directory=None):
 		super(MCSample,self).__init__(fname, name=name, directory=directory)
-		self.xs = float(xs)
+		self.xs = float(xs) if xs is not None else plotfw.cross_sections.xs[self.name]
 
 	def scaleToLumi(self, hist, lumi):
 		# MC scaling to xs
@@ -163,11 +213,17 @@ class MCSample(Sample):
 		scale_factor = float(expected_events)/float(total_events)
 		hist.Scale(scale_factor)
 
+	def drawHist(self, *args, **kwargs):
+		lumi = kwargs.pop("lumi")
+		N, hist = super(MCSample, self).drawHist(*args, **kwargs)
+		self.scaleToLumi(hist, lumi)
+		return N, hist
 
-class DataSample(Sample):
+class DataSample(MultiSample):
 	"""Sample with a corresponding luminosity"""
 	def __init__(self, fname, lumi, name=None, directory=None):
-		super(DataSample,self).__init__(fname, name=name if name is not None else fname, directory=directory)
+		#super(DataSample,self).__init__(fname, name=name if name is not None else fname, directory=directory)
+		super(DataSample,self).__init__(fname, name=name, directory=directory)
 		self.luminosity = float(lumi)
 
 # Group of samples with the same color and label
