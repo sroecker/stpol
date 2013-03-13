@@ -201,12 +201,17 @@ Cuts.sidebandRegion.rename('!ml#nu')
 Cuts.jetPt.rename('jetPt')
 
 class Var:
-    def __init__(self, var, name=None, units=None):
+    def __init__(self, var, name=None, units=None, relvars=None):
         self.var = var
         self.name = name if name is not None else var
         self.units = units if units is not None else "u"
+        self._relvars = relvars if relvars is not None else [var]
+
     def __str__(self):
         return self.name + "(" + self.var + ")"
+
+    def varsToEnable():
+        return self._relvars
 
 
 class Vars:
