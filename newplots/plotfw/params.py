@@ -216,6 +216,9 @@ class Var:
 
 class Vars:
     cos_theta = Var("double_cosTheta_cosThetaLightJet_STPOLSEL2.obj", "cos #theta_{lj}")
+    top_mass = Var("floats_recoTopNTupleProducer_Mass_STPOLSEL2.obj[0]", "m_{l #nu b}")
+    etalj = Var("abs(floats_lowestBTagJetNTupleProducer_Eta_STPOLSEL2.obj[0])", "#eta_{lj}", relvars='floats_lowestBTagJetNTupleProducer_Eta_STPOLSEL2')
+
     b_weight = dict()
     b_weight["nominal"] = Var("double_bTagWeightProducerNJMT_bTagWeight_STPOLSEL2.obj", "b-weight (nominal)")
 
