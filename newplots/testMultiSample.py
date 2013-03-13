@@ -46,8 +46,8 @@ path = "/home/joosep/singletop/stpol/crabs/step2_MC_Iso_Mar12/"
 
 #samples_data["SingleMu"] = plotfw.methods.DataSample("/home/joosep/singletop/stpol/crabs/step2_Data_Iso_Mar11/*Mu*/res/*.root", 20000, name="W1Jets")
 
-samples["TTJets_FullLept"] = plotfw.methods.MCSample(path + "WD_TTJets_FullLept/res/*.root", name="TTJets_FullLept")
-samples["TTJets_SemiLept"] = plotfw.methods.MCSample(path + "WD_TTJets_SemiLept/res/*.root", name="TTJets_SemiLept")
+samples["TTJets_FullLept"] = plotfw.methods.MCSample("WD_TTJets_FullLept", name="TTJets_FullLept", directory=path)
+samples["TTJets_SemiLept"] = plotfw.methods.MCSample("WD_TTJets_SemiLept", name="TTJets_SemiLept", directory=path)
 #samples["TTJets_inclusive"] = plotfw.methods.MCSample(path + "WD_TTJets_MassiveBinDECAY/res/*.root", name="TTbar")
 #samples["T_t"] = plotfw.methods.MCSample(path + "WD_T_t/res/*.root", name="T_t")
 #samples["W1Jets"] = plotfw.methods.MCSample(path + "WD_W1Jets_exclusive/res/*.root", name="W1Jets")

@@ -209,7 +209,7 @@ class MultiSample(Sample):
 		return N, clone_hist
 
 	def _openTree(self):
-		fpath = (self.directory+'/' if self.directory is not None else '') + self.fname
+		fpath = (self.directory+'/' if self.directory is not None else '') + self.fname + '/res/*.root'
 		logging.debug('Opening file: `%s`', fpath)
 		files = glob.glob(fpath)
 		self.event_chain = ROOT.TChain(self.name + "_Events", self.name)
