@@ -209,7 +209,7 @@ class MultiSample(Sample):
 		N = self.tree.Draw(draw_cmd, weight_str, "goff")
 		self.logger.debug("Histogram drawn with %d entries" % N)
 		if int(N) == -1:
-			raise Exeption("Failed to draw histogram")
+			raise Exception("Failed to draw histogram")
 		if proof is not None:
 			hist = proof.GetOutputList().FindObject(hist_name)
 		else:
