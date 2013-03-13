@@ -156,7 +156,7 @@ class MultiSample(object):
 	def getColumn(self, var, cut, dtype="f"):
 		logging.info("Getting column %s" % var)
 
-        self.cacheEntryList(cut)
+		self.cacheEntryList(cut)
 		self._switchBranchesOn([var.var])
 		N = self.tree.Draw(var.var, "", "goff")
 		if N <= 0:
@@ -170,7 +170,7 @@ class MultiSample(object):
 	def drawHist(self, hist_name, plot_params, cut=None, proof=None):
 		logging.info("Drawing histogram %s" % hist_name)
 
-        hist_name += "_" + self.name
+		hist_name += "_" + self.name
 		if proof is not None:
 			logging.debug("Output will be in ROOT.TProof instance %s" % str(proof))
 			self.tree.SetProof(True)
