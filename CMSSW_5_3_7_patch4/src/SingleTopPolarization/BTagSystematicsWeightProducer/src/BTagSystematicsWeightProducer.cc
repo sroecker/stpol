@@ -336,9 +336,13 @@ BTagSystematicsWeightProducer::BTagSystematicsWeightProducer(const edm::Paramete
     (*effs_in2J)[BTagSystematicsWeightProducer::l] = iConfig.getParameter<double>("effLin2J");
     
     LogDebug("constructor") <<
-        "efficiencies are: eff_b=" << (*effs_in2J)[BTagSystematicsWeightProducer::b] << 
+        "efficiencies_2J are: eff_b=" << (*effs_in2J)[BTagSystematicsWeightProducer::b] << 
                         " eff_c=" << (*effs_in2J)[BTagSystematicsWeightProducer::c] << 
                         " eff_l=" << (*effs_in2J)[BTagSystematicsWeightProducer::l]; 
+    LogDebug("constructor") <<
+        "efficiencies_3J are: eff_b=" << (*effs_in3J)[BTagSystematicsWeightProducer::b] << 
+                        " eff_c=" << (*effs_in3J)[BTagSystematicsWeightProducer::c] << 
+                        " eff_l=" << (*effs_in3J)[BTagSystematicsWeightProducer::l]; 
     const std::string algo = iConfig.getParameter<std::string>("algo");
     if(algo.compare("CSVM") == 0) {
         bTagAlgo = BTagSystematicsWeightProducer::CSVM;
@@ -498,6 +502,7 @@ BTagSystematicsWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup
                 else {
                     eff_val = (*effs_in3J)[flavour];
                 }
+                LogDebug("jetLoop") << "\t\teff_val=" << eff_val;
                 double e = eff(eff_val, inComb);
                 
                 //per-event jet probabilities multiply
