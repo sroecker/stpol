@@ -224,10 +224,12 @@ def JetSetup(process, conf):
     )
 
     if conf.isMC:
-        if conf.subChannel in Calibrations.bTaggingEfficiencies.keys():
-            sampleBEffs_2J = Calibrations.bTaggingEfficiencies[conf.subChannel]
-            sampleBEffs_3J = Calibrations.bTaggingEfficiencies[conf.subChannel]
+        if conf.subChannel in (Calibrations.bTaggingEfficiencies_2J.keys()+Calibrations.bTaggingEfficiencies_3J.keys()):
+            sampleBEffs_2J = Calibrations.bTaggingEfficiencies_2J[conf.subChannel]
+            sampleBEffs_3J = Calibrations.bTaggingEfficiencies_3J[conf.subChannel]
+            logging.info("B-tagging efficiencies for subChannel %s loaded" % conf.subChannel)
         else:
+            logging.warning("B-tagging efficiencies for subChannel %s not defined" % conf.subChannel)
             sampleBEffs_2J = Calibrations.BTaggingEfficiency.default
             sampleBEffs_3J = Calibrations.BTaggingEfficiency.default
         #logger.debug("Using the following calibration coefficients for sample {0}: {1}".format(conf.subChannel, sampleBEffs))

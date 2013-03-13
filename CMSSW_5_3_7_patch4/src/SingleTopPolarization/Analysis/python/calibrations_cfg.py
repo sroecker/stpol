@@ -1,3 +1,4 @@
+import logging
 bTaggingEfficiencies = dict()
 
 class BTaggingEfficiency:
@@ -41,6 +42,8 @@ def effs(eff_ex_T_t, eff_ex_TTbar, eff_ex_WJets):
     effs["T_s"] = BTaggingEfficiency(b_T_t, c_WJets, l_TTbar)
     effs["Tbar_tW"] = BTaggingEfficiency(b_T_t, c_WJets, l_TTbar)
     effs["Tbar_s"] = BTaggingEfficiency(b_T_t, c_WJets, l_TTbar)
-
+    return effs
 bTaggingEfficiencies_2J = effs(eff_ex_T_t_2J, eff_ex_TTbar_inclusive_2J, eff_ex_WJets_inclusive_2J)
 bTaggingEfficiencies_3J = effs(eff_ex_T_t_3J, eff_ex_TTbar_inclusive_3J, eff_ex_WJets_inclusive_3J)
+logging.info("efficiencies_2J: %s" % bTaggingEfficiencies_2J)
+logging.info("efficiencies_3J: %s" % bTaggingEfficiencies_3J)

@@ -120,7 +120,7 @@ def SingleTopStep2():
         process.load("FWCore.MessageLogger.MessageLogger_cfi")
         process.MessageLogger.cerr.FwkReport.reportEvery = 1000
         process.MessageLogger.cerr.threshold = cms.untracked.string("INFO")
-        logging.basicConfig(level=logging.ERROR)
+        logging.basicConfig(level=logging.DEBUG)
 
     process.maxEvents = cms.untracked.PSet(input=cms.untracked.int32(-1))
 
