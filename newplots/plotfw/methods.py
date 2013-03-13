@@ -125,43 +125,55 @@ class SingleSample(Sample):
 class MultiSample(Sample):
 	def __init__(self, fname, name=None, directory=None):
 		self.name = name if name is not None else fname
+		self.logger = logging.getLogger(self.name)
 		self.fname = fname
 		self.directory = directory
 		self.disabled_weights = []
 		self._openTree()
-
 		self.entryListCache = dict()
+		self.frac_entries = 1.0
+
+	def __getstate__(self):
+		d = dict(self.__dict__)
+		del d['logger']
+		del d['entryListCache']
+		return d
+
+	def __setstate__(self, d):
+		self.__dict__.update(d)
+		self.logger = logging.getLogger(self.name)
 
 	def branches(self):
 		return [br.GetName() for br in self.tree.GetListOfBranches()]
 
 	def _switchBranchesOn(self, vars_to_switch):
 		self.tree.SetBranchStatus("*", 0)
-		logging.debug("Switching variables on: %s" % vars_to_switch)
+		self.logger.debug("Switching variables on: %s" % vars_to_switch)
 		for var in vars_to_switch:
 			self.tree.SetBranchStatus(var, 1)
 		return
+
 	def cacheEntryList(self, cut):
 		self._switchBranchesOn(cut.getUsedVariables())
 		self.tree.SetEntryList(0)
 		if cut.cutStr not in self.entryListCache.keys():
-			logging.debug("Caching entry list with cut %s" % (cut))
+			self.logger.debug("Caching entry list with cut %s" % (cut))
 			entry_list_name = "%s_%s" % (self.name, adler32(cut.cutStr))
 			ROOT.gROOT.cd()
-			self.tree.Draw(">>%s" % entry_list_name, cut.cutStr, "entrylist")
+			self.tree.Draw(">>%s" % entry_list_name, cut.cutStr, "entrylist", int(self.tree.GetEntries()*self.frac_entries))
 			elist = ROOT.gROOT.Get(entry_list_name)
 			if elist is None or elist.GetN()<=0:
-				logging.warning("Entry list was empty")
+				self.logger.warning("Entry list was empty")
 			self.entryListCache[cut.cutStr] = elist
 			self.tree.SetEntryList(elist)
 		else:
-			logging.debug("Loading entry list from cache: %s" % (cut))
+			self.logger.debug("Loading entry list from cache: %s" % (cut))
 			elist = self.entryListCache[cut.cutStr]
 			self.tree.SetEntryList(elist)
-		logging.info("Cut result: %d events" % elist.GetN())
+		self.logger.info("Cut result: %d events" % elist.GetN())
 
 	def getColumn(self, var, cut, dtype="f"):
-		logging.info("Getting column %s" % var)
+		self.logger.info("Getting column %s" % var)
 
 		self.cacheEntryList(cut)
 		self._switchBranchesOn([var.var])
@@ -170,16 +182,16 @@ class MultiSample(Sample):
 			raise Exception("Could not get column")
 		buf = self.tree.GetV1()
 		arr = ROOT.TArrayD(N, buf)
-		logging.debug("Column retrieved, copying to numpy array")
+		self.logger.debug("Column retrieved, copying to numpy array")
 		out = numpy.copy(numpy.frombuffer(arr.GetArray(), count=arr.GetSize(), dtype=dtype))
 		return out
 
 	def drawHist(self, hist_name, plot_params, cut=None, proof=None):
-		logging.info("Drawing histogram %s" % hist_name)
+		self.logger.info("Drawing histogram %s" % hist_name)
 
 		hist_name += "_" + self.name
 		if proof is not None:
-			logging.debug("Output will be in ROOT.TProof instance %s" % str(proof))
+			self.logger.debug("Output will be in ROOT.TProof instance %s" % str(proof))
 			self.tree.SetProof(True)
 		else:
 			self.tree.SetProof(False)
@@ -193,24 +205,27 @@ class MultiSample(Sample):
 		draw_cmd = "%s >> %s(%d, %d, %d)" % (plot_params.var.var, hist_name, plot_params.hbins, plot_params.hmin, plot_params.hmax)
 		weight_str = plot_params.getWeightStr(disabled_weights=self.disabled_weights)
 		cutweight_str = "(" + weight_str + ")*(" + cut.cutStr + ")"
-		logging.debug("Calling TChain.Draw(%s, %s)" % (draw_cmd, weight_str))
+		self.logger.debug("Calling TChain.Draw(%s, %s)" % (draw_cmd, weight_str))
 		N = self.tree.Draw(draw_cmd, weight_str, "goff")
+		self.logger.debug("Histogram drawn with %d entries" % N)
 		if int(N) == -1:
 			raise Exeption("Failed to draw histogram")
 		if proof is not None:
 			hist = proof.GetOutputList().FindObject(hist_name)
 		else:
 			hist = ROOT.gROOT.Get(hist_name)
+
 		ROOT.gROOT.cd()
 		clone_hist = hist.Clone(hist_name)
 		clone_hist.Sumw2()
 		if N<=0 or clone_hist.Integral()==0:
-			raise Exception("Histogram was empty")
+			self.logger.warning("Histogram was empty")
+			#raise Exception("Histogram was empty")
 		return N, clone_hist
 
 	def _openTree(self):
 		fpath = (self.directory+'/' if self.directory is not None else '') + self.fname + '/res/*.root'
-		logging.debug('Opening file: `%s`', fpath)
+		self.logger.debug('Opening file: `%s`', fpath)
 		files = glob.glob(fpath)
 		self.event_chain = ROOT.TChain(self.name + "_Events", self.name)
 		self.lumi_chain = ROOT.TChain(self.name + "_Lumi", self.name)
@@ -250,9 +265,10 @@ class MCSample(MultiSample):
 		hist.Scale(scale_factor)
 
 	def drawHist(self, *args, **kwargs):
-		lumi = kwargs.pop("lumi")
+		lumi = kwargs.pop("lumi") if "lumi" in kwargs.keys() else None
 		N, hist = super(MCSample, self).drawHist(*args, **kwargs)
-		self.scaleToLumi(hist, lumi)
+		if lumi is not None:
+			self.scaleToLumi(hist, lumi)
 		return N, hist
 
 class DataSample(MultiSample):
@@ -392,7 +408,7 @@ class PlotParams(object):
 		self.do_chi2 = False
 		self.normalize_to = normalize_to
 		self.stat_opts = None
-		
+
 		self._ymax = ymax
 
 	def getVarStr(self):

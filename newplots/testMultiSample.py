@@ -2,9 +2,10 @@ import autoLoad
 import multiprocessing
 import math
 import re
+import pickle
 
 import logging
-logging.basicConfig(level=logging.DEBUG, format="%(asctime)s;%(levelname)s;%(message)s")
+logging.basicConfig(level=logging.INFO, format="%(asctime)s;%(levelname)s;%(name)s;%(message)s")
 import plotfw.methods
 import plotfw.drawfw
 import plotfw.params
@@ -44,21 +45,20 @@ samples_data = dict()
 #path = "/hdfs/local/joosep/stpol/step2_MC_Iso/"
 path = "/home/joosep/singletop/stpol/crabs/step2_MC_Iso_Mar12/"
 
-#samples_data["SingleMu"] = plotfw.methods.DataSample("/home/joosep/singletop/stpol/crabs/step2_Data_Iso_Mar11/*Mu*/res/*.root", 20000, name="W1Jets")
 
 samples["TTJets_FullLept"] = plotfw.methods.MCSample("WD_TTJets_FullLept", name="TTJets_FullLept", directory=path)
 samples["TTJets_SemiLept"] = plotfw.methods.MCSample("WD_TTJets_SemiLept", name="TTJets_SemiLept", directory=path)
 #samples["TTJets_inclusive"] = plotfw.methods.MCSample(path + "WD_TTJets_MassiveBinDECAY/res/*.root", name="TTbar")
 #samples["T_t"] = plotfw.methods.MCSample(path + "WD_T_t/res/*.root", name="T_t")
-#samples["W1Jets"] = plotfw.methods.MCSample(path + "WD_W1Jets_exclusive/res/*.root", name="W1Jets")
-#samples["W2Jets"] = plotfw.methods.MCSample(path + "WD_W2Jets_exclusive/res/*.root", name="W2Jets")
-#samples["W3Jets"] = plotfw.methods.MCSample(path + "WD_W3Jets_exclusive/res/*.root", name="W3Jets")
-#samples["W4Jets"] = plotfw.methods.MCSample(path + "WD_W4Jets_exclusive/res/*.root", name="W4Jets")
+samples["W1Jets"] = plotfw.methods.MCSample(path + "WD_W1Jets_exclusive/res/*.root", name="W1Jets")
+samples["W2Jets"] = plotfw.methods.MCSample(path + "WD_W2Jets_exclusive/res/*.root", name="W2Jets")
+samples["W3Jets"] = plotfw.methods.MCSample(path + "WD_W3Jets_exclusive/res/*.root", name="W3Jets")
+samples["W4Jets"] = plotfw.methods.MCSample(path + "WD_W4Jets_exclusive/res/*.root", name="W4Jets")
 #samples["WJets_inclusive"] = plotfw.methods.MCSample(path + "WD_WJets_inclusive/res/*.root", name="WJets")
 
+for (name, sample) in samples.items():
+    sample.frac_entries = 1.0
 groups = plotfw.methods.SampleGroup.fromList(samples.values())
-#data_group = plotfw.methods.SampleGroup("data", ROOT.kBlack)
-#data_group.add(samples_data["SingleMu"])
 
 psMu = []
 sl = plotfw.methods.SampleList()
@@ -73,27 +73,28 @@ if args.doBWeightDistributions:
         #plotfw.drawfw.PlotParams(Vars.cos_theta, (-1, 1))
     ]
     weightPlots[0].putStats()
-    #psMu += comp_samples.plot(Cuts.finalMu_2J0T, weightPlots, cutDescription="muon channel, final sel. (2J0T)")
+    psMu += comp_samples.plot(Cuts.finalMu_2J0T, weightPlots, cutDescription="muon channel, final sel. (2J0T)")
     psMu += comp_samples.plot(Cuts.finalMu_2J1T, weightPlots, cutDescription="muon channel, final sel. (2J1T)")
-    #psMu += comp_samples.plot(Cuts.finalMu_3J0T, weightPlots, cutDescription="muon channel, final sel. (3J0T)")
-    #psMu += comp_samples.plot(Cuts.finalMu_3J1T, weightPlots, cutDescription="muon channel, final sel. (3J1T)")
-    #psMu += comp_samples.plot(Cuts.finalMu_3J2T, weightPlots, cutDescription="muon channel, final sel. (3J2T)")
-    #psMu += comp_WJets.plot(Cuts.initial, weightPlots, cutDescription="all events")
-    #psMu += comp_WJets.plot(Cuts.mu * Cuts.jets_2J0T, weightPlots, cutDescription="mu, 2J0T")
-    #psMu += comp_WJets.plot(Cuts.mu * Cuts.jets_2plusJ, weightPlots, cutDescription="mu, >=2J")
-    #psMu += comp_WJets.plot(Cuts.mu * Cuts.jets_3J0T, weightPlots, cutDescription="mu, 3J0T")
-    #psMu += comp_WJets.plot(Cuts.mu * Cuts.jets_3J1T, weightPlots, cutDescription="mu, 3J1T")
-    #psMu += comp_WJets.plot(Cuts.mu * Cuts.jets_3J2T, weightPlots, cutDescription="mu, 3J2T")
+    psMu += comp_samples.plot(Cuts.finalMu_3J0T, weightPlots, cutDescription="muon channel, final sel. (3J0T)")
+    psMu += comp_samples.plot(Cuts.finalMu_3J1T, weightPlots, cutDescription="muon channel, final sel. (3J1T)")
+    psMu += comp_samples.plot(Cuts.finalMu_3J2T, weightPlots, cutDescription="muon channel, final sel. (3J2T)")
+    psMu += comp_samples.plot(Cuts.initial, weightPlots, cutDescription="all events")
 if args.doDataMC:
+    samples_data["SingleMu"] = plotfw.methods.DataSample("/home/joosep/singletop/stpol/crabs/step2_Data_Iso_Mar11/*Mu*/res/*.root", 20000, name="SingleMu")
+    data_group = plotfw.methods.SampleGroup("data", ROOT.kBlack)
+    data_group.add(samples_data["SingleMu"])
     data_mc_comp = plotfw.drawfw.StackPlotCreator(data_group, sl)
     data_mc_comp.proof = p
     finalPlots = [
         plotfw.drawfw.PlotParams(Vars.cos_theta, (-1, 1))
     ]
-    psMu += data_mc_comp.plot(Cuts.finalMu, finalPlots, cutDescription="muon channel, final sel.")
+    psMu += data_mc_comp.plot(Cuts.finalMu_2J1T, finalPlots, cutDescription="muon channel, final sel.")
 
 if len(psMu)>0:
     os.mkdir(args.ofdir)
+    pickle_file = open(args.ofdir + "/plots_mu.pickle", "w")
+    pickle.dump(psMu, pickle_file)
+    pickle_file.close()
     for p in psMu:
         p.save(ofdir=args.ofdir, fmt="pdf", log=True)
 

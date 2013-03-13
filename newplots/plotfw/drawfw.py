@@ -186,7 +186,6 @@ class StackPlotCreator(PlotCreator):
 		plot.data_hist.SetMarkerStyle(20)
 		plot.data_hist.Sumw2()
 
-		#plot.log.addProcess(dname, ismc=False)
 		for sample in self._data.getSamples():
 			if not isinstance(sample, DataSample):
 				raise TypeError("Sampple %s is not data" % str(sample))
@@ -195,20 +194,18 @@ class StackPlotCreator(PlotCreator):
 
 			total_luminosity += sample.luminosity
 			dname = sample.name
-			#plot.log.addProcess(dname, ismc=False)
-			#plot.log.setVariable(dname, 'crsec', d.luminosity)
-			#plot.log.setVariable(dname, 'fname', d.fname)
-			#plot.log.setVariable(dname, 'filled', dt_filled)
+			plot.log.addProcess(dname, ismc=False)
+			plot.log.setVariable(dname, 'crsec', sample.luminosity)
+			plot.log.setVariable(dname, 'fname', sample.fname)
+			plot.log.setVariable(dname, 'filled', dt_filled)
 
 			err = ROOT.Double()
 			dt_int = data_hist.IntegralAndError(1, data_hist.GetNbinsX(), err)
 
-			#plot.log.setVariable(dname, 'int', dt_int)
-			#plot.log.setVariable(dname, 'int_err', float(err))
+			plot.log.setVariable(dname, 'int', dt_int)
+			plot.log.setVariable(dname, 'int_err', float(err))
 
 			plot.data_hist.Add(data_hist)
-
-		#dt_int = plot.data_hist.Integral()
 
 		effective_lumi = total_luminosity
 		plot.log.addParam('Luminosity', total_luminosity)
@@ -221,7 +218,6 @@ class StackPlotCreator(PlotCreator):
 		mc_int = 0
 		plot.mc_hists = []
 		plot.mc_group_hists = dict()
-
 
 		for group_name, group in self._mcs.groups.items():
 			group_hist_name = 'hist_%s_mc_group_%s'%(plotname, group_name)
@@ -238,26 +234,14 @@ class StackPlotCreator(PlotCreator):
 				plot.log.setVariable(sample.name, 'fname', sample.fname)
 				hist_name = group_hist_name + "_" + sample.name
 
-				##mc_hist = ROOT.TH1F(hist_name, group.pretty_name, plot_params.hbins, plot_params.hmin, plot_params.hmax)
-				##mc_hist.Sumw2()
-				##mc_hist.SetFillColor(group.color)
-				##mc_hist.SetLineColor(group.color)
-				##mc_hist.SetLineWidth(0)
-				#draw_str = '%s>>%s(%d,%d,%d)'%(plot_params.getVarStr(), hist_name, plot_params.hbins, plot_params.hmin, plot_params.hmax)
-				#print "Draw_str=" + draw_str
-				#mc_filled = sample.tree.Draw(draw_str, plot_params.getWeightStr(sample.disabled_weights), 'goff')
-				#pdb.set_trace()
-				##mc_hist = self.proof.GetOutput(hist_name)
-				#mc_hist.Sumw2()
-				pdb.set_trace()
 				mc_filled, mc_hist = sample.drawHist(group_hist_name, plot_params, cut=cut, proof=self.proof, lumi=total_luminosity)
 				mc_hist.filled_count = mc_filled
 				plot.log.setVariable(sample.name, 'filled', mc_filled)
 
 				# MC scaling to xs
-				#expected_events = sample.xs * effective_lumi
-				#total_events = sample.getTotalEvents()
-				#scale_factor = float(expected_events)/float(total_events)
+				expected_events = sample.xs * effective_lumi
+				total_events = sample.getTotalEvents()
+				scale_factor = float(expected_events)/float(total_events)
 
 				sample.scaleToLumi(mc_hist, effective_lumi)
 
@@ -267,9 +251,9 @@ class StackPlotCreator(PlotCreator):
 
 				err = ROOT.Double()
 				mc_int = mc_hist.IntegralAndError(1, mc_hist.GetNbinsX(), err)
-				#plot.log.setVariable(sample.name, 'totev', total_events)
-				#plot.log.setVariable(sample.name, 'expev', expected_events)
-				#plot.log.setVariable(sample.name, 'scf', scale_factor)
+				plot.log.setVariable(sample.name, 'totev', total_events)
+				plot.log.setVariable(sample.name, 'expev', expected_events)
+				plot.log.setVariable(sample.name, 'scf', scale_factor)
 				plot.log.setVariable(sample.name, 'int', mc_int)
 				plot.log.setVariable(sample.name, 'int_err', float(err))
 			plot.mc_group_hists[group_name] = mc_group_hist
@@ -327,11 +311,9 @@ class ShapePlotCreator(PlotCreator):
 		plotname = 'plot_cut%s_%s' % (uniq, plot_params.getName())
 		logger.debug('Plotting: %s', plotname)
 
-		# Create the histograms
 		plot._maxbin = 0.0
 		for group_name, group in self._slist.groups.items():
 			hist_name = 'hist_%s_%s'%(plotname, group.getName())
-			logger.info('Creating histogram: %s', hist_name)
 
 			hist = ROOT.TH1F(hist_name, group.pretty_name, plot_params.hbins, plot_params.hmin, plot_params.hmax)
 			hist.Sumw2()
@@ -344,8 +326,7 @@ class ShapePlotCreator(PlotCreator):
 
 				plot.log.addProcess(sample.name)
 
-				n_filled, sample_hist = sample.drawHist(hist_name, plot_params, cut, self.proof, lumi=1)
-				#logger.debug('Filled histogram `%s` from sample `%s` with %f events', hist_name, sample.name, filled)
+				n_filled, sample_hist = sample.drawHist(hist_name, plot_params, cut, self.proof)
 				err = ROOT.Double()
 				integral = sample_hist.IntegralAndError(1, sample_hist.GetNbinsX(), err)
 				plot.log.setVariable(sample.name, 'int', integral)
@@ -353,7 +334,6 @@ class ShapePlotCreator(PlotCreator):
 
 				hist.Add(sample_hist)
 
-#			logger.debug('Filled total for `%s` : %f' % (hist_name, filled_tot))
 			if plot_params.normalize_to == "unity":
 				hist_integral = hist.Integral()
 				logger.debug('Hist `%s` integral: %f' % (hist_name, hist_integral))
