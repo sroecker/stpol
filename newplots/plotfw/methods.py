@@ -61,6 +61,10 @@ class SampleListGenerator:
 
 # Data and MC samples are handled by the following classes:
 class Sample(object):
+	def __init__(self):
+		pass
+
+class SingleSample(Sample):
 	"""Class representing a single sample.
 
 	This class read the TTrees from a .root file and provide easy access
@@ -118,7 +122,7 @@ class Sample(object):
 	def __str__(self):
 		return self.name
 
-class MultiSample(object):
+class MultiSample(Sample):
 	def __init__(self, fname, name=None, directory=None):
 		self.name = name if name is not None else fname
 		self.fname = fname
@@ -231,6 +235,7 @@ class MultiSample(object):
 
 	def __str__(self):
 		return self.name
+
 class MCSample(MultiSample):
 	"""Sample with a cross section."""
 	def __init__(self, fname, xs=None, name=None, directory=None):
