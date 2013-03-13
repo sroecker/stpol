@@ -1,6 +1,6 @@
 import logging
 from plotfw import drawfw
-from plotfw.params import Cuts as cutlist
+import plotfw.params as cuts
 
 # Logging
 logging.basicConfig(level=logging.DEBUG, format="%(levelname)s %(message)s")
@@ -10,7 +10,7 @@ fileloghandler.setFormatter(logging.Formatter('%(name)-12s: %(levelname)-8s %(me
 logging.getLogger('').addHandler(fileloghandler)
 
 # Set samples
-directory = '/scratch/joosep/Iso'
+directory = '/scratch/morten/mar6_iso/'
 
 smplsgen = drawfw.SampleListGenerator(directory)
 smplsgen.add('WJets', 'WJets', 'WJets_inclusive.root')
@@ -21,8 +21,8 @@ smpls = smplsgen.getSampleList()
 smpls.listSamples() # print sample list
 
 # Set the cut
-cut = drawfw.methods.Cut('ab_topmass', '_recoTop_0_Mass > 200 && _recoTop_0_Mass < 500') \
-	* cutlist.ele
+cut = cuts.CutF('ab_topmass', '{0} > 200 && {0} < 500', ['_lightJetCount']) \
+	* cuts.Cuts.ele
 
 # Set plots
 plots = [
