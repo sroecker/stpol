@@ -205,14 +205,20 @@ class Var:
         self.var = var
         self.name = name if name is not None else var
         self.units = units if units is not None else "u"
-        self._relvars = relvars if relvars is not None else [var]
+
+        self._relvars = relvars if relvars is not None else [Var.match_branch(var)]
 
     def __str__(self):
         return self.name + "(" + self.var + ")"
 
-    def varsToEnable():
+    def getRelevantBranches(self):
         return self._relvars
 
+    @staticmethod
+    def match_branch(var):
+        m=re.match('([A-Za-z0-9_]*\.obj)(.*)', var)
+        logging.debug('In `%s` matching for `%s`', var, m.group(1))
+        return m.group(1)
 
 class Vars:
     cos_theta = Var("double_cosTheta_cosThetaLightJet_STPOLSEL2.obj", "cos #theta_{lj}")

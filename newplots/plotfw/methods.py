@@ -200,7 +200,7 @@ class MultiSample(Sample):
 			cut = plotfw.params.Cuts.inital
 
 		self.cacheEntryList(cut)
-		self._switchBranchesOn([plot_params.var.var])
+		self._switchBranchesOn(plot_params.var.getRelevantBranches())
 
 		draw_cmd = "%s >> %s(%d, %d, %d)" % (plot_params.var.var, hist_name, plot_params.hbins, plot_params.hmin, plot_params.hmax)
 		weight_str = plot_params.getWeightStr(disabled_weights=self.disabled_weights)
@@ -242,6 +242,7 @@ class MultiSample(Sample):
 		self.event_chain.AddBranchToCache("*")
 		ROOT.gEnv.SetValue("TFile.AsyncPrefetching", 1)
 		self.tree = self.event_chain
+
 	def getTotalEvents(self):
 		tot = 0
 		for lumi in self.lumi_chain:
