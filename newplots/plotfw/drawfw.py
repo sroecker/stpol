@@ -249,6 +249,7 @@ class StackPlotCreator(PlotCreator):
 				#pdb.set_trace()
 				##mc_hist = self.proof.GetOutput(hist_name)
 				#mc_hist.Sumw2()
+				pdb.set_trace()
 				mc_filled, mc_hist = sample.drawHist(group_hist_name, plot_params, cut=cut, proof=self.proof, lumi=total_luminosity)
 				mc_hist.filled_count = mc_filled
 				plot.log.setVariable(sample.name, 'filled', mc_filled)
@@ -344,7 +345,6 @@ class ShapePlotCreator(PlotCreator):
 
 				n_filled, sample_hist = sample.drawHist(hist_name, plot_params, cut, self.proof, lumi=1)
 				#logger.debug('Filled histogram `%s` from sample `%s` with %f events', hist_name, sample.name, filled)
-
 				err = ROOT.Double()
 				integral = sample_hist.IntegralAndError(1, sample_hist.GetNbinsX(), err)
 				plot.log.setVariable(sample.name, 'int', integral)
@@ -353,7 +353,6 @@ class ShapePlotCreator(PlotCreator):
 				hist.Add(sample_hist)
 
 #			logger.debug('Filled total for `%s` : %f' % (hist_name, filled_tot))
-
 			if plot_params.normalize_to == "unity":
 				hist_integral = hist.Integral()
 				logger.debug('Hist `%s` integral: %f' % (hist_name, hist_integral))

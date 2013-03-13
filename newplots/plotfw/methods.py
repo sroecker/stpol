@@ -146,12 +146,15 @@ class MultiSample(object):
 			ROOT.gROOT.cd()
 			self.tree.Draw(">>%s" % entry_list_name, cut.cutStr, "entrylist")
 			elist = ROOT.gROOT.Get(entry_list_name)
+			if elist is None or elist.GetN()<=0:
+				logging.warning("Entry list was empty")
 			self.entryListCache[cut.cutStr] = elist
 			self.tree.SetEntryList(elist)
 		else:
 			logging.debug("Loading entry list from cache: %s" % (cut))
 			elist = self.entryListCache[cut.cutStr]
 			self.tree.SetEntryList(elist)
+		logging.info("Cut result: %d events" % elist.GetN())
 
 	def getColumn(self, var, cut, dtype="f"):
 		logging.info("Getting column %s" % var)
@@ -197,6 +200,8 @@ class MultiSample(object):
 		ROOT.gROOT.cd()
 		clone_hist = hist.Clone(hist_name)
 		clone_hist.Sumw2()
+		if N<=0 or clone_hist.Integral()==0:
+			raise Exception("Histogram was empty")
 		return N, clone_hist
 
 	def _openTree(self):

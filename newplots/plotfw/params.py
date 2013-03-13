@@ -188,7 +188,6 @@ class Cuts:
     finalMu_3J0T = mu * MTmu * mlnu * jetPt * etaLJ * jetEta * jets_3J0T
     finalMu_3J1T = mu * MTmu * mlnu * jetPt * etaLJ * jetEta * jets_3J1T
     finalMu_3J2T = mu * MTmu * mlnu * jetPt * etaLJ * jetEta * jets_3J2T
-    finalMu_2J1T = mu * recoFState * Orso * jets_2J1T * MTmu
     finalEle = ele * recoFState * Orso * MTele
 
 Cuts.muonID.rename('muonID')
