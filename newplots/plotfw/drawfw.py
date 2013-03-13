@@ -350,6 +350,16 @@ class ShapePlotCreator(PlotCreator):
 
 		return plot
 
+class SeparateCutShapePlotCreator(ShapePlotCreator):
+	def __init__(self, samplegroup, cuts, **kwargs):
+		super(ShapePlotCreator, self).__init__(**kwargs)
+
+	def plot(self, plots, cutDescription=""):
+		"""Method takes a cut and list of plots and then returns a list plot objects."""
+		for p in plots:
+			print p
+		return []
+
 class Plot(object):
 	"""This class represents a single plot and has the methods to export it.
 
