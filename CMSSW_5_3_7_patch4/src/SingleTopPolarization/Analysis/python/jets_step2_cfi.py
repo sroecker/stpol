@@ -230,6 +230,7 @@ def JetSetup(process, conf):
             logging.info("B-tagging efficiencies for subChannel %s loaded" % conf.subChannel)
         else:
             logging.warning("B-tagging efficiencies for subChannel %s not defined" % conf.subChannel)
+            raise Exception("B-tagging efficiencies not defined")
             sampleBEffs_2J = Calibrations.BTaggingEfficiency.default
             sampleBEffs_3J = Calibrations.BTaggingEfficiency.default
         #logger.debug("Using the following calibration coefficients for sample {0}: {1}".format(conf.subChannel, sampleBEffs))
