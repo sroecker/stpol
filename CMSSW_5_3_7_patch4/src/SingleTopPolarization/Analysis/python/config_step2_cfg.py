@@ -129,7 +129,9 @@ class Config(C):
 
     Electrons.relIsoType = Leptons.RelativeIsolation.rhoCorrRelIso
     Muons.relIsoType = Leptons.RelativeIsolation.deltaBetaCorrRelIso
-
+    Electrons.cutOnMVA = False
+    Electrons.cutOnIso = False
+    Electrons.cutWWlnuj = True
     # @classmethod
     # def toStr(c):
     #     s = "channel = %s" % Config.channel
