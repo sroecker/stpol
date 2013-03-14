@@ -6,6 +6,7 @@ import logging
 import glob
 import numpy
 import pdb
+import time
 
 from plotfw.params import Cut # FIXME: temporary hack for backwards comp.
 from plotfw.params import parent_branch
@@ -13,6 +14,25 @@ import plotfw.cross_sections
 import copy
 from zlib import adler32
 
+class TreeStats:
+	def __init__(self, N_entries, N_drawn, time):
+		self.N_entries = N_entries
+		self.N_drawn = N_drawn
+		self.time = time
+
+	def __add__(self, other):
+		self.N_entries += other.N_entries
+		self.N_drawn += other.N_drawn
+		self.time += other.time
+
+	def speedA(self):
+		return self.N_entries/self.time
+
+	def speedB(self):
+		return self.N_drawn/self.time
+
+	def __str__(self):
+		return "{0}/{1} in {2} sec, all evts: {3}/sec, drawn evts: {4}".format(self.N_drawn, self.N_entries, self.time, self.speedA(), self.speedB())
 class EmptyTreeException(Exception):
 	pass
 
@@ -134,6 +154,7 @@ class MultiSample(Sample):
 		self.disabled_weights = []
 		self.entryListCache = dict()
 		self.frac_entries = 1.0
+		self.timestats = []
 		self._openTree()
 
 	def __getstate__(self):
@@ -159,8 +180,9 @@ class MultiSample(Sample):
 	def cacheEntryList(self, cut):
 		self._switchBranchesOn(cut.getUsedVariables())
 		self.tree.SetEntryList(0)
+		self.tree.SetProof(False)
 		if cut.cutStr not in self.entryListCache.keys():
-			self.logger.debug("Caching entry list with cut %s" % (cut))
+			self.logger.info("Caching entry list with cut %s" % (cut))
 			entry_list_name = "%s_%s" % (self.name, adler32(cut.cutStr))
 			ROOT.gROOT.cd()
 			if self.tree.GetEntries()==0 or self.frac_entries==0:
@@ -178,7 +200,7 @@ class MultiSample(Sample):
 			self.logger.debug("Loading entry list from cache: %s" % (cut))
 			elist = self.entryListCache[cut.cutStr]
 			self.tree.SetEntryList(elist)
-		self.logger.info("Cut result: %d events" % elist.GetN())
+		self.logger.debug("Cut result: %d events" % elist.GetN())
 		return elist.GetN()
 
 	def getColumn(self, var, cut, dtype="f"):
@@ -198,6 +220,7 @@ class MultiSample(Sample):
 
 
 	def drawHist(self, hist_name, plot_params, cut=None, proof=None):
+		t0 = time.time()
 		hist_name += "_" + self.name
 		self.logger.info("Drawing histogram %s" % hist_name)
 		if self.tree.GetEntries()==0:
@@ -206,17 +229,18 @@ class MultiSample(Sample):
 			hist = ROOT.TH1F(hist_name, hist_name, plot_params.hbins, plot_params.hmin, plot_params.hmax)
 			return 0, hist
 			#raise EmptyTreeException("%s.GetEntries()==0" % self.tree.GetName())
-		if proof is not None:
-			self.logger.debug("Output will be in ROOT.TProof instance %s" % str(proof))
-			self.tree.SetProof(True)
-		else:
-			self.tree.SetProof(False)
-			ROOT.gROOT.cd()
 		if cut is None:
 			cut = plotfw.params.Cuts.inital
 
 		n_cut = self.cacheEntryList(cut)
 		self._switchBranchesOn(plot_params.var.getRelevantBranches())
+
+		if proof:
+			self.logger.debug("Output will be in ROOT.TProof instance %s" % str(proof))
+			self.tree.SetProof(True)
+		else:
+			self.tree.SetProof(False)
+			ROOT.gROOT.cd()
 
 		draw_cmd = "%s >> %s(%d, %d, %d)" % (plot_params.var.var, hist_name, plot_params.hbins, plot_params.hmin, plot_params.hmax)
 		weight_str = plot_params.getWeightStr(disabled_weights=self.disabled_weights)
@@ -226,18 +250,22 @@ class MultiSample(Sample):
 		self.logger.debug("Histogram drawn with %d entries" % N)
 		if int(N) == -1 or n_cut != N:
 			raise Exception("Failed to draw histogram: cut result %d but histogram drawn with %d entries" % (N, n_cut))
-		if proof is not None:
+		if proof:
 			hist = proof.GetOutputList().FindObject(hist_name)
 		else:
 			hist = ROOT.gROOT.Get(hist_name)
 		if not hist:
 			raise Exception("Failed to get histogram")
 		ROOT.gROOT.cd()
-		clone_hist = hist.Clone(hist_name)
+		clone_hist = ROOT.TH1F(hist)#hist.Clone(hist_name)
 		clone_hist.Sumw2()
 		if clone_hist.Integral()==0:
 			self.logger.warning("Histogram was empty")
 			#raise Exception("Histogram was empty")
+		t1 = time.time()
+		ts = TreeStats(self.tree.GetEntries(), N, t1-t0)
+		self.timestats.append(ts)
+		logging.info("Drawing stats: %s" % ts)
 		return N, clone_hist
 
 	def _openTree(self):
@@ -256,7 +284,7 @@ class MultiSample(Sample):
 
 		#caching stuff
 		self.event_chain.SetCacheSize(100*1024*1024)
-		self.event_chain.AddBranchToCache("*")
+		self.event_chain.AddBranchToCache("*", True)
 		ROOT.gEnv.SetValue("TFile.AsyncPrefetching", 1)
 		self.tree = self.event_chain
 
