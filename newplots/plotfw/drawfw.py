@@ -13,7 +13,6 @@ import multiprocessing
 import pdb
 import math
 from odict import OrderedDict as dict
-#from histogram import Histogram
 
 text_size = 0.025
 
