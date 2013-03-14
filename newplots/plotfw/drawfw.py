@@ -190,7 +190,7 @@ class StackPlotCreator(PlotCreator):
 
 		for sample in self._data.getSamples():
 			if not isinstance(sample, DataSample):
-				raise TypeError("Sampple %s is not data" % str(sample))
+				raise TypeError("Sample %s is not data" % str(sample))
 			#for data there is no weight necessary
 			dt_filled, data_hist = sample.drawHist(data_hist_name, plot_params, cut=cut, proof=self.proof)
 
@@ -289,7 +289,7 @@ class StackPlotCreator(PlotCreator):
 
 		plot.legend = BaseLegend(plot)
 
-		ymax = pp._ymax if pp._ymax is not None else 1.1*max(data_max, mc_max)
+		ymax = plot_params._ymax if plot_params._ymax is not None else 1.1*max(data_max, mc_max)
 		plot.hist_stack.SetMaximum(ymax)
 
 		# return the plot object where it can be drawn etc.
@@ -418,11 +418,11 @@ class Plot(object):
 
 		self.draw()
 		self.cvs.SaveAs(ofname)
-		self.cvs.SaveAs(ofname.replace(fmt, "svg"))
+		#self.cvs.SaveAs(ofname.replace(fmt, "svg"))
 		#self.cvs.SaveAs(ofname.replace(fmt, "gif"))
 
 		if log:
-			self.log.save(fout+'.pylog')
+			self.log.save(ofdir + "/" + fout + '.pylog')
 
 	def getName(self):
 		if self._plot_params._ofname is not None:
