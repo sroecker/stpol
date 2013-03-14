@@ -46,14 +46,14 @@ samples_data = dict()
 path = "/home/joosep/singletop/stpol/crabs/step2_MC_Iso_Mar12/"
 
 
-samples["TTJets_FullLept"] = plotfw.methods.MCSample("WD_TTJets_FullLept", name="TTJets_FullLept", directory=path)
-samples["TTJets_SemiLept"] = plotfw.methods.MCSample("WD_TTJets_SemiLept", name="TTJets_SemiLept", directory=path)
+#samples["TTJets_FullLept"] = plotfw.methods.MCSample("WD_TTJets_FullLept", name="TTJets_FullLept", directory=path)
+#samples["TTJets_SemiLept"] = plotfw.methods.MCSample("WD_TTJets_SemiLept", name="TTJets_SemiLept", directory=path)
 #samples["TTJets_inclusive"] = plotfw.methods.MCSample(path + "WD_TTJets_MassiveBinDECAY/res/*.root", name="TTbar")
 #samples["T_t"] = plotfw.methods.MCSample(path + "WD_T_t/res/*.root", name="T_t")
-samples["W1Jets"] = plotfw.methods.MCSample(path + "WD_W1Jets_exclusive/res/*.root", name="W1Jets")
-samples["W2Jets"] = plotfw.methods.MCSample(path + "WD_W2Jets_exclusive/res/*.root", name="W2Jets")
-samples["W3Jets"] = plotfw.methods.MCSample(path + "WD_W3Jets_exclusive/res/*.root", name="W3Jets")
-samples["W4Jets"] = plotfw.methods.MCSample(path + "WD_W4Jets_exclusive/res/*.root", name="W4Jets")
+samples["W1Jets"] = plotfw.methods.MCSample(path + "WD_W1Jets_exclusive", name="W1Jets")
+#samples["W2Jets"] = plotfw.methods.MCSample(path + "WD_W2Jets_exclusive", name="W2Jets")
+#samples["W3Jets"] = plotfw.methods.MCSample(path + "WD_W3Jets_exclusive", name="W3Jets")
+#samples["W4Jets"] = plotfw.methods.MCSample(path + "WD_W4Jets_exclusive", name="W4Jets")
 #samples["WJets_inclusive"] = plotfw.methods.MCSample(path + "WD_WJets_inclusive/res/*.root", name="WJets")
 
 for (name, sample) in samples.items():
@@ -95,7 +95,9 @@ if len(psMu)>0:
     pickle_file = open(args.ofdir + "/plots_mu.pickle", "w")
     pickle.dump(psMu, pickle_file)
     pickle_file.close()
+    tfile = ROOT.TFile(args.ofdir + "/plots.root", "RECREATE")
     for p in psMu:
+        p.saveToROOT(tfile)
         p.save(ofdir=args.ofdir, fmt="pdf", log=True)
 
 def calcSampleEffs(x):
@@ -122,12 +124,12 @@ def calcSampleEffs(x):
                 sigma_eff = -1
             eff_map_flavour[f] = (eff, sigma_eff)
         eff_map_cut[cutname] = eff_map_flavour
-    return eff_map
+    return eff_map_flavour
 
 if args.doEffs:
     samples_list = samples.items()
     p = multiprocessing.Pool(8)
-    effs = p.map(calcSampleEffs, samples_list)
+    effs = map(calcSampleEffs, samples_list)
     result = zip(samples_list, effs)
 
     for ((name, sample), eff_map) in result:
