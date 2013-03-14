@@ -290,8 +290,9 @@ class MultiSample(Sample):
 
 	def getTotalEvents(self):
 		tot = 0
-		for lumi in self.lumi_chain:
-			tot += lumi.edmMergeableCounter_PATTotalEventsProcessedCount__PAT.product().value
+		n_drawn = self.lumi_chain.Draw("edmMergeableCounter_PATTotalEventsProcessedCount__PAT.product().value >> htemp", "", "goff")
+		arr = ROOT.TArrayD(n_drawn, self.lumi_chain.GetV1())
+		tot = float(arr.GetSum())
 		return tot
 
 	def __str__(self):
