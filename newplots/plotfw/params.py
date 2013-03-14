@@ -146,13 +146,13 @@ class Cuts:
         * CutP('eleIso', 'floats_goodSignalElectronsNTupleProducer_relIso_STPOLSEL2.obj[0]<0.3') \
         * CutP('eleMVA', 'floats_goodSignalElectronsNTupleProducer_mvaID_STPOLSEL2.obj[0]>0.9') \
 
-    muonID = CutP(None, 'floats_goodSignalMuonsNTupleProducer_normChi2_STPOLSEL2.obj[0] > 10') \
-           * CutP(None, 'floats_goodSignalMuonsNTupleProducer_trackhitPatterntrackerLayersWithMeasurement_STPOLSEL2.obj[0] > 5') \
-           * CutP(None, 'floats_goodSignalMuonsNTupleProducer_innerTrackhitPatternnumberOfValidPixelHits_STPOLSEL2.obj[0] > 0') \
-           * CutP(None, 'floats_goodSignalMuonsNTupleProducer_globalTrackhitPatternnumberOfValidMuonHits_STPOLSEL2.obj> 0') \
-           * CutF(None, 'abs({0}) > 0.2', ['floats_goodSignalMuonsNTupleProducer_db_STPOLSEL2.obj[0]']) \
-           * CutF(None, 'abs({0}) > 0.5', ['floats_goodSignalMuonsNTupleProducer_dz_STPOLSEL2.obj[0]']) \
-           * CutP(None, 'floats_goodSignalMuonsNTupleProducer_numberOfMatchedStations_STPOLSEL2.obj[0] > 1')
+    muonID = CutP('muChi2', 'floats_goodSignalMuonsNTupleProducer_normChi2_STPOLSEL2.obj[0] > 10') \
+           * CutP('muTrackHit', 'floats_goodSignalMuonsNTupleProducer_trackhitPatterntrackerLayersWithMeasurement_STPOLSEL2.obj[0] > 5') \
+           * CutP('muInnerTrack', 'floats_goodSignalMuonsNTupleProducer_innerTrackhitPatternnumberOfValidPixelHits_STPOLSEL2.obj[0] > 0') \
+           * CutP('muGlobalTrack', 'floats_goodSignalMuonsNTupleProducer_globalTrackhitPatternnumberOfValidMuonHits_STPOLSEL2.obj> 0') \
+           * CutF('muDb', 'abs({0}) > 0.2', ['floats_goodSignalMuonsNTupleProducer_db_STPOLSEL2.obj[0]']) \
+           * CutF('muDz', 'abs({0}) > 0.5', ['floats_goodSignalMuonsNTupleProducer_dz_STPOLSEL2.obj[0]']) \
+           * CutP('muStations', 'floats_goodSignalMuonsNTupleProducer_numberOfMatchedStations_STPOLSEL2.obj[0] > 1')
 
     muonPt  = CutP('muonPt',  'floats_goodSignalMuonsNTupleProducer_Pt_STPOLSEL2.obj[0] > 26')
     muonEta = CutF('muonEta', 'abs({0}) < 2.1', ['floats_goodSignalMuonsNTupleProducer_Eta_STPOLSEL2.obj[0]'])
@@ -196,6 +196,11 @@ Cuts.jets_2J1T.rename('2J1T')
 Cuts.jets_2J0T.rename('2J0T')
 Cuts.jets_3J1T.rename('3J1T')
 Cuts.jets_3J2T.rename('3J2T')
+Cuts.finalMu_2J0T.rename('final_mu_2J0T')
+Cuts.finalMu_2J1T.rename('final_mu_2J1T')
+Cuts.finalMu_3J0T.rename('final_mu_3J0T')
+Cuts.finalMu_3J1T.rename('final_mu_3J1T')
+Cuts.finalMu_3J2T.rename('final_mu_3J2T')
 Cuts.mlnu.rename('ml#nu')
 Cuts.sidebandRegion.rename('!ml#nu')
 Cuts.jetPt.rename('jetPt')
