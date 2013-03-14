@@ -41,7 +41,7 @@ def load():
 	def auto_data_sample(fname):
 		#global luminosities
 		m=re.match('WD_(SingleEle|SingleMu)([A-Z0-9]*)', fname)
-		samplename = m.group(1)
+		samplename = m.group(1) + m.group(2)
 		lumi = luminosities[fname]
 		logging.debug('Matched in string `%s` - name:`%s`, lumi:`%s`', fname, samplename, str(lumi))
 
