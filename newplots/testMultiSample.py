@@ -5,7 +5,7 @@ import re
 import pickle
 
 import logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s;%(levelname)s;%(name)s;%(message)s")
+logging.basicConfig(level=logging.DEBUG, format="%(asctime)s;%(levelname)s;%(name)s;%(message)s")
 import plotfw.methods
 import plotfw.drawfw
 import plotfw.params
@@ -26,6 +26,7 @@ parser.add_argument('--doBWeightDistributions', action='store_true')
 parser.add_argument('--doDataMC', action='store_true')
 parser.add_argument('--doEffs', action='store_true')
 parser.add_argument('--withPROOF', action='store_true')
+parser.add_argument('--allSamples', action='store_true')
 
 
 args = parser.parse_args()
@@ -35,7 +36,7 @@ args = parser.parse_args()
 #    return self.GetOutputList().FindObject(name)
 
 if args.withPROOF:
-    p = ROOT.TProof.Open("")
+    p = ROOT.TProof.Open("workers=8")
 else:
     p = None
 
@@ -45,16 +46,17 @@ samples_data = dict()
 #path = "/hdfs/local/joosep/stpol/step2_MC_Iso/"
 path = "/home/joosep/singletop/stpol/crabs/step2_MC_Iso_Mar12/"
 
+if args.allSamples:
+    samples["TTJets_FullLept"] = plotfw.methods.MCSample("WD_TTJets_FullLept", name="TTJets_FullLept", directory=path)
+    samples["TTJets_SemiLept"] = plotfw.methods.MCSample("WD_TTJets_SemiLept", name="TTJets_SemiLept", directory=path)
+    #samples["TTJets_inclusive"] = plotfw.methods.MCSample(path + "WD_TTJets_MassiveBinDECAY/res/*.root", name="TTbar")
+    #samples["T_t"] = plotfw.methods.MCSample(path + "WD_T_t/res/*.root", name="T_t")
+    samples["W1Jets"] = plotfw.methods.MCSample(path + "WD_W1Jets_exclusive", name="W1Jets")
+    samples["W3Jets"] = plotfw.methods.MCSample(path + "WD_W3Jets_exclusive", name="W3Jets")
+    samples["W4Jets"] = plotfw.methods.MCSample(path + "WD_W4Jets_exclusive", name="W4Jets")
+    #samples["WJets_inclusive"] = plotfw.methods.MCSample(path + "WD_WJets_inclusive/res/*.root", name="WJets")
 
-#samples["TTJets_FullLept"] = plotfw.methods.MCSample("WD_TTJets_FullLept", name="TTJets_FullLept", directory=path)
-#samples["TTJets_SemiLept"] = plotfw.methods.MCSample("WD_TTJets_SemiLept", name="TTJets_SemiLept", directory=path)
-#samples["TTJets_inclusive"] = plotfw.methods.MCSample(path + "WD_TTJets_MassiveBinDECAY/res/*.root", name="TTbar")
-#samples["T_t"] = plotfw.methods.MCSample(path + "WD_T_t/res/*.root", name="T_t")
-samples["W1Jets"] = plotfw.methods.MCSample(path + "WD_W1Jets_exclusive", name="W1Jets")
-#samples["W2Jets"] = plotfw.methods.MCSample(path + "WD_W2Jets_exclusive", name="W2Jets")
-#samples["W3Jets"] = plotfw.methods.MCSample(path + "WD_W3Jets_exclusive", name="W3Jets")
-#samples["W4Jets"] = plotfw.methods.MCSample(path + "WD_W4Jets_exclusive", name="W4Jets")
-#samples["WJets_inclusive"] = plotfw.methods.MCSample(path + "WD_WJets_inclusive/res/*.root", name="WJets")
+samples["W2Jets"] = plotfw.methods.MCSample(path + "WD_W2Jets_exclusive", name="W2Jets")
 
 for (name, sample) in samples.items():
     sample.frac_entries = 1.0
@@ -69,15 +71,23 @@ if args.doBWeightDistributions:
     comp_samples.set_n_cores(1)
     comp_samples.proof = p
     weightPlots = [
-        plotfw.drawfw.PlotParams(Vars.b_weight["nominal"], (0.0, 2), doLogY=False, normalize_to="unity"),
+        plotfw.drawfw.PlotParams(Vars.b_weight["nominal"], (0.5, 1.5), doLogY=True, normalize_to="unity"),
+        plotfw.drawfw.PlotParams(Vars.jet_counts_true["l"], (0, 5), bins=5, doLogY=True, normalize_to="unity"),
+        plotfw.drawfw.PlotParams(Vars.jet_counts_true["b"], (0, 5), bins=5, doLogY=True, normalize_to="unity"),
+        plotfw.drawfw.PlotParams(Vars.jet_counts_true["c"], (0, 5), bins=5, doLogY=True, normalize_to="unity"),
         #plotfw.drawfw.PlotParams(Vars.cos_theta, (-1, 1))
     ]
     weightPlots[0].putStats()
     psMu += comp_samples.plot(Cuts.finalMu_2J0T, weightPlots, cutDescription="muon channel, final sel. (2J0T)")
-    psMu += comp_samples.plot(Cuts.finalMu_2J1T, weightPlots, cutDescription="muon channel, final sel. (2J1T)")
-    psMu += comp_samples.plot(Cuts.finalMu_3J0T, weightPlots, cutDescription="muon channel, final sel. (3J0T)")
+    psMu += comp_samples.plot(Cuts.finalMu_2J0T*Cuts.jets_2LJ_true, weightPlots, cutDescription="muon channel, final sel. (2J0T, 2 true light jets)")
+    psMu += comp_samples.plot(Cuts.finalMu_2J0T*Cuts.jets_1LJ_true, weightPlots, cutDescription="muon channel, final sel. (2J0T, 1 true light jet)")
     psMu += comp_samples.plot(Cuts.finalMu_3J1T, weightPlots, cutDescription="muon channel, final sel. (3J1T)")
-    psMu += comp_samples.plot(Cuts.finalMu_3J2T, weightPlots, cutDescription="muon channel, final sel. (3J2T)")
+    psMu += comp_samples.plot(Cuts.finalMu_3J1T*Cuts.jets_2LJ_true, weightPlots, cutDescription="muon channel, final sel. (3J1T, 2 true light jets)")
+    psMu += comp_samples.plot(Cuts.finalMu_3J1T*Cuts.jets_1LJ_true, weightPlots, cutDescription="muon channel, final sel. (3J1T, 1 true light jet)")
+    #psMu += comp_samples.plot(Cuts.finalMu_2J1T, weightPlots, cutDescription="muon channel, final sel. (2J1T)")
+    #psMu += comp_samples.plot(Cuts.finalMu_3J0T, weightPlots, cutDescription="muon channel, final sel. (3J0T)")
+    #psMu += comp_samples.plot(Cuts.finalMu_3J1T, weightPlots, cutDescription="muon channel, final sel. (3J1T)")
+    #psMu += comp_samples.plot(Cuts.finalMu_3J2T, weightPlots, cutDescription="muon channel, final sel. (3J2T)")
     psMu += comp_samples.plot(Cuts.initial, weightPlots, cutDescription="all events")
 if args.doDataMC:
     samples_data["SingleMu"] = plotfw.methods.DataSample("/home/joosep/singletop/stpol/crabs/step2_Data_Iso_Mar11/*Mu*/res/*.root", 20000, name="SingleMu")
@@ -98,7 +108,7 @@ if len(psMu)>0:
     tfile = ROOT.TFile(args.ofdir + "/plots.root", "RECREATE")
     for p in psMu:
         p.saveToROOT(tfile)
-        p.save(ofdir=args.ofdir, fmt="pdf", log=True)
+        p.save(ofdir=args.ofdir, fmt="pdf", log=False)
 
 def calcSampleEffs(x):
     sample = x[1]
