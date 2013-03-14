@@ -13,6 +13,9 @@ import plotfw.cross_sections
 import copy
 from zlib import adler32
 
+class EmptyTreeException(Exception):
+	pass
+
 def th_sep(i, sep=','):
 	"""Return a string representation of i with thousand separators"""
 	i = abs(int(i))
@@ -129,9 +132,9 @@ class MultiSample(Sample):
 		self.fname = fname
 		self.directory = directory
 		self.disabled_weights = []
-		self._openTree()
 		self.entryListCache = dict()
 		self.frac_entries = 1.0
+		self._openTree()
 
 	def __getstate__(self):
 		d = dict(self.__dict__)
@@ -160,9 +163,14 @@ class MultiSample(Sample):
 			self.logger.debug("Caching entry list with cut %s" % (cut))
 			entry_list_name = "%s_%s" % (self.name, adler32(cut.cutStr))
 			ROOT.gROOT.cd()
+			if self.tree.GetEntries()==0 or self.frac_entries==0:
+				self.logger.warning("Requested entry list over 0 entries, skipping")
+				return 0
 			self.tree.Draw(">>%s" % entry_list_name, cut.cutStr, "entrylist", int(self.tree.GetEntries()*self.frac_entries))
 			elist = ROOT.gROOT.Get(entry_list_name)
-			if elist is None or elist.GetN()<=0:
+			if not elist or elist is None or elist.GetN()==-1:
+				raise Exception("Failed to get entry list")
+			if elist.GetN()==0:
 				self.logger.warning("Entry list was empty")
 			self.entryListCache[cut.cutStr] = elist
 			self.tree.SetEntryList(elist)
@@ -171,6 +179,7 @@ class MultiSample(Sample):
 			elist = self.entryListCache[cut.cutStr]
 			self.tree.SetEntryList(elist)
 		self.logger.info("Cut result: %d events" % elist.GetN())
+		return elist.GetN()
 
 	def getColumn(self, var, cut, dtype="f"):
 		self.logger.info("Getting column %s" % var)
@@ -186,10 +195,17 @@ class MultiSample(Sample):
 		out = numpy.copy(numpy.frombuffer(arr.GetArray(), count=arr.GetSize(), dtype=dtype))
 		return out
 
-	def drawHist(self, hist_name, plot_params, cut=None, proof=None):
-		self.logger.info("Drawing histogram %s" % hist_name)
 
+
+	def drawHist(self, hist_name, plot_params, cut=None, proof=None):
 		hist_name += "_" + self.name
+		self.logger.info("Drawing histogram %s" % hist_name)
+		if self.tree.GetEntries()==0:
+			self.logger.warning("Tree %s was empty!" % self.tree.GetName())
+			ROOT.gROOT.cd()
+			hist = ROOT.TH1F(hist_name, hist_name, plot_params.hbins, plot_params.hmin, plot_params.hmax)
+			return 0, hist
+			#raise EmptyTreeException("%s.GetEntries()==0" % self.tree.GetName())
 		if proof is not None:
 			self.logger.debug("Output will be in ROOT.TProof instance %s" % str(proof))
 			self.tree.SetProof(True)
@@ -199,7 +215,7 @@ class MultiSample(Sample):
 		if cut is None:
 			cut = plotfw.params.Cuts.inital
 
-		self.cacheEntryList(cut)
+		n_cut = self.cacheEntryList(cut)
 		self._switchBranchesOn(plot_params.var.getRelevantBranches())
 
 		draw_cmd = "%s >> %s(%d, %d, %d)" % (plot_params.var.var, hist_name, plot_params.hbins, plot_params.hmin, plot_params.hmax)
@@ -208,17 +224,18 @@ class MultiSample(Sample):
 		self.logger.debug("Calling TChain.Draw(%s, %s)" % (draw_cmd, weight_str))
 		N = self.tree.Draw(draw_cmd, weight_str, "goff")
 		self.logger.debug("Histogram drawn with %d entries" % N)
-		if int(N) == -1:
-			raise Exception("Failed to draw histogram")
+		if int(N) == -1 or n_cut != N:
+			raise Exception("Failed to draw histogram: cut result %d but histogram drawn with %d entries" % (N, n_cut))
 		if proof is not None:
 			hist = proof.GetOutputList().FindObject(hist_name)
 		else:
 			hist = ROOT.gROOT.Get(hist_name)
-
+		if not hist:
+			raise Exception("Failed to get histogram")
 		ROOT.gROOT.cd()
 		clone_hist = hist.Clone(hist_name)
 		clone_hist.Sumw2()
-		if N<=0 or clone_hist.Integral()==0:
+		if clone_hist.Integral()==0:
 			self.logger.warning("Histogram was empty")
 			#raise Exception("Histogram was empty")
 		return N, clone_hist
