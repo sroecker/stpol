@@ -14,8 +14,11 @@ process.source = cms.Source("PoolSource",
 )
 
 process.myProducerLabel = cms.EDProducer('PDFweightsProducer',
-	PDFSetSrc			=	cms.string('CT10.LHgrid'),		# weights of all PDF sets are saved
-	PDFSetAlternatives	=	cms.vstring('cteq66.LHgrid'),	# only best fit ratio to PDFSetSrc best fit saved
+	PDFSetSrc			=	cms.string('cteq66.LHgrid'),		# weights of all PDF sets are saved
+#	PDFSetSrc			=	cms.string('CT10.LHgrid'),		# weights of all PDF sets are saved
+#	PDFSetSrc			=	cms.string('MSTW2008nlo68cl.LHgrid'),		# weights of all PDF sets are saved
+#	PDFSetSrc			=	cms.string('MRST2006nnlo.LHgrid'),		# weights of all PDF sets are saved
+#	PDFSetSrc			=	cms.string('NNPDF21_100.LHgrid'),		# weights of all PDF sets are saved
 )
 
 process.out = cms.OutputModule("PoolOutputModule",

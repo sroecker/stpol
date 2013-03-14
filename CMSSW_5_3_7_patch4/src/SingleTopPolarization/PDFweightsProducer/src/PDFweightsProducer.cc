@@ -84,7 +84,6 @@ class PDFweightsProducer : public edm::EDProducer {
 	int		id1,id2;
 	
 	const std::string	PDFSetSrc;
-	const std::vector<std::string> PDFSetAlternatives;
 
 };
 
@@ -102,21 +101,12 @@ class PDFweightsProducer : public edm::EDProducer {
 //
 PDFweightsProducer::PDFweightsProducer(const edm::ParameterSet& iConfig)
 : PDFSetSrc(iConfig.getParameter<std::string>("PDFSetSrc"))
-, PDFSetAlternatives(iConfig.getParameter<std::vector<std::string> >("PDFSetAlternatives"))
 {
 
 	produces<std::vector<double> > ("PDFSet");
+	produces<double>("w0");
 	produces<int>("nPDFSet");
 	LHAPDF::initPDFSet(1, PDFSetSrc);
-	
-
-	produces<std::vector<double> > ("PDFSetAlternatives");
-	produces<int>("nPDFSetAlternatives");
-	unsigned int n = 0;
-	while( n < PDFSetAlternatives.size() ){
-		LHAPDF::initPDFSet(n+1, PDFSetAlternatives[n]);
-		n++;
-	}
 	
 }
 
@@ -170,28 +160,14 @@ PDFweightsProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		weights->push_back(pweight);
 	}
 	
-	// fill in the alternatives best fit ratios
-	std::auto_ptr < std::vector<double> > alternatives(new std::vector<double>());
-	unsigned int n = 0;
-	while( n < PDFSetAlternatives.size() ){
-		LHAPDF::usePDFMember(n+1, 0);
-		double xpdf1_new = LHAPDF::xfx(n+1, x1, scalePDF, id1);
-		double xpdf2_new = LHAPDF::xfx(n+1, x2, scalePDF, id2);
-		double pdf_alternative = xpdf1_new * xpdf2_new / w0;
-		alternatives->push_back(pdf_alternative);
-		n++;
-	}	
-	
-	
 	
 	
 	// save weights
 	LogDebug("produce()") << "PDF weights";
 	iEvent.put(weights, "PDFSet");
 	iEvent.put(std::auto_ptr<int>(new int(nPDFSet)), "nPDFSet");  
-
-	iEvent.put(alternatives, "PDFSetAlternatives");
-	iEvent.put(std::auto_ptr<int>(new int(PDFSetAlternatives.size())), "nPDFSetAlternatives");  
+	iEvent.put(std::auto_ptr<double>(new double(w0)), "w0");  
+	
 }
 
 // ------------ method called once each job just before starting event loop  ------------
