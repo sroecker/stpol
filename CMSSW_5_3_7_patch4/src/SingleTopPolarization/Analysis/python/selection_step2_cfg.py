@@ -679,7 +679,7 @@ def SingleTopStep2():
                 ["relIso", "userFloat('%s')" % Config.Muons.relIsoType],
                 ["Charge", "charge"],
                 ["genPdgId", "? genParticlesSize() > 0 ? genParticle(0).pdgId() : 0"],
-                ["normChi2", "? globalTrack().isNonnull() ? normChi2 : -1.0"],
+                ["normChi2", "? globalTrack().isNonnull() ? nTrueormChi2 : -1.0"],
                 ["trackhitPatterntrackerLayersWithMeasurement", "userFloat('track_hitPattern_trackerLayersWithMeasurement')"],
                 ["globalTrackhitPatternnumberOfValidMuonHits", "userFloat('globalTrack_hitPattern_numberOfValidMuonHits')"],
                 ["innerTrackhitPatternnumberOfValidPixelHits", "userFloat('innerTrack_hitPattern_numberOfValidPixelHits')"],
@@ -769,7 +769,15 @@ def SingleTopStep2():
     HLTSetup(process, Config)
 
     if Config.isMC:
-        process.pdfInfo = cms.EDProducer("PDFInfoDumper",
+
+        #cteq66.LHgrid
+        #CT10.LHgrid
+        #MSTW2008nlo68cl.LHgrid
+        #MRST2006nnlo.LHgrid
+        #NNPDF21_100.LHgrid
+        process.pdfInfo = cms.EDProducer('PDFweightsProducer',
+        	PDFSetSrc			=	cms.string('CT10.LHgrid'),		# weights of all PDF sets are saved
+        	PDFSetAlternatives	=	cms.vstring('cteq66.LHgrid'),	# only best fit ratio to PDFSetSrc best fit saved
         )
         process.pdfPath = cms.Path(process.pdfInfo)
     if Config.isMC and options.doGenParticlePath:
