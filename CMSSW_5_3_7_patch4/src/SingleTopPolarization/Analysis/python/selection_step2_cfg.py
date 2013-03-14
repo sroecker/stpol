@@ -679,7 +679,7 @@ def SingleTopStep2():
                 ["relIso", "userFloat('%s')" % Config.Muons.relIsoType],
                 ["Charge", "charge"],
                 ["genPdgId", "? genParticlesSize() > 0 ? genParticle(0).pdgId() : 0"],
-                ["normChi2", "? globalTrack().isNonnull() ? nTrueormChi2 : -1.0"],
+                ["normChi2", "? globalTrack().isNonnull() ? normChi2 : -1.0"],
                 ["trackhitPatterntrackerLayersWithMeasurement", "userFloat('track_hitPattern_trackerLayersWithMeasurement')"],
                 ["globalTrackhitPatternnumberOfValidMuonHits", "userFloat('globalTrack_hitPattern_numberOfValidMuonHits')"],
                 ["innerTrackhitPatternnumberOfValidPixelHits", "userFloat('innerTrack_hitPattern_numberOfValidPixelHits')"],
@@ -770,16 +770,28 @@ def SingleTopStep2():
 
     if Config.isMC:
 
-        #cteq66.LHgrid
-        #CT10.LHgrid
-        #MSTW2008nlo68cl.LHgrid
-        #MRST2006nnlo.LHgrid
-        #NNPDF21_100.LHgrid
-        process.pdfInfo = cms.EDProducer('PDFweightsProducer',
-        	PDFSetSrc			=	cms.string('CT10.LHgrid'),		# weights of all PDF sets are saved
-        	PDFSetAlternatives	=	cms.vstring('cteq66.LHgrid'),	# only best fit ratio to PDFSetSrc best fit saved
+        process.pdfInfo1 = cms.EDProducer('PDFweightsProducer',
+            PDFSetSrc = cms.string('cteq66.LHgrid')
         )
-        process.pdfPath = cms.Path(process.pdfInfo)
+        process.pdfInfo2 = cms.EDProducer('PDFweightsProducer',
+            PDFSetSrc = cms.string('CT10.LHgrid')
+        )
+        process.pdfInfo3 = cms.EDProducer('PDFweightsProducer',
+            PDFSetSrc = cms.string('MSTW2008nlo68cl.LHgrid')
+        )
+        process.pdfInfo4 = cms.EDProducer('PDFweightsProducer',
+            PDFSetSrc = cms.string('MRST2006nnlo.LHgrid')
+        )
+        process.pdfInfo5 = cms.EDProducer('PDFweightsProducer',
+            PDFSetSrc = cms.string('NNPDF21_100.LHgrid')
+        )
+        process.pdfPath = cms.Path(
+              process.pdfInfo1
+            * process.pdfInfo2
+            * process.pdfInfo3
+            * process.pdfInfo4
+            * process.pdfInfo5
+        )
     if Config.isMC and options.doGenParticlePath:
         from SingleTopPolarization.Analysis.partonStudy_step2_cfi import PartonStudySetup
         PartonStudySetup(process)
@@ -879,7 +891,11 @@ def SingleTopStep2():
                 'keep double_cosThetaProducerTrueJet_*_STPOLSEL2',
                 'keep double_bTagWeightProducerNJMT_*_STPOLSEL2',
                 'keep int_*__STPOLSEL2',
-                'keep *_pdfInfo_*_STPOLSEL2',
+                'keep *_pdfInfo1_*_STPOLSEL2',
+                'keep *_pdfInfo2_*_STPOLSEL2',
+                'keep *_pdfInfo3_*_STPOLSEL2',
+                'keep *_pdfInfo4_*_STPOLSEL2',
+                'keep *_pdfInfo5_*_STPOLSEL2',
                 #'keep *',
                 #'keep *_recoTop_*_*',
                 #'keep *_goodSignalMuons_*_*',
