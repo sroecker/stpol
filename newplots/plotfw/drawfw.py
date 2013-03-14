@@ -1,3 +1,4 @@
+import autoLoad
 import ROOT
 import logging, time
 from zlib import adler32
@@ -6,6 +7,7 @@ import string
 import methods,params,plotlog
 from methods import Sample, MCSample, DataSample, SampleGroup, SampleList
 from methods import PlotParams, SampleListGenerator
+from methods import EmptyTreeException
 import cPickle as pickle
 import multiprocessing
 import pdb
@@ -285,7 +287,7 @@ class StackPlotCreator(PlotCreator):
 		for hist in reversed(plot.mc_group_hists.values()):
 			plot.hist_stack.Add(hist)
 
-		plot.legend = BaseLegend(self._mcs.groups, plot)
+		plot.legend = BaseLegend(plot)
 
 		ymax = pp._ymax if pp._ymax is not None else 1.1*max(data_max, mc_max)
 		plot.hist_stack.SetMaximum(ymax)
@@ -346,7 +348,7 @@ class ShapePlotCreator(PlotCreator):
 			plot._maxbin = max(plot._maxbin, hist.GetMaximum())
 			plot.addHist(hist, group.name)
 
-		plot.legend = BaseLegend(self._slist.groups, plot)
+		plot.legend = BaseLegend(plot)
 
 		return plot
 
@@ -368,20 +370,28 @@ class Plot(object):
 	logger.
 
 	"""
-	def __init__(self, plot_params, groups, unique_id):
+	def __init__(self, plot_params, sample_list, unique_id):
 		self.log = plotlog.PlotLog()
 		self._plot_params = plot_params
 		self._unique_id = str(unique_id)
-		self.groups = groups
-
+		self.sample_list = sample_list
+		self.setPlotTitle("")
 
 	def setPlotTitle(self, cutDescription=""):
 		self.cutDescription = cutDescription
 		self.plotTitle = self._plot_params.plotTitle + " in " + self.cutDescription
 
 
+	def saveToROOT(self, tfile, objects):
+		dirname = self.plotTitle + "_" + self._unique_id
+		tfile.mkdir(dirname)
+		tfile.cd(dirname)
+		for o in objects:
+			o = type(o)(o)
+			o.Clone()
+		tfile.Write()
 	def draw(self):
-		self.yield_table = YieldTable(self.groups, self)
+		self.yield_table = YieldTable(self.sample_list, self)
 		self.legend.Draw('SAME')
 		self.cvs.SetLogy(self._plot_params.doLogY)
 		self.yield_table.draw()
@@ -422,13 +432,17 @@ class Plot(object):
 
 class StackPlot(Plot):
 
-	def __init__(self, plot_params, groups, unique_id, **kwargs):
-		super(StackPlot, self).__init__(plot_params, groups, unique_id, **kwargs)
+	def __init__(self, plot_params, sample_list, unique_id, **kwargs):
+		super(StackPlot, self).__init__(plot_params, sample_list, unique_id, **kwargs)
 		self.hist_stack = None
 		self.data_hist = None
 		self.total_mc_hist = None
 		self.mc_hists = None
 		self.mc_group_hists = None
+
+	def saveToROOT(self, tfile):
+		objects = self.mc_hists + [self.total_mc_hist + self.data_hist]
+		super(StackPlot, self).saveToROOT(tfile, objects)
 
 	def draw(self):
 		self.hist_stack.Draw('HIST')
@@ -461,10 +475,14 @@ class StackPlot(Plot):
 			raise KeyError("Histogram '{0}' not defined for plot {1}".format(name, self))
 
 class ShapePlot(Plot):
-	def __init__(self, plot_params, groups, unique_id):
-		super(ShapePlot,self).__init__(plot_params, groups, unique_id)
+	def __init__(self, plot_params, sample_list, unique_id):
+		super(ShapePlot,self).__init__(plot_params, sample_list, unique_id)
 		self._hists = {}
 		self._maxbin = None
+
+	def saveToROOT(self, tfile):
+		objects = self._hists.values()
+		super(ShapePlot, self).saveToROOT(tfile, objects)
 
 	def addHist(self, h, name):
 		self._hists[name] = h
@@ -498,7 +516,7 @@ class BaseLegend(object):
 	legCoords["R_full"] = [0.75, 0.01, 0.99, 0.99]
 	legCoords["R"] = [0.75, 0.35, 0.99, 0.95]
 
-	def __init__(self, groups, plot, legpos="R"):
+	def __init__(self, plot, legpos="R"):
 		self.legpos = legpos
 		coords = BaseLegend.legCoords[self.legpos]
 
