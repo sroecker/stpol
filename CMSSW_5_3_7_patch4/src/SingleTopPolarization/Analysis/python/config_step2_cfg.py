@@ -119,6 +119,7 @@ class Config(C):
         pt = "ecalDrivenMomentum.Pt()"
         mvaCut = 0.5
         cutOnMVA = True
+        cutWWlnuj = False #set cutOnMVA = False and cutOnIso = False to use this selection
         relIsoCutRangeIsolatedRegion = [0.0, 0.1]
         relIsoCutRangeAntiIsolatedRegion = [0.1, 0.5]
         looseVetoRelIsoCut = 0.15
