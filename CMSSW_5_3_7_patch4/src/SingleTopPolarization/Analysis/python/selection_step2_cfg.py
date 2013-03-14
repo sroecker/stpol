@@ -1,3 +1,5 @@
+import logging
+logging.basicConfig(level=logging.INFO)
 import FWCore.ParameterSet.Config as cms
 import SingleTopPolarization.Analysis.eventCounting as eventCounting
 from SingleTopPolarization.Analysis.config_step2_cfg import Config
@@ -5,7 +7,6 @@ from SingleTopPolarization.Analysis.config_step2_cfg import Config
 from FWCore.ParameterSet.VarParsing import VarParsing
 import SingleTopPolarization.Analysis.pileUpDistributions as pileUpDistributions
 
-import logging
 
 #BTag working points from https://twiki.cern.ch/twiki/bin/viewauth/CMS/BTagPerformanceOP#B_tagging_Operating_Points_for_5
 #TODO: place in proper class
@@ -844,7 +845,7 @@ def SingleTopStep2():
             splitLevel=cms.untracked.int32(99),
             fileName=cms.untracked.string('out_step2.root'),
              SelectEvents=cms.untracked.PSet(
-                 SelectEvents=cms.vstring([])
+                 SelectEvents=cms.vstring(["*"])
              ),
             outputCommands=cms.untracked.vstring(
                 #'drop *',
