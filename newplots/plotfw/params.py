@@ -18,14 +18,14 @@ class Cut(object):
 
         if relvars is None:
             self._vars = set()
-            logging.debug('No relevant variables in cut `%s` (cutstring: `%s`)!', cutName, cutStr)
+            #logging.debug('No relevant variables in cut `%s` (cutstring: `%s`)!', cutName, cutStr)
         elif len(relvars)==0:
             self._vars = set()
             logging.warning('No relevant variables in cut `%s` (cutstring `%s`)!', cutName, cutStr)
         else:
             self._vars = set(relvars)
 
-        logging.debug('Created cut `%s`: `%s`, `%s`', self.cutName, self.cutStr, self._vars)
+        #logging.debug('Created cut `%s`: `%s`, `%s`', self.cutName, self.cutStr, self._vars)
         #self.cutSequence = [copy.deepcopy(self)]
 
     def __mul__(self, other):
@@ -52,13 +52,13 @@ class Cut(object):
         return list(self._vars)
 
     def rename(self, name):
-        logging.debug('Renaming `%s` to `%s` (cutstring: `%s`)', self.cutName, name, self.cutStr)
+        #logging.debug('Renaming `%s` to `%s` (cutstring: `%s`)', self.cutName, name, self.cutStr)
         self.cutName = name
 
     def invert(self):
-        logging.debug('Inverting `%s` (`%s`)', self.cutName, self.cutStr)
+        #logging.debug('Inverting `%s` (`%s`)', self.cutName, self.cutStr)
         self.cutStr = '!({0})'.format(self.cutStr)
-        logging.debug('Inverted: `%s`', self.cutStr)
+        #logging.debug('Inverted: `%s`', self.cutStr)
 
 class CutF(Cut):
     """Cut with string formatting
@@ -77,7 +77,7 @@ class CutP(Cut):
     def __init__(self, cutname, cutstring):
         #m=re.match('([A-Za-z0-9_]*)[ ]*([><=]*)[ ]*(.*)', cutstring)
         m=re.match('([^><=]*)[ ]*([><=]*)[ ]*(.*)', cutstring)
-        logging.debug('In `%s` matching for `%s`', cutstring, m.group(1))
+        #logging.debug('In `%s` matching for `%s`', cutstring, m.group(1))
         super(CutP,self).__init__(cutname, cutstring, [parent_branch(m.group(1))])
 
 def invert(cut):
@@ -158,7 +158,13 @@ class Cuts:
     muonEta = CutF('muonEta', 'abs({0}) < 2.1', ['floats_goodSignalMuonsNTupleProducer_Eta_STPOLSEL2.obj[0]'])
     muonIso = CutP('muonIso', 'floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.obj[0] < 0.12')
 
-    jets_1LJ = CutP('1LJ', 'int_lightJetCount__STPOLSEL2.obj ==1')
+    jets_1LJ = CutP('1LJ', 'int_lightJetCount__STPOLSEL2.obj == 1')
+    jets_2LJ = CutP('2LJ', 'int_lightJetCount__STPOLSEL2.obj == 2')
+    jets_0LJ_true = CutP('0LJ', 'int_trueLJetCount__STPOLSEL2.obj == 0')
+    jets_1LJ_true = CutP('1LJ', 'int_trueLJetCount__STPOLSEL2.obj == 1')
+    jets_2LJ_true = CutP('2LJ_true', 'int_trueLJetCount__STPOLSEL2.obj == 2')
+    jets_3LJ_true = CutP('3LJ_true', 'int_trueLJetCount__STPOLSEL2.obj == 3')
+
     jets_OK = CutP(None, 'int_lightJetCount__STPOLSEL2.obj>=0') \
             * CutP(None, 'int_bJetCount__STPOLSEL2.obj>=0')
     jets_2plusJ = jets_OK * CutF('2plusLJ', '({0} + {1})>=2', ['int_lightJetCount__STPOLSEL2.obj', 'int_bJetCount__STPOLSEL2.obj'])
@@ -169,6 +175,9 @@ class Cuts:
     jets_3J1T = CutP(None, 'int_lightJetCount__STPOLSEL2.obj==2') * CutP(None, 'int_bJetCount__STPOLSEL2.obj==1')
     jets_3J0T = CutP(None, 'int_lightJetCount__STPOLSEL2.obj==3') * CutP(None, 'int_bJetCount__STPOLSEL2.obj==0')
     jets_3J2T = CutP(None, 'int_lightJetCount__STPOLSEL2.obj==1') * CutP(None, 'int_bJetCount__STPOLSEL2.obj==2')
+    bTaggedB = CutF('btaggedB', 'abs({0}) == 5', 'floats_highestBTagJetNTupleProducer_partonFlavour_STPOLSEL2.obj[0].obj')
+    bTaggedC = CutF('btaggedC', 'abs({0}) == 4', 'floats_highestBTagJetNTupleProducer_partonFlavour_STPOLSEL2.obj[0].obj')
+    bTaggedL = CutF('btaggedL', 'abs({0}) != 4 && abs({0}) != 5', 'floats_lowestBTagJetNTupleProducer_partonFlavour_STPOLSEL2.obj[0].obj')
     #realSol = CutP('realSol', 'solType_recoNuProducerMu==0')
     #cplxSol = CutP('cplxSol', 'solType_recoNuProducerMu==1')
     mlnu = CutP(None, 'floats_recoTopNTupleProducer_Mass_STPOLSEL2.obj[0]>130') * CutP(None, 'floats_recoTopNTupleProducer_Mass_STPOLSEL2.obj[0]<220')
@@ -222,16 +231,20 @@ class Var:
     @staticmethod
     def match_branch(var):
         m=re.match('([A-Za-z0-9_]*\.obj)(.*)', var)
-        logging.debug('In `%s` matching for `%s`', var, m.group(1))
+        #logging.debug('In `%s` matching for `%s`', var, m.group(1))
         return m.group(1)
 
 class Vars:
     cos_theta = Var("double_cosTheta_cosThetaLightJet_STPOLSEL2.obj", "cos #theta_{lj}")
     top_mass = Var("floats_recoTopNTupleProducer_Mass_STPOLSEL2.obj[0]", "m_{l #nu b}")
-    etalj = Var("abs(floats_lowestBTagJetNTupleProducer_Eta_STPOLSEL2.obj[0])", "#eta_{lj}", relvars='floats_lowestBTagJetNTupleProducer_Eta_STPOLSEL2')
+    etalj = Var("abs(floats_lowestBTagJetNTupleProducer_Eta_STPOLSEL2.obj[0])", "#eta_{lj}", relvars=['floats_lowestBTagJetNTupleProducer_Eta_STPOLSEL2'])
 
     b_weight = dict()
     b_weight["nominal"] = Var("double_bTagWeightProducerNJMT_bTagWeight_STPOLSEL2.obj", "b-weight (nominal)")
+
+    jet1_flavour = Var("abs(floats_goodJetsNTupleProducer_Eta_STPOLSEL2_partonFlavour.obj[0])", "|pdgID| of 1st jet", relvars=["floats_goodJetsNTupleProducer_Eta_STPOLSEL2_partonFlavour"])
+    jet2_flavour = Var("abs(floats_goodJetsNTupleProducer_Eta_STPOLSEL2_partonFlavour.obj[1])", "|pdgID| of 2nd jet", relvars=["floats_goodJetsNTupleProducer_Eta_STPOLSEL2_partonFlavour"])
+    jet3_flavour = Var("abs(floats_goodJetsNTupleProducer_Eta_STPOLSEL2_partonFlavour.obj[3])", "|pdgID| of 3rd jets", relvars=["floats_goodJetsNTupleProducer_Eta_STPOLSEL2_partonFlavour"])
 
     jet_counts_true  = dict()
     jet_counts_true["b"] = Var("int_trueBJetCount__STPOLSEL2.obj", "true b-jet count")
