@@ -224,15 +224,17 @@ def JetSetup(process, conf):
     )
 
     if conf.isMC:
-        if conf.subChannel in (Calibrations.bTaggingEfficiencies_2J.keys()+Calibrations.bTaggingEfficiencies_3J.keys()):
-            sampleBEffs_2J = Calibrations.bTaggingEfficiencies_2J[conf.subChannel]
-            sampleBEffs_3J = Calibrations.bTaggingEfficiencies_3J[conf.subChannel]
-            logging.info("B-tagging efficiencies for subChannel %s loaded" % conf.subChannel)
-        else:
-            logging.warning("B-tagging efficiencies for subChannel %s not defined" % conf.subChannel)
-            raise Exception("B-tagging efficiencies not defined")
-            sampleBEffs_2J = Calibrations.BTaggingEfficiency.default
-            sampleBEffs_3J = Calibrations.BTaggingEfficiency.default
+        effs_2J = Calibrations.getEfficiencies(2, conf.subChannel)
+        effs_3J = Calibrations.getEfficiencies(2, conf.subChannel)
+        #if conf.subChannel in (Calibrations.bTaggingEfficiencies_2J.keys()+Calibrations.bTaggingEfficiencies_3J.keys()):
+        #    sampleBEffs_2J = Calibrations.bTaggingEfficiencies_2J[conf.subChannel]
+        #    sampleBEffs_3J = Calibrations.bTaggingEfficiencies_3J[conf.subChannel]
+        #    logging.info("B-tagging efficiencies for subChannel %s loaded" % conf.subChannel)
+        #else:
+        #    logging.warning("B-tagging efficiencies for subChannel %s not defined" % conf.subChannel)
+        #    raise Exception("B-tagging efficiencies not defined")
+        #    sampleBEffs_2J = Calibrations.BTaggingEfficiency.default
+        #    sampleBEffs_3J = Calibrations.BTaggingEfficiency.default
         #logger.debug("Using the following calibration coefficients for sample {0}: {1}".format(conf.subChannel, sampleBEffs))
 
         #The b-tag weight calculation is different for each required n-jet/m-btag bin
@@ -242,12 +244,12 @@ def JetSetup(process, conf):
             nTags=cms.uint32(0),
             nJetSrc=cms.InputTag("goodJetCount"),
             nTagSrc=cms.InputTag("bJetCount"),
-            effBin2J=cms.double(sampleBEffs_2J.eff_b),
-            effCin2J=cms.double(sampleBEffs_2J.eff_c),
-            effLin2J=cms.double(sampleBEffs_2J.eff_l),
-            effBin3J=cms.double(sampleBEffs_3J.eff_b),
-            effCin3J=cms.double(sampleBEffs_3J.eff_c),
-            effLin3J=cms.double(sampleBEffs_3J.eff_l),
+            effBin2J=cms.double(effs_2J.eff_b),
+            effCin2J=cms.double(effs_2J.eff_c),
+            effLin2J=cms.double(effs_2J.eff_l),
+            effBin3J=cms.double(effs_3J.eff_b),
+            effCin3J=cms.double(effs_3J.eff_c),
+            effLin3J=cms.double(effs_3J.eff_l),
             algo=cms.string(conf.Jets.bTagWorkingPoint)
         )
         #process.bTagWeightProducer3J1T = process.bTagWeightProducerNJMT.clone(nJets=cms.uint32(3), nTags=cms.uint32(1))

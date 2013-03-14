@@ -1,4 +1,5 @@
 import logging
+import fnmatch
 bTaggingEfficiencies = dict()
 
 class BTaggingEfficiency:
@@ -19,7 +20,7 @@ eff_ex_TTbar_inclusive_2J =  {'c': (0.027368308408464645, 1.381620396746298e-06)
 eff_ex_TTbar_inclusive_3J =  {'c': (0.026405055702652745, 8.7925344497782043e-07), 'b': (0.48746501312608759, 3.2499313136967755e-07), 'l': (0.0010913820425246931, 5.0406148279971367e-07)}
 
 
-def effs(eff_ex_T_t, eff_ex_TTbar, eff_ex_WJets):
+def setEffs(eff_ex_T_t, eff_ex_TTbar, eff_ex_WJets):
     effs = dict()
 
     b_T_t = eff_ex_T_t["b"][0]
@@ -30,7 +31,7 @@ def effs(eff_ex_T_t, eff_ex_TTbar, eff_ex_WJets):
 
     effs["T_t"] = BTaggingEfficiency(b_T_t, c_WJets, l_T_t)
     effs["Tbar_t"] = BTaggingEfficiency(b_T_t, c_WJets, l_T_t)
-    effs
+    effs["QCD*"] = BTaggingEfficiency.default
     effs["WJets"] = BTaggingEfficiency(b_T_t, c_WJets, l_WJets)
     effs["W1Jets"] = BTaggingEfficiency(b_T_t, c_WJets, l_WJets)
     effs["W2Jets"] = BTaggingEfficiency(b_T_t, c_WJets, l_WJets)
@@ -40,14 +41,26 @@ def effs(eff_ex_T_t, eff_ex_TTbar, eff_ex_WJets):
     effs["WZ"] = BTaggingEfficiency(b_T_t, c_WJets, l_WJets)
     effs["ZZ"] = BTaggingEfficiency(b_T_t, c_WJets, l_WJets)
     effs["DYJets"] = BTaggingEfficiency(b_T_t, c_WJets, l_WJets)
-    effs
+
     effs["TTbar"] = BTaggingEfficiency(b_T_t, c_WJets, l_TTbar)
     effs["T_tW"] = BTaggingEfficiency(b_T_t, c_WJets, l_TTbar)
     effs["T_s"] = BTaggingEfficiency(b_T_t, c_WJets, l_TTbar)
     effs["Tbar_tW"] = BTaggingEfficiency(b_T_t, c_WJets, l_TTbar)
     effs["Tbar_s"] = BTaggingEfficiency(b_T_t, c_WJets, l_TTbar)
     return effs
-bTaggingEfficiencies_2J = effs(eff_ex_T_t_2J, eff_ex_TTbar_inclusive_2J, eff_ex_WJets_inclusive_2J)
-bTaggingEfficiencies_3J = effs(eff_ex_T_t_3J, eff_ex_TTbar_inclusive_3J, eff_ex_WJets_inclusive_3J)
-logging.info("efficiencies_2J: %s" % bTaggingEfficiencies_2J)
-logging.info("efficiencies_3J: %s" % bTaggingEfficiencies_3J)
+
+
+bTaggingEfficiencies = dict()
+bTaggingEfficiencies[2] = setEffs(eff_ex_T_t_2J, eff_ex_TTbar_inclusive_2J, eff_ex_WJets_inclusive_2J)
+bTaggingEfficiencies[3] = setEffs(eff_ex_T_t_3J, eff_ex_TTbar_inclusive_3J, eff_ex_WJets_inclusive_3J)
+
+def getEfficiencies(nJets, sample):
+    eff = bTaggingEfficiencies[nJets]
+    key = None
+    for key in eff.keys():
+        if fnmatch.fnmatch(sample, key):
+            break
+    if key is None:
+        raise Exception("B-tagging efficiencies not defined for sample %s" % sample)
+    logging.info("Matched efficiencies for key %s: %s" % (key, eff[key]))
+    return eff[key]
