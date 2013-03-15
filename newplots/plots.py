@@ -16,7 +16,7 @@ import random
 import string
 
 logger = logging.getLogger(__name__)
-def reweighted(plot_params, do_pu=True, do_btag=False):
+def reweighted(plot_params, do_pu=False, do_btag=True):
     out = []
     for pp in plot_params:
         out.append(pp)
@@ -31,7 +31,7 @@ def reweighted(plot_params, do_pu=True, do_btag=False):
         if do_btag:
             plot_bTagrew = drawfw.PlotParams(pp.var, pp.r,
                     bins=pp.bins, plotTitle=pp.plotTitle + " with bTag rew.",
-                    doLogY=pp.doLogY, weights=["bTagWeight_bTagWeightProducerNJMT"], vars_to_enable=pp.vars_to_enable, x_label=pp.x_label)
+                    doLogY=pp.doLogY, weights=Vars.b_weight["nominal"], vars_to_enable=pp.vars_to_enable, x_label=pp.x_label)
             out.append(plot_bTagrew)
 
         if do_pu and do_btag:
@@ -111,8 +111,8 @@ if __name__ == "__main__":
         #Plot the NJet distribution in the muon/ele channel
         jetPlots = [
             drawfw.PlotParams(
-                '_lightJetCount + _bJetCount', (1, 6),
-                bins=6, plotTitle="N_{jets}", vars_to_enable=["_lightJetCount", "_bJetCount"], x_label="N_{jets}", doLogY=True
+                Vars.n_jets, (1, 6),
+                bins=6, plotTitle="N_{jets}", vars_to_enable=["_lightJetCount", "_bJetCount"], doLogY=True
             )
         ]
 
@@ -124,7 +124,7 @@ if __name__ == "__main__":
 
     if args.doNBTags:
         #Plot the N-bTag distribution in 2J
-        jetPlots2J = [drawfw.PlotParams('_bJetCount', (0, 3), bins=4, plotTitle="N_{b-tags}", x_label="N_{b-tags}", doLogY=True)]
+        jetPlots2J = [drawfw.PlotParams(Vars.n_tags, (0, 3), bins=4, plotTitle="N_{b-tags}", x_label="N_{b-tags}", doLogY=True)]
         if args.doReweighted:
             jetPlots2J = reweighted(jetPlots2J)
         psMu += samples.pltcMu.plot(cutlist.jets_2J * cutlist.mu * cutlist.MTmu, jetPlots2J, cutDescription="mu channel, 2J, M_{t}(W)>50 GeV")
@@ -132,8 +132,8 @@ if __name__ == "__main__":
 
     if args.doMET:
         #MET/MtW distribution
-        metPlotsMu = [drawfw.PlotParams('_muAndMETMT', (0, 150), plotTitle="M_{t}(W)", x_label="M_{t}(W) [GeV]")]
-        metPlotsEle = [drawfw.PlotParams('_patMETs_0_Pt', (0, 150), plotTitle="MET", x_label="MET [GeV]")]
+        metPlotsMu = [drawfw.PlotParams(Vars.mtw_mu, (0, 150), plotTitle="M_{t}(W)")]
+        metPlotsEle = [drawfw.PlotParams(Vars.met, (0, 150), plotTitle="MET")]
         if args.doReweighted:
             metPlotsMu = reweighted(metPlotsMu)
         psMu += samples.pltcMu.plot(cutlist.mu * cutlist.jets_2J, metPlotsMu, cutDescription="mu channel, 2J")
@@ -197,7 +197,7 @@ if __name__ == "__main__":
             finalSelPlots = reweighted(finalSelPlots)
         for p in finalSelPlots:
             p.doChi2Test("mc", "data", chi2options={"weight_type":"WW"})
-        psMu += samples.pltcMu.plot(cutlist.finalMu_2J1T, finalSelPlots, cutDescription="mu channel, 2J1T, final selection")
+        psMu += samples.pltcMu.plot(cutlist.finalMu_2J1T, reversed(finalSelPlots), cutDescription="mu channel, 2J1T, final selection")
 
         #cutMTWDataDriven = Cut("mtwDataDriven", "_muonCount == 1 && _topCount == 1 && cosThetaLightJet_cosTheta==cosThetaLightJet_cosTheta && _goodJets_0_Pt>40 && _goodJets_1_Pt>40 && abs(_lowestBTagJet_0_Eta)>2.5 && _bJetCount == 1 && _lightJetCount == 1 && abs(_recoTop_0_Mass - 172) < 40 && _goodSignalMuons_0_relIso<0.12 && _lowestBTagJet_0_rms<0.025")
         #psMu += map(lambda x: replaceQCD(x, datadrivenQCD, datadrivenNonQCD), samples.pltcMu.plot(cutMTWDataDriven, mtwDataDrivenPlot, cutDescription=""))
