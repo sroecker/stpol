@@ -119,7 +119,7 @@ class Task:
         print str(stats)
 
 def maketime(s):
-    return datetime.datetime.fromtimestamp(time.mktime(time.strptime(s, "%Y-%d-%m %H:%M:%S")))
+    return datetime.datetime.fromtimestamp(time.mktime(time.strptime(s, "%Y-%m-%d %H:%M:%S")))
 class Job:
     def __init__(self,
         name,
