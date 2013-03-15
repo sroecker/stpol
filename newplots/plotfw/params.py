@@ -160,10 +160,16 @@ class Cuts:
 
     jets_1LJ = CutP('1LJ', 'int_lightJetCount__STPOLSEL2.obj == 1')
     jets_2LJ = CutP('2LJ', 'int_lightJetCount__STPOLSEL2.obj == 2')
-    jets_0LJ_true = CutP('0LJ', 'int_trueLJetCount__STPOLSEL2.obj == 0')
-    jets_1LJ_true = CutP('1LJ', 'int_trueLJetCount__STPOLSEL2.obj == 1')
+    jets_0LJ_true = CutP('0LJ_true', 'int_trueLJetCount__STPOLSEL2.obj == 0')
+    jets_1LJ_true = CutP('1LJ_true', 'int_trueLJetCount__STPOLSEL2.obj == 1')
     jets_2LJ_true = CutP('2LJ_true', 'int_trueLJetCount__STPOLSEL2.obj == 2')
     jets_3LJ_true = CutP('3LJ_true', 'int_trueLJetCount__STPOLSEL2.obj == 3')
+
+    jets_0CJ_true = CutP('0CJ_true', 'int_trueCJetCount__STPOLSEL2.obj == 0')
+    jets_1CJ_true = CutP('1CJ_true', 'int_trueCJetCount__STPOLSEL2.obj == 1')
+    jets_2CJ_true = CutP('2CJ_true', 'int_trueCJetCount__STPOLSEL2.obj == 2')
+    jets_3CJ_true = CutP('3CJ_true', 'int_trueCJetCount__STPOLSEL2.obj == 3')
+
 
     jets_OK = CutP(None, 'int_lightJetCount__STPOLSEL2.obj>=0') \
             * CutP(None, 'int_bJetCount__STPOLSEL2.obj>=0')
@@ -225,14 +231,14 @@ class Var:
     def __str__(self):
         return self.name + "(" + self.var + ")"
 
-    def getRelevantBranches(self):
+    def getUsedVariables(self):
         return self._relvars
 
     @staticmethod
     def match_branch(var):
-        m=re.match('([A-Za-z0-9_]*\.obj)(.*)', var)
+        m=re.match('([A-Za-z0-9_]*)\.obj(.*)', var)
         #logging.debug('In `%s` matching for `%s`', var, m.group(1))
-        return m.group(1)
+        return m.group(1) + "*"
 
 class Vars:
     cos_theta = Var("double_cosTheta_cosThetaLightJet_STPOLSEL2.obj", "cos #theta_{lj}")
@@ -242,9 +248,17 @@ class Vars:
     b_weight = dict()
     b_weight["nominal"] = Var("double_bTagWeightProducerNJMT_bTagWeight_STPOLSEL2.obj", "b-weight (nominal)")
 
+    pu_weight = Var("double_puWeightProducer_PUWeightNtrue_STPOLSEL2.obj", "PU weight")
+
     jet1_flavour = Var("abs(floats_goodJetsNTupleProducer_Eta_STPOLSEL2_partonFlavour.obj[0])", "|pdgID| of 1st jet", relvars=["floats_goodJetsNTupleProducer_Eta_STPOLSEL2_partonFlavour"])
     jet2_flavour = Var("abs(floats_goodJetsNTupleProducer_Eta_STPOLSEL2_partonFlavour.obj[1])", "|pdgID| of 2nd jet", relvars=["floats_goodJetsNTupleProducer_Eta_STPOLSEL2_partonFlavour"])
     jet3_flavour = Var("abs(floats_goodJetsNTupleProducer_Eta_STPOLSEL2_partonFlavour.obj[3])", "|pdgID| of 3rd jets", relvars=["floats_goodJetsNTupleProducer_Eta_STPOLSEL2_partonFlavour"])
+
+    n_jets = Var("int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj", "N_{jets}")
+    n_tags = Var("int_bJetCount__STPOLSEL2.obj", "N_{b-tags}")
+
+    mtw_mu = Var("double__muAndMETMT__STPOLSEL2.obj", "M_{t}(W #rightarrow #mu^{#pm} #nu_{#mu})", units="GeV")
+    met = Var("floats_patMETNTupleProducer_Pt_STPOLSEL2.obj[0]", "MET", units="GeV", relvars=["floats_patMETNTupleProducer_Pt_STPOLSEL2"])
 
     jet_counts_true  = dict()
     jet_counts_true["b"] = Var("int_trueBJetCount__STPOLSEL2.obj", "true b-jet count")
