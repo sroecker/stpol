@@ -83,14 +83,15 @@ def PartonStudySetup(process, untaggedSrc="fwdMostLightJet"):
     process.partonStudyTrueSequence = cms.Sequence(
         process.genParticleSelector *
         process.hasGenLepton *
-        process.cosThetaProducerTrueAll
-    )
-
-    process.partonStudyCompareSequence = cms.Sequence(
-        process.hasGenLepton *
+        process.cosThetaProducerTrueAll *
         process.cosThetaProducerTrueTop *
         process.cosThetaProducerTrueLepton *
-        process.cosThetaProducerTrueJet *
+        process.cosThetaProducerTrueJet
+    )
+
+    #Creates histograms (only available via TFileService)
+    process.partonStudyCompareSequence = cms.Sequence(
+        process.hasGenLepton *
         process.matrixCreator *
         process.leptonComparer *
         process.jetComparer *
