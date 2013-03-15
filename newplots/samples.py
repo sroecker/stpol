@@ -113,6 +113,10 @@ def load():
 		smpls.groups['TTbar'].pretty_name = "t#bar{t} (#rightarrow ll, lj)"
 	smpls.groups["WJets"].pretty_name = "W(#rightarrow l#nu) + jets(excl.)"
 	smpls.groups["QCD"].pretty_name = "QCD (MC)"
+	for sample in smpls.groups["QCD"].samples:
+		sample.disabled_weights += ["*"]
+	#for sample in smpls.getSamples()
+	#	sample.disabled_weights += ["PUWeightNtrue_puWeightProducer"]
 
 	#Get WJets inclusive + exclusive samples
 	smplsgenWJets = drawfw.SampleListGenerator(directory_mc)
