@@ -7,8 +7,12 @@ import glob
 import numpy
 import pdb
 import time
+import multiprocessing
+import fnmatch
+import types
 
 from plotfw.params import Cut # FIXME: temporary hack for backwards comp.
+from plotfw.params import Var # FIXME: temporary hack for backwards comp.
 from plotfw.params import parent_branch
 import plotfw.cross_sections
 import copy
@@ -148,7 +152,7 @@ class SingleSample(Sample):
 class MultiSample(Sample):
 	def __init__(self, fname, name=None, directory=None):
 		self.name = name if name is not None else fname
-		self.logger = logging.getLogger(self.name)
+		self.logger = logging.getLogger(self.name + "_" + multiprocessing.current_process().name)
 		self.fname = fname
 		self.directory = directory
 		self.disabled_weights = []
@@ -160,12 +164,15 @@ class MultiSample(Sample):
 	def __getstate__(self):
 		d = dict(self.__dict__)
 		del d['logger']
-		del d['entryListCache']
+		del d['tree']
+		#del d['entryListCache']
 		return d
 
 	def __setstate__(self, d):
 		self.__dict__.update(d)
-		self.logger = logging.getLogger(self.name)
+		self.logger = logging.getLogger(self.name + "_" + multiprocessing.current_process().name)
+		self._openTree()
+		#self.entryListCache = dict()
 
 	def branches(self):
 		return [br.GetName() for br in self.tree.GetListOfBranches()]
@@ -174,10 +181,15 @@ class MultiSample(Sample):
 		self.tree.SetBranchStatus("*", 0)
 		self.logger.debug("Switching variables on: %s" % vars_to_switch)
 		for var in vars_to_switch:
-			self.tree.SetBranchStatus(var, 1)
+			if isinstance(var, Var):
+				self.tree.SetBranchStatus(var.var, 1)
+			elif isinstance(var, types.StringType):
+				self.tree.SetBranchStatus(var, 1)
+			else:
+				raise TypeError("Var type not recognized")
 		return
 
-	def cacheEntryList(self, cut):
+	def cacheEntryList(self, cut, maxLines=None):
 		self._switchBranchesOn(cut.getUsedVariables())
 		self.tree.SetEntryList(0)
 		self.tree.SetProof(False)
@@ -188,7 +200,8 @@ class MultiSample(Sample):
 			if self.tree.GetEntries()==0 or self.frac_entries==0:
 				self.logger.warning("Requested entry list over 0 entries, skipping")
 				return 0
-			self.tree.Draw(">>%s" % entry_list_name, cut.cutStr, "entrylist", int(self.tree.GetEntries()*self.frac_entries))
+
+			self.tree.Draw(">>%s" % entry_list_name, cut.cutStr, "entrylist", self.tree.GetEntriesFast() if not maxLines else int(maxLines))
 			elist = ROOT.gROOT.Get(entry_list_name)
 			if not elist or elist is None or elist.GetN()==-1:
 				raise Exception("Failed to get entry list")
@@ -203,10 +216,10 @@ class MultiSample(Sample):
 		self.logger.debug("Cut result: %d events" % elist.GetN())
 		return elist.GetN()
 
-	def getColumn(self, var, cut, dtype="f"):
+	def getColumn(self, var, cut, dtype="float64", maxLines=None):
 		self.logger.info("Getting column %s" % var)
 
-		self.cacheEntryList(cut)
+		self.cacheEntryList(cut, maxLines)
 		self._switchBranchesOn([var.var])
 		N = self.tree.Draw(var.var, "", "goff")
 		if N <= 0:
@@ -214,7 +227,7 @@ class MultiSample(Sample):
 		buf = self.tree.GetV1()
 		arr = ROOT.TArrayD(N, buf)
 		self.logger.debug("Column retrieved, copying to numpy array")
-		out = numpy.copy(numpy.frombuffer(arr.GetArray(), count=arr.GetSize(), dtype=dtype))
+		out = numpy.copy(numpy.frombuffer(arr.GetArray(), count=arr.GetSize()))
 		return out
 
 
@@ -233,7 +246,7 @@ class MultiSample(Sample):
 			cut = plotfw.params.Cuts.inital
 
 		n_cut = self.cacheEntryList(cut)
-		self._switchBranchesOn(plot_params.var.getRelevantBranches())
+		self._switchBranchesOn(plot_params.var.getUsedVariables() + plot_params.getUsedWeights(disabled_weights=self.disabled_weights))
 
 		if proof:
 			self.logger.debug("Output will be in ROOT.TProof instance %s" % str(proof))
@@ -324,6 +337,7 @@ class DataSample(MultiSample):
 		#super(DataSample,self).__init__(fname, name=name if name is not None else fname, directory=directory)
 		super(DataSample,self).__init__(fname, name=name, directory=directory)
 		self.luminosity = float(lumi)
+		self.disabled_weights = ["*"]
 
 # Group of samples with the same color and label
 class SampleGroup:
@@ -440,12 +454,14 @@ class PlotParams(object):
 		self._name = name if name is not None else filter_alnum(self.getVarStr())
 		self.doLogY = doLogY
 		self._ofname = ofname
-		if isinstance(weights, types.ListType) and not isinstance(weights, types.StringTypes):
+		if isinstance(weights, types.ListType):
 			self.weights = weights
-		elif isinstance(weights, types.StringTypes):
+		elif isinstance(weights, params.Var):
 			self.weights = [weights]
-		else:
+		elif not weights:
 			self.weights = None
+		else:
+			raise TypeError("Unsuitable type for weights: %s" % weights)
 		self.x_label = x_label if x_label is not None else self.var.name + " [" + self.var.units + "]"
 		if vars_to_enable is None:
 			self.vars_to_enable = [parent_branch(self.getVarStr())]
@@ -461,13 +477,27 @@ class PlotParams(object):
 	def getVarStr(self):
 		return self.var.var
 
-	def getWeightStr(self, disabled_weights=[]):
-		if self.weights is None:
-			return "1.0"
-		else:
-			weights = list(set(self.weights).difference(set(disabled_weights)))
-			return "*".join(weights)
+	"""
+	disabled_weights is a list of strings containing the wildcard matches of the weights to be disabled
+	"""
 
+	def getUsedWeights(self, disabled_weights=[]):
+		if self.weights is None:
+			return []
+		else:
+			disabled_weight_matches = []
+			for dw in disabled_weights:
+				matching_weights = [w for w in self.weights if fnmatch.fnmatch(w.var, dw)]
+				disabled_weight_matches += matching_weights
+			var_list = [w for w in list(set(self.weights).difference(set(disabled_weight_matches)))]
+			return var_list
+
+	def getWeightStr(self, disabled_weights=[]):
+		weight_vars = [w.var for w in self.getUsedWeights(disabled_weights)]
+		if len(weight_vars)>0:
+			return "*".join(weight_vars)
+		else:
+			return "1.0"
 	def putStats(self):
 		self.stat_opts = "legend"
 
@@ -477,11 +507,12 @@ class PlotParams(object):
 		self.chi2_b = group_b_name
 		self.chi2options = chi2options
 
-	def getVars(self):
+	def getBranches(self):
 		vars_to_switch = []
 		vars_to_switch += self.vars_to_enable
 		if self.weights is not None:
-			vars_to_switch += self.weights
+			for w in self.weights:
+				vars_to_switch += w.var
 
 		vars_to_switch = [parent_branch(v) for v in vars_to_switch]
 		return vars_to_switch
