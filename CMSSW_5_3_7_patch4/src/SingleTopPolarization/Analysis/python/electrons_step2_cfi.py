@@ -233,12 +233,12 @@ def ElectronPath(process, conf):
         )
 
 
-    #if conf.isMC and conf.channel == conf.Channel.signal:
+    if conf.isMC and conf.channel == conf.Channel.signal:
         #Put the parton level study after the top reco sequence.
-        #process.elePath.insert(
-        #    process.elePath.index(process.topRecoSequenceEle)+1,
-        #    process.partonStudyCompareSequence
-        #)
+        process.elePath.insert(
+            process.elePath.index(process.topRecoSequenceEle)+1,
+            process.partonStudyCompareSequence
+        )
 
     eventCounting.countAfter(process, process.elePath,
         [
