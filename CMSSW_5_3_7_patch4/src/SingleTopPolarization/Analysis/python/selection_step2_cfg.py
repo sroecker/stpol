@@ -727,6 +727,7 @@ def SingleTopStep2():
                     #["bDiscriminatorCSV_MVA", "bDiscriminator('%s')" % Config.Jets.BTagDiscriminant.CSV_MVA],
                     ["rms", "userFloat('rms')"],
                     ["partonFlavour", "partonFlavour()"],
+                    #["genJetFlavour", "? genJet()>0 ? (genJet()->pdgId()) : 0"], #FIXME
                     ["deltaR", "userFloat('deltaR')"]
                 ]
         )
@@ -788,18 +789,11 @@ def SingleTopStep2():
         )
         process.pdfPath = cms.Path(
               process.pdfInfo1
-            * process.pdfInfo2
-            * process.pdfInfo3
-            * process.pdfInfo4
-            * process.pdfInfo5
+            #* process.pdfInfo2
+            #* process.pdfInfo3
+            #* process.pdfInfo4
+            #* process.pdfInfo5
         )
-    if Config.isMC and options.doGenParticlePath:
-        from SingleTopPolarization.Analysis.partonStudy_step2_cfi import PartonStudySetup
-        PartonStudySetup(process)
-        process.partonPath = cms.Path()
-        #process.partonPath = cms.Path(process.commonPartonSequence)
-        if Config.channel==Config.Channel.signal:
-            process.partonPath += process.partonStudyTrueSequence
 
 
     if Config.doDebug:
@@ -815,6 +809,14 @@ def SingleTopStep2():
         "CollectionSizeProducer<reco::Candidate>",
         src = cms.InputTag("looseVetoElectrons")
     )
+
+    if Config.isMC and options.doGenParticlePath:
+        from SingleTopPolarization.Analysis.partonStudy_step2_cfi import PartonStudySetup
+        PartonStudySetup(process)
+        process.partonPath = cms.Path()
+        #process.partonPath = cms.Path(process.commonPartonSequence)
+        if Config.channel==Config.Channel.signal:
+            process.partonPath += process.partonStudyTrueSequence
 
     if Config.doMuon:
         from SingleTopPolarization.Analysis.muons_step2_cfi import MuonPath
@@ -841,6 +843,7 @@ def SingleTopStep2():
         if Config.doElectron:
              process.elePath.insert(0, process.puWeightProducer)
 
+
     process.offlinePVCount = cms.EDProducer(
         "CollectionSizeProducer<reco::Vertex>",
         src = cms.InputTag("offlinePrimaryVertices")
@@ -854,8 +857,10 @@ def SingleTopStep2():
        # process.treeSequence *
         process.treeSequenceNew
     )
+
     if Config.isMC and Config.subChannel=="WJets":
         process.treePath += process.flavourAnalyzer
+
 
     #-----------------------------------------------
     # Outpath
@@ -885,6 +890,9 @@ def SingleTopStep2():
                 'keep floats_lowestBTagJetNTupleProducer_*_STPOLSEL2',
                 'keep floats_highestBTagJetNTupleProducer_*_STPOLSEL2',
                 'keep double_*__STPOLSEL2',
+                'keep float_*__STPOLSEL2',
+                'keep double_*_*_STPOLSEL2',
+                'keep float_*_*_STPOLSEL2',
                 'keep double_cosTheta_*_STPOLSEL2',
                 'keep double_cosThetaProducerTrueAll_*_STPOLSEL2',
                 'keep double_cosThetaProducerTrueTop_*_STPOLSEL2',
@@ -892,6 +900,7 @@ def SingleTopStep2():
                 'keep double_cosThetaProducerTrueJet_*_STPOLSEL2',
                 'keep double_bTagWeightProducerNJMT_*_STPOLSEL2',
                 'keep int_*__STPOLSEL2',
+                'keep int_*_*_STPOLSEL2',
                 'keep *_pdfInfo1_*_STPOLSEL2',
                 'keep *_pdfInfo2_*_STPOLSEL2',
                 'keep *_pdfInfo3_*_STPOLSEL2',
