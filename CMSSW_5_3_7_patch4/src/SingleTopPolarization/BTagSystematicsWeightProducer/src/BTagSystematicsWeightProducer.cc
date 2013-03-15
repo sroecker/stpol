@@ -506,7 +506,7 @@ BTagSystematicsWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup
                 double e = eff(eff_val, inComb);
                 
                 //per-event jet probabilities multiply
-                p_mc = p_mc * e;
+                p_mc = p_mc * eff(eff_val, inComb);
                 
                 //Calculate the pt, eta and flavour dependent scale factors, including the flavour-dependent variations.
                 double sfUp, sfDown;
@@ -515,20 +515,20 @@ BTagSystematicsWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup
                 if (inComb) LogDebug("jetLoop") << "\t\tpass b-tagging e_tag=" << e << " sf=" << sf << " sfUp=" << sfUp << " sfDown=" << sfDown;
                 else LogDebug("jetLoop") << "\t\tfail b-tagging e_mistag=" << e << " sf=" << sf << " sfUp=" << sfUp << " sfDown=" << sfDown;
 
-                p_data = p_data * e * sf;
+                p_data = p_data * eff(sf * eff_val, inComb); 
                 LogDebug("jetLoop") << "\t\tp_mc=" << p_mc << " p_data=" << p_data;
                 if( flavour == BTagSystematicsWeightProducer::b || flavour == BTagSystematicsWeightProducer::c ) {
-                    p_data_lUp = p_data_lUp * e * sf;
-                    p_data_lDown = p_data_lDown * e * sf;
-                    p_data_bcUp = p_data_bcUp * e * sfUp;
-                    p_data_bcDown = p_data_bcDown * e * sfDown;
+                    p_data_lUp = p_data_lUp * eff(sf * eff_val, inComb); 
+                    p_data_lDown = p_data_lDown * eff(sf * eff_val, inComb); 
+                    p_data_bcUp = p_data_bcUp * eff(sfUp * eff_val, inComb); 
+                    p_data_bcDown = p_data_bcDown * eff(sfDown * eff_val, inComb); 
                     LogDebug("jetLoop") << "\t\tp_data_bcUp=" << p_data_bcUp << " p_data_bcDown=" << p_data_bcDown;
                 }
                 else if(flavour == BTagSystematicsWeightProducer::l) {
-                    p_data_lUp = p_data_lUp * e * sfUp;
-                    p_data_lDown = p_data_lDown * e * sfDown;
-                    p_data_bcUp = p_data_bcUp * e * sf;
-                    p_data_bcDown = p_data_bcDown * e * sf;
+                    p_data_lUp = p_data_lUp * eff(sfUp * eff_val, inComb);
+                    p_data_lDown = p_data_lDown * eff(sfDown * eff_val, inComb); 
+                    p_data_bcUp = p_data_bcUp * eff(sf * eff_val, inComb);
+                    p_data_bcDown = p_data_bcDown * eff(sf * eff_val, inComb); 
                     LogDebug("jetLoop") << "\t\tp_data_lUp=" << p_data_lUp << " p_data_lDown=" << p_data_lDown;
                 }
             };
