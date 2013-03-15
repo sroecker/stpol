@@ -25,6 +25,13 @@ def getProofOutput(proof, name):
 def mp_applyCut(s):
 	return PlotCreator._applyCut(s[0], s[1], s[2], s[3], s[4])
 
+def drawSample(args):
+	logger.debug("Started multiprocessing draw on worker %s" % multiprocessing.current_process().name)
+	(sample, hist_name, plot_params, cut) = args
+	n_filled, sample_hist = sample.drawHist(hist_name, plot_params, cut, None)
+	logger.debug("Done multiprocessing draw on worker %s " % multiprocessing.current_process().name)
+	return (sample.name, n_filled, pickle.dumps(sample_hist))
+
 
 class PlotCreator(object):
 	def __init__(self, frac = 1.0, n_cores=10, mode="singlecore"):
@@ -220,7 +227,7 @@ class StackPlotCreator(PlotCreator):
 		mc_int = 0
 		plot.mc_hists = []
 		plot.mc_group_hists = dict()
-
+		logger.info("Total luminosity: %f" % total_luminosity)
 		for group_name, group in self._mcs.groups.items():
 			group_hist_name = 'hist_%s_mc_group_%s'%(plotname, group_name)
 			mc_group_hist = ROOT.TH1F(group_hist_name, group.pretty_name, plot_params.hbins, plot_params.hmin, plot_params.hmax)
@@ -235,17 +242,14 @@ class StackPlotCreator(PlotCreator):
 				plot.log.setVariable(sample.name, 'crsec', sample.xs)
 				plot.log.setVariable(sample.name, 'fname', sample.fname)
 				hist_name = group_hist_name + "_" + sample.name
-
 				mc_filled, mc_hist = sample.drawHist(group_hist_name, plot_params, cut=cut, proof=self.proof, lumi=total_luminosity)
 				mc_hist.filled_count = mc_filled
 				plot.log.setVariable(sample.name, 'filled', mc_filled)
 
-				# MC scaling to xs
+				# MC scaling to xs (Already done by drawHist on an as-need basis)
 				expected_events = sample.xs * effective_lumi
 				total_events = sample.getTotalEvents()
 				scale_factor = float(expected_events)/float(total_events)
-
-				sample.scaleToLumi(mc_hist, effective_lumi)
 
 				plot.mc_hists.append(mc_hist)
 				mc_group_hist.Add(mc_hist)
@@ -253,6 +257,7 @@ class StackPlotCreator(PlotCreator):
 
 				err = ROOT.Double()
 				mc_int = mc_hist.IntegralAndError(1, mc_hist.GetNbinsX(), err)
+				logger.debug("Histogram integral = %.2f" % mc_int)
 				plot.log.setVariable(sample.name, 'totev', total_events)
 				plot.log.setVariable(sample.name, 'expev', expected_events)
 				plot.log.setVariable(sample.name, 'scf', scale_factor)
@@ -324,16 +329,24 @@ class ShapePlotCreator(PlotCreator):
 			hist.SetLineWidth(3)
 
 			filled_tot = 0.0
-			for sample in group.getSamples():
 
-				plot.log.addProcess(sample.name)
+			n_samples = len(group.getSamples())
+			args = zip(group.getSamples(), n_samples*[hist_name], n_samples*[plot_params], n_samples*[cut])
+			if self.run_multicore:
+				p = multiprocessing.Pool(8)
+				res = p.map(drawSample, args)
+			else:
+				res = map(drawSample, args)
 
-				n_filled, sample_hist = sample.drawHist(hist_name, plot_params, cut, self.proof)
+			res = map(lambda x: (x[0], x[1], pickle.loads(x[2])), res)
+
+			for sample_name, n_filled, sample_hist in res:
+				plot.log.addProcess(sample_name)
+				#n_filled, sample_hist = sample.drawHist(hist_name, plot_params, cut, self.proof)
 				err = ROOT.Double()
 				integral = sample_hist.IntegralAndError(1, sample_hist.GetNbinsX(), err)
-				plot.log.setVariable(sample.name, 'int', integral)
-				plot.log.setVariable(sample.name, 'int_err', float(err))
-
+				plot.log.setVariable(sample_name, 'int', integral)
+				plot.log.setVariable(sample_name, 'int_err', float(err))
 				hist.Add(sample_hist)
 
 			if plot_params.normalize_to == "unity":
@@ -490,7 +503,11 @@ class ShapePlot(Plot):
 	def draw(self):
 		first = True
 		hists = self._hists.values()
-		hists[0].SetMaximum(1.1*self._maxbin)
+
+		max_bin = max([h.GetMaximum() for h in self._hists.values()])
+		min_bin = min([h.GetMinimum() for h in self._hists.values()])
+		hists[0].SetMaximum(1.5*max_bin)
+		hists[0].SetMinimum(0.5*min_bin)
 		hists[0].GetXaxis().SetTitle(self._plot_params.x_label)
 		for hist in hists:
 			hist.Draw('E1' if first else 'E1 SAME')
