@@ -1,4 +1,5 @@
-sbatch runOnCluster.sh -e finalsel reweight
-sbatch runOnCluster.sh -e njets reweight
-sbatch runOnCluster.sh -e ntags reweight
-sbatch runOnCluster.sh -e topmass reweight
+sbatch runOnCluster.sh --doFinalSel --doReweight
+sbatch runOnCluster.sh --doMET --doReweight
+sbatch runOnCluster.sh --doNJets --doReweight
+sbatch runOnCluster.sh --doNBTags --doReweight
+sbatch runOnCluster.sh --doTopMass --doReweight
