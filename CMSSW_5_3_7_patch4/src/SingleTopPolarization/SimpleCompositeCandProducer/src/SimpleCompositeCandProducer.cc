@@ -107,27 +107,27 @@ SimpleCompositeCandProducer::produce(edm::Event& iEvent, const edm::EventSetup& 
 
    std::auto_ptr<std::vector<reco::CompositeCandidate> > pOut(new std::vector<reco::CompositeCandidate>());
 
-   auto* outCand = new reco::CompositeCandidate();
+   auto outCand = reco::CompositeCandidate();
    for (auto& source : sources) {
     Handle<View<reco::Candidate> > pIn;
     iEvent.getByLabel(source, pIn);
     int i = 0;
     for (auto& particle : *pIn) {
       LogDebug("produce()") << "Adding particle " << i << " from collection "  << source.label() << " as daughter";
-      outCand->addDaughter(particle);
+      outCand.addDaughter(particle);
       i++;
     }
    }
    LogDebug("produce()") << "Adding 4-momenta of daughters";
    AddFourMomenta adder;
-   adder.set(*outCand);
+   adder.set(outCand);
    
    //Set the p4 manually
    //const math::PtEtaPhiMLorentzVectorD p4(0.0, 0.0, 0.0, 0.0);
    //outCand->setP4(p4);
-   LogDebug("produce()") << "Particle 4-momentum: " << ") pt (" << outCand->p4().Pt() << ") eta(" << outCand->p4().Eta() << ") phi(" << outCand->p4().Phi() << ") Et" << outCand->p4().Et();
+   LogDebug("produce()") << "Particle 4-momentum: " << ") pt (" << outCand.p4().Pt() << ") eta(" << outCand.p4().Eta() << ") phi(" << outCand.p4().Phi() << ") Et" << outCand.p4().Et();
    
-   pOut->push_back(*outCand);
+   pOut->push_back(outCand);
    iEvent.put(pOut);
 }
 

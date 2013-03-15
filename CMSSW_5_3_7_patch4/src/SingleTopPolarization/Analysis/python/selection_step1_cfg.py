@@ -126,6 +126,8 @@ def SingleTopStep1(
   process.patMuons.pfMuonSource = cms.InputTag("pfMuons")
   process.muonMatch.src = cms.InputTag("pfMuons")
 
+  process.selectedPatMuons.cut = "pt>20 && abs(eta)<3.0"
+
   # muon ID production (essentially track count embedding) must be here
   # because tracks get dropped from the collection after this step, resulting
   # in null ptrs.
@@ -134,6 +136,10 @@ def SingleTopStep1(
     muonSrc = cms.InputTag("selectedPatMuons"),
     primaryVertexSource = cms.InputTag("goodOfflinePrimaryVertices")
   )
+
+  #process.muonClones = cms.EDProducer("MuonShallowCloneProducer",
+  #    src = cms.InputTag("selectedPatMuons")
+  #)
 
   #-------------------------------------------------
   # Electrons
@@ -153,11 +159,16 @@ def SingleTopStep1(
   process.patElectrons.electronIDSources.mvaTrigV0 = cms.InputTag("mvaTrigV0")
   process.patElectrons.electronIDSources.mvaNonTrigV0 = cms.InputTag("mvaNonTrigV0")
   process.patPF2PATSequence.replace(process.patElectrons, process.mvaID * process.patElectrons)
+  process.selectedPatElectrons.cut = "pt>25 && abs(eta)<3.0"
+
   process.electronsWithID = cms.EDProducer(
     'ElectronIDProducer',
     electronSrc = cms.InputTag("selectedPatElectrons"),
     primaryVertexSource = cms.InputTag("goodOfflinePrimaryVertices")
   )
+  #process.electronClones = cms.EDProducer("ElectronShallowCloneProducer",
+  #    src = cms.InputTag("selectedPatElectrons")
+  #)
 
   #if not maxLeptonIso is None:
   #    process.pfIsolatedElectrons.isolationCut = maxLeptonIso
@@ -188,9 +199,12 @@ def SingleTopStep1(
   #pfNoTau == True => remove taus from jets
   #process.pfNoTau.enable = noTau
 
-  #process.selectedPatJets.cut = cms.string("pt>30")
+  process.selectedPatJets.cut = cms.string("pt>30 && abs(eta)<5.0")
   process.load("CMGTools.External.pujetidsequence_cff")
   process.patPF2PATSequence += process.puJetIdSqeuence
+  #process.jetClones = cms.EDProducer("CaloJetShallowCloneProducer",
+  #    src = cms.InputTag("seletedPatJets")
+  #)
 
   #-----------------------------------------------
   # Slimming
@@ -203,22 +217,26 @@ def SingleTopStep1(
           'drop *',
 
           'keep edmMergeableCounter_*_*_*', # Keep the lumi-block counter information
-          'keep edmTriggerResults_TriggerResults__HLT', #Keep the trigger results
+          'keep edmTriggerResults_TriggerResults__*', #Keep the trigger results
           'keep *_genParticles__*', #keep all the genParticles
-          'keep recoVertexs_offlinePrimaryVertices__RECO', #keep the offline PV-s
+          'keep recoVertexs_offlinePrimaryVertices__*', #keep the offline PV-s
+          'keep recoVertexs_goodOfflinePrimaryVertices__*', #keep the offline PV-s
 
           # Jets
-          'keep patJets_selectedPatJets__PAT',
-          'keep double_*_rho_RECO', #For rho-corr rel iso
-          'keep recoGenJets_selectedPatJets_genJets_PAT', #For Jet MC smearing we need to keep the genJets
+          'keep patJets_selectedPatJets__*',
+          'keep double_*_rho_*', #For rho-corr rel iso
+          'keep recoGenJets_selectedPatJets_genJets_*', #For Jet MC smearing we need to keep the genJets
           "keep *_puJetId_*_*", # input variables
           "keep *_puJetMva_*_*", # final MVAs and working point flags
+          'keep *_jetClones__PAT',
 
           # Muons
           'keep patMuons_muonsWithID__PAT',
+          'keep *_muonClones__PAT',
 
           # Electrons
           'keep patElectrons_electronsWithID__PAT',
+          'keep *_electronClones__PAT',
 
           # METs
           'keep patMETs_patMETs__PAT',
@@ -243,6 +261,13 @@ def SingleTopStep1(
           'keep recoTracks_generalTracks__RECO',
           'keep recoBeamSpot_offlineBeamSpot__RECO',
           'keep recoMuons_muons__RECO',
+
+          'keep int_*__PAT',
+          'keep ints_*__PAT',
+          'keep double_*__PAT',
+          'keep doubles_*__PAT',
+          'keep float_*__PAT',
+          'keep floats_*__PAT',
       ])
 
   #FIXME: is this correct?
@@ -257,6 +282,15 @@ def SingleTopStep1(
   # Paths
   #-------------------------------------------------
 
+  process.goodOfflinePVCount = cms.EDProducer(
+      "CollectionSizeProducer<reco::Vertex>",
+      src = cms.InputTag("goodOfflinePrimaryVertices")
+  )
+
+  process.preCalcSequences = cms.Sequence(
+    process.goodOfflinePVCount
+  )
+
   process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatMuons) + 1, process.muonsWithID)
   process.patPF2PATSequence.insert(process.patPF2PATSequence.index(process.selectedPatElectrons) + 1, process.electronsWithID)
 
@@ -266,12 +300,20 @@ def SingleTopStep1(
     process.singleTopPathStep1Mu = cms.Path(
       process.goodOfflinePrimaryVertices
       * process.patPF2PATSequence
+      * process.preCalcSequences
+      #* process.muonClones
+      #* process.electronClones
+      #* process.jetClones
     )
 
   if options.doElectron:
     process.singleTopPathStep1Ele = cms.Path(
       process.goodOfflinePrimaryVertices
       * process.patPF2PATSequence
+      * process.preCalcSequences
+      #* process.muonClones
+      #* process.electronClones
+      #* process.jetClones
     )
 
   if options.doMuon:

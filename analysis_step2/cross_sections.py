@@ -9,7 +9,7 @@ xs = {
 	, "Tbar_s": 1.76
 	, "T_tW": 11.1
 	, "Tbar_tW": 11.1
-	, "TTbar": 234
+	, "TTbar": 234 #inclusive
 	, "WJets": 36257.2 #30400.0 LO
 
 	#FIXME: ttbar branching ratio
@@ -22,8 +22,8 @@ xs = {
 	, "W3Jets": 519.0 * WJets_lo_nnlo_scale_factor
 	, "W4Jets": 214.0 * WJets_lo_nnlo_scale_factor
 
-    #http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=*GJets_HT-*_8TeV-madgraph*
-    , "GJets1": 960.5 #200To400
+	#http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=*GJets_HT-*_8TeV-madgraph*
+	, "GJets1": 960.5 #200To400
 	, "GJets2": 107.5 #400ToInf
 
 	, "DYJets": 3503.71

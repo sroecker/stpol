@@ -28,6 +28,8 @@ class Config(C):
 
     channel = Channel.background
 
+    metSource = "patMETs"
+
     #Whether to run the muon channel
     doMuon = True
 
@@ -47,7 +49,7 @@ class Config(C):
     doDebug = False
 
     #Whether to output CMSSW-specific trees
-    skipPatTupleOutput = True
+    skipPatTupleOutput = False
 
     #Whether to run over grid (without command-line arguments)
     onGrid = False
@@ -117,6 +119,7 @@ class Config(C):
         pt = "ecalDrivenMomentum.Pt()"
         mvaCut = 0.5
         cutOnMVA = True
+        cutWWlnuj = False #set cutOnMVA = False and cutOnIso = False to use this selection
         relIsoCutRangeIsolatedRegion = [0.0, 0.1]
         relIsoCutRangeAntiIsolatedRegion = [0.1, 0.5]
         looseVetoRelIsoCut = 0.15
@@ -126,7 +129,9 @@ class Config(C):
 
     Electrons.relIsoType = Leptons.RelativeIsolation.rhoCorrRelIso
     Muons.relIsoType = Leptons.RelativeIsolation.deltaBetaCorrRelIso
-
+    Electrons.cutOnMVA = False
+    Electrons.cutOnIso = False
+    Electrons.cutWWlnuj = True
     # @classmethod
     # def toStr(c):
     #     s = "channel = %s" % Config.channel

@@ -128,8 +128,8 @@ MuonEfficiencyProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
    for ( uint i = 0; i < muons->size(); ++i ) {
       const pat::Muon& muon = (pat::Muon&)muons->at(i);
    
-      std::cout << "eta" << muon.eta() << std::endl;
-      std::cout << "iso" << muon.userFloat("deltaBetaCorrRelIso") << std::endl;
+      //std::cout << "eta" << muon.eta() << std::endl;
+      //std::cout << "iso" << muon.userFloat("deltaBetaCorrRelIso") << std::endl;
       
       if(abs(muon.eta())<0.9){
          weightID = 0.9939;

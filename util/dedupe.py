@@ -1,7 +1,7 @@
 import re
 import sys
 import pdb
-pat = re.compile(".*_([0-9]+)_([0-9]+)_.root")
+pat = re.compile(".*_([0-9]+)_([0-9]+)_.*\.root")
 lines = open(sys.argv[1]).readlines()
 lines.sort()
 

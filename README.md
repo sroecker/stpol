@@ -15,6 +15,8 @@ If you also wish to commit, you'll have to have a github account and be added to
 ### Make sure you have sourced cmsset
 
 >source /cvmfs/cms.cern.ch/cmsset_default.sh
+or by using the following script
+>source setenv.sh
 
 ### Create the workspace
 
@@ -26,9 +28,9 @@ Run the following to create the CMSSW directory, link the SingleTopPolarization 
 The generic analysis pathway is as follows, all the relevant *.py files are in $CMSSW_BASE/src/SingleTopPolarization/Analysis/python/:
 
 0. *selection_step1_cfg.py* for initial event skimming and slimming (both optional), PF2PAT sequence and object ID
-1. *selection_step2_cfg.py* for event selection according 1 lepton, MET, N-Jet and M-tag.
+1. *selection_step2_cfg.py* for single-top specific event selection and reconstruction according 1 lepton, MET, N-Jet and M-tag.
 
-For convenience, the steps have been wrapped as methods that are called from the files *step1_cfg.py* and *step2_cfg.py*.
+For convenience, the steps have been wrapped as methods that are called from the files *runconfs/step1_newCmdLine_cfg.py* and *runconfs/step2_newCmdLine_cfg.py*.
 
 #SYNC INPUT FILES
 
@@ -53,23 +55,22 @@ The most important memory errors are in the end of vglog.out
 
 #RUNNING
 
-##TTBar estimation
-The goal is to select a ttbar enriched region and compare the distribution of some interesting variable to data.
->cmsRun runconfs/step2_cfg.py mc hlt mu ele nJets=3 nBTags=1 inputFiles_load=fileLists/TTBar.txt maxEvents=10000 outputFile=stpol_TTBar_3J1T.root
-
-This will give you *stpol_TTBar_3J1T_trees.root* which contain the trees for the ttbar-enriched region.
-
 ##Sync
 https://twiki.cern.ch/twiki/bin/view/CMS/SyncSingleTopLeptonJets2012
 >cmsRun runconfs/step1_sync_cfg.py inputFiles=/store/mc/Summer12_DR53X/T_t-channel_TuneZ2star_8TeV-powheg-tauola/AODSIM/PU_S10_START53_V7A-v1/0000/0059C6F3-7CDC-E111-B4CB-001A92811726.root outputFile=sync_step1/sync_T_t_lepIso02_newIso.root &> log1
 
 ##CRAB
-To create the crab.cfg files to run over step1-data, run in the base directory
->python2.7 $CMSSW_BASE/../util/datasets.py -t your_tag -T $CMSSW_BASE/../crabs/crab_Data_step1.cfg -d S1D -o your_crab_output_dir
-To create the crab.cfg files to run over step2-mc (iso/antiIso), run in the base directory
->python2.7 $CMSSW_BASE/../util/datasets.py -t stpol_step2_Iso -T $CMSSW_BASE/../crabs/crab_MC_step2_local_Iso.cfg -d S2newMC -o crabs/step2_MC_Iso 
->python2.7 $CMSSW_BASE/../util/datasets.py -t stpol_step2_antiIso -T $CMSSW_BASE/../crabs/crab_MC_step2_local_antiIso.cfg -d S2newMC -o crabs/step2_MC_antiIso 
->python2.7 $CMSSW_BASE/../util/datasets.py -t your_tag -T $CMSSW_BASE/../crabs/crab_Data_step2_Iso.cfg -d S2D -o crabs/step2_Data_Iso
+To create the crab.cfg files to run the PAT sequences (step1)
+>python $CMSSW_BASE/../util/datasets.py -t your_tag -T $CMSSW_BASE/../crabs/crab_Data_step1.cfg -d S1D -o crabs/step1_Data 
+
+#To run the met uncertainty precalculation (step1B)
+>python $CMSSW_BASE/../util/datasets.py -t stpol_step1B -T /home/joosep/singletop/stpol/crabs/crab_MC_step1B_local.cfg -d S2newMC -o crabs/step1B_MC_Mar8
+
+To create the crab.cfg files to run over the final analysis (step2) 
+>python $CMSSW_BASE/../util/datasets.py -t stpol_step2_Iso -T $CMSSW_BASE/../crabs/crab_MC_step2_local_Iso.cfg -d S2MC -o crabs/step2_MC_Iso 
+>python $CMSSW_BASE/../util/datasets.py -t stpol_step2_antiIso -T $CMSSW_BASE/../crabs/crab_MC_step2_local_antiIso.cfg -d S2MC -o crabs/step2_MC_antiIso 
+>python $CMSSW_BASE/../util/datasets.py -t stpol_step2_Iso -T $CMSSW_BASE/../crabs/crab_Data_step2_Iso.cfg -d S2D -o crabs/step2_Data_Iso
+>python $CMSSW_BASE/../util/datasets.py -t stpol_step2_antiIso -T $CMSSW_BASE/../crabs/crab_Data_step2_antiIso.cfg -d S2D -o crabs/step2_Data_antiIso
 
 ###Using lumiCalc2.py
 To calculate the integrated luminosity from crab jobs, do the following

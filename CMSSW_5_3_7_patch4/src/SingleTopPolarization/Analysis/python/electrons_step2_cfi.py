@@ -17,6 +17,19 @@ def ElectronSetup(process, conf):
     goodElectronCut += "&& passConversionVeto()"
     #goodElectronCut += "&& (0.0 < electronID('mvaTrigV0') < 1.0)"
     goodSignalElectronCut = goodElectronCut
+    if conf.Electrons.cutWWlnuj:
+        if conf.Electrons.reverseIsoCut:
+            goodSignalElectronCut += ' && userFloat("{0}") >= {1} && userFloat("{0}") < {2}'.format(
+                conf.Electrons.relIsoType,
+                conf.Electrons.relIsoCutRangeAntiIsolatedRegion[0],
+                conf.Electrons.relIsoCutRangeAntiIsolatedRegion[1]
+                )
+        else:
+            goodSignalElectronCut += """
+            && ( (abs(eta) < 0.8 && electronID('mvaTrigV0') > 0.913 && userFloat('{0}') < 0.105) ||
+            ( abs(eta) > 0.8 && abs(eta) < 1.479 && electronID('mvaTrigV0') > 0.964 && userFloat('{0}') < 0.178 ) ||
+            ( abs(eta) > 1.479 && electronID('mvaTrigV0') > 0.899 && userFloat('{0}') < 0.150 ) )""".format(conf.Electrons.relIsoType)
+
     if conf.Electrons.cutOnMVA:
         goodSignalElectronCut += "&& electronID('mvaTrigV0') > %f" % conf.Electrons.mvaCut
     goodSignalElectronCut += "&& abs(userFloat('dxy')) < 0.02"
@@ -159,8 +172,8 @@ def ElectronPath(process, conf):
     ))
 
     process.elePath = cms.Path(
-        process.muonsWithIso *
-        process.elesWithIso *
+        process.muIsoSequence *
+        process.eleIsoSequence *
 
         process.elePathPreCount *
 
@@ -184,8 +197,8 @@ def ElectronPath(process, conf):
 
         process.mBTags *
 
-        process.topRecoSequenceEle *
-        process.efficiencyAnalyzerEle
+        process.topRecoSequenceEle
+#        process.efficiencyAnalyzerEle
     )
 
     #Insert debugging modules for printout
