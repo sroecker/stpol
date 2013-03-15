@@ -20,7 +20,7 @@
 
 // system include files
 #include <memory>
-
+#include <TMath.h>
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDProducer.h"
@@ -87,6 +87,7 @@ GenParticleSelector::GenParticleSelector(const edm::ParameterSet& iConfig)
    produces<std::vector<GenParticle>>("trueLightJet");
    produces<std::vector<GenParticle>>("trueLepton");
    produces<std::vector<GenParticle>>("trueNeutrino");
+   produces<double>("trueLeptonPdgId");
    //register your products
 /* Examples
    produces<ExampleData2>();
@@ -143,6 +144,7 @@ GenParticleSelector::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    std::auto_ptr<std::vector<GenParticle> > outLeptons(new std::vector<GenParticle>());
    std::auto_ptr<std::vector<GenParticle> > outNeutrinos(new std::vector<GenParticle>());
 
+   double trueLeptonPdgId = TMath::QuietNaN();
    GenParticle* lightJet;
    
    for(size_t i = 0; i < genParticles->size(); ++ i) {
@@ -198,6 +200,7 @@ GenParticleSelector::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
                if(abs(dau2Id) == 13 || abs(dau2Id) == 11){  //muon or electron
                   //cout << "    " << dau2Id << endl;
                   //nst GenParticle* lepton = (GenParticle*)d2;
+                  trueLeptonPdgId = dau2Id;
                   outLeptons->push_back(*d2);                  
                }
                else if(abs(dau2Id) == 14 || abs(dau2Id) == 12){  //mu-neutrino
@@ -279,10 +282,7 @@ GenParticleSelector::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    //cout << "NoLightJets " << outLightJets->size() << endl;
    iEvent.put(outLightJets, "trueLightJet");
    iEvent.put(outNeutrinos, "trueNeutrino");
-   
-
-
-   
+   iEvent.put(std::auto_ptr<double>(new double(trueLeptonPdgId)), "trueLeptonPdgId");  
  
 }
 

@@ -587,7 +587,8 @@ def SingleTopStep2():
 
             cms.InputTag("offlinePVCount"),
 
-            cms.InputTag("genLeptonsTCount")
+            cms.InputTag("genLeptonsTCount"),
+            cms.InputTag("trueLeptonPdgId")
             ]
         )
     )
