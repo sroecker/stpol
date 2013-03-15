@@ -55,6 +55,7 @@ bTaggingEfficiencies[2] = setEffs(eff_ex_T_t_2J, eff_ex_TTbar_inclusive_2J, eff_
 bTaggingEfficiencies[3] = setEffs(eff_ex_T_t_3J, eff_ex_TTbar_inclusive_3J, eff_ex_WJets_inclusive_3J)
 
 def getEfficiencies(nJets, sample):
+    logging.debug("Looking for efficiencies %s" % sample)
     eff = bTaggingEfficiencies[nJets]
     key = None
     for key in eff.keys():
