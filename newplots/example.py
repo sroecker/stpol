@@ -8,8 +8,8 @@ from plotfw.params import Cuts as cuts, Vars as variables
 datasmpl = methods.DataSample('WD_SingleEleC1', 459, directory='/home/joosep/singletop/stpol/crabs/step2_Data_Iso_Mar11/')
 
 smplsgen = methods.SampleListGenerator('/home/joosep/singletop/stpol/crabs/step2_MC_Iso_Mar11/')
-#smplsgen.add('TTbar', 'TTJets_SemiLept', 'WD_TTJets_SemiLept')
-#smplsgen.add('TTbar', 'TTJets_FullLept', 'WD_TTJets_FullLept')
+smplsgen.add('TTbar', 'TTJets_SemiLept', 'WD_TTJets_SemiLept')
+smplsgen.add('TTbar', 'TTJets_FullLept', 'WD_TTJets_FullLept')
 smplsgen.add('t-channel', 'T_t', 'WD_T_t')
 #smplsgen.add('t-channel', 'Tbar_t', 'WD_Tbar_t')
 smplsgen.add('s-channel', 'T_s', 'WD_T_s')
@@ -26,7 +26,8 @@ smpls.listSamples() # print sample list
 
 # Set the cut
 #cut = drawfw.methods.Cut('', '')
-cut = cuts.finalEle
+#cut = cuts.finalEle
+cut = cuts.recoFState
 print 'Cut:', str(cut)
 
 # Set plots
