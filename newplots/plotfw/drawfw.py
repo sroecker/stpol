@@ -27,8 +27,8 @@ def mp_applyCut(s):
 
 def drawSample(args):
 	logger.debug("Started multiprocessing draw on worker %s" % multiprocessing.current_process().name)
-	(sample, hist_name, plot_params, cut) = args
-	n_filled, sample_hist = sample.drawHist(hist_name, plot_params, cut, None)
+	(sample, hist_name, plot_params, cut, maxLines) = args
+	n_filled, sample_hist = sample.drawHist(hist_name, plot_params, cut=cut, proof=None, maxLines=maxLines)
 	logger.debug("Done multiprocessing draw on worker %s " % multiprocessing.current_process().name)
 	return (sample.name, n_filled, pickle.dumps(sample_hist))
 
@@ -39,6 +39,7 @@ class PlotCreator(object):
 		self.samples = None
 		self.set_n_cores(n_cores)
 		self.mode = mode
+		self.maxLines=None
 
 	@staticmethod
 	def _uniqueCutStr(cut_str, weight_str):
@@ -331,7 +332,7 @@ class ShapePlotCreator(PlotCreator):
 			filled_tot = 0.0
 
 			n_samples = len(group.getSamples())
-			args = zip(group.getSamples(), n_samples*[hist_name], n_samples*[plot_params], n_samples*[cut])
+			args = zip(group.getSamples(), n_samples*[hist_name], n_samples*[plot_params], n_samples*[cut], n_samples*[self.maxLines])
 			if self.run_multicore:
 				p = multiprocessing.Pool(8)
 				res = p.map(drawSample, args)
@@ -507,7 +508,7 @@ class ShapePlot(Plot):
 		max_bin = max([h.GetMaximum() for h in self._hists.values()])
 		min_bin = min([h.GetMinimum() for h in self._hists.values()])
 		hists[0].SetMaximum(1.5*max_bin)
-		hists[0].SetMinimum(0.5*min_bin)
+		hists[0].SetMinimum(0.0001)
 		hists[0].GetXaxis().SetTitle(self._plot_params.x_label)
 		for hist in hists:
 			hist.Draw('E1' if first else 'E1 SAME')
