@@ -23,6 +23,7 @@ from plotfw.params import Vars
 if __name__=="__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-o', '--ofdir', type=str, default="plots_out_" + ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(4)))
+    parser.add_argument('-p', '--percent', type=float, default=100.0)
     parser.add_argument('--doBWeightDistributions', action='store_true')
     parser.add_argument('--doDataMC', action='store_true')
     parser.add_argument('--doEffs', action='store_true')
@@ -54,7 +55,8 @@ if __name__=="__main__":
     samples_data = dict()
 
     #path = "/hdfs/local/joosep/stpol/step2_MC_Iso/"
-    path = "/home/joosep/singletop/stpol/crabs/step2_MC_Iso_Mar14/"
+    #path = "/home/joosep/singletop/stpol/crabs/step2_MC_Iso_Mar14/"
+    path = "/scratch/joosep/step2_MC_Iso_Mar14/"
 
     samples["TTJets_FullLept"] = plotfw.methods.MCSample("WD_TTJets_FullLept", name="TTJets_FullLept", directory=path)
     samples["TTJets_SemiLept"] = plotfw.methods.MCSample("WD_TTJets_SemiLept", name="TTJets_SemiLept", directory=path)
@@ -66,9 +68,6 @@ if __name__=="__main__":
     samples["W4Jets"] = plotfw.methods.MCSample(path + "WD_W4Jets_exclusive", name="W4Jets")
     #samples["WJets_inclusive"] = plotfw.methods.MCSample(path + "WD_WJets_inclusive/res/*.root", name="WJets")
 
-
-    for (name, sample) in samples.items():
-        sample.frac_entries = 1.0
     groups = plotfw.methods.SampleGroup.fromList(samples.values())
 
     psMu = []
@@ -77,7 +76,7 @@ if __name__=="__main__":
 
     if args.doBWeightDistributions:
         comp_samples = plotfw.drawfw.ShapePlotCreator(sl)
-        comp_samples.maxLines = None
+        comp_samples.frac_entries = args.percent/100.0
         comp_samples.set_n_cores(1)
         comp_samples.proof = p
         weightPlots = [
