@@ -22,9 +22,9 @@ cutlist = {
 }
 
 # Set plots
-weights   = ['PUWeightNtrue_puWeightProducer']
-weights_b = weights+['bTagWeight_bTagWeightProducerNJMT']
-weights = weights_b = None
+weights = [variables.pu_weight]
+weights_b = weights + [variables.b_weight["nominal"]]
+
 plots = [
 	drawfw.PlotParams(variables.cos_theta, (-1, 1), ymax=2300, ofname='costheta',   vars_to_enable=None, weights=weights),
 	drawfw.PlotParams(variables.cos_theta, (-1, 1), ymax=2300, ofname='costheta_b', vars_to_enable=None, weights=weights_b),

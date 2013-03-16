@@ -29,7 +29,7 @@ cuts_jet = {
 }
 
 # Set plots
-weights = ['PUWeightNtrue_puWeightProducer', 'bTagWeight_bTagWeightProducerNJMT']
+weights = [variables.pu_weight, variables.b_weight["nominal"]]
 plots = [
 	drawfw.PlotParams(variables.cos_theta, (-1, 1), ofname='costheta', weights=weights),
 	drawfw.PlotParams(variables.top_mass, (100, 500), bins=20, ofname='topmass', weights=weights),
