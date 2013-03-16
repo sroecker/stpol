@@ -27,8 +27,8 @@ def mp_applyCut(s):
 
 def drawSample(args):
 	logger.debug("Started multiprocessing draw on worker %s" % multiprocessing.current_process().name)
-	(sample, hist_name, plot_params, cut, maxLines) = args
-	n_filled, sample_hist = sample.drawHist(hist_name, plot_params, cut=cut, proof=None, maxLines=maxLines)
+	(sample, hist_name, plot_params, cut, frac_entries) = args
+	n_filled, sample_hist = sample.drawHist(hist_name, plot_params, cut=cut, proof=None, maxLines=sample.GetEntriesFast()*frac_entries)
 	logger.debug("Done multiprocessing draw on worker %s " % multiprocessing.current_process().name)
 	return (sample.name, n_filled, pickle.dumps(sample_hist))
 
@@ -200,7 +200,7 @@ class StackPlotCreator(PlotCreator):
 			if not isinstance(sample, DataSample):
 				raise TypeError("Sample %s is not data" % str(sample))
 			#for data there is no weight necessary
-			dt_filled, data_hist = sample.drawHist(data_hist_name, plot_params, cut=cut, proof=self.proof)
+			dt_filled, data_hist = sample.drawHist(data_hist_name, plot_params, cut=cut, proof=self.proof, maxLines=sample.tree.GetEntriesFast()*self.frac_entries)
 
 			total_luminosity += sample.luminosity
 			dname = sample.name
@@ -243,7 +243,7 @@ class StackPlotCreator(PlotCreator):
 				plot.log.setVariable(sample.name, 'crsec', sample.xs)
 				plot.log.setVariable(sample.name, 'fname', sample.fname)
 				hist_name = group_hist_name + "_" + sample.name
-				mc_filled, mc_hist = sample.drawHist(group_hist_name, plot_params, cut=cut, proof=self.proof, lumi=total_luminosity)
+				mc_filled, mc_hist = sample.drawHist(group_hist_name, plot_params, cut=cut, proof=self.proof, lumi=total_luminosity, maxLines= sample.tree.GetEntriesFast()*self.frac_entries )
 				mc_hist.filled_count = mc_filled
 				plot.log.setVariable(sample.name, 'filled', mc_filled)
 
@@ -332,7 +332,7 @@ class ShapePlotCreator(PlotCreator):
 			filled_tot = 0.0
 
 			n_samples = len(group.getSamples())
-			args = zip(group.getSamples(), n_samples*[hist_name], n_samples*[plot_params], n_samples*[cut], n_samples*[self.maxLines])
+			args = zip(group.getSamples(), n_samples*[hist_name], n_samples*[plot_params], n_samples*[cut], n_samples*[self.frac_entries])
 			if self.run_multicore:
 				p = multiprocessing.Pool(8)
 				res = p.map(drawSample, args)

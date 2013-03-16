@@ -73,17 +73,18 @@ if __name__ == "__main__":
     parser.add_argument('--doWeights', action='store_true')
     parser.add_argument('--doWJetsControl', action='store_true')
     parser.add_argument('--doTTbarControl', action='store_true')
-    parser.add_argument('--doBWeightControl', action='store_true')
-    parser.add_argument('-p', '--percent', type=int, default=100)
+    #parser.add_argument('--maxLines', type=int, default=None)
+    parser.add_argument('-p', '--percent', type=float, default=100.0)
     args = parser.parse_args()
     print args
 
     n_cores = args.n_cores
     logging.info("Using %d cores" % n_cores)
-    frac_entries = float(args.percent)/100.0
-    logging.info("Running on %.2f/1.0 of events" % frac_entries)
-    samples.pltcMu.frac_entries = frac_entries
-    samples.pltcEle.frac_entries = frac_entries
+    logging.info("Running on %.2f percent of events" % args.percent)
+    #samples.pltcMu.maxLines = args.maxLines
+    #samples.pltcEle.maxLines = args.maxLines
+    samples.pltcEle.frac_entries = args.percent/100.0
+    samples.pltcMu.frac_entries = args.percent/100.0
     samples.pltcMu.set_n_cores(n_cores)
     samples.pltcEle.set_n_cores(n_cores)
 
