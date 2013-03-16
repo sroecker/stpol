@@ -8,19 +8,39 @@ import ROOT
 import argparse
 from plotfw.params import Cuts
 from plotfw.params import Vars
+from plotfw.methods import PlotParams
 import random
 import string
 import numpy
 import unittest
-
+import time
+ROOT.gEnv.SetValue("Cache.Directory", "/scratch/joosep/ROOT-cache")
+ROOT.gEnv.SetValue("TFile.AsyncPrefetching", 1)
 
 #mc_dir = "/home/joosep/singletop/stpol/crabs/step2_MC_Iso_Mar14/"
 mc_dir = "/scratch/joosep/step2_MC_Iso_Mar14/"
 #mc_dir = "/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14"
-data_dir = "/home/joosep/singletop/stpol/crabs/step2_Data_Iso_Mar15/"
+#data_dir = "/home/joosep/singletop/stpol/crabs/step2_Data_Iso_Mar15/"
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
+
+class SpeedTest(unittest.TestCase):
+
+    def timeit(self, sample, func):
+        t0_cpu = time.time()
+        t0_real = time.clock()
+        ret = eval(func)
+        t1_cpu = time.time()
+        t1_real = time.clock()
+        return (t1_cpu-t0_cpu, t1_real-t0_real, ret)
+
+    def test_speed(self):
+        sample = plotfw.methods.MCSample("WD_TTJets_FullLept", name="TTJets_FullLept", directory=mc_dir)
+        ROOT.gEnv.SetValue("TFile.AsyncPrefetching", 0)
+        (t_cpu, t_real, ret) = self.timeit(sample, "sample.drawHist('test', PlotParams(Vars.cos_theta, [-1, 1]), Cuts.finalMu_2J1T, maxLines=500000)")
+        logging.info("t_cpu = %.2f, t_real = %.2f, N = %.2d" % (t_cpu, t_real, ret[0]))
+
 class SampleTestBase(unittest.TestCase):
     max_lines = 1000000
     def loadMCSample(self, sample_name, indir):
@@ -58,14 +78,14 @@ class SampleTestBase(unittest.TestCase):
 
     def test_W3Jets(self):
         sample = self.loadMCSample("W3Jets_exclusive", mc_dir)
-        perf_stats = ROOT.TTreePerfStats("ioperf", sample.tree)
+        #perf_stats = ROOT.TTreePerfStats("ioperf", sample.tree)
         self.base_test_sample_costheta(sample)
         self.base_test_sample_b_weights(sample)
         self.base_test_sample_pu_weight(sample)
-        perf_stats.Finish()
-        perf_stats.Print()
-        perf_stats.Draw()
-        perf_stats.SaveAs("perf.root")
+        #perf_stats.Finish()
+        #perf_stats.Print()
+        #perf_stats.Draw()
+        #perf_stats.SaveAs("perf.root")
 
     #def test_TTJets_FullLept(self):
     #    sample = self.loadMCSample("TTJets_FullLept", mc_dir)
