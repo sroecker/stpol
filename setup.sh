@@ -45,6 +45,10 @@ addpkg RecoMET/METFilters  V00-00-09
 #https://twiki.cern.ch/twiki/bin/viewauth/CMS/PileupJetID
 cvs co -r V00-02-10 -d CMGTools/External UserCode/CMG/CMGTools/External
 
+#LHAPDF setup must be done prior to full compile
 cmsenv
+scram setup lhapdffull
+cmsenv
+
 scram b -j 20 &> scram_log
 cd $CMSSW_BASE/../
