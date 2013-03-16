@@ -18,6 +18,9 @@ import plotfw.cross_sections
 import copy
 from zlib import adler32
 
+class EntryListException(Exception):
+	pass
+
 class TreeStats:
 	def __init__(self, N_entries, N_drawn, time):
 		self.N_entries = N_entries
@@ -194,6 +197,7 @@ class MultiSample(Sample):
 		self._switchBranchesOn(cut.getUsedVariables())
 		self.tree.SetEntryList(0)
 		self.tree.SetProof(False)
+		N_lines = self.tree.GetEntries() if not maxLines else int(maxLines)
 		if cut.cutStr not in self.entryListCache.keys():
 			self.logger.info("Caching entry list with cut %s" % (cut))
 			entry_list_name = "%s_%s" % (self.name, adler32(cut.cutStr))
@@ -201,13 +205,13 @@ class MultiSample(Sample):
 			if self.tree.GetEntries()==0 or self.frac_entries==0:
 				self.logger.warning("Requested entry list over 0 entries, skipping")
 				return 0
-
-			self.tree.Draw(">>%s" % entry_list_name, cut.cutStr, "entrylist", self.tree.GetEntries() if not maxLines else int(maxLines))
+			self.tree.Draw(">>%s" % entry_list_name, cut.cutStr, "entrylist", N_lines)
 			elist = ROOT.gROOT.Get(entry_list_name)
 			if not elist or elist is None or elist.GetN()==-1:
-				raise Exception("Failed to get entry list")
+				raise EntryListException("Failed to get entry list: %s" % elist)
 			if elist.GetN()==0:
 				self.logger.warning("Entry list was empty")
+
 			self.entryListCache[cut.cutStr] = elist
 			self.tree.SetEntryList(elist)
 		else:
@@ -218,7 +222,7 @@ class MultiSample(Sample):
 		dt = t1-t0
 		#ts = TreeStats(self.tree.GetEntries(), N, t1-t0)
 		#self.timestats.append(ts)
-		self.logger.debug("Caching entry list took %.2f seconds, %.2f events/second" % (dt, float(self.tree.GetEntries())/dt))
+		self.logger.debug("Caching entry list took %.2f seconds, %.2f events/second" % (dt, float(N_lines)/dt))
 		self.logger.debug("Cut result: %d events" % elist.GetN())
 		return elist.GetN()
 
@@ -238,7 +242,18 @@ class MultiSample(Sample):
 
 
 
+	"""
+	Draws a histogram fro the sample with base name 'hist_name'.
+	hist_name - a string containing the base name of the histogram, the sample name will be added
+	plot_params - a PlotParams type object with the var and weights
+	cut - an optional Cut type object specifying the cut
+	proof - an optional instance of TProof type for multicore use
+	maxLines - specify the maximum number of TTree lines to iterate over when drawing. None=all lines
+	"""
 	def drawHist(self, hist_name, plot_params, cut=None, proof=None, maxLines=None):
+		if not isinstance(plot_params, PlotParams):
+			raise TypeError("plot_params has wrong type")
+
 		t0 = time.time()
 		hist_name += "_" + self.name
 		self.logger.info("Drawing histogram %s" % hist_name)
@@ -275,14 +290,17 @@ class MultiSample(Sample):
 			hist = ROOT.gROOT.Get(hist_name)
 		if not hist:
 			raise Exception("Failed to get histogram")
+
+		#Make a copy into ROOT global memory directory (sigh)
 		ROOT.gROOT.cd()
 		clone_hist = ROOT.TH1F(hist)#hist.Clone(hist_name)
+
 		clone_hist.Sumw2()
 		if clone_hist.Integral()==0:
 			self.logger.warning("Histogram was empty")
 			#raise Exception("Histogram was empty")
 		t1 = time.time()
-		ts = TreeStats(self.tree.GetEntries(), N, t1-t0)
+		ts = TreeStats(maxLines if maxLines is not None else self.tree.GetEntries(), N, t1-t0)
 		self.timestats.append(ts)
 		logging.info("Drawing stats: %s" % ts)
 		return N, clone_hist
