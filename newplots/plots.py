@@ -16,11 +16,19 @@ import random
 import string
 
 logger = logging.getLogger(__name__)
+
+"""
+Copy PlotParams type objects, adding weights.
+plot_params - list of PlotParams
+"""
 def reweighted(plot_params, do_pu=False, do_btag=True):
     out = []
+
+    #Loop over list of PlotParams
     for pp in plot_params:
         out.append(pp)
 
+        #Add PU weight
         if do_pu:
             plot_PUrew = drawfw.PlotParams(pp.var, pp.r,
                     bins=pp.bins, plotTitle=pp.plotTitle + " with PU(N_{true}) rew.",
@@ -28,6 +36,7 @@ def reweighted(plot_params, do_pu=False, do_btag=True):
             )
             out.append(plot_PUrew)
 
+        #Add b-tag weight
         if do_btag:
             plot_bTagrew = drawfw.PlotParams(pp.var, pp.r,
                     bins=pp.bins, plotTitle=pp.plotTitle + " with bTag rew.",
