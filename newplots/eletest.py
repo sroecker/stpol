@@ -5,10 +5,11 @@ from plotfw import drawfw, methods
 from plotfw.params import Cuts as cuts, Vars as variables
 
 # Set samples
-smpl = methods.DataSample('WD_SingleEleC1', 459, directory='/home/joosep/singletop/stpol/crabs/step2_Data_Iso_Mar11/')
+smpls = [
+	methods.DataSample('WD_SingleEleC1', 459, directory='/home/joosep/singletop/stpol/crabs/step2_Data_Iso_Mar11/')
+]
 
-# Set the cut
-
+# Set the cuts (all basic combinations of finalEle)
 cuts = [
 	cuts.recoFState,
 	cuts.recoFState * cuts.ele,
@@ -22,5 +23,6 @@ cuts = [
 
 for cut in cuts:
 	print 'Cut:', str(cut)
-	print 'Events:', smpl.cacheEntryList(cut)
+	for s in smpls:
+		print 'Events for %s:  %i'%(s.name, s.cacheEntryList(cut))
 	print
