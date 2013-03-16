@@ -1,7 +1,6 @@
 import autoLoad
 import ROOT
 import logging, time
-from zlib import adler32
 import random
 import string
 import methods,params,plotlog
@@ -45,7 +44,7 @@ class PlotCreator(object):
 		"""
 		Returns a unique hash for the plot_params.weight*cut_str object
 		"""
-		uniq = adler32("({0})*({1})".format(weight_str, cut_str))
+		uniq = methods.chksm("({0})*({1})".format(weight_str, cut_str))
 		return uniq
 
 	def set_n_cores(self, n_cores):
@@ -95,7 +94,7 @@ class PlotCreator(object):
 		#logger.debug('Cutting on `%s` took %f', tempSample.name, time.time() - t_cut)
 
 		#if logger.getEffectiveLevel()==logging.DEBUG:
-		#   perfstats.SaveAs("perf_" + str(adler32(tempSample.name + cutstr)) + ".root")
+		#   perfstats.SaveAs("perf_" + str(methods.chksm(tempSample.name + cutstr)) + ".root")
 
 		#del tempSample
 		return elist

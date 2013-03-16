@@ -16,7 +16,15 @@ from plotfw.params import Var # FIXME: temporary hack for backwards comp.
 from plotfw.params import parent_branch
 import plotfw.cross_sections
 import copy
-from zlib import adler32
+
+def chksm(s):
+	"""Finds a checksum of a string
+	
+	Uses zlib's adler32 internally. The value will always be a positive
+	integer.
+	"""
+	import zlib
+	return zlib.adler32(str(s)) + 2**31
 
 class EntryListException(Exception):
 	pass
@@ -200,7 +208,7 @@ class MultiSample(Sample):
 		N_lines = self.tree.GetEntries() if not maxLines else int(maxLines)
 		if cut.cutStr not in self.entryListCache.keys():
 			self.logger.info("Caching entry list with cut %s" % (cut))
-			entry_list_name = "%s_%s" % (self.name, adler32(cut.cutStr))
+			entry_list_name = "%s_%s" % (self.name, chksm(cut.cutStr))
 			ROOT.gROOT.cd()
 			if self.tree.GetEntries()==0 or self.frac_entries==0:
 				self.logger.warning("Requested entry list over 0 entries, skipping")
