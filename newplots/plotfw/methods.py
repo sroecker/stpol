@@ -232,7 +232,7 @@ class MultiSample(Sample):
 
 
 
-	def drawHist(self, hist_name, plot_params, cut=None, proof=None):
+	def drawHist(self, hist_name, plot_params, cut=None, proof=None, maxLines=None):
 		t0 = time.time()
 		hist_name += "_" + self.name
 		self.logger.info("Drawing histogram %s" % hist_name)
@@ -245,7 +245,7 @@ class MultiSample(Sample):
 		if cut is None:
 			cut = plotfw.params.Cuts.inital
 
-		n_cut = self.cacheEntryList(cut)
+		n_cut = self.cacheEntryList(cut, maxLines=maxLines)
 		self._switchBranchesOn(plot_params.var.getUsedVariables() + plot_params.getUsedWeights(disabled_weights=self.disabled_weights))
 
 		if proof:
