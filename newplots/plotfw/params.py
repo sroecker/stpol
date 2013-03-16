@@ -243,22 +243,22 @@ class Var:
 class Vars:
     cos_theta = Var("double_cosTheta_cosThetaLightJet_STPOLSEL2.obj", "cos #theta_{lj}")
     top_mass = Var("floats_recoTopNTupleProducer_Mass_STPOLSEL2.obj[0]", "m_{l #nu b}")
-    etalj = Var("abs(floats_lowestBTagJetNTupleProducer_Eta_STPOLSEL2.obj[0])", "#eta_{lj}", relvars=['floats_lowestBTagJetNTupleProducer_Eta_STPOLSEL2'])
+    etalj = Var("abs(floats_lowestBTagJetNTupleProducer_Eta_STPOLSEL2.obj[0])", "#eta_{lj}", relvars=['floats_lowestBTagJetNTupleProducer_Eta_STPOLSEL2.obj'])
 
     b_weight = dict()
     b_weight["nominal"] = Var("double_bTagWeightProducerNJMT_bTagWeight_STPOLSEL2.obj", "b-weight (nominal)")
 
     pu_weight = Var("double_puWeightProducer_PUWeightNtrue_STPOLSEL2.obj", "PU weight")
 
-    jet1_flavour = Var("abs(floats_goodJetsNTupleProducer_Eta_STPOLSEL2_partonFlavour.obj[0])", "|pdgID| of 1st jet", relvars=["floats_goodJetsNTupleProducer_Eta_STPOLSEL2_partonFlavour"])
-    jet2_flavour = Var("abs(floats_goodJetsNTupleProducer_Eta_STPOLSEL2_partonFlavour.obj[1])", "|pdgID| of 2nd jet", relvars=["floats_goodJetsNTupleProducer_Eta_STPOLSEL2_partonFlavour"])
-    jet3_flavour = Var("abs(floats_goodJetsNTupleProducer_Eta_STPOLSEL2_partonFlavour.obj[3])", "|pdgID| of 3rd jets", relvars=["floats_goodJetsNTupleProducer_Eta_STPOLSEL2_partonFlavour"])
+    jet1_flavour = Var("abs(floats_goodJetsNTupleProducer_Eta_STPOLSEL2_partonFlavour.obj[0])", "|pdgID| of 1st jet", relvars=["floats_goodJetsNTupleProducer_Eta_STPOLSEL2_partonFlavour.obj"])
+    jet2_flavour = Var("abs(floats_goodJetsNTupleProducer_Eta_STPOLSEL2_partonFlavour.obj[1])", "|pdgID| of 2nd jet", relvars=["floats_goodJetsNTupleProducer_Eta_STPOLSEL2_partonFlavour.obj"])
+    jet3_flavour = Var("abs(floats_goodJetsNTupleProducer_Eta_STPOLSEL2_partonFlavour.obj[3])", "|pdgID| of 3rd jets", relvars=["floats_goodJetsNTupleProducer_Eta_STPOLSEL2_partonFlavour.obj"])
 
     n_jets = Var("int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj", "N_{jets}")
     n_tags = Var("int_bJetCount__STPOLSEL2.obj", "N_{b-tags}")
 
     mtw_mu = Var("double__muAndMETMT__STPOLSEL2.obj", "M_{t}(W #rightarrow #mu^{#pm} #nu_{#mu})", units="GeV")
-    met = Var("floats_patMETNTupleProducer_Pt_STPOLSEL2.obj[0]", "MET", units="GeV", relvars=["floats_patMETNTupleProducer_Pt_STPOLSEL2"])
+    met = Var("floats_patMETNTupleProducer_Pt_STPOLSEL2.obj[0]", "MET", units="GeV", relvars=["floats_patMETNTupleProducer_Pt_STPOLSEL2.obj"])
 
     jet_counts_true  = dict()
     jet_counts_true["b"] = Var("int_trueBJetCount__STPOLSEL2.obj", "true b-jet count")
