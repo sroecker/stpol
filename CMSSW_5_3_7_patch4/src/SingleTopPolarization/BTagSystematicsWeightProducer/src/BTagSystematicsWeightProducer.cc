@@ -503,7 +503,7 @@ BTagSystematicsWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup
                     eff_val = (*effs_in3J)[flavour];
                 }
                 LogDebug("jetLoop") << "\t\teff_val=" << eff_val;
-                double e = eff(eff_val, inComb);
+                //double e = eff(eff_val, inComb);
                 
                 //per-event jet probabilities multiply
                 p_mc = p_mc * eff(eff_val, inComb);
