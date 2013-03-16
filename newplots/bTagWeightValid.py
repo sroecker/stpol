@@ -77,6 +77,7 @@ if __name__=="__main__":
 
     if args.doBWeightDistributions:
         comp_samples = plotfw.drawfw.ShapePlotCreator(sl)
+        comp_samples.maxLines = None
         comp_samples.set_n_cores(1)
         comp_samples.proof = p
         weightPlots = [
@@ -136,9 +137,9 @@ if __name__=="__main__":
 
     if len(psMu)>0:
         os.mkdir(args.ofdir)
-        pickle_file = open(args.ofdir + "/plots_mu.pickle", "w")
-        pickle.dump(psMu, pickle_file)
-        pickle_file.close()
+        #pickle_file = open(args.ofdir + "/plots_mu.pickle", "w")
+        #pickle.dump(psMu, pickle_file)
+        #pickle_file.close()
         tfile = ROOT.TFile(args.ofdir + "/plots.root", "RECREATE")
         for p in psMu:
             p.saveToROOT(tfile)
