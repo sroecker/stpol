@@ -190,6 +190,7 @@ class MultiSample(Sample):
 		return
 
 	def cacheEntryList(self, cut, maxLines=None):
+		t0 = time.time()
 		self._switchBranchesOn(cut.getUsedVariables())
 		self.tree.SetEntryList(0)
 		self.tree.SetProof(False)
@@ -201,7 +202,7 @@ class MultiSample(Sample):
 				self.logger.warning("Requested entry list over 0 entries, skipping")
 				return 0
 
-			self.tree.Draw(">>%s" % entry_list_name, cut.cutStr, "entrylist", self.tree.GetEntriesFast() if not maxLines else int(maxLines))
+			self.tree.Draw(">>%s" % entry_list_name, cut.cutStr, "entrylist", self.tree.GetEntries() if not maxLines else int(maxLines))
 			elist = ROOT.gROOT.Get(entry_list_name)
 			if not elist or elist is None or elist.GetN()==-1:
 				raise Exception("Failed to get entry list")
@@ -213,6 +214,11 @@ class MultiSample(Sample):
 			self.logger.debug("Loading entry list from cache: %s" % (cut))
 			elist = self.entryListCache[cut.cutStr]
 			self.tree.SetEntryList(elist)
+		t1 = time.time()
+		dt = t1-t0
+		#ts = TreeStats(self.tree.GetEntries(), N, t1-t0)
+		#self.timestats.append(ts)
+		self.logger.debug("Caching entry list took %.2f seconds, %.2f events/second" % (dt, float(self.tree.GetEntries())/dt))
 		self.logger.debug("Cut result: %d events" % elist.GetN())
 		return elist.GetN()
 
