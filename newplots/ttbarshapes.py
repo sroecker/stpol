@@ -46,5 +46,9 @@ for ck,c in cuts_jet.items():
 	#spc_ttbar = plotfw.drawfw.SeparateCutShapePlotCreator(samples, [c1,c2])
 
 	ps = spc_semi.plot(plots, cutDescription='Dafuq?') + spc_full.plot(plots, cutDescription='Dafuq?')
+	logging.debug('Plots: %s', str(ps))
+	
 	for p in ps:
-		p.save(fout = 'plots_ttbar/ttbarshapes_%s_%s'%(ck,p.getName()), fmt='pdf', log=True)
+		fout_fname = 'plots_ttbar/ttshp_%s_%s'%(ck,p.getName())
+		logging.debug('Saving to: %s', fout_fname)
+		p.save(fout = fout_fname, fmt='pdf', log=True)
