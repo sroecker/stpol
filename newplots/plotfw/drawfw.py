@@ -27,18 +27,18 @@ def mp_applyCut(s):
 def drawSample(args):
 	logger.debug("Started multiprocessing draw on worker %s" % multiprocessing.current_process().name)
 	(sample, hist_name, plot_params, cut, frac_entries) = args
-	n_filled, sample_hist = sample.drawHist(hist_name, plot_params, cut=cut, proof=None, maxLines=sample.GetEntriesFast()*frac_entries)
+	n_filled, sample_hist = sample.drawHist(hist_name, plot_params, cut=cut, proof=None, maxLines=sample.tree.GetEntries()*frac_entries)
 	logger.debug("Done multiprocessing draw on worker %s " % multiprocessing.current_process().name)
 	return (sample.name, n_filled, pickle.dumps(sample_hist))
 
 
 class PlotCreator(object):
-	def __init__(self, frac = 1.0, n_cores=10, mode="singlecore"):
+	def __init__(self, frac = 1.0, n_cores=10):
 		self.frac_entries = frac
 		self.samples = None
-		self.set_n_cores(n_cores)
-		self.mode = mode
 		self.maxLines=None
+		self.proof = None
+		self.set_n_cores(n_cores)
 
 	@staticmethod
 	def _uniqueCutStr(cut_str, weight_str):
@@ -50,7 +50,9 @@ class PlotCreator(object):
 
 	def set_n_cores(self, n_cores):
 		self.n_cores = n_cores
-		self.run_multicore = self.n_cores > 1
+
+		#Run either python multiprocessing or PROOF
+		self.run_multicore = self.n_cores > 1 and not self.proof
 		if self.run_multicore:
 			logger.info("Switching to multicore mode: n_cores=%d" % self.n_cores)
 		else:
@@ -71,7 +73,7 @@ class PlotCreator(object):
 		logger.debug('Cutting on `%s`', sample.name)
 
 		#if logger.getEffectiveLevel()==logging.DEBUG:
-		#	perfstats = ROOT.TTreePerfStats(sample.name, sample.tree)
+		#   perfstats = ROOT.TTreePerfStats(sample.name, sample.tree)
 
 		if reset:
 			sample.tree.SetEventList(0)
@@ -93,7 +95,7 @@ class PlotCreator(object):
 		#logger.debug('Cutting on `%s` took %f', tempSample.name, time.time() - t_cut)
 
 		#if logger.getEffectiveLevel()==logging.DEBUG:
-		#	perfstats.SaveAs("perf_" + str(adler32(tempSample.name + cutstr)) + ".root")
+		#   perfstats.SaveAs("perf_" + str(adler32(tempSample.name + cutstr)) + ".root")
 
 		#del tempSample
 		return elist
@@ -117,9 +119,9 @@ class PlotCreator(object):
 
 		smpls = self.samples.getSamples()
 
-	#	if self.proof is None:
-	#		#self._switchBranchesOn(cut._vars)
-	#		self._applyCuts(self._cutstr, smpls)
+	#   if self.proof is None:
+	#	   #self._switchBranchesOn(cut._vars)
+	#	   self._applyCuts(self._cutstr, smpls)
 
 		retplots = [self._plot(x, cut) for x in plots]
 
@@ -159,7 +161,7 @@ class StackPlotCreator(PlotCreator):
 		for group in self._mcs.groups.values():
 			self.samples.addGroup(group)
 		self.samples.addGroup(self._data)
-		self.proof = None
+
 	def getSamples(self):
 		return self._mcs.getSamples() + self._data.getSamples()
 
