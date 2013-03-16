@@ -1,5 +1,5 @@
-#Runs th plots.py job on the cluster with any command line arguments specified by the user
 #!/bin/bash
+#Runs th plots.py job on the cluster with any command line arguments specified by the user
 
 WORKDIR=/home/joosep/singletop/stpol
 source ~/.bash_profile
