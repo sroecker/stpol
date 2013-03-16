@@ -294,7 +294,7 @@ class MultiSample(Sample):
 		self.event_chain = ROOT.TChain(self.name + "_Events", self.name)
 		self.lumi_chain = ROOT.TChain(self.name + "_Lumi", self.name)
 		if len(files)==0:
-			raise Exception("File list is empty")
+			raise Exception("File list is empty for %s" % self.name)
 
 		self.tfile = files[0]
 		for fi in files:
