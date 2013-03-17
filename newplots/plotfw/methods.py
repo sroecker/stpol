@@ -214,6 +214,7 @@ class MultiSample(Sample):
 
 	def _switchBranchesOn(self, vars_to_switch):
 		self.tree.SetBranchStatus("*", 0)
+		self.lumi_chain.SetBranchStatus("*", 0)
 		self.logger.debug("Switching variables on: %s" % vars_to_switch)
 		for var in vars_to_switch:
 			if isinstance(var, Var):
@@ -361,6 +362,7 @@ class MultiSample(Sample):
 		self.lumi_chain.SetCacheSize(100*1024*1024)
 		ROOT.gEnv.SetValue("TFile.AsyncPrefetching", 1)
 		self.tree = self.event_chain
+		self.logger.debug('Done opening file and creating caches.')
 
 	def getTotalEvents(self):
 		tot = 0
