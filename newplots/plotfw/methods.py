@@ -359,7 +359,6 @@ class MultiSample(Sample):
 		self.event_chain.SetCacheSize(100*1024*1024)
 		self.event_chain.AddBranchToCache("*", True)
 		self.lumi_chain.SetCacheSize(100*1024*1024)
-		self.lumi_chain.AddBranchToCache("edmMergeableCounter_PATTotalEventsProcessedCount__PAT.", True)
 		ROOT.gEnv.SetValue("TFile.AsyncPrefetching", 1)
 		self.tree = self.event_chain
 
@@ -367,9 +366,11 @@ class MultiSample(Sample):
 		tot = 0
 		if self.total_events is None:
 			self.logger.debug("Caching total PAT processed event count")
+			self.lumi_chain.AddBranchToCache("edmMergeableCounter_PATTotalEventsProcessedCount__PAT.*", True)
 			self.lumi_chain.SetBranchStatus("*", 0)
+			self.event_chain.SetBranchStatus("*", 0)
 			self.lumi_chain.SetBranchStatus("edmMergeableCounter_PATTotalEventsProcessedCount__PAT.*", 1)
-			n_drawn = self.lumi_chain.Draw("edmMergeableCounter_PATTotalEventsProcessedCount__PAT.product().value >> htemp", "", "goff")
+			n_drawn = self.lumi_chain.Draw("edmMergeableCounter_PATTotalEventsProcessedCount__PAT.obj.value >> htemp", "", "goff")
 			self.logger.debug("Event count histo drawn, getting array sum")
 			arr = ROOT.TArrayD(n_drawn, self.lumi_chain.GetV1())
 			tot = float(arr.GetSum())
