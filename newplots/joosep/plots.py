@@ -1,9 +1,7 @@
 import argparse
 import ROOT
 import logging
-
-logging.basicConfig(level=logging.INFO, format="%(asctime)s;%(levelname)s;%(message)s")
-
+logging.basicConfig(level=logging.DEBUG, format="%(asctime)s;%(levelname)s;%(name)s;%(message)s")
 from plotfw import drawfw
 from plotfw.params import Cuts as cutlist
 import plotfw.methods
@@ -15,6 +13,7 @@ import os
 import random
 import string
 
+ROOT.gEnv.SetValue("Cache.Directory", "/scratch/joosep/ROOT-cache")
 logger = logging.getLogger(__name__)
 
 """
@@ -68,7 +67,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-o', '--ofdir', type=str, default="plots_out_" + ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(4)))
-    parser.add_argument('-n', '--n_cores', type=int, default=1)
+    parser.add_argument('-n', '--n_cores', type=int, default=None)
     parser.add_argument('--doReweighted', action='store_true')
     parser.add_argument('--doLepIso', action='store_true')
     parser.add_argument('--doNJets', action='store_true')
@@ -88,7 +87,7 @@ if __name__ == "__main__":
     print args
 
     n_cores = args.n_cores
-    logging.info("Using %d cores" % n_cores)
+    logging.info("Using %s cores" % n_cores)
     logging.info("Running on %.2f percent of events" % args.percent)
     #samples.pltcMu.maxLines = args.maxLines
     #samples.pltcEle.maxLines = args.maxLines
