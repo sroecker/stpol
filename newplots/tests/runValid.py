@@ -38,11 +38,11 @@ class SpeedTest(unittest.TestCase):
     def test_speed(self):
         sample = plotfw.methods.MCSample("WD_TTJets_FullLept", name="TTJets_FullLept", directory=mc_dir)
         ROOT.gEnv.SetValue("TFile.AsyncPrefetching", 0)
-        (t_cpu, t_real, ret) = self.timeit(sample, "sample.drawHist('test', PlotParams(Vars.cos_theta, [-1, 1]), Cuts.finalMu_2J1T, maxLines=500000)")
+        (t_cpu, t_real, ret) = self.timeit(sample, "sample.drawHist('test', PlotParams(Vars.cos_theta, [-1, 1]), Cuts.finalMu_2J1T, frac_entries=0.1)")
         logging.info("t_cpu = %.2f, t_real = %.2f, N = %.2d" % (t_cpu, t_real, ret[0]))
 
 class SampleTestBase(unittest.TestCase):
-    max_lines = 1000000
+    frac_entries = 0.1
     def loadMCSample(self, sample_name, indir):
         return plotfw.methods.MCSample("WD_%s" % (sample_name), xs=1, name=sample_name, directory=indir)
 
@@ -50,21 +50,21 @@ class SampleTestBase(unittest.TestCase):
         return plotfw.methods.DataSample("WD_%s" % (sample_name), 1, name=sample_name, directory=indir)
 
     def base_test_sample_costheta(self, sample):
-        cos_vals = sample.getColumn(Vars.cos_theta, Cuts.finalMu_2J1T, maxLines=self.max_lines)
+        cos_vals = sample.getColumn(Vars.cos_theta, Cuts.finalMu_2J1T, frac_entries=self.frac_entries)
         assert(len(cos_vals)>0)
-        logger.info("sample %s 2J1T cut eff = %.2E" % (sample, float(len(cos_vals))/self.max_lines))
+        logger.info("sample %s 2J1T cut eff = %.2E" % (sample, float(len(cos_vals))/sample.tree.GetEntries()*self.frac_entries))
         assert(numpy.mean(cos_vals) > -1)
         assert(numpy.all(numpy.abs(cos_vals) < 1) == True)
 
     def base_test_sample_b_weights(self, sample):
-        vals = sample.getColumn(Vars.b_weight["nominal"], Cuts.finalMu_2J0T, maxLines=self.max_lines)
+        vals = sample.getColumn(Vars.b_weight["nominal"], Cuts.finalMu_2J0T, frac_entries=self.frac_entries)
         mean_weight = numpy.mean(vals)
         logger.info("sample %s mean b_weight[nominal] = %.2f" % (sample, mean_weight))
         assert(len(vals)>0)
         assert(mean_weight > 0)
 
     def base_test_sample_pu_weight(self, sample):
-        vals = sample.getColumn(Vars.pu_weight, Cuts.finalMu_2J1T, maxLines=self.max_lines)
+        vals = sample.getColumn(Vars.pu_weight, Cuts.finalMu_2J1T, frac_entries=self.frac_entries)
         mean_weight = numpy.mean(vals)
         logger.info("sample %s mean PU weight = %.2f" % (sample, mean_weight))
         assert(len(vals)>0)
