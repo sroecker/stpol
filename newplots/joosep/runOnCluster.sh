@@ -7,6 +7,6 @@ source ~/.bash_profile
 cd $WORKDIR
 source setenv.sh
 
-cd newplots
+cd newplots/joosep
 python plots.py -o "plots_out_cluster_"$SLURM_JOB_ID "$@"
 #python plots.py "$@"
