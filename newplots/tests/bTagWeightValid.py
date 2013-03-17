@@ -73,7 +73,7 @@ if __name__=="__main__":
         comp_samples.set_n_cores(args.n_cores)
         comp_samples.proof = p
         weightPlots = [
-            plotfw.drawfw.PlotParams(Vars.b_weight["nominal"], (0, 2), doLogY=True, normalize_to="unity"),
+            plotfw.drawfw.PlotParams(Vars.b_weight["nominal"], (0.5, 1.5), doLogY=True, normalize_to="unity"),
             plotfw.drawfw.PlotParams(Vars.jet_counts_true["l"], (0, 5), bins=5, doLogY=True, normalize_to="unity"),
             plotfw.drawfw.PlotParams(Vars.jet_counts_true["b"], (0, 5), bins=5, doLogY=True, normalize_to="unity"),
             plotfw.drawfw.PlotParams(Vars.jet_counts_true["c"], (0, 5), bins=5, doLogY=True, normalize_to="unity"),
