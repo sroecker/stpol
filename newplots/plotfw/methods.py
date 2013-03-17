@@ -11,6 +11,7 @@ import multiprocessing
 import fnmatch
 import types
 
+from plotfw.histogram import Histogram
 from plotfw.params import Cut # FIXME: temporary hack for backwards comp.
 from plotfw.params import Var # FIXME: temporary hack for backwards comp.
 from plotfw.params import parent_branch
@@ -19,7 +20,7 @@ import copy
 
 def chksm(s):
 	"""Finds a checksum of a string
-	
+
 	Uses zlib's adler32 internally. The value will always be a positive
 	integer.
 	"""
@@ -28,6 +29,24 @@ def chksm(s):
 
 class EntryListException(Exception):
 	pass
+
+def mp_SampleGroup_drawHists(args):
+	(group, arg_list, kwarg_list) = args
+	logger = logging.getLogger(__name__ + "_" + multiprocessing.current_process().name + "_" + group.name)
+	logger.debug("Started multiprocessing draw on one group")
+	hist = group.drawHists(*arg_list, **kwarg_list)
+	logger.debug("Done multiprocessing draw on one group")
+	return (group, hist)
+
+def mp_Sample_drawHist(args):
+	(sample, arg_list, kwarg_list) = args
+	logger = logging.getLogger(__name__ + "_" + multiprocessing.current_process().name + "_" + sample.name)
+	logger.debug("Started multiprocessing draw on one sample")
+	n_filled, sample_hist = sample.drawHist(*arg_list, **kwarg_list)
+	logger.debug("Done multiprocessing draw one sample")
+	sample_hist.calc_int_err()
+	return (sample, sample_hist)
+
 
 class TreeStats:
 	def __init__(self, N_entries, N_drawn, time):
@@ -170,7 +189,12 @@ class MultiSample(Sample):
 		self.entryListCache = dict()
 		self.frac_entries = 1.0
 		self.timestats = []
+		self.total_events = None
 		self._openTree()
+
+	def close(self):
+		del self.event_chain
+		del self.lumi_chain
 
 	def __getstate__(self):
 		d = dict(self.__dict__)
@@ -200,14 +224,16 @@ class MultiSample(Sample):
 				raise TypeError("Var type not recognized")
 		return
 
-	def cacheEntryList(self, cut, maxLines=None):
+	def cacheEntryList(self, cut, frac_entries=None):
 		t0 = time.time()
 		self._switchBranchesOn(cut.getUsedVariables())
 		self.tree.SetEntryList(0)
 		self.tree.SetProof(False)
-		N_lines = self.tree.GetEntries() if not maxLines else int(maxLines)
+		if not frac_entries:
+			frac_entries = 1.0
+		N_lines = int(self.tree.GetEntries()*frac_entries)
 		if cut.cutStr not in self.entryListCache.keys():
-			self.logger.info("Caching entry list with cut %s" % (cut))
+			self.logger.info("Caching entry list with cut %s over %d entries" % (cut, N_lines))
 			entry_list_name = "%s_%s" % (self.name, chksm(cut.cutStr))
 			ROOT.gROOT.cd()
 			if self.tree.GetEntries()==0 or self.frac_entries==0:
@@ -234,10 +260,10 @@ class MultiSample(Sample):
 		self.logger.debug("Cut result: %d events" % elist.GetN())
 		return elist.GetN()
 
-	def getColumn(self, var, cut, dtype="float64", maxLines=None):
+	def getColumn(self, var, cut, dtype="float64", frac_entries=None):
 		self.logger.info("Getting column %s" % var)
 
-		self.cacheEntryList(cut, maxLines)
+		self.cacheEntryList(cut, frac_entries=frac_entries)
 		self._switchBranchesOn([var.var])
 		N = self.tree.Draw(var.var, "", "goff")
 		if N <= 0:
@@ -258,7 +284,7 @@ class MultiSample(Sample):
 	proof - an optional instance of TProof type for multicore use
 	maxLines - specify the maximum number of TTree lines to iterate over when drawing. None=all lines
 	"""
-	def drawHist(self, hist_name, plot_params, cut=None, proof=None, maxLines=None):
+	def drawHist(self, hist_name, plot_params, cut=None, frac_entries=None):
 		if not isinstance(plot_params, PlotParams):
 			raise TypeError("plot_params has wrong type")
 
@@ -268,21 +294,21 @@ class MultiSample(Sample):
 		if self.tree.GetEntries()==0:
 			self.logger.warning("Tree %s was empty!" % self.tree.GetName())
 			ROOT.gROOT.cd()
-			hist = ROOT.TH1F(hist_name, hist_name, plot_params.hbins, plot_params.hmin, plot_params.hmax)
+			hist = Histogram(hist_name, hist_name, plot_params.hbins, plot_params.hmin, plot_params.hmax)
 			return 0, hist
 			#raise EmptyTreeException("%s.GetEntries()==0" % self.tree.GetName())
 		if cut is None:
 			cut = plotfw.params.Cuts.inital
 
-		n_cut = self.cacheEntryList(cut, maxLines=maxLines)
+		n_cut = self.cacheEntryList(cut, frac_entries=frac_entries)
 		self._switchBranchesOn(plot_params.var.getUsedVariables() + plot_params.getUsedWeights(disabled_weights=self.disabled_weights))
 
-		if proof:
-			self.logger.debug("Output will be in ROOT.TProof instance %s" % str(proof))
-			self.tree.SetProof(True)
-		else:
-			self.tree.SetProof(False)
-			ROOT.gROOT.cd()
+		#if proof:
+		#	self.logger.debug("Output will be in ROOT.TProof instance %s" % str(proof))
+		#	self.tree.SetProof(True)
+		#else:
+		self.tree.SetProof(False)
+		ROOT.gROOT.cd()
 
 		draw_cmd = "%s >> %s(%d, %d, %d)" % (plot_params.var.var, hist_name, plot_params.hbins, plot_params.hmin, plot_params.hmax)
 		weight_str = plot_params.getWeightStr(disabled_weights=self.disabled_weights)
@@ -292,23 +318,25 @@ class MultiSample(Sample):
 		self.logger.debug("Histogram drawn with %d entries" % N)
 		if int(N) == -1 or n_cut != N:
 			raise Exception("Failed to draw histogram: cut result %d but histogram drawn with %d entries" % (N, n_cut))
-		if proof:
-			hist = proof.GetOutputList().FindObject(hist_name)
-		else:
-			hist = ROOT.gROOT.Get(hist_name)
+		#if proof:
+		#	hist = proof.GetOutputList().FindObject(hist_name)
+		#else:
+		hist = ROOT.gROOT.Get(hist_name)
 		if not hist:
 			raise Exception("Failed to get histogram")
 
 		#Make a copy into ROOT global memory directory (sigh)
 		ROOT.gROOT.cd()
-		clone_hist = ROOT.TH1F(hist)#hist.Clone(hist_name)
+		clone_hist = Histogram(hist)#hist.Clone(hist_name)
 
 		clone_hist.Sumw2()
 		if clone_hist.Integral()==0:
 			self.logger.warning("Histogram was empty")
 			#raise Exception("Histogram was empty")
 		t1 = time.time()
-		ts = TreeStats(maxLines if maxLines is not None else self.tree.GetEntries(), N, t1-t0)
+		if not frac_entries:
+			frac_entries=1.0
+		ts = TreeStats(frac_entries*self.tree.GetEntries(), N, t1-t0)
 		self.timestats.append(ts)
 		logging.info("Drawing stats: %s" % ts)
 		return N, clone_hist
@@ -330,15 +358,25 @@ class MultiSample(Sample):
 		#caching stuff
 		self.event_chain.SetCacheSize(100*1024*1024)
 		self.event_chain.AddBranchToCache("*", True)
+		self.lumi_chain.SetCacheSize(100*1024*1024)
+		self.lumi_chain.AddBranchToCache("edmMergeableCounter_PATTotalEventsProcessedCount__PAT.", True)
 		ROOT.gEnv.SetValue("TFile.AsyncPrefetching", 1)
 		self.tree = self.event_chain
 
 	def getTotalEvents(self):
 		tot = 0
-		n_drawn = self.lumi_chain.Draw("edmMergeableCounter_PATTotalEventsProcessedCount__PAT.product().value >> htemp", "", "goff")
-		arr = ROOT.TArrayD(n_drawn, self.lumi_chain.GetV1())
-		tot = float(arr.GetSum())
-		return tot
+		if self.total_events is None:
+			self.logger.debug("Caching total PAT processed event count")
+			self.lumi_chain.SetBranchStatus("*", 0)
+			self.lumi_chain.SetBranchStatus("edmMergeableCounter_PATTotalEventsProcessedCount__PAT.*", 1)
+			n_drawn = self.lumi_chain.Draw("edmMergeableCounter_PATTotalEventsProcessedCount__PAT.product().value >> htemp", "", "goff")
+			self.logger.debug("Event count histo drawn, getting array sum")
+			arr = ROOT.TArrayD(n_drawn, self.lumi_chain.GetV1())
+			tot = float(arr.GetSum())
+			del arr
+			self.total_events = tot
+		self.logger.info("Total events = %d" % self.total_events)
+		return self.total_events
 
 	def __str__(self):
 		return self.name
@@ -383,6 +421,16 @@ class SampleGroup:
 		self.color = color
 		self.pretty_name = pretty_name if pretty_name is not None else name
 		self.samples = samples if samples is not None else []
+		self.logger = logging.getLogger(self.name + "_" + multiprocessing.current_process().name)
+
+	def __getstate__(self):
+		d = dict(self.__dict__)
+		del d['logger']
+		return d
+
+	def __setstate__(self, d):
+		self.__dict__.update(d)
+		self.logger = logging.getLogger(self.name + "_" + multiprocessing.current_process().name)
 
 	@staticmethod
 	def fromList(samples):
@@ -422,6 +470,45 @@ class SampleGroup:
 				raise ValueError("Sample %s is already in group" % str(sample))
 			out.add(sample)
 		return out
+
+	def drawHists(self, *args, **kwargs):
+		n_cores = kwargs.pop("n_cores") if "n_cores" in kwargs.keys() else None
+		args = list(args)
+		hist_name = args[0] + "_" + self.name
+		args[0] = hist_name
+		plot_params = args[1]
+
+		n_samples = len(self.getSamples())
+		arg_list = zip(self.getSamples(), n_samples*[args], n_samples*[kwargs])
+		if n_cores is None:
+			res = map(mp_Sample_drawHist, arg_list)
+		else:
+			pool = multiprocessing.Pool(n_samples if n_cores<=0 else n_cores)
+			res = pool.map(mp_Sample_drawHist, arg_list)
+
+		hist = Histogram(hist_name, self.pretty_name, plot_params.hbins, plot_params.hmin, plot_params.hmax)
+		hist.SetLineColor(self.color)
+		hist.SetLineWidth(3)
+
+		for sample, sample_hist in res:
+			hist.Add(sample_hist)
+
+#		for sample in self.samples:
+#			sample.close()
+#			del sample
+#
+		self.samples = [x[0] for x in res]
+		if plot_params.normalize_to == "unity":
+			hist_integral = hist.Integral()
+			self.logger.debug('Hist `%s` integral: %f' % (hist_name, hist_integral))
+			if hist_integral>0:
+				hist.Scale(1.0/hist_integral)
+				self.logger.debug('Hist `%s` integral: %f (after scaling)' % (hist_name, hist.Integral()))
+			else:
+				self.logger.warning("Histogram {0} was empty".format(hist))
+				hist.Scale(0)
+		hist.calc_int_err()
+		return hist
 
 class SampleList:
 	"""List of all sample groups"""
@@ -464,6 +551,24 @@ class SampleList:
 				raise KeyError("Group %s is already in SampleList" % name)
 			out.addGroup(group)
 		return out
+
+	def drawHists(self, *args, **kwargs):
+		n_cores = kwargs.pop("n_cores") if "n_cores" in kwargs.keys() else None
+		group_list = self.groups.values()
+		many_args = zip(group_list, [args]*len(group_list), [kwargs]*len(group_list))
+		if n_cores is None:
+			ret = map(mp_SampleGroup_drawHists, many_args)
+		else:
+			if n_cores <= 0:
+				pool = multiprocessing.Pool(len(group_list))
+			else:
+				pool = multiprocessing.Pool(n_cores)
+			ret = pool.map(mp_SampleGroup_drawHists, many_args)
+		groups = [x[0] for x in ret]
+		self.groups = {}
+		for group in groups:
+			self.groups[group.name] = group
+		return [(x[0].name, Histogram(x[1])) for x in ret]
 
 
 # Plot parameters
