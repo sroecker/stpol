@@ -512,8 +512,8 @@ BTagSystematicsWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup
                 double sfUp, sfDown;
                 double sf = scaleFactor(flavour, BTagSystematicsWeightProducer::bTagAlgo, jet.pt(), jet.eta(), sfUp, sfDown);
                 
-                if (inComb) LogDebug("jetLoop") << "\t\tpass b-tagging e_tag=" << e << " sf=" << sf << " sfUp=" << sfUp << " sfDown=" << sfDown;
-                else LogDebug("jetLoop") << "\t\tfail b-tagging e_mistag=" << e << " sf=" << sf << " sfUp=" << sfUp << " sfDown=" << sfDown;
+                //if (inComb) LogDebug("jetLoop") << "\t\tpass b-tagging e_tag=" << e << " sf=" << sf << " sfUp=" << sfUp << " sfDown=" << sfDown;
+                //else LogDebug("jetLoop") << "\t\tfail b-tagging e_mistag=" << e << " sf=" << sf << " sfUp=" << sfUp << " sfDown=" << sfDown;
 
                 p_data = p_data * eff(sf * eff_val, inComb); 
                 LogDebug("jetLoop") << "\t\tp_mc=" << p_mc << " p_data=" << p_data;
