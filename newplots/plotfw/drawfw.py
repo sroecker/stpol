@@ -7,6 +7,7 @@ import methods,params,plotlog
 from methods import Sample, MCSample, DataSample, SampleGroup, SampleList
 from methods import PlotParams, SampleListGenerator
 from methods import EmptyTreeException
+from histogram import Histogram
 import cPickle as pickle
 import multiprocessing
 import pdb
@@ -192,79 +193,86 @@ class StackPlotCreator(PlotCreator):
 		total_luminosity = 0.0
 		data_hist_name = '%s_hist_data'%plotname
 
-		plot.data_hist = ROOT.TH1F(data_hist_name, '', plot_params.hbins, plot_params.hmin, plot_params.hmax)
+		plot.data_hist = Histogram(data_hist_name, '', plot_params.hbins, plot_params.hmin, plot_params.hmax)
 		plot.data_hist.SetMarkerStyle(20)
-		plot.data_hist.Sumw2()
 
-		for sample in self._data.getSamples():
-			if not isinstance(sample, DataSample):
-				raise TypeError("Sample %s is not data" % str(sample))
-			#for data there is no weight necessary
-			dt_filled, data_hist = sample.drawHist(data_hist_name, plot_params, cut=cut, proof=self.proof, maxLines=sample.tree.GetEntriesFast()*self.frac_entries)
+		ret = self._data.drawHists(data_hist_name, plot_params, cut, self.frac_entries, n_cores=self.n_cores)
+		plot.data_hist.Add(ret)
 
-			total_luminosity += sample.luminosity
-			dname = sample.name
-			plot.log.addProcess(dname, ismc=False)
-			plot.log.setVariable(dname, 'crsec', sample.luminosity)
-			plot.log.setVariable(dname, 'fname', sample.fname)
-			plot.log.setVariable(dname, 'filled', dt_filled)
+		total_luminosity = sum([sample.luminosity for sample in self._data.samples])
+		#for sample in self._data.getSamples():
+		#	if not isinstance(sample, DataSample):
+		#		raise TypeError("Sample %s is not data" % str(sample))
+		#	#for data there is no weight necessary
+		#	dt_filled, data_hist = sample.drawHist(data_hist_name, plot_params, cut=cut, proof=self.proof, maxLines=sample.tree.GetEntries()*self.frac_entries)
 
-			err = ROOT.Double()
-			dt_int = data_hist.IntegralAndError(1, data_hist.GetNbinsX(), err)
+		#	total_luminosity += sample.luminosity
+		#	dname = sample.name
+		#	plot.log.addProcess(dname, ismc=False)
+		#	plot.log.setVariable(dname, 'crsec', sample.luminosity)
+		#	plot.log.setVariable(dname, 'fname', sample.fname)
+		#	plot.log.setVariable(dname, 'filled', dt_filled)
 
-			plot.log.setVariable(dname, 'int', dt_int)
-			plot.log.setVariable(dname, 'int_err', float(err))
+		#	err = ROOT.Double()
+		#	dt_int = data_hist.IntegralAndError(1, data_hist.GetNbinsX(), err)
 
-			plot.data_hist.Add(data_hist)
+		#	plot.log.setVariable(dname, 'int', dt_int)
+		#	plot.log.setVariable(dname, 'int_err', float(err))
 
-		effective_lumi = total_luminosity
-		plot.log.addParam('Luminosity', total_luminosity)
-		plot.log.addParam('Effective luminosity', effective_lumi)
+		#	plot.data_hist.Add(data_hist)
+
+		#plot.log.addParam('Luminosity', total_luminosity)
+		#plot.log.addParam('Effective luminosity', effective_lumi)
 
 		data_max = plot.data_hist.GetMaximum()
-		plot.log.addParam('Data binmax', data_max)
-		plot.data_hist.SetTitle("L_{int.} = %.1f fb^{-1}" % (plot.log.getParam("Luminosity")/1000.0))
+		#plot.log.addParam('Data binmax', data_max)
+		plot.data_hist.SetTitle("L_{int.} = %.1f fb^{-1}" % (total_luminosity/1000.0))
 
 		mc_int = 0
 		plot.mc_hists = []
 		plot.mc_group_hists = dict()
 		logger.info("Total luminosity: %f" % total_luminosity)
-		for group_name, group in self._mcs.groups.items():
-			group_hist_name = 'hist_%s_mc_group_%s'%(plotname, group_name)
-			mc_group_hist = ROOT.TH1F(group_hist_name, group.pretty_name, plot_params.hbins, plot_params.hmin, plot_params.hmax)
-			mc_group_hist.filled_count = 0
-			mc_group_hist.Sumw2()
-			mc_group_hist.SetFillColor(group.color)
-			mc_group_hist.SetLineColor(group.color)
-			mc_group_hist.SetLineWidth(0)
 
-			for sample in group.samples:
-				plot.log.addProcess(sample.name)
-				plot.log.setVariable(sample.name, 'crsec', sample.xs)
-				plot.log.setVariable(sample.name, 'fname', sample.fname)
-				hist_name = group_hist_name + "_" + sample.name
-				mc_filled, mc_hist = sample.drawHist(group_hist_name, plot_params, cut=cut, proof=self.proof, lumi=total_luminosity, maxLines= sample.tree.GetEntriesFast()*self.frac_entries )
-				mc_hist.filled_count = mc_filled
-				plot.log.setVariable(sample.name, 'filled', mc_filled)
+		ret = self._mcs.drawHists("%s_hist_mc" % plotname, plot_params, cut, self.frac_entries, n_cores=self.n_cores, lumi=total_luminosity)
+		for group_name, hist in ret:
+			plot.mc_group_hists[group_name] = hist
+			plot.mc_hists.append(hist.child_hists)
+		#for group_name, group in self._mcs.groups.items():
+		#	group_hist_name = 'hist_%s_mc_group_%s'%(plotname, group_name)
+		#	mc_group_hist = ROOT.TH1F(group_hist_name, group.pretty_name, plot_params.hbins, plot_params.hmin, plot_params.hmax)
+		#	mc_group_hist.filled_count = 0
+		#	mc_group_hist.Sumw2()
+		#	mc_group_hist.SetFillColor(group.color)
+		#	mc_group_hist.SetLineColor(group.color)
+		#	mc_group_hist.SetLineWidth(0)
 
-				# MC scaling to xs (Already done by drawHist on an as-need basis)
-				expected_events = sample.xs * effective_lumi
-				total_events = sample.getTotalEvents()
-				scale_factor = float(expected_events)/float(total_events)
+		#	for sample in group.samples:
+		#		plot.log.addProcess(sample.name)
+		#		plot.log.setVariable(sample.name, 'crsec', sample.xs)
+		#		plot.log.setVariable(sample.name, 'fname', sample.fname)
+		#		hist_name = group_hist_name + "_" + sample.name
+		#		mc_filled, mc_hist = sample.drawHist(group_hist_name, plot_params, cut=cut, proof=self.proof, lumi=total_luminosity, maxLines= sample.tree.GetEntries()*self.frac_entries )
+		#		mc_hist.filled_count = mc_filled
+		#		plot.log.setVariable(sample.name, 'filled', mc_filled)
 
-				plot.mc_hists.append(mc_hist)
-				mc_group_hist.Add(mc_hist)
-				mc_group_hist.filled_count += mc_hist.filled_count
+		#		# MC scaling to xs (Already done by drawHist on an as-need basis)
+		#		expected_events = sample.xs * total_luminosity
+		#		total_events = sample.getTotalEvents()
+		#		scale_factor = float(expected_events)/float(total_events)
 
-				err = ROOT.Double()
-				mc_int = mc_hist.IntegralAndError(1, mc_hist.GetNbinsX(), err)
-				logger.debug("Histogram integral = %.2f" % mc_int)
-				plot.log.setVariable(sample.name, 'totev', total_events)
-				plot.log.setVariable(sample.name, 'expev', expected_events)
-				plot.log.setVariable(sample.name, 'scf', scale_factor)
-				plot.log.setVariable(sample.name, 'int', mc_int)
-				plot.log.setVariable(sample.name, 'int_err', float(err))
-			plot.mc_group_hists[group_name] = mc_group_hist
+		#		plot.mc_hists.append(mc_hist)
+		#		mc_group_hist.Add(mc_hist)
+		#		mc_group_hist.filled_count += mc_hist.filled_count
+
+		#		err = ROOT.Double()
+		#		mc_int = mc_hist.IntegralAndError(1, mc_hist.GetNbinsX(), err)
+		#		logger.debug("Histogram integral = %.2f" % mc_int)
+		#		plot.log.setVariable(sample.name, 'totev', total_events)
+		#		plot.log.setVariable(sample.name, 'expev', expected_events)
+		#		plot.log.setVariable(sample.name, 'scf', scale_factor)
+		#		plot.log.setVariable(sample.name, 'int', mc_int)
+		#		plot.log.setVariable(sample.name, 'int_err', float(err))
+		#	plot.mc_group_hists[group_name] = mc_group_hist
 
 		# Kolmorogov test
 		total_mc_hist = ROOT.TH1F('hist_mc_ktbase_%s'%plotname, 'MC stat. err.', plot_params.hbins, plot_params.hmin, plot_params.hmax)
@@ -319,49 +327,56 @@ class ShapePlotCreator(PlotCreator):
 		plotname = 'plot_cut%s_%s' % (uniq, plot_params.getName())
 		logger.debug('Plotting: %s', plotname)
 
-		plot._maxbin = 0.0
-		for group_name, group in self._slist.groups.items():
-			hist_name = 'hist_%s_%s'%(plotname, group.getName())
-
-			hist = ROOT.TH1F(hist_name, group.pretty_name, plot_params.hbins, plot_params.hmin, plot_params.hmax)
-			hist.Sumw2()
-			hist.SetStats(False)
-			hist.SetLineColor(group.color)
-			hist.SetLineWidth(3)
-
-			filled_tot = 0.0
-
-			n_samples = len(group.getSamples())
-			args = zip(group.getSamples(), n_samples*[hist_name], n_samples*[plot_params], n_samples*[cut], n_samples*[self.frac_entries])
-			if self.run_multicore:
-				p = multiprocessing.Pool(8)
-				res = p.map(drawSample, args)
-			else:
-				res = map(drawSample, args)
-
-			res = map(lambda x: (x[0], x[1], pickle.loads(x[2])), res)
-
-			for sample_name, n_filled, sample_hist in res:
-				plot.log.addProcess(sample_name)
-				#n_filled, sample_hist = sample.drawHist(hist_name, plot_params, cut, self.proof)
-				err = ROOT.Double()
-				integral = sample_hist.IntegralAndError(1, sample_hist.GetNbinsX(), err)
-				plot.log.setVariable(sample_name, 'int', integral)
-				plot.log.setVariable(sample_name, 'int_err', float(err))
-				hist.Add(sample_hist)
-
-			if plot_params.normalize_to == "unity":
-				hist_integral = hist.Integral()
-				logger.debug('Hist `%s` integral: %f' % (hist_name, hist_integral))
-				if hist_integral>0:
-					hist.Scale(1.0/hist_integral)
-					logger.debug('Hist `%s` integral: %f (after scaling)' % (hist_name, hist.Integral()))
-				else:
-					logger.warning("Histogram {0} was empty".format(hist))
-					hist.Scale(0)
-			plot._maxbin = max(plot._maxbin, hist.GetMaximum())
-			plot.addHist(hist, group.name)
-
+		#plot._maxbin = 0.0
+		hists = self._slist.drawHists(plotname, plot_params, cut, self.frac_entries, n_cores=self.n_cores)
+		for hn, h in hists:
+			plot.addHist(h, hn)
+#		for group_name, group in self._slist.groups.items():
+#			hist_name = 'hist_%s_%s'%(plotname, group.getName())
+#
+#			hist = ROOT.TH1F(hist_name, group.pretty_name, plot_params.hbins, plot_params.hmin, plot_params.hmax)
+#			hist.Sumw2()
+#			hist.SetStats(False)
+#			hist.SetLineColor(group.color)
+#			hist.SetLineWidth(3)
+#
+#			filled_tot = 0.0
+#
+#			n_samples = len(group.getSamples())
+#			args = zip(group.getSamples(), n_samples*[hist_name], n_samples*[plot_params], n_samples*[cut], n_samples*[self.frac_entries])
+#			if self.run_multicore:
+#				logger.debug("Running over samples with multicore map")
+#				p = multiprocessing.Pool(8)
+#				res = p.map(drawSample, args)
+#				logger.debug("Done running over samples with multicore map")
+#			else:
+#				logger.debug("Running over samples with single core map")
+#				res = map(drawSample, args)
+#				logger.debug("Done running over samples with single core map")
+#
+#			res = map(lambda x: (x[0], x[1], pickle.loads(x[2])), res)
+#
+#			for sample_name, n_filled, sample_hist in res:
+#				plot.log.addProcess(sample_name)
+#				#n_filled, sample_hist = sample.drawHist(hist_name, plot_params, cut, self.proof)
+#				err = ROOT.Double()
+#				integral = sample_hist.IntegralAndError(1, sample_hist.GetNbinsX(), err)
+#				plot.log.setVariable(sample_name, 'int', integral)
+#				plot.log.setVariable(sample_name, 'int_err', float(err))
+#				hist.Add(sample_hist)
+#
+#			if plot_params.normalize_to == "unity":
+#				hist_integral = hist.Integral()
+#				logger.debug('Hist `%s` integral: %f' % (hist_name, hist_integral))
+#				if hist_integral>0:
+#					hist.Scale(1.0/hist_integral)
+#					logger.debug('Hist `%s` integral: %f (after scaling)' % (hist_name, hist.Integral()))
+#				else:
+#					logger.warning("Histogram {0} was empty".format(hist))
+#					hist.Scale(0)
+#			plot._maxbin = max(plot._maxbin, hist.GetMaximum())
+#			plot.addHist(hist, group.name)
+#
 		plot.legend = BaseLegend(plot)
 
 		return plot
@@ -423,7 +438,8 @@ class Plot(object):
 		if fout is None:
 			fout = self.getName()
 		ofname = ofdir + "/" + fout+'.'+fmt
-
+		w = int(w)
+		h = int(h)
 		logger.info('Saving as: %s', ofname)
 		self.cvs = ROOT.TCanvas('tcvs_%s'%fout, '', w, h)
 		if self.legend.legpos == "R":
@@ -488,6 +504,9 @@ class StackPlot(Plot):
 		else:
 			raise KeyError("Histogram '{0}' not defined for plot {1}".format(name, self))
 
+	def getHistograms(self):
+		return [self.data_hist] + self.mc_group_hists.values()
+
 class ShapePlot(Plot):
 	def __init__(self, plot_params, sample_list, unique_id):
 		super(ShapePlot,self).__init__(plot_params, sample_list, unique_id)
@@ -529,6 +548,9 @@ class ShapePlot(Plot):
 	def getHistogram(self, name):
 		return self._hists[name]
 
+	def getHistograms(self):
+		return self._hists.values()
+
 class BaseLegend(object):
 	legCoords = dict()
 	legCoords["R_full"] = [0.75, 0.01, 0.99, 0.99]
@@ -562,8 +584,10 @@ class YieldTable:
 		yield_table = dict()
 		for group_name, group in self.samples.groups.items():
 			name = group.pretty_name
-			total_int = sum([plot.log._processes[x.name]["vars"]["int"] for x in group.samples])
-			total_err = math.sqrt(sum(map(lambda x: x**2, [plot.log._processes[x.name]["vars"]["int_err"] for x in group.samples])))
+			#total_int = sum([plot.log._processes[x.name]["vars"]["int"] for x in group.samples])
+			total_int = plot.getHistogram(group.name).get_integral()#sum([plot.getHistogram(sample.name).get_integral() for sample in group.samples]
+			total_err = plot.getHistogram(group.name).get_err()#sum([plot.getHistogram(sample.name).get_err() for sample in group.samples]
+			#total_err = math.sqrt(sum(map(lambda x: x**2, [plot.log._processes[x.name]["vars"]["int_err"] for x in group.samples])))
 			yield_table[name] = (total_int, total_err)
 
 		cur_pos = YieldTable.pos[location]
