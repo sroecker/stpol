@@ -5,6 +5,8 @@ import plotfw.methods
 import plotfw.drawfw
 import plotfw.params
 import ROOT
+ROOT.gEnv.SetValue("Cache.Directory", "/scratch/joosep/ROOT-cache")
+ROOT.gEnv.SetValue("TFile.AsyncPrefetching", 1)
 import argparse
 from plotfw.params import Cuts
 from plotfw.params import Vars
@@ -14,8 +16,6 @@ import string
 import numpy
 import unittest
 import time
-ROOT.gEnv.SetValue("Cache.Directory", "/scratch/joosep/ROOT-cache")
-ROOT.gEnv.SetValue("TFile.AsyncPrefetching", 1)
 
 #mc_dir = "/home/joosep/singletop/stpol/crabs/step2_MC_Iso_Mar14/"
 mc_dir = "/scratch/joosep/step2_MC_Iso_Mar14/"
@@ -28,18 +28,25 @@ logger.setLevel(logging.INFO)
 class SpeedTest(unittest.TestCase):
 
     def timeit(self, sample, func):
-        t0_cpu = time.time()
-        t0_real = time.clock()
+        t0_real = time.time()
+        t0_cpu = time.clock()
         ret = eval(func)
-        t1_cpu = time.time()
-        t1_real = time.clock()
-        return (t1_cpu-t0_cpu, t1_real-t0_real, ret)
+        t1_real = time.time()
+        t1_cpu = time.clock()
+        t_cpu = t1_cpu-t0_cpu
+        t_real = t1_real-t0_real
+        logging.info("t_cpu = %.2f, t_real = %.2f, cmd=%s" % (t_cpu, t_real, func))
+        return (t_cpu, t_real, ret)
 
     def test_speed(self):
         sample = plotfw.methods.MCSample("WD_TTJets_FullLept", name="TTJets_FullLept", directory=mc_dir)
         ROOT.gEnv.SetValue("TFile.AsyncPrefetching", 0)
         (t_cpu, t_real, ret) = self.timeit(sample, "sample.drawHist('test', PlotParams(Vars.cos_theta, [-1, 1]), Cuts.finalMu_2J1T, frac_entries=0.1)")
         logging.info("t_cpu = %.2f, t_real = %.2f, N = %.2d" % (t_cpu, t_real, ret[0]))
+
+    def test_mergeable_counter_speed(self):
+        sample = plotfw.methods.MCSample("WD_T_t", name="T_t", directory=mc_dir)
+        (t_cpu, t_real, ret) = self.timeit(sample, "sample.getTotalEvents()")
 
 class SampleTestBase(unittest.TestCase):
     frac_entries = 0.1
