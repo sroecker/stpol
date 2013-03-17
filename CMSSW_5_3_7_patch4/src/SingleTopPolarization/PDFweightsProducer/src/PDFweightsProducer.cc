@@ -103,8 +103,8 @@ PDFweightsProducer::PDFweightsProducer(const edm::ParameterSet& iConfig)
 : PDFSetSrc(iConfig.getParameter<std::string>("PDFSetSrc"))
 {
 
-	produces<std::vector<double> > ("PDFSet");
-	produces<double>("w0");
+	produces<std::vector<float> > ("PDFSet");
+	produces<float>("w0");
 	produces<int>("nPDFSet");
 	LHAPDF::initPDFSet(1, PDFSetSrc);
 	
@@ -145,18 +145,18 @@ PDFweightsProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	
 
 	// calculate the PDF weights
-	std::auto_ptr < std::vector<double> > weights(new std::vector<double>());
+	std::auto_ptr < std::vector<float> > weights(new std::vector<float>());
 	LHAPDF::usePDFMember(1, 0);
 	double	xpdf1 = LHAPDF::xfx(1, x1, scalePDF, id1);
 	double	xpdf2 = LHAPDF::xfx(1, x2, scalePDF, id2);
-	double	w0	= xpdf1 * xpdf2;
+	float	w0	= (float)(xpdf1 * xpdf2);
 	int		nPDFSet = LHAPDF::numberPDF();
 	for (int p = 1; p <= nPDFSet; ++p)
 	{
 		LHAPDF::usePDFMember(1, p);
 		double xpdf1_new = LHAPDF::xfx(1, x1, scalePDF, id1);
 		double xpdf2_new = LHAPDF::xfx(1, x2, scalePDF, id2);
-		double pweight = xpdf1_new * xpdf2_new / w0;
+		float pweight = (float)(xpdf1_new * xpdf2_new / w0);
 		weights->push_back(pweight);
 	}
 	
@@ -166,7 +166,7 @@ PDFweightsProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	LogDebug("produce()") << "PDF weights";
 	iEvent.put(weights, "PDFSet");
 	iEvent.put(std::auto_ptr<int>(new int(nPDFSet)), "nPDFSet");  
-	iEvent.put(std::auto_ptr<double>(new double(w0)), "w0");  
+	iEvent.put(std::auto_ptr<float>(new float(w0)), "w0");  
 	
 }
 
