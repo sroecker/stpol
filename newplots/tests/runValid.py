@@ -85,15 +85,10 @@ class SampleTestBase(unittest.TestCase):
 
     def test_W3Jets(self):
         sample = self.loadMCSample("W3Jets_exclusive", mc_dir)
-        #perf_stats = ROOT.TTreePerfStats("ioperf", sample.tree)
         self.base_test_sample_costheta(sample)
         self.base_test_sample_b_weights(sample)
         self.base_test_sample_pu_weight(sample)
-        #perf_stats.Finish()
-        #perf_stats.Print()
-        #perf_stats.Draw()
-        #perf_stats.SaveAs("perf.root")
-
+        sample.tree.PrintCacheStats()
     #def test_TTJets_FullLept(self):
     #    sample = self.loadMCSample("TTJets_FullLept", mc_dir)
     #    self.base_test_sample_costheta(sample)
