@@ -5,8 +5,10 @@ import plotfw
 from plotfw import drawfw
 
 # Parameters with reasonable defaults
-directory_mc   = '/scratch/joosep/step2_MC_Iso_Mar14/'
-directory_data = '/scratch/joosep/step2_Data_Iso_Mar15/'
+#directory_mc   = '/scratch/joosep/step2_MC_Iso_Mar14/'
+#directory_data = '/scratch/joosep/step2_Data_Iso_Mar15/'
+directory_mc   = '/home/joosep/singletop/stpol/crabs/step2_MC_Iso_Mar14/'
+directory_data = '/home/joosep/singletop/stpol/crabs/step2_Data_Iso_Mar15'
 fulldata = True
 split_ttbar = False
 
