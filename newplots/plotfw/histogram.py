@@ -1,4 +1,5 @@
 import ROOT
+import logging
 
 class Histogram(ROOT.TH1F):
 	def __init__(self, *args):
@@ -8,6 +9,7 @@ class Histogram(ROOT.TH1F):
 		self.err = None
 		self.integral = None
 		self.child_hists = []
+		self.count_events = None
 
 	def calc_int_err(self):
 		err = ROOT.Double()
@@ -24,6 +26,11 @@ class Histogram(ROOT.TH1F):
 		if self.integral is None:
 			self.calc_int_err()
 		return self.integral
+	def normalize(self):
+		if self.Integral()>0:
+			self.Scale(1.0/self.Integral())
+		else:
+			logging.warning("Histogram integral=0, not scaling")
 
 	def Add(self, other):
 		o = other.Clone()
