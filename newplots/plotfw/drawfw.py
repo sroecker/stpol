@@ -196,7 +196,7 @@ class StackPlotCreator(PlotCreator):
 		plot.data_hist = Histogram(data_hist_name, '', plot_params.hbins, plot_params.hmin, plot_params.hmax)
 		plot.data_hist.SetMarkerStyle(20)
 
-		ret = self._data.drawHists(data_hist_name, plot_params, cut, self.frac_entries, n_cores=self.n_cores)
+		ret = self._data.drawHists(data_hist_name, plot_params, cut, frac_entries=self.frac_entries, n_cores=self.n_cores)
 		plot.data_hist.Add(ret)
 
 		total_luminosity = sum([sample.luminosity for sample in self._data.samples])
@@ -281,7 +281,7 @@ class StackPlotCreator(PlotCreator):
 		total_mc_hist.SetLineColor(ROOT.kBlue+3)
 
 		sorted_group_hists = dict()
-		for name, val in sorted(plot.mc_group_hists.items(), key=lambda x: x[1].filled_count):
+		for name, val in sorted(plot.mc_group_hists.items(), key=lambda x: x[1].count_events):
 			sorted_group_hists[name] = val
 		plot.mc_group_hists = sorted_group_hists
 
@@ -497,9 +497,9 @@ class StackPlot(Plot):
 			return self.data_hist
 		elif name == "mc":
 			return self.total_mc_hist
-		elif name in mc_group_hists.keys():
+		elif name in self.mc_group_hists.keys():
 			return self.mc_group_hists[name]
-		elif name in mc_hists.keys():
+		elif name in self.mc_hists.keys():
 			return self.mc_hists.keys[name]
 		else:
 			raise KeyError("Histogram '{0}' not defined for plot {1}".format(name, self))
@@ -527,7 +527,7 @@ class ShapePlot(Plot):
 		max_bin = max([h.GetMaximum() for h in self._hists.values()])
 		min_bin = min([h.GetMinimum() for h in self._hists.values()])
 		hists[0].SetMaximum(1.5*max_bin)
-		hists[0].SetMinimum(0.0001)
+		hists[0].SetMinimum(0.001 if self._plot_params._ymin is None else self._plot_params._ymin)
 		hists[0].GetXaxis().SetTitle(self._plot_params.x_label)
 		for hist in hists:
 			hist.Draw('E1' if first else 'E1 SAME')
@@ -584,10 +584,9 @@ class YieldTable:
 		yield_table = dict()
 		for group_name, group in self.samples.groups.items():
 			name = group.pretty_name
-			#total_int = sum([plot.log._processes[x.name]["vars"]["int"] for x in group.samples])
-			total_int = plot.getHistogram(group.name).get_integral()#sum([plot.getHistogram(sample.name).get_integral() for sample in group.samples]
-			total_err = plot.getHistogram(group.name).get_err()#sum([plot.getHistogram(sample.name).get_err() for sample in group.samples]
-			#total_err = math.sqrt(sum(map(lambda x: x**2, [plot.log._processes[x.name]["vars"]["int_err"] for x in group.samples])))
+			hist = plot.getHistogram(group.name)
+			total_int = hist.get_integral() if not hist.is_normalized else hist.count_events
+			total_err = hist.get_err() if not hist.is_normalized else math.sqrt(hist.count_events)
 			yield_table[name] = (total_int, total_err)
 
 		cur_pos = YieldTable.pos[location]
