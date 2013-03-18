@@ -167,10 +167,10 @@ class SingleSample(Sample):
 
 		#caching stuff
 		self.tree.SetCacheSize(10**8)
-		self.tree.AddBranchToCache("*")
+		#self.tree.AddBranchToCache("*")
 		for tree in trees:
 			tree.SetCacheSize(10**8)
-			tree.AddBranchToCache("*")
+			#tree.AddBranchToCache("*")
 		ROOT.gEnv.SetValue("TFile.AsyncPrefetching", 1)
 
 	def getTotalEvents(self):
@@ -214,15 +214,21 @@ class MultiSample(Sample):
 
 	def _switchBranchesOn(self, vars_to_switch):
 		self.tree.SetBranchStatus("*", 0)
+		self.lumi_chain.SetCacheSize(0)
+		self.tree.SetCacheSize(100*1024*1024)
+		#self.tree.DropBranchFromCache("*", True)
 		self.lumi_chain.SetBranchStatus("*", 0)
 		self.logger.debug("Switching variables on: %s" % vars_to_switch)
 		for var in vars_to_switch:
 			if isinstance(var, Var):
 				self.tree.SetBranchStatus(var.var, 1)
+				#self.tree.AddBranchToCache(var.var, True)
 			elif isinstance(var, types.StringType):
 				self.tree.SetBranchStatus(var, 1)
+				#self.tree.AddBranchToCache(var, True)
 			else:
 				raise TypeError("Var type not recognized")
+		self.tree.StopCacheLearningPhase()
 		return
 
 	def cacheEntryList(self, cut, frac_entries=None):
@@ -329,7 +335,7 @@ class MultiSample(Sample):
 		#Make a copy into ROOT global memory directory (sigh)
 		ROOT.gROOT.cd()
 		clone_hist = Histogram(hist)#hist.Clone(hist_name)
-
+		clone_hist.count_events = N
 		clone_hist.Sumw2()
 		if clone_hist.Integral()==0:
 			self.logger.warning("Histogram was empty")
@@ -358,8 +364,8 @@ class MultiSample(Sample):
 
 		#caching stuff
 		self.event_chain.SetCacheSize(100*1024*1024)
-		self.event_chain.AddBranchToCache("*", True)
-		self.lumi_chain.SetCacheSize(100*1024*1024)
+		#self.event_chain.SetCacheLearnEntries(1000)
+		self.lumi_chain.SetCacheSize(100*1024*1024) #Only one cache can be active at a time
 		ROOT.gEnv.SetValue("TFile.AsyncPrefetching", 1)
 		self.tree = self.event_chain
 		self.logger.debug('Done opening file and creating caches.')
@@ -368,10 +374,11 @@ class MultiSample(Sample):
 		tot = 0
 		if self.total_events is None:
 			self.logger.debug("Caching total PAT processed event count")
-			self.lumi_chain.AddBranchToCache("edmMergeableCounter_PATTotalEventsProcessedCount__PAT.*", True)
 			self.lumi_chain.SetBranchStatus("*", 0)
 			self.event_chain.SetBranchStatus("*", 0)
 			self.lumi_chain.SetBranchStatus("edmMergeableCounter_PATTotalEventsProcessedCount__PAT.*", 1)
+			self.lumi_chain.SetCacheSize(100*1024*1024)
+			#self.lumi_chain.AddBranchToCache("edmMergeableCounter_PATTotalEventsProcessedCount__PAT.*", True)
 			n_drawn = self.lumi_chain.Draw("edmMergeableCounter_PATTotalEventsProcessedCount__PAT.obj.value >> htemp", "", "goff")
 			self.logger.debug("Event count histo drawn, getting array sum")
 			arr = ROOT.TArrayD(n_drawn, self.lumi_chain.GetV1())
@@ -483,7 +490,7 @@ class SampleGroup:
 
 		n_samples = len(self.getSamples())
 		arg_list = zip(self.getSamples(), n_samples*[args], n_samples*[kwargs])
-		if n_cores is None:
+		if n_cores is None or n_cores==1:
 			res = map(mp_Sample_drawHist, arg_list)
 		else:
 			pool = multiprocessing.Pool(n_samples if n_cores<=0 else n_cores)
@@ -502,14 +509,7 @@ class SampleGroup:
 #
 		self.samples = [x[0] for x in res]
 		if plot_params.normalize_to == "unity":
-			hist_integral = hist.Integral()
-			self.logger.debug('Hist `%s` integral: %f' % (hist_name, hist_integral))
-			if hist_integral>0:
-				hist.Scale(1.0/hist_integral)
-				self.logger.debug('Hist `%s` integral: %f (after scaling)' % (hist_name, hist.Integral()))
-			else:
-				self.logger.warning("Histogram {0} was empty".format(hist))
-				hist.Scale(0)
+			hist.normalize()
 		hist.calc_int_err()
 		return hist
 
@@ -559,7 +559,7 @@ class SampleList:
 		n_cores = kwargs.pop("n_cores") if "n_cores" in kwargs.keys() else None
 		group_list = self.groups.values()
 		many_args = zip(group_list, [args]*len(group_list), [kwargs]*len(group_list))
-		if n_cores is None:
+		if n_cores is None or n_cores==1:
 			ret = map(mp_SampleGroup_drawHists, many_args)
 		else:
 			if n_cores <= 0:
