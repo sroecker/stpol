@@ -269,3 +269,17 @@ class Vars:
     jet_counts_tagged_true["b"] = Var("int_btaggedTrueBJetCount__STPOLSEL2.obj", "btagged true b-jet count")
     jet_counts_tagged_true["c"] = Var("int_btaggedTrueCJetCount__STPOLSEL2.obj", "b-tagged true c-jet count")
     jet_counts_tagged_true["l"] = Var("int_btaggedTrueLJetCount__STPOLSEL2.obj", "b-tagged true l-jet count")
+
+
+import unittest
+class TestParams(unittest.TestCase):
+    def test_CutF(self):
+        cutf = CutF('muonEta', 'abs({0}) < 2.1', ['floats_goodSignalMuonsNTupleProducer_Eta_STPOLSEL2.obj[0]'])
+        assert(len(cutf._vars)==1)
+        assert(cutf.getUsedVariables()[0] == "floats_goodSignalMuonsNTupleProducer_Eta_STPOLSEL2.*")
+    def test_CutP(self):
+        cut = CutP('muonEta', 'floats_goodSignalMuonsNTupleProducer_Eta_STPOLSEL2.obj[0] < 2.1')
+        assert(len(cut._vars)==1)
+        print cut.getUsedVariables()
+if __name__=="__main__":
+    unittest.main()
