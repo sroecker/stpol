@@ -168,9 +168,6 @@ def MuonPath(process, conf):
         #Select mu and MET invariant transverse mass OR the MET
         process.metMuSequence *
 
-        #Add muon scale factors
-        process.muonWeightsProducer *
-
         process.mBTags *
 
         #Reconstruct the neutrino, the top quark and calculate the cosTheta* variable
@@ -200,6 +197,15 @@ def MuonPath(process, conf):
             process.muPath.index(process.nJets)+1,
             process.nJetID
         )
+
+    if conf.isMC:
+      #Add muon scale factors
+      process.muPath.insert(
+            process.muPath.index(process.singleIsoMu)+1,
+            process.muonWeightsProducer
+        )
+        
+
 
     #Count number of events passing the selection filters
     eventCounting.countAfter(process, process.muPath,

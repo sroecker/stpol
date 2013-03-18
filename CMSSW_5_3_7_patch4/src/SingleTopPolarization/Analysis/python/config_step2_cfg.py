@@ -110,7 +110,7 @@ class Config(C):
 
     class Muons(Leptons):
         relIsoCutRangeIsolatedRegion = [0.0, 0.12]
-        relIsoCutRangeAntiIsolatedRegion = [0.12, 0.5]
+        relIsoCutRangeAntiIsolatedRegion = [0.2, 0.9]
         looseVetoRelIsoCut = 0.2
         source = "muonsWithID"
         #source = "shiftedMuonsWithIDenDown"

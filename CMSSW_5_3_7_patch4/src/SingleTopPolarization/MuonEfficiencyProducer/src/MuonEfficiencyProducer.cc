@@ -28,6 +28,7 @@
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
 #include <DataFormats/PatCandidates/interface/Muon.h>
@@ -99,22 +100,6 @@ void
 MuonEfficiencyProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
    using namespace edm;
-/* This is an event example
-   //Read 'ExampleData' from the Event
-   Handle<ExampleData> pIn;
-   iEvent.getByLabel("example",pIn);
-
-   //Use the ExampleData to create an ExampleData2 which 
-   // is put into the Event
-   std::auto_ptr<ExampleData2> pOut(new ExampleData2(*pIn));
-   iEvent.put(pOut);
-*/
-
-/* this is an EventSetup example
-   //Read SetupData from the SetupRecord in the EventSetup
-   ESHandle<SetupData> pSetup;
-   iSetup.get<SetupRecord>().get(pSetup);
-*/
    double weightID = TMath::QuietNaN();
    double weightIDUp = TMath::QuietNaN();
    double weightIDDown = TMath::QuietNaN();
@@ -128,24 +113,53 @@ MuonEfficiencyProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
    for ( uint i = 0; i < muons->size(); ++i ) {
       const pat::Muon& muon = (pat::Muon&)muons->at(i);
    
-      //std::cout << "eta" << muon.eta() << std::endl;
-      //std::cout << "iso" << muon.userFloat("deltaBetaCorrRelIso") << std::endl;
+      LogDebug("eta ") << muon.eta() << std::endl;
+      LogDebug("iso ") << muon.userFloat("deltaBetaCorrRelIso") << std::endl;
       
       if(abs(muon.eta())<0.9){
          weightID = 0.9939;
          weightIDUp = weightID + 0.0002;
          weightIDDown = weightID - 0.0002;
+         if(muon.userFloat("deltaBetaCorrRelIso")<0.12  || muon.userFloat("deltaBetaCorrRelIso")>0.2){
+            weightIso = 1.0004;
+            weightIsoUp = weightIso + 0.0002;
+            weightIsoDown = weightIso - 0.0002;
+         }else if(muon.userFloat("deltaBetaCorrRelIso")<0.2){
+            weightIso = 0.9999;
+            weightIsoUp = weightIso + 0.0001;
+            weightIsoDown = weightIso - 0.0001;
+         }
       }
       else if (abs(muon.eta()) < 1.2){
          weightID = 0.9902;
          weightIDUp = weightID + 0.0003;
          weightIDDown = weightID - 0.0003;
+         if(muon.userFloat("deltaBetaCorrRelIso")<0.12 || muon.userFloat("deltaBetaCorrRelIso")>0.2){
+            weightIso = 1.0031;
+            weightIsoUp = weightIso + 0.0003;
+            weightIsoDown = weightIso - 0.0003;
+         }else if(muon.userFloat("deltaBetaCorrRelIso")<0.2){
+            weightIso = 1.0013;
+            weightIsoUp = weightIso + 0.0002;
+            weightIsoDown = weightIso - 0.0002;
+         }
       }
       else if(abs(muon.eta())<2.1){
          weightID = 0.9970;
          weightIDUp = weightID + 0.0003;
          weightIDDown = weightID - 0.0003;
+         if(muon.userFloat("deltaBetaCorrRelIso")<0.12 || muon.userFloat("deltaBetaCorrRelIso")>0.2){
+            weightIso = 1.0050;
+            weightIsoUp = weightIso + 0.0002;
+            weightIsoDown = weightIso - 0.0002;
+         }else if(muon.userFloat("deltaBetaCorrRelIso")<0.2){
+            weightIso = 1.0023;
+            weightIsoUp = weightIso + 0.0001;
+            weightIsoDown = weightIso - 0.0001;
+         }
       }
+
+      
    }
 
    
