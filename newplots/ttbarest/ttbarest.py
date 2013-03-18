@@ -29,20 +29,23 @@ plots = [
 	drawfw.PlotParams(variables.cos_theta, (-1, 1), ymax=2300, ofname='costheta',   vars_to_enable=None, weights=weights),
 	drawfw.PlotParams(variables.cos_theta, (-1, 1), ymax=2300, ofname='costheta_b', vars_to_enable=None, weights=weights_b),
 
-	drawfw.PlotParams(variables.top_mass, (100, 500), ymax=9000, bins=20, ofname='topmass',    vars_to_enable=None, weights=weights),
+	drawfw.PlotParams(variables.top_mass, (100, 500), ymax=9000, bins=20, ofname='topmass',	vars_to_enable=None, weights=weights),
 	drawfw.PlotParams(variables.top_mass, (100, 500), ymax=9000, bins=20, ofname='topmass_b',  vars_to_enable=None, weights=weights_b),
 
-	drawfw.PlotParams(variables.etalj, (0, 5),  ymax=5000, ofname='bjeteta',    vars_to_enable=None, weights=weights),
+	drawfw.PlotParams(variables.etalj, (0, 5),  ymax=5000, ofname='bjeteta',	vars_to_enable=None, weights=weights),
 	drawfw.PlotParams(variables.etalj, (0, 5),  ymax=5000, ofname='bjeteta_b',  vars_to_enable=None, weights=weights_b),
 ]
 
 # Set up samples
-samples.directory = '/scratch/morten/mar6_iso/'
+samples.directory_mc = '/testhome/jooseptest/step2_MC_Iso_Mar14'
+samples.directory_data = '/testhome/jooseptest/step2_Data_Iso_Mar15'
 samples.split_ttbar = False
 samples.load()
 
 for ck,c in cutlist.items():
 	print 'Cut:', ck
+	samples.pltcMu.set_n_cores(1)
+	samples.pltcMu.frac_entries=0.1
 	ps = samples.pltcMu.plot(c, plots)
 	for p in ps:
 		p.save(fout = 'plots_ttbar/ttbar_%s_%s'%(ck,p.getName()), fmt='pdf', log=True)
