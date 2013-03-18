@@ -63,7 +63,6 @@ def replaceQCD(plot, histQCD, histnonQCD):
 if __name__ == "__main__":
 #    datasmplsMu, datasmplsEle, smpls, samples.pltcMu, pltcEle = initSamples()
     logger.info("Running plots.py")
-    smpls, smplsMu, smplsAllMC, smplsWJets_incl_excl, smplsTTbar_incl_excl = samples.load()
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-o', '--ofdir', type=str, default="plots_out_" + ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(4)))
@@ -73,6 +72,8 @@ if __name__ == "__main__":
     parser.add_argument('--doNJets', action='store_true')
     parser.add_argument('--doNBTags', action='store_true')
     parser.add_argument('--doMET', action='store_true')
+    parser.add_argument('--doBWeightControl', action='store_true')
+    parser.add_argument('--useHDFS', action='store_true')
     parser.add_argument('--doBDiscriminators', action='store_true')
     parser.add_argument('--doTopMass', action='store_true')
     parser.add_argument('--doFinalSel', action='store_true')
@@ -85,6 +86,15 @@ if __name__ == "__main__":
     parser.add_argument('-p', '--percent', type=float, default=100.0)
     args = parser.parse_args()
     print args
+
+    if args.useHDFS:
+        samples.directory_mc = "/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14/"
+        samples.directory_data = "/hdfs/local/joosep/stpol/step2_Data_Iso_Mar15/"
+    else: #use the fast samples
+        samples.directory_mc = "/testhome/jooseptest/step2_MC_Iso_Mar14/"
+        samples.directory_data = "/testhome/jooseptest/step2_Data_Iso_Mar15/"
+
+    smpls, smplsMu, smplsAllMC, smplsWJets_incl_excl, smplsTTbar_incl_excl = samples.load()
 
     n_cores = args.n_cores
     logging.info("Using %s cores" % n_cores)
