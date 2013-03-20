@@ -384,12 +384,88 @@ class ShapePlotCreator(PlotCreator):
 class SeparateCutShapePlotCreator(ShapePlotCreator):
 	def __init__(self, samplegroup, cuts, **kwargs):
 		super(ShapePlotCreator, self).__init__(**kwargs)
+		self._cuts = cuts
+		self._samplegroup = samplegroup
 
-	def plot(self, plots, cutDescription=""):
+	def plot(self, plots):
 		"""Method takes a cut and list of plots and then returns a list plot objects."""
-		for p in plots:
-			print p
-		return []
+		t0 = time.time()
+		# Apply cuts
+		logger.info("Plotting samples {0}, plots: {1}".format(self.samples, plots))
+		retplots = [self._plot(x) for x in plots]
+		for p in retplots:
+			p.setPlotTitle('????')
+		t1 = time.time()
+		logger.info("Plotting took {0:.1f} seconds".format(t1-t0))
+
+		return retplots
+
+	def _plot(self, plot_params):
+		plot = ShapePlot(plot_params, self._samplegroup, None)
+		plotname = 'plot_%s' % (plot_params.getName())
+		logger.debug('Plotting: %s', plotname)
+
+		plot._maxbin = 0.0
+		
+		for cutname,cut in self._cuts.items():
+			uniq = PlotCreator._uniqueCutStr(cut.cutStr, plot_params.getWeightStr())
+			hist_name = 'hist_%s_%s_%s'%(plotname, cutname, uniq)
+			
+			hist = ROOT.TH1F(hist_name, '%s_%s'%(plotname,cutname), plot_params.hbins, plot_params.hmin, plot_params.hmax)
+			hist.Sumw2()
+			hist.SetStats(False)
+			hist.SetLineColor(ROOT.kRed)
+			hist.SetLineWidth(3)
+			
+			filled_tot = 0.0
+			
+			for s in self._samplegroup.getSamples():
+				uname = '%s_%s' % (hist_name, s.name)
+				logger.debug('uaname: %s', uname)
+				n_filled, sample_hist = s.drawHist(uname, plot_params, cut=cut)
+				hist.add(sample_hist)
+			
+			if plot_params.normalize_to == "unity":
+				hist_integral = hist.Integral()
+				logger.debug('Hist `%s` integral: %f' % (hist_name, hist_integral))
+				if hist_integral>0:
+					hist.Scale(1.0/hist_integral)
+					logger.debug('Hist `%s` integral: %f (after scaling)' % (hist_name, hist.Integral()))
+				else:
+					logger.warning("Histogram {0} was empty".format(hist))
+					hist.Scale(0)
+			
+			plot._maxbin = hist.GetMaximum()
+			plot.addHist(hist, cutname)
+		'''
+		for group_name, group in self._slist.groups.items():
+			hist_name = 'hist_%s_%s'%(plotname, group.getName())
+
+			filled_tot = 0.0
+
+			n_samples = len(group.getSamples())
+			args = zip(group.getSamples(), n_samples*[hist_name], n_samples*[plot_params], n_samples*[cut], n_samples*[self.frac_entries])
+			if self.run_multicore:
+				p = multiprocessing.Pool(8)
+				res = p.map(drawSample, args)
+			else:
+				res = map(drawSample, args)
+
+			res = map(lambda x: (x[0], x[1], pickle.loads(x[2])), res)
+
+			for sample_name, n_filled, sample_hist in res:
+				plot.log.addProcess(sample_name)
+				#n_filled, sample_hist = sample.drawHist(hist_name, plot_params, cut, self.proof)
+				err = ROOT.Double()
+				integral = sample_hist.IntegralAndError(1, sample_hist.GetNbinsX(), err)
+				plot.log.setVariable(sample_name, 'int', integral)
+				plot.log.setVariable(sample_name, 'int_err', float(err))
+				hist.Add(sample_hist)
+		'''
+
+		plot.legend = BaseLegend(plot)
+
+		return plot
 
 class Plot(object):
 	"""This class represents a single plot and has the methods to export it.
