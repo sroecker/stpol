@@ -54,6 +54,9 @@ def load():
 	r=re.compile('WD_SingleEle(.*)')
 	datasmplsEle = map(auto_data_sample, filter(r.match, files))
 
+	for sample in (datasmplsMu + datasmplsEle):
+		sample.disabled_vars = ["*pdf", "*Weight*"]
+
 	if not fulldata:
 		datasmplsMu = datasmplsMu[0:1]
 		datasmplsEle = datasmplsEle[0:2]

@@ -1,6 +1,7 @@
 import logging, re, copy
 import ROOT
 from cross_sections import xs
+import pdb
 
 def parent_branch(v):
     return v.split(".")[0] + "*"
@@ -67,7 +68,7 @@ class CutF(Cut):
     for the automatic storing of relevant variables."""
     def __init__(self, cutname, cutformatstring, vars):
         cutstring = cutformatstring.format(*vars)
-        vars = [v.split(".")[0] + ".*" for v in vars]
+        vars = [v.split(".obj")[0] + ".*" for v in vars]
         super(CutF,self).__init__(cutname, cutstring, vars)
 
 class CutP(Cut):
@@ -78,7 +79,7 @@ class CutP(Cut):
         #m=re.match('([A-Za-z0-9_]*)[ ]*([><=]*)[ ]*(.*)', cutstring)
         m=re.match('([^><=]*)[ ]*([><=]*)[ ]*(.*)', cutstring)
         #logging.debug('In `%s` matching for `%s`', cutstring, m.group(1))
-        super(CutP,self).__init__(cutname, cutstring, [parent_branch(m.group(1))])
+        super(CutP,self).__init__(cutname, cutstring, [m.group(1).strip().split(".obj")[0] + ".*"])
 
 def invert(cut):
     ret = copy.deepcopy(cut)
@@ -242,13 +243,20 @@ class Var:
 
 class Vars:
     cos_theta = Var("double_cosTheta_cosThetaLightJet_STPOLSEL2.obj", "cos #theta_{lj}")
-    top_mass = Var("floats_recoTopNTupleProducer_Mass_STPOLSEL2.obj[0]", "m_{l #nu b}")
-    etalj = Var("abs(floats_lowestBTagJetNTupleProducer_Eta_STPOLSEL2.obj[0])", "#eta_{lj}", relvars=['floats_lowestBTagJetNTupleProducer_Eta_STPOLSEL2.obj'])
+    top_mass = Var("floats_recoTopNTupleProducer_Mass_STPOLSEL2.obj[0]", "m_{l #nu b}", units="GeV")
+    absetalj = Var("abs(floats_lowestBTagJetNTupleProducer_Eta_STPOLSEL2.obj[0])", "|#eta_{lj}|", relvars=['floats_lowestBTagJetNTupleProducer_Eta_STPOLSEL2.obj'])
+    etalj = Var("floats_lowestBTagJetNTupleProducer_Eta_STPOLSEL2.obj[0]", "#eta_{lj}", relvars=['floats_lowestBTagJetNTupleProducer_Eta_STPOLSEL2.obj'])
+    etabj = Var("floats_highestBTagJetNTupleProducer_Eta_STPOLSEL2.obj[0]", "#eta_{bj}", relvars=['floats_highestBTagJetNTupleProducer_Eta_STPOLSEL2.obj'])
+    rms_lj = Var("floats_lowestBTagJetNTupleProducer_rms_STPOLSEL2.obj[0]", "rms_{lj}", relvars=['floats_lowestBTagJetNTupleProducer_rms_STPOLSEL2.obj'])
 
     b_weight = dict()
     b_weight["nominal"] = Var("double_bTagWeightProducerNJMT_bTagWeight_STPOLSEL2.obj", "b-weight (nominal)")
 
     pu_weight = Var("double_puWeightProducer_PUWeightNtrue_STPOLSEL2.obj", "PU weight")
+    n_vertices = Var("int_offlinePVCount__STPOLSEL2.obj", "PU weight")
+
+    bdiscr_bj = Var("floats_highestBTagJetNTupleProducer_bDiscriminator_STPOLSEL2.obj[0]", "b-discr.{bj}", relvars=['floats_highestBTagJetNTupleProducer_bDiscriminator_STPOLSEL2.obj'])
+    bdiscr_lj = Var("floats_lowestBTagJetNTupleProducer_bDiscriminator_STPOLSEL2.obj[0]", "b-discr.{lj}", relvars=['floats_lowestBTagJetNTupleProducer_bDiscriminator_STPOLSEL2.obj'])
 
     jet1_flavour = Var("abs(floats_goodJetsNTupleProducer_Eta_STPOLSEL2_partonFlavour.obj[0])", "|pdgID| of 1st jet", relvars=["floats_goodJetsNTupleProducer_Eta_STPOLSEL2_partonFlavour.obj"])
     jet2_flavour = Var("abs(floats_goodJetsNTupleProducer_Eta_STPOLSEL2_partonFlavour.obj[1])", "|pdgID| of 2nd jet", relvars=["floats_goodJetsNTupleProducer_Eta_STPOLSEL2_partonFlavour.obj"])
