@@ -4,7 +4,7 @@ logging.basicConfig(level=logging.DEBUG, format="%(levelname)s %(message)s")
 # Also log to file `ttbarest.log`
 fileloghandler = logging.FileHandler('ttbarest.log')
 fileloghandler.setLevel(logging.DEBUG)
-fileloghandler.setFormatter(logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s'))
+fileloghandler.setFormatter(logging.Formatter('%(asctime)s %(name)-8s: %(levelname)-5s %(message)s'))
 logging.getLogger('').addHandler(fileloghandler)
 
 # Imports
