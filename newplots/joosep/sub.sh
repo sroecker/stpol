@@ -1,5 +1,5 @@
-sbatch -c 5 runOnCluster.sh -n 5 -p 1 --doFinalSel
-sbatch -c 5 runOnCluster.sh -n 5 -p 1 --doMET
-sbatch -c 5 runOnCluster.sh -n 5 -p 1 --doNJets
-sbatch -c 5 runOnCluster.sh -n 5 -p 1 --doNBTags
-sbatch -c 5 runOnCluster.sh -n 5 -p 1 --doTopMass
+sbatch -c 5 runOnCluster.sh -n 5 -p 100 --useHDFS --doFinalSel --doReweight
+sbatch -c 5 runOnCluster.sh -n 5 -p 100 --useHDFS --doMET --doReweight
+sbatch -c 5 runOnCluster.sh -n 5 -p 100 --useHDFS --doNJets --doReweight
+sbatch -c 5 runOnCluster.sh -n 5 -p 100 --useHDFS --doNBTags --doReweight
+sbatch -c 5 runOnCluster.sh -n 5 -p 100 --useHDFS --doTopMass --doReweight
