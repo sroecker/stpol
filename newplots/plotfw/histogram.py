@@ -9,7 +9,8 @@ class Histogram(ROOT.TH1F):
 		self.err = None
 		self.integral = None
 		self.child_hists = []
-		self.count_events = None
+		self.count_events = self.GetEntries()
+		self.is_normalized = False
 
 	def calc_int_err(self):
 		err = ROOT.Double()
@@ -29,6 +30,7 @@ class Histogram(ROOT.TH1F):
 	def normalize(self):
 		if self.Integral()>0:
 			self.Scale(1.0/self.Integral())
+			self.is_normalized = True
 		else:
 			logging.warning("Histogram integral=0, not scaling")
 

@@ -30,6 +30,7 @@ if __name__=="__main__":
     parser.add_argument('-n', '--n_cores', type=int, default=8)
     parser.add_argument('--doBWeightDistributions', action='store_true')
     parser.add_argument('--doDataMC', action='store_true')
+    parser.add_argument('--doAllMC', action='store_true')
     parser.add_argument('--doEffs', action='store_true')
     parser.add_argument('--withPROOF', action='store_true')
     parser.add_argument('--do2J0T', action='store_true')
@@ -37,6 +38,9 @@ if __name__=="__main__":
     parser.add_argument('--do3J0T', action='store_true')
     parser.add_argument('--do3J1T', action='store_true')
     parser.add_argument('--do3J2T', action='store_true')
+    parser.add_argument('--doLJCuts', action='store_true')
+    parser.add_argument('--doCJCuts', action='store_true')
+    parser.add_argument('--doJetCounts', action='store_true')
     #parser.add_argument('--allSamples', action='store_true')
     args = parser.parse_args()
 
@@ -59,7 +63,7 @@ if __name__=="__main__":
     samples["W2Jets"] = plotfw.methods.MCSample("WD_W2Jets_exclusive", name="W2Jets", directory=args.mc_dir)
     samples["W3Jets"] = plotfw.methods.MCSample("WD_W3Jets_exclusive", name="W3Jets", directory=args.mc_dir)
     samples["W4Jets"] = plotfw.methods.MCSample("WD_W4Jets_exclusive", name="W4Jets", directory=args.mc_dir)
-    samples["WJets_inclusive"] = plotfw.methods.MCSample("WD_WJets_inclusive", name="WJets", directory=args.mc_dir)
+    #samples["WJets_inclusive"] = plotfw.methods.MCSample("WD_WJets_inclusive", name="WJets", directory=args.mc_dir)
 
     groups = plotfw.methods.SampleGroup.fromList(samples.values())
 
@@ -73,21 +77,26 @@ if __name__=="__main__":
         comp_samples.set_n_cores(args.n_cores)
         comp_samples.proof = p
         weightPlots = [
-            plotfw.drawfw.PlotParams(Vars.b_weight["nominal"], (0.5, 1.5), doLogY=True, normalize_to="unity"),
-            plotfw.drawfw.PlotParams(Vars.jet_counts_true["l"], (0, 5), bins=5, doLogY=True, normalize_to="unity"),
-            plotfw.drawfw.PlotParams(Vars.jet_counts_true["b"], (0, 5), bins=5, doLogY=True, normalize_to="unity"),
-            plotfw.drawfw.PlotParams(Vars.jet_counts_true["c"], (0, 5), bins=5, doLogY=True, normalize_to="unity"),
+            plotfw.drawfw.PlotParams(Vars.b_weight["nominal"], (0, 5), doLogY=True, normalize_to="unity", ymin=0.01),
         ]
+        if args.doJetCounts:
+            weightPlots += [
+                plotfw.drawfw.PlotParams(Vars.jet_counts_true["l"], (0, 5), bins=5, doLogY=True, normalize_to="unity"),
+                plotfw.drawfw.PlotParams(Vars.jet_counts_true["b"], (0, 5), bins=5, doLogY=True, normalize_to="unity"),
+                plotfw.drawfw.PlotParams(Vars.jet_counts_true["c"], (0, 5), bins=5, doLogY=True, normalize_to="unity"),
+            ]
         weightPlots[0].putStats()
 
         if args.do2J0T:
             psMu += comp_samples.plot(Cuts.finalMu_2J0T, weightPlots, cutDescription="muon channel, final sel. (2J0T)")
-            psMu += comp_samples.plot(Cuts.finalMu_2J0T*Cuts.jets_2LJ_true, weightPlots, cutDescription="muon channel, final sel. (2J0T, 2 true light jets)")
-            psMu += comp_samples.plot(Cuts.finalMu_2J0T*Cuts.jets_1LJ_true, weightPlots, cutDescription="muon channel, final sel. (2J0T, 1 true light jet)")
-            psMu += comp_samples.plot(Cuts.finalMu_2J0T*Cuts.jets_0LJ_true, weightPlots, cutDescription="muon channel, final sel. (2J0T, 0 true light jets)")
-            psMu += comp_samples.plot(Cuts.finalMu_2J0T*Cuts.jets_2CJ_true, weightPlots, cutDescription="muon channel, final sel. (2J0T, 2 true c-jets)")
-            psMu += comp_samples.plot(Cuts.finalMu_2J0T*Cuts.jets_1CJ_true, weightPlots, cutDescription="muon channel, final sel. (2J0T, 1 true c-jet)")
-            psMu += comp_samples.plot(Cuts.finalMu_2J0T*Cuts.jets_0CJ_true, weightPlots, cutDescription="muon channel, final sel. (2J0T, 0 true c-jets)")
+            if args.doLJCuts:
+                psMu += comp_samples.plot(Cuts.finalMu_2J0T*Cuts.jets_2LJ_true, weightPlots, cutDescription="muon channel, final sel. (2J0T, 2 true light jets)")
+                psMu += comp_samples.plot(Cuts.finalMu_2J0T*Cuts.jets_1LJ_true, weightPlots, cutDescription="muon channel, final sel. (2J0T, 1 true light jet)")
+                psMu += comp_samples.plot(Cuts.finalMu_2J0T*Cuts.jets_0LJ_true, weightPlots, cutDescription="muon channel, final sel. (2J0T, 0 true light jets)")
+            if args.doCJCuts:
+                psMu += comp_samples.plot(Cuts.finalMu_2J0T*Cuts.jets_2CJ_true, weightPlots, cutDescription="muon channel, final sel. (2J0T, 2 true c-jets)")
+                psMu += comp_samples.plot(Cuts.finalMu_2J0T*Cuts.jets_1CJ_true, weightPlots, cutDescription="muon channel, final sel. (2J0T, 1 true c-jet)")
+                psMu += comp_samples.plot(Cuts.finalMu_2J0T*Cuts.jets_0CJ_true, weightPlots, cutDescription="muon channel, final sel. (2J0T, 0 true c-jets)")
 
         if args.do2J1T:
             psMu += comp_samples.plot(Cuts.finalMu_2J1T, weightPlots, cutDescription="muon channel, final sel. (2J1T)")
@@ -97,24 +106,28 @@ if __name__=="__main__":
         if args.do3J1T:
             psMu += comp_samples.plot(Cuts.finalMu_3J1T, weightPlots, cutDescription="muon channel, final sel. (3J1T)")
 
-            psMu += comp_samples.plot(Cuts.finalMu_3J1T*Cuts.jets_2LJ_true, weightPlots, cutDescription="muon channel, final sel. (3J1T, 2 true light jets)")
-            psMu += comp_samples.plot(Cuts.finalMu_3J1T*Cuts.jets_1LJ_true, weightPlots, cutDescription="muon channel, final sel. (3J1T, 1 true light jet)")
-            psMu += comp_samples.plot(Cuts.finalMu_3J1T*Cuts.jets_0LJ_true, weightPlots, cutDescription="muon channel, final sel. (3J1T, 0 true light jet)")
-
-            psMu += comp_samples.plot(Cuts.finalMu_3J1T*Cuts.jets_2CJ_true, weightPlots, cutDescription="muon channel, final sel. (3J1T, 2 true c-jets)")
-            psMu += comp_samples.plot(Cuts.finalMu_3J1T*Cuts.jets_1CJ_true, weightPlots, cutDescription="muon channel, final sel. (3J1T, 1 true c-jet)")
-            psMu += comp_samples.plot(Cuts.finalMu_3J1T*Cuts.jets_0CJ_true, weightPlots, cutDescription="muon channel, final sel. (3J1T, 0 true c-jet)")
+            if args.doLJCuts:
+                psMu += comp_samples.plot(Cuts.finalMu_3J1T*Cuts.jets_2LJ_true, weightPlots, cutDescription="muon channel, final sel. (3J1T, 2 true light jets)")
+                psMu += comp_samples.plot(Cuts.finalMu_3J1T*Cuts.jets_1LJ_true, weightPlots, cutDescription="muon channel, final sel. (3J1T, 1 true light jet)")
+                psMu += comp_samples.plot(Cuts.finalMu_3J1T*Cuts.jets_0LJ_true, weightPlots, cutDescription="muon channel, final sel. (3J1T, 0 true light jet)")
+            if args.doCJuts:
+                psMu += comp_samples.plot(Cuts.finalMu_3J1T*Cuts.jets_2CJ_true, weightPlots, cutDescription="muon channel, final sel. (3J1T, 2 true c-jets)")
+                psMu += comp_samples.plot(Cuts.finalMu_3J1T*Cuts.jets_1CJ_true, weightPlots, cutDescription="muon channel, final sel. (3J1T, 1 true c-jet)")
+                psMu += comp_samples.plot(Cuts.finalMu_3J1T*Cuts.jets_0CJ_true, weightPlots, cutDescription="muon channel, final sel. (3J1T, 0 true c-jet)")
 
         if args.do3J0T:
-            psMu += comp_samples.plot(Cuts.finalMu_3J0T*Cuts.jets_2LJ_true, weightPlots, cutDescription="muon channel, final sel. (3J0T, 2 true light jets)")
-            psMu += comp_samples.plot(Cuts.finalMu_3J0T*Cuts.jets_1LJ_true, weightPlots, cutDescription="muon channel, final sel. (3J0T, 1 true light jet)")
-            psMu += comp_samples.plot(Cuts.finalMu_3J0T*Cuts.jets_0LJ_true, weightPlots, cutDescription="muon channel, final sel. (3J0T, 0 true light jets)")
+            psMu += comp_samples.plot(Cuts.finalMu_3J0T, weightPlots, cutDescription="muon channel, final sel. (3J0T)")
+            if args.doLJCuts:
+                psMu += comp_samples.plot(Cuts.finalMu_3J0T*Cuts.jets_2LJ_true, weightPlots, cutDescription="muon channel, final sel. (3J0T, 2 true light jets)")
+                psMu += comp_samples.plot(Cuts.finalMu_3J0T*Cuts.jets_1LJ_true, weightPlots, cutDescription="muon channel, final sel. (3J0T, 1 true light jet)")
+                psMu += comp_samples.plot(Cuts.finalMu_3J0T*Cuts.jets_0LJ_true, weightPlots, cutDescription="muon channel, final sel. (3J0T, 0 true light jets)")
 
         #psMu += comp_samples.plot(Cuts.finalMu_2J1T, weightPlots, cutDescription="muon channel, final sel. (2J1T)")
         #psMu += comp_samples.plot(Cuts.finalMu_3J0T, weightPlots, cutDescription="muon channel, final sel. (3J0T)")
         #psMu += comp_samples.plot(Cuts.finalMu_3J1T, weightPlots, cutDescription="muon channel, final sel. (3J1T)")
         #psMu += comp_samples.plot(Cuts.finalMu_3J2T, weightPlots, cutDescription="muon channel, final sel. (3J2T)")
-        #psMu += comp_samples.plot(Cuts.initial, weightPlots, cutDescription="all events")
+        if args.doAllMC:
+            psMu += comp_samples.plot(Cuts.initial, weightPlots, cutDescription="all events")
     if args.doDataMC:
         samples_data["SingleMu"] = plotfw.methods.DataSample("/home/joosep/singletop/stpol/crabs/step2_Data_Iso_Mar11/*Mu*/res/*.root", 20000, name="SingleMu")
         data_group = plotfw.methods.SampleGroup("data", ROOT.kBlack)

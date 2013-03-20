@@ -11,13 +11,22 @@ logging.getLogger('').addHandler(fileloghandler)
 from plotfw import drawfw
 from plotfw.params import Cuts as cuts
 from plotfw.params import Vars as variables
+from plotfw.params import colors
 
 # Samples
-path = '/home/joosep/singletop/stpol/crabs/step2_MC_Iso_Mar11/'
-samples = {
-	'TTJets_FullLept': drawfw.methods.MCSample('WD_TTJets_FullLept', name='TTJets_FullLept', directory=path),
-	'TTJets_SemiLept': drawfw.methods.MCSample('WD_TTJets_SemiLept', name='TTJets_SemiLept', directory=path)
-}
+path = '/scratch/joosep/step2_MC_Iso_Mar14/'
+
+sample_fulllept = drawfw.methods.MCSample('WD_TTJets_FullLept', name='TTJets_FullLept', directory=path)
+sample_semilept = drawfw.methods.MCSample('WD_TTJets_SemiLept', name='TTJets_SemiLept', directory=path)
+
+samples = {}
+samples['TTJets_FullLept'] = drawfw.methods.SampleGroup('TTJets_FullLept', colors['TTJets_FullLept'])
+samples['TTJets_FullLept'].add(sample_fulllept)
+samples['TTJets_SemiLept'] = drawfw.methods.SampleGroup('TTJets_SemiLept', colors['TTJets_SemiLept'])
+samples['TTJets_SemiLept'].add(sample_semilept)
+samples['TTbar'] = drawfw.methods.SampleGroup('TTbar', colors['TTbar'])
+samples['TTJets_FullLept'].add(sample_fulllept)
+samples['TTJets_SemiLept'].add(sample_semilept)
 
 # Cuts
 cut_std = cuts.recoFState * cuts.mu * cuts.jetPt * cuts.jetRMS * cuts.jetEta * cuts.MTmu
@@ -36,16 +45,19 @@ plots = [
 	drawfw.PlotParams(variables.etalj, (0, 5), ofname='bjeteta', weights=weights),
 ]
 
+
 for ck,c in cuts_jet.items():
 	print 'Cut:', ck
-	c1 = c
-	c2 = c * cut_sig
+	cuts = {
+		'std': c,
+		'sig': c * cut_sig
+	}
 
-	spc_semi = drawfw.SeparateCutShapePlotCreator(samples['TTJets_SemiLept'], [c1,c2])
-	spc_full = drawfw.SeparateCutShapePlotCreator(samples['TTJets_FullLept'], [c1,c2])
-	#spc_ttbar = plotfw.drawfw.SeparateCutShapePlotCreator(samples, [c1,c2])
-
-	ps = spc_semi.plot(plots, cutDescription='Dafuq?') + spc_full.plot(plots, cutDescription='Dafuq?')
+	ps = []
+	for sk,s in samples.items():
+		logging.debug('Sample: %s', sk)
+		ps += drawfw.SeparateCutShapePlotCreator(s, cuts).plot(plots)
+	
 	logging.debug('Plots: %s', str(ps))
 	
 	for p in ps:

@@ -196,7 +196,7 @@ class StackPlotCreator(PlotCreator):
 		plot.data_hist = Histogram(data_hist_name, '', plot_params.hbins, plot_params.hmin, plot_params.hmax)
 		plot.data_hist.SetMarkerStyle(20)
 
-		ret = self._data.drawHists(data_hist_name, plot_params, cut, self.frac_entries, n_cores=self.n_cores)
+		ret = self._data.drawHists(data_hist_name, plot_params, cut, frac_entries=self.frac_entries, n_cores=self.n_cores)
 		plot.data_hist.Add(ret)
 
 		total_luminosity = sum([sample.luminosity for sample in self._data.samples])
@@ -281,7 +281,7 @@ class StackPlotCreator(PlotCreator):
 		total_mc_hist.SetLineColor(ROOT.kBlue+3)
 
 		sorted_group_hists = dict()
-		for name, val in sorted(plot.mc_group_hists.items(), key=lambda x: x[1].filled_count):
+		for name, val in sorted(plot.mc_group_hists.items(), key=lambda x: x[1].count_events):
 			sorted_group_hists[name] = val
 		plot.mc_group_hists = sorted_group_hists
 
@@ -384,12 +384,88 @@ class ShapePlotCreator(PlotCreator):
 class SeparateCutShapePlotCreator(ShapePlotCreator):
 	def __init__(self, samplegroup, cuts, **kwargs):
 		super(ShapePlotCreator, self).__init__(**kwargs)
+		self._cuts = cuts
+		self._samplegroup = samplegroup
 
-	def plot(self, plots, cutDescription=""):
+	def plot(self, plots):
 		"""Method takes a cut and list of plots and then returns a list plot objects."""
-		for p in plots:
-			print p
-		return []
+		t0 = time.time()
+		# Apply cuts
+		logger.info("Plotting samples {0}, plots: {1}".format(self.samples, plots))
+		retplots = [self._plot(x) for x in plots]
+		for p in retplots:
+			p.setPlotTitle('????')
+		t1 = time.time()
+		logger.info("Plotting took {0:.1f} seconds".format(t1-t0))
+
+		return retplots
+
+	def _plot(self, plot_params):
+		plot = ShapePlot(plot_params, self._samplegroup, None)
+		plotname = 'plot_%s' % (plot_params.getName())
+		logger.debug('Plotting: %s', plotname)
+
+		plot._maxbin = 0.0
+		
+		for cutname,cut in self._cuts.items():
+			uniq = PlotCreator._uniqueCutStr(cut.cutStr, plot_params.getWeightStr())
+			hist_name = 'hist_%s_%s_%s'%(plotname, cutname, uniq)
+			
+			hist = ROOT.TH1F(hist_name, '%s_%s'%(plotname,cutname), plot_params.hbins, plot_params.hmin, plot_params.hmax)
+			hist.Sumw2()
+			hist.SetStats(False)
+			hist.SetLineColor(ROOT.kRed)
+			hist.SetLineWidth(3)
+			
+			filled_tot = 0.0
+			
+			for s in self._samplegroup.getSamples():
+				uname = '%s_%s' % (hist_name, s.name)
+				logger.debug('uaname: %s', uname)
+				n_filled, sample_hist = s.drawHist(uname, plot_params, cut=cut)
+				hist.add(sample_hist)
+			
+			if plot_params.normalize_to == "unity":
+				hist_integral = hist.Integral()
+				logger.debug('Hist `%s` integral: %f' % (hist_name, hist_integral))
+				if hist_integral>0:
+					hist.Scale(1.0/hist_integral)
+					logger.debug('Hist `%s` integral: %f (after scaling)' % (hist_name, hist.Integral()))
+				else:
+					logger.warning("Histogram {0} was empty".format(hist))
+					hist.Scale(0)
+			
+			plot._maxbin = hist.GetMaximum()
+			plot.addHist(hist, cutname)
+		'''
+		for group_name, group in self._slist.groups.items():
+			hist_name = 'hist_%s_%s'%(plotname, group.getName())
+
+			filled_tot = 0.0
+
+			n_samples = len(group.getSamples())
+			args = zip(group.getSamples(), n_samples*[hist_name], n_samples*[plot_params], n_samples*[cut], n_samples*[self.frac_entries])
+			if self.run_multicore:
+				p = multiprocessing.Pool(8)
+				res = p.map(drawSample, args)
+			else:
+				res = map(drawSample, args)
+
+			res = map(lambda x: (x[0], x[1], pickle.loads(x[2])), res)
+
+			for sample_name, n_filled, sample_hist in res:
+				plot.log.addProcess(sample_name)
+				#n_filled, sample_hist = sample.drawHist(hist_name, plot_params, cut, self.proof)
+				err = ROOT.Double()
+				integral = sample_hist.IntegralAndError(1, sample_hist.GetNbinsX(), err)
+				plot.log.setVariable(sample_name, 'int', integral)
+				plot.log.setVariable(sample_name, 'int_err', float(err))
+				hist.Add(sample_hist)
+		'''
+
+		plot.legend = BaseLegend(plot)
+
+		return plot
 
 class Plot(object):
 	"""This class represents a single plot and has the methods to export it.
@@ -497,9 +573,9 @@ class StackPlot(Plot):
 			return self.data_hist
 		elif name == "mc":
 			return self.total_mc_hist
-		elif name in mc_group_hists.keys():
+		elif name in self.mc_group_hists.keys():
 			return self.mc_group_hists[name]
-		elif name in mc_hists.keys():
+		elif name in self.mc_hists.keys():
 			return self.mc_hists.keys[name]
 		else:
 			raise KeyError("Histogram '{0}' not defined for plot {1}".format(name, self))
@@ -527,7 +603,7 @@ class ShapePlot(Plot):
 		max_bin = max([h.GetMaximum() for h in self._hists.values()])
 		min_bin = min([h.GetMinimum() for h in self._hists.values()])
 		hists[0].SetMaximum(1.5*max_bin)
-		hists[0].SetMinimum(0.0001)
+		hists[0].SetMinimum(0.001 if self._plot_params._ymin is None else self._plot_params._ymin)
 		hists[0].GetXaxis().SetTitle(self._plot_params.x_label)
 		for hist in hists:
 			hist.Draw('E1' if first else 'E1 SAME')
@@ -584,10 +660,9 @@ class YieldTable:
 		yield_table = dict()
 		for group_name, group in self.samples.groups.items():
 			name = group.pretty_name
-			#total_int = sum([plot.log._processes[x.name]["vars"]["int"] for x in group.samples])
-			total_int = plot.getHistogram(group.name).get_integral()#sum([plot.getHistogram(sample.name).get_integral() for sample in group.samples]
-			total_err = plot.getHistogram(group.name).get_err()#sum([plot.getHistogram(sample.name).get_err() for sample in group.samples]
-			#total_err = math.sqrt(sum(map(lambda x: x**2, [plot.log._processes[x.name]["vars"]["int_err"] for x in group.samples])))
+			hist = plot.getHistogram(group.name)
+			total_int = hist.get_integral() if not hist.is_normalized else hist.count_events
+			total_err = hist.get_err() if not hist.is_normalized else math.sqrt(hist.count_events)
 			yield_table[name] = (total_int, total_err)
 
 		cur_pos = YieldTable.pos[location]

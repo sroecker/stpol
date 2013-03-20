@@ -213,19 +213,19 @@ class MultiSample(Sample):
 		return [br.GetName() for br in self.tree.GetListOfBranches()]
 
 	def _switchBranchesOn(self, vars_to_switch):
-		self.tree.SetBranchStatus("*", 0)
-		self.lumi_chain.SetCacheSize(0)
+	#	self.tree.SetBranchStatus("*", 0)
 		self.tree.SetCacheSize(100*1024*1024)
-		#self.tree.DropBranchFromCache("*", True)
-		self.lumi_chain.SetBranchStatus("*", 0)
+	#	self.tree.DropBranchFromCache("*", True)
+	#	self.tree.StopCacheLearningPhase()
+	#	self.lumi_chain.SetBranchStatus("*", 0)
 		self.logger.debug("Switching variables on: %s" % vars_to_switch)
 		for var in vars_to_switch:
 			if isinstance(var, Var):
 				self.tree.SetBranchStatus(var.var, 1)
-				#self.tree.AddBranchToCache(var.var, True)
+				self.tree.AddBranchToCache(var.var, True)
 			elif isinstance(var, types.StringType):
 				self.tree.SetBranchStatus(var, 1)
-				#self.tree.AddBranchToCache(var, True)
+				self.tree.AddBranchToCache(var, True)
 			else:
 				raise TypeError("Var type not recognized")
 		self.tree.StopCacheLearningPhase()
@@ -247,6 +247,7 @@ class MultiSample(Sample):
 				self.logger.warning("Requested entry list over 0 entries, skipping")
 				return 0
 			self.tree.Draw(">>%s" % entry_list_name, cut.cutStr, "entrylist", N_lines)
+			self.tree.PrintCacheStats()
 			elist = ROOT.gROOT.Get(entry_list_name)
 			if not elist or elist is None or elist.GetN()==-1:
 				raise EntryListException("Failed to get entry list: %s" % elist)
@@ -324,7 +325,8 @@ class MultiSample(Sample):
 		N = self.tree.Draw(draw_cmd, weight_str, "goff")
 		self.logger.debug("Histogram drawn with %d entries" % N)
 		if int(N) == -1 or n_cut != N:
-			raise Exception("Failed to draw histogram: cut result %d but histogram drawn with %d entries" % (N, n_cut))
+			self.logger.error("Failed to draw histogram: cut result %d but histogram drawn with %d entries" % (N, n_cut))
+			#raise Exception("Failed to draw histogram: cut result %d but histogram drawn with %d entries" % (N, n_cut))
 		#if proof:
 		#	hist = proof.GetOutputList().FindObject(hist_name)
 		#else:
@@ -364,8 +366,7 @@ class MultiSample(Sample):
 
 		#caching stuff
 		self.event_chain.SetCacheSize(100*1024*1024)
-		#self.event_chain.SetCacheLearnEntries(1000)
-		self.lumi_chain.SetCacheSize(100*1024*1024) #Only one cache can be active at a time
+		self.event_chain.SetCacheLearnEntries(100)
 		ROOT.gEnv.SetValue("TFile.AsyncPrefetching", 1)
 		self.tree = self.event_chain
 		self.logger.debug('Done opening file and creating caches.')
@@ -378,7 +379,7 @@ class MultiSample(Sample):
 			self.event_chain.SetBranchStatus("*", 0)
 			self.lumi_chain.SetBranchStatus("edmMergeableCounter_PATTotalEventsProcessedCount__PAT.*", 1)
 			self.lumi_chain.SetCacheSize(100*1024*1024)
-			#self.lumi_chain.AddBranchToCache("edmMergeableCounter_PATTotalEventsProcessedCount__PAT.*", True)
+			self.lumi_chain.AddBranchToCache("edmMergeableCounter_PATTotalEventsProcessedCount__PAT.*", True)
 			n_drawn = self.lumi_chain.Draw("edmMergeableCounter_PATTotalEventsProcessedCount__PAT.obj.value >> htemp", "", "goff")
 			self.logger.debug("Event count histo drawn, getting array sum")
 			arr = ROOT.TArrayD(n_drawn, self.lumi_chain.GetV1())
@@ -481,13 +482,16 @@ class SampleGroup:
 			out.add(sample)
 		return out
 
+	"""
+	Draws all histos in sample group
+	"""
 	def drawHists(self, *args, **kwargs):
 		n_cores = kwargs.pop("n_cores") if "n_cores" in kwargs.keys() else None
 		args = list(args)
 		hist_name = args[0] + "_" + self.name
 		args[0] = hist_name
 		plot_params = args[1]
-
+		print str(kwargs)
 		n_samples = len(self.getSamples())
 		arg_list = zip(self.getSamples(), n_samples*[args], n_samples*[kwargs])
 		if n_cores is None or n_cores==1:
@@ -584,7 +588,7 @@ class PlotParams(object):
 
 	def __init__(self, var, r,
 		bins=20, name=None, plotTitle=None, doLogY=False, ofname=None, weights=None,
-		x_label=None, vars_to_enable=None, normalize_to="lumi", ymax=None):
+		x_label=None, vars_to_enable=None, normalize_to="lumi", ymax=None, ymin=None):
 		self.var = var
 		self.r = r; self.hmin = r[0]; self.hmax = r[1]
 		self.bins=bins; self.hbins = bins
@@ -613,6 +617,7 @@ class PlotParams(object):
 		self.stat_opts = None
 
 		self._ymax = ymax
+		self._ymin = ymin
 
 	def getVarStr(self):
 		return self.var.var
