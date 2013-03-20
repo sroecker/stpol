@@ -665,11 +665,6 @@ def SingleTopStep2():
         src=cms.InputTag("genParticleSelector", "trueLepton", "STPOLSEL2"),
     )
     
-    process.trueLeptonNTupleProducer.variables.append(cms.untracked.PSet(
-                tag=cms.untracked.string("trueLeptonPdgId"),
-                quantity=cms.untracked.string("trueLeptonPdgId")
-            ))
-
     process.trueLightJetNTupleProducer = process.recoTopNTupleProducer.clone(
         src=cms.InputTag("genParticleSelector", "trueLightJet", "STPOLSEL2"),
     )

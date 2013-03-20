@@ -87,7 +87,7 @@ GenParticleSelector::GenParticleSelector(const edm::ParameterSet& iConfig)
    produces<std::vector<GenParticle>>("trueLightJet");
    produces<std::vector<GenParticle>>("trueLepton");
    produces<std::vector<GenParticle>>("trueNeutrino");
-   produces<double>("trueLeptonPdgId");
+   produces<int>("trueLeptonPdgId");
    //register your products
 /* Examples
    produces<ExampleData2>();
@@ -144,7 +144,7 @@ GenParticleSelector::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    std::auto_ptr<std::vector<GenParticle> > outLeptons(new std::vector<GenParticle>());
    std::auto_ptr<std::vector<GenParticle> > outNeutrinos(new std::vector<GenParticle>());
 
-   double trueLeptonPdgId = TMath::QuietNaN();
+   int trueLeptonPdgId = TMath::QuietNaN();
    GenParticle* lightJet;
    
    for(size_t i = 0; i < genParticles->size(); ++ i) {
@@ -282,7 +282,7 @@ GenParticleSelector::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    //cout << "NoLightJets " << outLightJets->size() << endl;
    iEvent.put(outLightJets, "trueLightJet");
    iEvent.put(outNeutrinos, "trueNeutrino");
-   iEvent.put(std::auto_ptr<double>(new double(trueLeptonPdgId)), "trueLeptonPdgId");  
+   iEvent.put(std::auto_ptr<int>(new int(trueLeptonPdgId)), "trueLeptonPdgId");  
  
 }
 
