@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 Copy PlotParams type objects, adding weights.
 plot_params - list of PlotParams
 """
-def reweighted(plot_params, do_pu=False, do_btag=True):
+def reweighted(plot_params, do_pu=True, do_btag=False):
     out = []
 
     #Loop over list of PlotParams
@@ -31,7 +31,7 @@ def reweighted(plot_params, do_pu=False, do_btag=True):
         if do_pu:
             plot_PUrew = drawfw.PlotParams(pp.var, pp.r,
                     bins=pp.bins, plotTitle=pp.plotTitle + " with PU(N_{true}) rew.",
-                    doLogY=pp.doLogY, weights=["PUWeightNtrue_puWeightProducer"], vars_to_enable=pp.vars_to_enable, x_label=pp.x_label
+                    doLogY=pp.doLogY, weights=Vars.pu_weight, vars_to_enable=pp.vars_to_enable, x_label=pp.x_label
             )
             out.append(plot_PUrew)
 
@@ -61,7 +61,7 @@ def replaceQCD(plot, histQCD, histnonQCD):
     return plot
 
 if __name__ == "__main__":
-#    datasmplsMu, datasmplsEle, smpls, samples.pltcMu, pltcEle = initSamples()
+#   datasmplsMu, datasmplsEle, smpls, samples.pltcMu, pltcEle = initSamples()
     logger.info("Running plots.py")
 
     parser = argparse.ArgumentParser()
@@ -91,8 +91,10 @@ if __name__ == "__main__":
         samples.directory_mc = "/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14/"
         samples.directory_data = "/hdfs/local/joosep/stpol/step2_Data_Iso_Mar15/"
     else: #use the fast samples
-        samples.directory_mc = "/testhome/jooseptest/step2_MC_Iso_Mar14/"
-        samples.directory_data = "/testhome/jooseptest/step2_Data_Iso_Mar15/"
+        #samples.directory_mc = "/testhome/jooseptest/step2_MC_Iso_Mar14/"
+        #samples.directory_data = "/testhome/jooseptest/step2_Data_Iso_Mar15/"
+        samples.directory_mc = "/scratch/joosep/step2_MC_Iso_Mar14/"
+        samples.directory_data = "/scratch/joosep/step2_Data_Iso_Mar15/"
 
     smpls, smplsMu, smplsAllMC, smplsWJets_incl_excl, smplsTTbar_incl_excl = samples.load()
 
@@ -114,6 +116,7 @@ if __name__ == "__main__":
     psEle = []
 
     if args.doLepIso:
+        raise Exception("TODO")
         sigQCD = plotfw.methods.SampleList()
         sigQCD.addGroup(smpls.groups["t-channel"])
         sigQCD.addGroup(smpls.groups["QCD"])
@@ -160,12 +163,11 @@ if __name__ == "__main__":
 
     if args.doBDiscriminators:
         #Plot b-discriminator of highest and lowest b-tagged jet in the muon channel
-        bDiscrLabel = "b-discr._{TCHP}"
         jetbDiscrPlots = [
-            drawfw.PlotParams('_highestBTagJet_0_bDiscriminator', (0, 10),
-                plotTitle="TCHP discriminator of the b-jet", doLogY=True, x_label=bDiscrLabel),
-            drawfw.PlotParams('_lowestBTagJet_0_bDiscriminator', (0, 10),
-                plotTitle="TCHP discriminator of the light jet", doLogY=True, x_label=bDiscrLabel),
+            drawfw.PlotParams(Vars.bdiscr_bj, (0, 10),
+                plotTitle="TCHP discriminator of the b-jet", doLogY=True),
+            drawfw.PlotParams(Vars.bdiscr_lj, (0, 10),
+                plotTitle="TCHP discriminator of the light jet", doLogY=True),
         ]
         if args.doReweighted:
             jetbDiscrPlots = reweighted(jetbDiscrPlots)
@@ -175,7 +177,7 @@ if __name__ == "__main__":
     if args.doTopMass:
         #top mass plot
         topMassPlots = [
-            drawfw.PlotParams('_recoTop_0_Mass', (100, 500), plotTitle="M_{bl#nu}", x_label="M_{bl#nu}", doLogY=True),
+            drawfw.PlotParams(Vars.top_mass, (100, 500), plotTitle="M_{bl#nu}", doLogY=True),
         ]
         if args.doReweighted:
             topMassPlots = reweighted(topMassPlots)
@@ -187,11 +189,11 @@ if __name__ == "__main__":
         #Light jet plots
         etaljLabel = "#eta_{lj}"
         lightJetPlots = [
-            drawfw.PlotParams('_lowestBTagJet_0_Eta', (-5, 5),
+            drawfw.PlotParams(Vars.etalj, (-5, 5),
                 plotTitle="#eta of the light jet", x_label=etaljLabel),
-            drawfw.PlotParams('abs(_lowestBTagJet_0_Eta)', (0, 5),
+            drawfw.PlotParams(Vars.absetalj, (0, 5),
                 plotTitle="|#eta| of the light jet", vars_to_enable=["_lowestBTagJet_0_Eta"], x_label=etaljLabel),
-            drawfw.PlotParams('_lowestBTagJet_0_rms', (0, 0.15),
+            drawfw.PlotParams(Vars.rms_lj, (0, 0.15),
                 plotTitle="rms of the light jet constituents", doLogY=True, x_label=etaljLabel)
         ]
         if doReweighted:
@@ -208,15 +210,17 @@ if __name__ == "__main__":
         ]
 
         #mtwDataDrivenPlot = [
-        #    drawfw.PlotParams('_muAndMETMT', (0, 200), bins=20,
-        #        plotTitle="M_{t}(W)", x_label="M_{t}(W) [GeV]"
-        #    )
+        #   drawfw.PlotParams('_muAndMETMT', (0, 200), bins=20,
+        #       plotTitle="M_{t}(W)", x_label="M_{t}(W) [GeV]"
+        #   )
         #]
         if args.doReweighted:
             finalSelPlots = reweighted(finalSelPlots)
         for p in finalSelPlots:
             p.doChi2Test("mc", "data", chi2options={"weight_type":"WW"})
         psMu += samples.pltcMu.plot(cutlist.finalMu_2J1T, reversed(finalSelPlots), cutDescription="mu channel, 2J1T, final selection")
+        psMu += samples.pltcMu.plot(mu * MTmu * mlnu * jetPt * jetEta * jets_2J1T, reversed(finalSelPlots), cutDescription="mu channel, 2J1T, final selection")
+
 
         #cutMTWDataDriven = Cut("mtwDataDriven", "_muonCount == 1 && _topCount == 1 && cosThetaLightJet_cosTheta==cosThetaLightJet_cosTheta && _goodJets_0_Pt>40 && _goodJets_1_Pt>40 && abs(_lowestBTagJet_0_Eta)>2.5 && _bJetCount == 1 && _lightJetCount == 1 && abs(_recoTop_0_Mass - 172) < 40 && _goodSignalMuons_0_relIso<0.12 && _lowestBTagJet_0_rms<0.025")
         #psMu += map(lambda x: replaceQCD(x, datadrivenQCD, datadrivenNonQCD), samples.pltcMu.plot(cutMTWDataDriven, mtwDataDrivenPlot, cutDescription=""))
@@ -229,16 +233,19 @@ if __name__ == "__main__":
         sigDataMu.addGroup(smplsMu)
         sigDataMuShapeComp = drawfw.ShapePlotCreator(sigDataMu, n_cores=n_cores)
         NvtxPlots = [
-                drawfw.PlotParams("_offlinePVCount", (0, 60), plotTitle="reconstructed N_{vtx.} before PU rew."),
+                drawfw.PlotParams(Vars.n_vertices, (0, 60), plotTitle="reconstructed N_{vtx.} before PU rew.", normalize_to="unity"),
         ]
         if args.doReweighted:
-            NvtxPlots.append(drawfw.PlotParams("_offlinePVCount", (0, 60), plotTitle="reconstructed N_{vtx.} after PU rew.(N_{true})",
-                    weights=["PUWeightNtrue_puWeightProducer"]))
+            NvtxPlots.append(drawfw.PlotParams(Vars.n_vertices, (0, 60), plotTitle="reconstructed N_{vtx.} after PU rew.(N_{true})",
+                    weights=[Vars.pu_weight], normalize_to="unity"))
 
         for p in NvtxPlots:
             p.doChi2Test("t-channel", "mu", chi2options={"weight_type":"WW"})
-
-        psMu += sigDataMuShapeComp.plot(cutlist.finalMu, NvtxPlots, cutDescription="muon channel, final sel.")
+        stackP = drawfw.ShapePlotCreator(smpls)
+        stackP.frac_entries=0.2
+        stackP.set_n_cores(n_cores)
+        psMu += stackP.plot(cutlist.finalMu_2J1T, [drawfw.PlotParams(Vars.pu_weight, (0, 2), plotTitle="PU weight distribution in final selection", normalize_to="unity")])
+        #psMu += sigDataMuShapeComp.plot(cutlist.finalMu_2J1T, NvtxPlots, cutDescription="muon channel, final sel.")
         #allMCDataMu = plotfw.methods.SampleList()
         #allMCDataMu.addGroup(smplsAllMC)
         #allMCDataMu.addGroup(smplsMu)
@@ -247,7 +254,7 @@ if __name__ == "__main__":
         #psMu += allMCDataMuShapeComp.plot(cutlist.finalMu, NvtxPlots, cutDescription="muon channel, final sel.")
 
     if args.doWeights:
-
+        raise Exception("TODO")
         sigMainBKG = plotfw.methods.SampleList()
         sigMainBKG.addGroup(smpls.groups["t-channel"])
         sigMainBKG.addGroup(smpls.groups["TTbar"])
@@ -256,8 +263,8 @@ if __name__ == "__main__":
         weightPlots = [
             drawfw.PlotParams("bTagWeight_bTagWeightProducerNJMT", (0.8, 1.2), doLogY=False, plotTitle="b-tag weight (nominal)", normalize_to="unity"),
             drawfw.PlotParams("bTagWeight_bTagWeightProducerNJMT", (0.8, 1.2), doLogY=False, plotTitle="b-tag weight (nominal)", normalize_to="lumi"),
-    #        drawfw.PlotParams("PUWeightNtrue_puWeightProducer", (0, 5), doLogY=False, plotTitle="PU weight (N_{true})", normalize_to="unity"),
-    #        drawfw.PlotParams("PUWeightN0_puWeightProducer", (0, 5), doLogY=True, plotTitle="PU weight (N_{0})")
+    #       drawfw.PlotParams("PUWeightNtrue_puWeightProducer", (0, 5), doLogY=False, plotTitle="PU weight (N_{true})", normalize_to="unity"),
+    #       drawfw.PlotParams("PUWeightN0_puWeightProducer", (0, 5), doLogY=True, plotTitle="PU weight (N_{0})")
         ]
         for p in weightPlots:
             p.putStats()
@@ -267,7 +274,7 @@ if __name__ == "__main__":
     if args.doWJetsControl:
         wjetsComp = drawfw.ShapePlotCreator(smplsWJets_incl_excl, n_cores=n_cores)
         wjetsPlots = [
-            drawfw.PlotParams("_lowestBTagJet_0_Eta", (-5, 5), doLogY=False, plotTitle="#eta_{lj}", normalize_to="lumi"),
+            drawfw.PlotParams(Vars.etalj, (-5, 5), doLogY=False, plotTitle="#eta_{lj}", normalize_to="lumi"),
         ]
         for p in wjetsPlots:
             p.doChi2Test("WJets_inclusive", "WJets_exclusive", chi2options={"weight_type":"WW"})
@@ -276,9 +283,9 @@ if __name__ == "__main__":
     if args.doTTbarControl:
         ttbarComp = drawfw.ShapePlotCreator(smplsTTbar_incl_excl, n_cores=n_cores)
         ttbarPlots = [
-            drawfw.PlotParams("_lowestBTagJet_0_Eta", (-5, 5), doLogY=False, plotTitle="#eta_{lj}", normalize_to="lumi"),
-            drawfw.PlotParams("_highestBTagJet_0_Eta", (-5, 5), doLogY=False, plotTitle="#eta_{b-jet}", normalize_to="lumi"),
-            drawfw.PlotParams("bTagWeight_bTagWeightProducerNJMT", (0.1, 2), plotTitle="b-weight (nominal)", normalize_to="lumi"),
+            drawfw.PlotParams(Vars.etalj, (-5, 5), doLogY=False, plotTitle="#eta_{lj}", normalize_to="lumi"),
+            drawfw.PlotParams(Vars.etabj, (-5, 5), doLogY=False, plotTitle="#eta_{b-jet}", normalize_to="lumi"),
+            drawfw.PlotParams(Vars.b_weight["nominal"], (0.1, 2), plotTitle="b-weight (nominal)", normalize_to="lumi"),
         ]
         for p in ttbarPlots:
             p.doChi2Test("TTbar_inclusive", "TTbar_exclusive", chi2options={"weight_type":"WW"})
@@ -286,15 +293,16 @@ if __name__ == "__main__":
 
     if args.doBWeightControl:
         bWeightPlots = [
-            drawfw.PlotParams("_bJetCount", (0, 3), bins=3, plotTitle="N_{b-tags}", normalize_to="lumi"),
-            drawfw.PlotParams("_lowestBTagJet_0_Eta", (-5, 5), plotTitle="#eta_{lj}", normalize_to="lumi"),
-            drawfw.PlotParams("_highestBTagJet_0_Eta", (-5, 5), plotTitle="#eta_{b-jet}", normalize_to="lumi"),
-            drawfw.PlotParams("bTagWeight_bTagWeightProducerNJMT", (0.1, 2), plotTitle="b-weight (nominal)", normalize_to="lumi"),
+            drawfw.PlotParams(Vars.n_tags, (0, 3), bins=3, plotTitle="N_{b-tags}", normalize_to="lumi"),
+            drawfw.PlotParams(Vars.etalj, (-5, 5), plotTitle="#eta_{lj}", normalize_to="lumi"),
+            drawfw.PlotParams(Vars.etabj, (-5, 5), plotTitle="#eta_{b-jet}", normalize_to="lumi"),
+            drawfw.PlotParams(Vars.b_weight["nominal"], (0.1, 2), plotTitle="b-weight (nominal)", normalize_to="lumi"),
         ]
         if args.doReweighted:
             bWeightPlots = reweighted(bWeightPlots)
         for p in bWeightPlots:
             p.doChi2Test("mc", "data", chi2options={"weight_type": "WW"})
+        psMu += samples.pltcMu.plot(cutlist.initial*cutlist.jets_3J0T*cutlist.mu*cutlist.MTmu, bWeightPlots, cutDescription="3J0T, muon channel, M_{t}(W)>50 GeV")
         psMu += samples.pltcMu.plot(cutlist.initial*cutlist.jets_3J2T*cutlist.mu*cutlist.MTmu, bWeightPlots, cutDescription="3J2T, muon channel, M_{t}(W)>50 GeV")
         psMu += samples.pltcMu.plot(cutlist.finalMu, bWeightPlots, cutDescription="muon channel, final selection")
 
