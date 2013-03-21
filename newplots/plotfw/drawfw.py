@@ -237,6 +237,8 @@ class StackPlotCreator(PlotCreator):
         for group_name, hist in ret:
             plot.mc_group_hists[group_name] = hist
             plot.mc_hists.append(hist.child_hists)
+            hist.SetFillColor(self._mcs[group_name].color)
+
         #for group_name, group in self._mcs.groups.items():
         #   group_hist_name = 'hist_%s_mc_group_%s'%(plotname, group_name)
         #   mc_group_hist = ROOT.TH1F(group_hist_name, group.pretty_name, plot_params.hbins, plot_params.hmin, plot_params.hmax)
