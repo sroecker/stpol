@@ -3,6 +3,7 @@
 #include <TROOT.h>
 #include <TFile.h>
 #include <TSystem.h>
+#include <TStopwatch.h>
 
 #include "DataFormats/FWLite/interface/Event.h"
 #include "DataFormats/Common/interface/Handle.h"
@@ -124,8 +125,9 @@ public:
     unsigned long n_pass;
     virtual void initialize_branches() = 0;
     virtual bool process(const edm::EventBase& event) = 0;
+    
     CutsBase(std::map<std::string, float>& _branch_vars) :
-    branch_vars(_branch_vars)
+    branch_vars(_branch_vars),
     {
         //initialize_branches();
         n_processed = 0;
@@ -152,10 +154,12 @@ class MuonCuts : public CutsBase {
 public:
     bool cutOnIso;
     bool reverseIsoCut;
+    bool requireOneMuon;
     
     float isoCut;
     edm::InputTag muonPtSrc;
     edm::InputTag muonRelIsoSrc;
+    edm::InputTag muonCountSrc;
     
     virtual void initialize_branches() {
         branch_vars["mu_pt"] = def_val;
@@ -167,16 +171,22 @@ public:
     {
         initialize_branches();
         cutOnIso = pars.getParameter<bool>("cutOnIso");
+        requireOneMuon = pars.getParameter<bool>("requireOneMuon");
+        
         reverseIsoCut = pars.getParameter<bool>("reverseIsoCut");
         isoCut = (float)pars.getParameter<double>("isoCut");
         
         muonPtSrc = pars.getParameter<edm::InputTag>("muonPtSrc");
         muonRelIsoSrc = pars.getParameter<edm::InputTag>("muonRelIsoSrc");
+        muonCountSrc = pars.getParameter<edm::InputTag>("muonCountSrc");
         
     }
     
     bool process(const edm::EventBase& event) {
         pre_process();
+        
+        int n_muons = get_collection<int>(event, muonCountSrc, -1);
+        if(requireOneMuon && n_muons!=1) return false;
         
         branch_vars["mu_pt"] = get_collection_n<float>(event, muonPtSrc, 0);
         branch_vars["mu_iso"] = get_collection_n<float>(event, muonRelIsoSrc, 0);
@@ -241,6 +251,7 @@ public:
     JetCuts(const edm::ParameterSet& pars, std::map<std::string, float>& _branch_vars) :
     CutsBase(_branch_vars)
     {
+        initialize_branches();
         cutOnNJets =  pars.getParameter<bool>("cutOnNJets");
         cutOnNTags =  pars.getParameter<bool>("cutOnNTags");
         applyRmsLj =  pars.getParameter<bool>("applyRmsLj");
@@ -337,18 +348,22 @@ public:
     }
 };
 
-class BWeightCuts : public CutsBase {
+class Weights : public CutsBase {
 public:
     edm::InputTag bWeightNominalSrc;
+    edm::InputTag puWeightSrc;
     
     void initialize_branches() {
         branch_vars["b_weight_nominal"] = def_val;
+        branch_vars["pu_weight"] = def_val;
     }
     
-    BWeightCuts(const edm::ParameterSet& pars, std::map<std::string, float>& _branch_vars) :
+    Weights(const edm::ParameterSet& pars, std::map<std::string, float>& _branch_vars) :
     CutsBase(_branch_vars)
     {
+        initialize_branches();
         bWeightNominalSrc = pars.getParameter<edm::InputTag>("bWeightNominalSrc");
+        puWeightSrc = pars.getParameter<edm::InputTag>("puWeightSrc");
         
     }
     
@@ -356,6 +371,7 @@ public:
         pre_process();
         
         branch_vars["b_weight_nominal"] = get_collection<double>(event, bWeightNominalSrc, def_val);
+        branch_vars["pu_weight"] = get_collection<double>(event, puWeightSrc, def_val);
         
         post_process();
         return true;
@@ -388,6 +404,31 @@ public:
     }
 };
 
+class MiscVars : public CutsBase {
+public:
+    edm::InputTag cosThetaSrc;
+    
+    void initialize_branches() {
+        branch_vars["cos_theta"] = def_val;
+    }
+    
+    
+    MiscVars(const edm::ParameterSet& pars, std::map<std::string, float>& _branch_vars) :
+    CutsBase(_branch_vars)
+    {
+        cosThetaSrc = pars.getParameter<edm::InputTag>("cosThetaSrc");
+    }
+    
+    bool process(const edm::EventBase& event) {
+        pre_process();
+        
+        branch_vars["cos_theta"] = get_collection<double>(event, cosThetaSrc, def_val);
+
+        post_process();
+        return true;
+    }
+};
+
 int main(int argc, char* argv[])
 {
     using pat::Muon;
@@ -413,8 +454,8 @@ int main(int argc, char* argv[])
     const edm::ParameterSet& jet_cuts_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("jetCuts");
     const edm::ParameterSet& top_cuts_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("topCuts");
     const edm::ParameterSet& mt_mu_cuts_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("mtMuCuts");
-    const edm::ParameterSet& bweight_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("bWeights");
-    const edm::ParameterSet& costheta_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("cosTheta");
+    const edm::ParameterSet& weight_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("weights");
+    const edm::ParameterSet& miscvars_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("cosTheta");
     
     //const edm::ParameterSet& vars_to_save = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("varsToSave");
     
@@ -423,8 +464,9 @@ int main(int argc, char* argv[])
     MuonCuts muon_cuts(mu_cuts_pars, branch_vars);
     JetCuts jet_cuts(jet_cuts_pars, branch_vars);
     TopCuts top_cuts(top_cuts_pars, branch_vars);
-    BWeightCuts bweights(bweight_pars, branch_vars);
+    Weights weights(weight_pars, branch_vars);
     MTMuCuts mt_mu_cuts(mt_mu_cuts_pars, branch_vars);
+    MiscVars misc_vars(miscvars_pars, branch_vars);
     
     fwlite::TFileService fs = fwlite::TFileService(outputFile_.c_str());
     
@@ -474,7 +516,8 @@ int main(int argc, char* argv[])
                 bool passes_top_cuts = top_cuts.process(event);
                 if(!passes_top_cuts) continue;
                 
-                bweights.process(event);
+                weights.process(event);
+                misc_vars.process(event);
                 
                 outTree->Fill();
             }

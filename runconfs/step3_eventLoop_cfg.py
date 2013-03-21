@@ -39,9 +39,11 @@ process.fwliteOutput = cms.PSet(
 process.muonCuts = cms.PSet(
     cutOnIso  = cms.bool(False),
     reverseIsoCut  = cms.bool(False),
+    requireOneMuon  = cms.bool(True),
     isoCut  = cms.double(0.12),
     muonPtSrc  = cms.InputTag("goodSignalMuonsNTupleProducer", "Pt"),
     muonRelIsoSrc  = cms.InputTag("goodSignalMuonsNTupleProducer", "relIso"),
+    muonCountSrc  = cms.InputTag("muonCount"),
 )
 
 process.eleCuts = cms.PSet(
@@ -68,12 +70,12 @@ process.jetCuts = cms.PSet(
     goodJetsEtaSrc = cms.InputTag("goodJetsNTupleProducer", "Eta"),
 
     lightJetEtaSrc = cms.InputTag("lowestBTagJetNTupleProducer", "Eta"),
-    lightJetBdiscrSrc = cms.InputTag("lowestBTagJetNTupleProducer", "bDiscriminator"),
+    lightJetBdiscrSrc = cms.InputTag("lowestBTagJetNTupleProducer", "bDiscriminatorTCHP"),
     lightJetPtSrc = cms.InputTag("lowestBTagJetNTupleProducer", "Pt"),
     lightJetRmsSrc = cms.InputTag("lowestBTagJetNTupleProducer", "rms"),
 
     bJetEtaSrc = cms.InputTag("highestBTagJetNTupleProducer", "Eta"),
-    bJetBdiscrSrc = cms.InputTag("highestBTagJetNTupleProducer", "bDiscriminator"),
+    bJetBdiscrSrc = cms.InputTag("highestBTagJetNTupleProducer", "bDiscriminatorTCHP"),
     bJetPtSrc = cms.InputTag("highestBTagJetNTupleProducer", "Pt"),
 )
 
@@ -85,8 +87,9 @@ process.topCuts = cms.PSet(
         topMassSrc = cms.InputTag("recoTopNTupleProducer", "Mass")
 )
 
-process.bWeights = cms.PSet(
-    bWeightNominalSrc = cms.InputTag("bTagWeightProducerNJMT", "bTagWeight")
+process.weights = cms.PSet(
+    bWeightNominalSrc = cms.InputTag("bTagWeightProducerNJMT", "bTagWeight"),
+    puWeightSrc = cms.InputTag("puWeightProducer", "PUWeightNtrue")
 )
 
 process.mtMuCuts = cms.PSet(
