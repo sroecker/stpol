@@ -4,16 +4,18 @@
 #include <TFile.h>
 #include <TSystem.h>
 #include <TStopwatch.h>
+#include <TMath.h>
 
 #include "DataFormats/FWLite/interface/Event.h"
 #include "DataFormats/Common/interface/Handle.h"
 #include "FWCore/FWLite/interface/AutoLibraryLoader.h"
 
 #include "DataFormats/MuonReco/interface/Muon.h"
-#include "DataFormats/PatCandidates/interface/Muon.h"
+//#include "DataFormats/PatCandidates/interface/Muon.h"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "FWCore/ParameterSet/interface/ProcessDesc.h"
 #include "FWCore/PythonParameterSet/interface/PythonProcessDesc.h"
+#include "DataFormats/Common/interface/MergeableCounter.h"
 
 class HistoCut {
 public:
@@ -127,7 +129,7 @@ public:
     virtual bool process(const edm::EventBase& event) = 0;
     
     CutsBase(std::map<std::string, float>& _branch_vars) :
-    branch_vars(_branch_vars),
+    branch_vars(_branch_vars)
     {
         //initialize_branches();
         n_processed = 0;
@@ -423,16 +425,49 @@ public:
         pre_process();
         
         branch_vars["cos_theta"] = get_collection<double>(event, cosThetaSrc, def_val);
-
+        
         post_process();
         return true;
     }
 };
 
-int main(int argc, char* argv[])
-{
-    using pat::Muon;
+class GenParticleCuts : public CutsBase {
+public:
+    edm::InputTag trueBCountSrc;
+    edm::InputTag trueCCountSrc;
+    edm::InputTag trueLCountSrc;
+    edm::InputTag trueBTaggedCountSrc;
+    edm::InputTag trueCTaggedCountSrc;
+    edm::InputTag trueLTaggedCountSrc;
     
+    void initialize_branches() {
+        branch_vars["true_b_count"] = def_val;
+        branch_vars["true_c_count"] = def_val;
+        branch_vars["true_l_count"] = def_val;
+        
+        branch_vars["true_b_tagged_count"] = def_val;
+        branch_vars["true_c_tagged_count"] = def_val;
+        branch_vars["true_l_tagged_count"] = def_val;
+    }
+    
+    GenParticleCuts(const edm::ParameterSet& pars, std::map<std::string, float>& _branch_vars) :
+    CutsBase(_branch_vars)
+    {
+        
+    }
+};
+
+//class LumiBlockCounters {
+//    std::vector<edm::InputTag> counter_srcs;
+//
+//    initialize
+//    LumiBlockCounters(const edm::ParameterSet& pars) {
+//        counter_srcs(pars.getParameter<std::vector<edm::InputTag>>("trackedCounters"));
+//    }
+//};
+
+int main(int argc, char* argv[])
+{    
     // load framework libraries
     gSystem->Load( "libFWCoreFWLite" );
     AutoLibraryLoader::enable();
@@ -455,11 +490,22 @@ int main(int argc, char* argv[])
     const edm::ParameterSet& top_cuts_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("topCuts");
     const edm::ParameterSet& mt_mu_cuts_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("mtMuCuts");
     const edm::ParameterSet& weight_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("weights");
-    const edm::ParameterSet& miscvars_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("cosTheta");
+    const edm::ParameterSet& miscvars_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("finalVars");
+    const edm::ParameterSet& gen_particle_cuts = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("genParticles");
+    
+    const edm::ParameterSet& lumiblock_counter_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("lumiBlockCounters");
+    edm::InputTag totalPATProcessedCountSrc = lumiblock_counter_pars.getParameter<edm::InputTag>("totalPATProcessedCountSrc");
     
     //const edm::ParameterSet& vars_to_save = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("varsToSave");
     
     std::map<std::string, float> branch_vars;
+    std::map<std::string, unsigned int> event_id_branches;
+    std::map<std::string, unsigned int> count_map;
+    count_map["total_processed"] = 0;
+    count_map["pass_lepton_cuts"] = 0;
+    count_map["pass_mt_cuts"] = 0;
+    count_map["pass_jet_cuts"] = 0;
+    count_map["pass_top_cuts"] = 0;
     
     MuonCuts muon_cuts(mu_cuts_pars, branch_vars);
     JetCuts jet_cuts(jet_cuts_pars, branch_vars);
@@ -475,24 +521,30 @@ int main(int argc, char* argv[])
     unsigned int outputEvery_( in.getParameter<unsigned int>("outputEvery") );
     
     TFileDirectory dir = fs.mkdir("trees");
-    TTree* outTree = dir.make<TTree>("Events", "Events");
-    //dir.cd();
+    TTree* out_tree = dir.make<TTree>("Events", "Events");
+    TH1I* count_hist = dir.make<TH1I>("count_hist", "Event counts", count_map.size(), 0, count_map.size() - 1);
+    
+    event_id_branches["event_id"] = -1;
+    event_id_branches["run_id"] = -1;
+    event_id_branches["lumi_id"] = -1;
     
     //Create all the requested branches in the TTree
     for (auto & elem : branch_vars) {
         const std::string& br_name = elem.first;
         float* p_branch = &(elem.second);
-        outTree->Branch(br_name.c_str(), p_branch);
+        out_tree->Branch(br_name.c_str(), p_branch);
     }
-    
+    for (auto & elem : event_id_branches) {
+        out_tree->Branch(elem.first.c_str(), &(elem.second));
+    }
     // loop the events
     int ievt=0;
     for(unsigned int iFile=0; iFile<inputFiles_.size(); ++iFile) {
         // open input file (can be located on castor)
-        TFile* inFile = TFile::Open(inputFiles_[iFile].c_str());
-        if( inFile ) {
+        TFile* in_file = TFile::Open(inputFiles_[iFile].c_str());
+        if( in_file ) {
             
-            fwlite::Event ev(inFile);
+            fwlite::Event ev(in_file);
             for(ev.toBegin(); !ev.atEnd(); ++ev, ++ievt) {
                 edm::EventBase const & event = ev;
                 
@@ -519,15 +571,37 @@ int main(int argc, char* argv[])
                 weights.process(event);
                 misc_vars.process(event);
                 
-                outTree->Fill();
+                event_id_branches["event_id"] = (unsigned int)event.id().event();
+                event_id_branches["run_id"] = (unsigned int)event.id().run();
+                event_id_branches["lumi_id"] = (unsigned int)event.id().luminosityBlock();
+                
+                out_tree->Fill();
             }
-            inFile->Close();
+            
+            fwlite::LuminosityBlock ls(in_file);
+            long count_events = 0;
+            for(ls.toBegin(); !ls.atEnd(); ++ls) {
+                edm::Handle<edm::MergeableCounter> counter;
+                ls.getByLabel(totalPATProcessedCountSrc, counter);
+                count_map["total_processed"] += counter->value;
+            }
+            in_file->Close();
         }
-        // break loop if maximal number of events is reached:
-        // this has to be done twice to stop the file loop as well
-        //if(maxEvents_>0 ? ievt+1>maxEvents_ : false) break;
     }
     
+    count_map["pass_lepton_cuts"] += muon_cuts.n_pass;
+    count_map["pass_mt_cuts"] += mt_mu_cuts.n_pass;
+    count_map["pass_jet_cuts"] += jet_cuts.n_pass;
+    count_map["pass_top_cuts"] += top_cuts.n_pass;
+    
+    int i = 1;
+    for (auto& elem : count_map) {
+        count_hist->AddBinContent(i, elem.second);
+        count_hist->GetXaxis()->SetBinLabel(i, elem.first.c_str());
+        i++;
+    }
+    
+    std::cout << "total processed events " << count_map["total_processed"] << std::endl;
     std::cout << "muon cuts " << muon_cuts.toString() << std::endl;
     std::cout << "mt_mu cuts " << mt_mu_cuts.toString() << std::endl;
     std::cout << "jet cuts " << jet_cuts.toString() << std::endl;

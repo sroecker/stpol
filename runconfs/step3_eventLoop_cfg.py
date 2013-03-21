@@ -97,6 +97,10 @@ process.mtMuCuts = cms.PSet(
     minVal = cms.double(50)
 )
 
-process.cosTheta = cms.PSet(
+process.finalVars = cms.PSet(
     cosThetaSrc = cms.InputTag("cosThetaProducer", "cosTheta")
+)
+
+process.lumiBlockCounters = cms.PSet(
+    totalPATProcessedCountSrc = cms.InputTag("singleTopPathStep1MuPreCount")
 )
