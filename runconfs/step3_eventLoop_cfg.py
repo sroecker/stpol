@@ -4,10 +4,19 @@
 import FWCore.ParameterSet.Config as cms
 import sys
 import pdb
+import optparse
+import random
+import string
 
+#read input files from stdin
 input_files = []
 for line in sys.stdin.readlines():
     input_files.append(line.strip())
+outfile = "step3_out_%s.root" % (''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(6)))
+
+#parser = optparse.OptionParser()
+#parser.add_option("--outfile", dest="outfile", type="string")
+#options, args = parser.parse_args()
 
 process = cms.Process("STPOLSEL3")
 #process.load("FWCore.MessageLogger.MessageLogger_cfi")
@@ -20,9 +29,11 @@ process.fwliteInput = cms.PSet(
     maxEvents   = cms.int32(-1),
     outputEvery = cms.uint32(10000),
 )
+print "Input files: %s" % input_files
+print "Output file: %s" %  outfile
 
 process.fwliteOutput = cms.PSet(
-    fileName  = cms.string('stpol_step3.root'),
+    fileName  = cms.string(outfile),
 )
 
 process.muonCuts = cms.PSet(
