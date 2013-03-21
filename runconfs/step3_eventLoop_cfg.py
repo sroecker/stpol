@@ -2,6 +2,12 @@
 #$ scram b -f SingleTopPolarization/Analysis
 #Output will be in $CMSSW_DIR/bin/
 import FWCore.ParameterSet.Config as cms
+import sys
+import pdb
+
+input_files = []
+for line in sys.stdin.readlines():
+    input_files.append(line.strip())
 
 process = cms.Process("STPOLSEL3")
 #process.load("FWCore.MessageLogger.MessageLogger_cfi")
@@ -10,9 +16,9 @@ process = cms.Process("STPOLSEL3")
 process.options = cms.untracked.PSet(wantSummary=cms.untracked.bool(True))
 
 process.fwliteInput = cms.PSet(
-    fileNames   = cms.vstring('/Users/joosep/Documents/stpol/T_t_merged.root'),
-    maxEvents   = cms.int32(10000),
-    outputEvery = cms.uint32(1000),
+    fileNames   = cms.vstring(input_files),
+    maxEvents   = cms.int32(-1),
+    outputEvery = cms.uint32(10000),
 )
 
 process.fwliteOutput = cms.PSet(
@@ -31,37 +37,37 @@ process.eleCuts = cms.PSet(
 )
 
 process.jetCuts = cms.PSet(
-    cutOnNJets  = cms.bool(True),
-    cutOnNTags  = cms.bool(True),
+    cutOnNJets  = cms.bool(False),
+    cutOnNTags  = cms.bool(False),
     applyRmsLj  = cms.bool(False),
     applyEtaLj  = cms.bool(False),
-    
+
     goodJetsCountSrc = cms.InputTag("goodJetCount"),
     bTagJetsCountSrc = cms.InputTag("bJetCount"),
-    
+
     rmsMax = cms.double(0.025),
-    
+
     nJetsMin = cms.int32(2),
     nJetsMax = cms.int32(2),
-    
+
     nTagsMin = cms.int32(1),
     nTagsMax = cms.int32(1),
 
     goodJetsPtSrc = cms.InputTag("goodJetsNTupleProducer", "Pt"),
     goodJetsEtaSrc = cms.InputTag("goodJetsNTupleProducer", "Eta"),
-    
+
     lightJetEtaSrc = cms.InputTag("lowestBTagJetNTupleProducer", "Eta"),
     lightJetBdiscrSrc = cms.InputTag("lowestBTagJetNTupleProducer", "bDiscriminator"),
     lightJetPtSrc = cms.InputTag("lowestBTagJetNTupleProducer", "Pt"),
     lightJetRmsSrc = cms.InputTag("lowestBTagJetNTupleProducer", "rms"),
-        
+
     bJetEtaSrc = cms.InputTag("highestBTagJetNTupleProducer", "Eta"),
     bJetBdiscrSrc = cms.InputTag("highestBTagJetNTupleProducer", "bDiscriminator"),
     bJetPtSrc = cms.InputTag("highestBTagJetNTupleProducer", "Pt"),
 )
 
 process.topCuts = cms.PSet(
-        applyMassCut = cms.bool(True),
+        applyMassCut = cms.bool(False),
         signalRegion = cms.bool(True),
         signalRegionMassLow = cms.double(170-30),
         signalRegionMassHigh = cms.double(170+30),
