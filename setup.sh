@@ -7,7 +7,8 @@ CMSVERSION=CMSSW_5_3_7_patch4
 git stash
 rm -Rf $CMSVERSION
 export SCRAM_ARCH=slc5_amd64_gcc462
-cmsrel $CMSVERSION 
+cmsrel $CMSVERSION #Base code
+cmsrel CMSSW_5_3_8 #Create separate directory for FWLite
 git reset --hard
 cd $CMSVERSION 
 
