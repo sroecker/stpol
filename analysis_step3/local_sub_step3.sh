@@ -2,8 +2,8 @@
 
 INFILE=$1
 JOBNAME=$2
-if [ -z "$INFILE" ]; then echo "$0 INFILE JOBNAME"; fi
-if [ -z "$JOBNAME" ]; then echo "$0 INFILE JOBNAME"; fi
+if [ -z "$INFILE" ]; then echo "Usage: $0 INFILE JOBNAME"; exit 1; fi
+if [ -z "$JOBNAME" ]; then echo "Usage: $0 INFILE JOBNAME"; exit 1; fi
 WD=$CMSSW_BASE/../step3_out
 OFDIR=$WD/$JOBNAME
 #rm -Rf $WD/$JOBNAME
