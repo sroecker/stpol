@@ -95,6 +95,7 @@ process.weights = cms.PSet(
 
 process.mtMuCuts = cms.PSet(
     mtMuSrc = cms.InputTag("muAndMETMT"),
+    doMTCut = cms.bool(False),
     minVal = cms.double(50)
 )
 

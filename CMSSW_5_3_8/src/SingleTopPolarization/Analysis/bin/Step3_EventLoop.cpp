@@ -387,6 +387,7 @@ class MTMuCuts : public CutsBase {
 public:
     edm::InputTag mtMuSrc;
     float minVal;
+    bool doMTCut;
     
     void initialize_branches() {
         branch_vars["mt_mu"] = def_val;
@@ -398,12 +399,14 @@ public:
         initialize_branches();
         mtMuSrc = pars.getParameter<edm::InputTag>("mtMuSrc");
         minVal = (float)pars.getParameter<double>("minVal");
+        doMTCut = pars.getParameter<bool>("doMTCut");
     }
     
     bool process(const edm::EventBase& event) {
         pre_process();
         
         branch_vars["mt_mu"] = get_collection<double>(event, mtMuSrc, def_val);
+        if (doMTCut && branch_vars["mt_mu"] < minVal) return false;
         
         post_process();
         return true;
