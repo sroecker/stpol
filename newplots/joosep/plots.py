@@ -219,7 +219,12 @@ if __name__ == "__main__":
         for p in finalSelPlots:
             p.doChi2Test("mc", "data", chi2options={"weight_type":"WW"})
         psMu += samples.pltcMu.plot(cutlist.finalMu_2J1T, reversed(finalSelPlots), cutDescription="mu channel, 2J1T, final selection")
+<<<<<<< HEAD
         psMu += samples.pltcMu.plot(mu * MTmu * mlnu * jetPt * jetEta * jets_2J1T, reversed(finalSelPlots), cutDescription="mu channel, 2J1T, final selection")
+=======
+        psMu += samples.pltcMu.plot(cutlist.mu * cutlist.MTmu * cutlist.mlnu * cutlist.jetPt * cutlist.jetEta * cutlist.jets_2J1T, reversed(finalSelPlots), cutDescription="mu channel, 2J1T, final selection")
+        psEle += samples.pltcEle.plot(cutlist.finalEle, reversed(finalSelPlots), cutDescription="ele channel, 2J1T, final selection")
+>>>>>>> plots_tune
 
 
         #cutMTWDataDriven = Cut("mtwDataDriven", "_muonCount == 1 && _topCount == 1 && cosThetaLightJet_cosTheta==cosThetaLightJet_cosTheta && _goodJets_0_Pt>40 && _goodJets_1_Pt>40 && abs(_lowestBTagJet_0_Eta)>2.5 && _bJetCount == 1 && _lightJetCount == 1 && abs(_recoTop_0_Mass - 172) < 40 && _goodSignalMuons_0_relIso<0.12 && _lowestBTagJet_0_rms<0.025")

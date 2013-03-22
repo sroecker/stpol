@@ -110,7 +110,11 @@ if __name__=="__main__":
                 psMu += comp_samples.plot(Cuts.finalMu_3J1T*Cuts.jets_2LJ_true, weightPlots, cutDescription="muon channel, final sel. (3J1T, 2 true light jets)")
                 psMu += comp_samples.plot(Cuts.finalMu_3J1T*Cuts.jets_1LJ_true, weightPlots, cutDescription="muon channel, final sel. (3J1T, 1 true light jet)")
                 psMu += comp_samples.plot(Cuts.finalMu_3J1T*Cuts.jets_0LJ_true, weightPlots, cutDescription="muon channel, final sel. (3J1T, 0 true light jet)")
+<<<<<<< HEAD
             if args.doCJuts:
+=======
+            if args.doCJCuts:
+>>>>>>> plots_tune
                 psMu += comp_samples.plot(Cuts.finalMu_3J1T*Cuts.jets_2CJ_true, weightPlots, cutDescription="muon channel, final sel. (3J1T, 2 true c-jets)")
                 psMu += comp_samples.plot(Cuts.finalMu_3J1T*Cuts.jets_1CJ_true, weightPlots, cutDescription="muon channel, final sel. (3J1T, 1 true c-jet)")
                 psMu += comp_samples.plot(Cuts.finalMu_3J1T*Cuts.jets_0CJ_true, weightPlots, cutDescription="muon channel, final sel. (3J1T, 0 true c-jet)")

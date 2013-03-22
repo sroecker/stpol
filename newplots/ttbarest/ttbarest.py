@@ -26,14 +26,22 @@ weights = [variables.pu_weight]
 weights_b = weights + [variables.b_weight["nominal"]]
 
 plots = [
-	drawfw.PlotParams(variables.cos_theta, (-1, 1), ymax=2300, ofname='costheta',   vars_to_enable=None, weights=weights),
-	drawfw.PlotParams(variables.cos_theta, (-1, 1), ymax=2300, ofname='costheta_b', vars_to_enable=None, weights=weights_b),
+	drawfw.PlotParams(variables.cos_theta, (-1, 1), ofname='costheta',   vars_to_enable=None, weights=weights),
+	drawfw.PlotParams(variables.cos_theta, (-1, 1), ofname='costheta_b', vars_to_enable=None, weights=weights_b),
 
+<<<<<<< HEAD
 	drawfw.PlotParams(variables.top_mass, (100, 500), ymax=9000, bins=20, ofname='topmass',	vars_to_enable=None, weights=weights),
 	drawfw.PlotParams(variables.top_mass, (100, 500), ymax=9000, bins=20, ofname='topmass_b',  vars_to_enable=None, weights=weights_b),
 
 	drawfw.PlotParams(variables.etalj, (0, 5),  ymax=5000, ofname='bjeteta',	vars_to_enable=None, weights=weights),
 	drawfw.PlotParams(variables.etalj, (0, 5),  ymax=5000, ofname='bjeteta_b',  vars_to_enable=None, weights=weights_b),
+=======
+	drawfw.PlotParams(variables.top_mass, (100, 500), bins=20, ofname='topmass',	vars_to_enable=None, weights=weights),
+	drawfw.PlotParams(variables.top_mass, (100, 500), bins=20, ofname='topmass_b',  vars_to_enable=None, weights=weights_b),
+
+	drawfw.PlotParams(variables.etalj, (0, 5), ofname='bjeteta',	vars_to_enable=None, weights=weights),
+	drawfw.PlotParams(variables.etalj, (0, 5), ofname='bjeteta_b',  vars_to_enable=None, weights=weights_b),
+>>>>>>> plots_tune
 ]
 
 # Set up samples
@@ -44,8 +52,13 @@ samples.load()
 
 for ck,c in cutlist.items():
 	print 'Cut:', ck
+<<<<<<< HEAD
 	samples.pltcMu.set_n_cores(1)
 	samples.pltcMu.frac_entries=0.1
+=======
+	samples.pltcMu.set_n_cores(10)
+	#samples.pltcMu.frac_entries=1.0
+>>>>>>> plots_tune
 	ps = samples.pltcMu.plot(c, plots)
 	for p in ps:
 		p.save(fout = 'plots_ttbar/ttbar_%s_%s'%(ck,p.getName()), fmt='pdf', log=True)
