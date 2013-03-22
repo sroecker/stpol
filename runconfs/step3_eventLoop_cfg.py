@@ -50,8 +50,8 @@ process.eleCuts = cms.PSet(
 )
 
 process.jetCuts = cms.PSet(
-    cutOnNJets  = cms.bool(False),
-    cutOnNTags  = cms.bool(False),
+    cutOnNJets  = cms.bool(True),
+    cutOnNTags  = cms.bool(True),
     applyRmsLj  = cms.bool(False),
     applyEtaLj  = cms.bool(False),
 
@@ -61,9 +61,9 @@ process.jetCuts = cms.PSet(
     rmsMax = cms.double(0.025),
 
     nJetsMin = cms.int32(2),
-    nJetsMax = cms.int32(2),
+    nJetsMax = cms.int32(3),
 
-    nTagsMin = cms.int32(1),
+    nTagsMin = cms.int32(0),
     nTagsMax = cms.int32(1),
 
     goodJetsPtSrc = cms.InputTag("goodJetsNTupleProducer", "Pt"),
@@ -88,6 +88,7 @@ process.topCuts = cms.PSet(
 )
 
 process.weights = cms.PSet(
+    doWeights = cms.bool(True),
     bWeightNominalSrc = cms.InputTag("bTagWeightProducerNJMT", "bTagWeight"),
     puWeightSrc = cms.InputTag("puWeightProducer", "PUWeightNtrue")
 )
@@ -98,8 +99,8 @@ process.mtMuCuts = cms.PSet(
 )
 
 process.finalVars = cms.PSet(
-    cosThetaSrc = cms.InputTag("cosTheta", "cosThetaLightJet")
-    nVerticesSrc = cms.InputTag("cosTheta", "cosThetaLightJet")
+    cosThetaSrc = cms.InputTag("cosTheta", "cosThetaLightJet"),
+    nVerticesSrc = cms.InputTag("offlinePVCount")
 )
 
 process.lumiBlockCounters = cms.PSet(
@@ -107,5 +108,11 @@ process.lumiBlockCounters = cms.PSet(
 )
 
 process.genParticles = cms.PSet(
-    #totalPATProcessedCountSrc = cms.InputTag("singleTopPathStep1MuPreCount")
+    doGenParticles = cms.bool(True),
+    trueBJetCountSrc = cms.InputTag("trueBJetCount"),
+    trueCJetCountSrc = cms.InputTag("trueCJetCount"),
+    trueLJetCountSrc = cms.InputTag("trueLJetCount"),
+    trueBJetTaggedCountSrc = cms.InputTag("btaggedTrueBJetCount"),
+    trueCJetTaggedCountSrc = cms.InputTag("btaggedTrueCJetCount"),
+    trueLJetTaggedCountSrc = cms.InputTag("btaggedTrueLJetCount"),
 )

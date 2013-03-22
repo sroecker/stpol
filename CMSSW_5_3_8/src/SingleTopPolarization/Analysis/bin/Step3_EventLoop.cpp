@@ -296,8 +296,8 @@ public:
         branch_vars["n_jets"] = get_collection<int>(event, goodJetsCountSrc, -1);
         branch_vars["n_tags"] = get_collection<int>(event, bTagJetsCountSrc, -1);
         
-        if (cutOnNJets && branch_vars["n_jets"] <= nJetsCutMax && branch_vars["n_jets"] >= nJetsCutMin) return false;
-        if (cutOnNTags && branch_vars["n_tags"] <= nTagsCutMax && branch_vars["n_tags"] >= nTagsCutMin) return false;
+        if (cutOnNJets && (branch_vars["n_jets"] > nJetsCutMax || branch_vars["n_jets"] < nJetsCutMin)) return false;
+        if (cutOnNTags && (branch_vars["n_tags"] > nTagsCutMax || branch_vars["n_tags"] < nTagsCutMin)) return false;
         if (applyRmsLj && !passes_rms_lj) return false;
         
         post_process();
@@ -355,6 +355,7 @@ public:
     edm::InputTag bWeightNominalSrc;
     edm::InputTag puWeightSrc;
     
+    bool doWeights;
     void initialize_branches() {
         branch_vars["b_weight_nominal"] = def_val;
         branch_vars["pu_weight"] = def_val;
@@ -364,6 +365,8 @@ public:
     CutsBase(_branch_vars)
     {
         initialize_branches();
+        doWeights = pars.getParameter<bool>("doWeights");
+        
         bWeightNominalSrc = pars.getParameter<edm::InputTag>("bWeightNominalSrc");
         puWeightSrc = pars.getParameter<edm::InputTag>("puWeightSrc");
         
@@ -410,9 +413,11 @@ public:
 class MiscVars : public CutsBase {
 public:
     edm::InputTag cosThetaSrc;
+    edm::InputTag nVerticesSrc;
     
     void initialize_branches() {
         branch_vars["cos_theta"] = def_val;
+        branch_vars["n_vertices"] = def_val;
     }
     
     
@@ -421,26 +426,30 @@ public:
     {
         initialize_branches();
         cosThetaSrc = pars.getParameter<edm::InputTag>("cosThetaSrc");
+        nVerticesSrc = pars.getParameter<edm::InputTag>("nVerticesSrc");
     }
     
     bool process(const edm::EventBase& event) {
         pre_process();
         
         branch_vars["cos_theta"] = get_collection<double>(event, cosThetaSrc, def_val);
+        branch_vars["n_vertices"] = get_collection<int>(event, nVerticesSrc, def_val);
         
         post_process();
         return true;
     }
 };
 
-class GenParticleCuts : public CutsBase {
+class GenParticles : public CutsBase {
 public:
-    edm::InputTag trueBCountSrc;
-    edm::InputTag trueCCountSrc;
-    edm::InputTag trueLCountSrc;
-    edm::InputTag trueBTaggedCountSrc;
-    edm::InputTag trueCTaggedCountSrc;
-    edm::InputTag trueLTaggedCountSrc;
+    edm::InputTag trueBJetCount;
+    edm::InputTag trueCJetCount;
+    edm::InputTag trueLJetCount;
+    edm::InputTag trueBJetTaggedCount;
+    edm::InputTag trueCJetTaggedCount;
+    edm::InputTag trueLJetTaggedCount;
+    
+    bool doGenParticles;
     
     void initialize_branches() {
         branch_vars["true_b_count"] = def_val;
@@ -452,10 +461,34 @@ public:
         branch_vars["true_l_tagged_count"] = def_val;
     }
     
-    GenParticleCuts(const edm::ParameterSet& pars, std::map<std::string, float>& _branch_vars) :
+    GenParticles(const edm::ParameterSet& pars, std::map<std::string, float>& _branch_vars) :
     CutsBase(_branch_vars)
     {
+        initialize_branches();
         
+        doGenParticles = pars.getParameter<bool>("doGenParticles");
+
+        trueBJetCount = pars.getParameter<edm::InputTag>("trueBJetCountSrc");
+        trueCJetCount = pars.getParameter<edm::InputTag>("trueCJetCountSrc");
+        trueLJetCount = pars.getParameter<edm::InputTag>("trueLJetCountSrc");
+        trueBJetTaggedCount = pars.getParameter<edm::InputTag>("trueBJetTaggedCountSrc");
+        trueCJetTaggedCount = pars.getParameter<edm::InputTag>("trueCJetTaggedCountSrc");
+        trueLJetTaggedCount = pars.getParameter<edm::InputTag>("trueLJetTaggedCountSrc");
+    }
+    
+    bool process(const edm::EventBase& event) {
+        pre_process();
+        
+        branch_vars["true_b_count"] = get_collection<int>(event, trueBJetCount, def_val);
+        branch_vars["true_c_count"] = get_collection<int>(event, trueCJetCount, def_val);
+        branch_vars["true_l_count"] = get_collection<int>(event, trueLJetCount, def_val);
+        
+        branch_vars["true_b_tagged_count"] = get_collection<int>(event, trueBJetTaggedCount, def_val);
+        branch_vars["true_c_tagged_count"] = get_collection<int>(event, trueCJetTaggedCount, def_val);
+        branch_vars["true_l_tagged_count"] = get_collection<int>(event, trueLJetTaggedCount, def_val);
+
+        post_process();
+        return true;
     }
 };
 
@@ -493,7 +526,7 @@ int main(int argc, char* argv[])
     const edm::ParameterSet& mt_mu_cuts_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("mtMuCuts");
     const edm::ParameterSet& weight_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("weights");
     const edm::ParameterSet& miscvars_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("finalVars");
-    const edm::ParameterSet& gen_particle_cuts = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("genParticles");
+    const edm::ParameterSet& gen_particle_vars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("genParticles");
     
     const edm::ParameterSet& lumiblock_counter_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("lumiBlockCounters");
     edm::InputTag totalPATProcessedCountSrc = lumiblock_counter_pars.getParameter<edm::InputTag>("totalPATProcessedCountSrc");
@@ -516,6 +549,7 @@ int main(int argc, char* argv[])
     Weights weights(weight_pars, branch_vars);
     MTMuCuts mt_mu_cuts(mt_mu_cuts_pars, branch_vars);
     MiscVars misc_vars(miscvars_pars, branch_vars);
+    GenParticles gen_particles(gen_particle_vars, branch_vars);
     
     fwlite::TFileService fs = fwlite::TFileService(outputFile_.c_str());
     
@@ -571,8 +605,9 @@ int main(int argc, char* argv[])
                 bool passes_top_cuts = top_cuts.process(event);
                 if(!passes_top_cuts) continue;
                 
-                weights.process(event);
                 misc_vars.process(event);
+                if(weights.doWeights) weights.process(event);
+                if (gen_particles.doGenParticles) gen_particles.process(event);
                 
                 event_id_branches["event_id"] = (unsigned int)event.id().event();
                 event_id_branches["run_id"] = (unsigned int)event.id().run();
