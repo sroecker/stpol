@@ -6,5 +6,4 @@ INFILE=$2
 cd $WD
 source setenv.sh CMSSW_5_3_8
 cd $OUTDIR
-STPOL_STEP3_OUTPUTFILE="out_step3_"$SLURM_JOB_ID".root"
-time cat $INFILE | $CMSSW_BASE/bin/slc5_amd64_gcc462/Step3_EventLoop $CMSSW_BASE/../runconfs/step3_eventLoop_cfg.py
+time cat $INFILE | STPOL_STEP3_OUTPUTFILE="out_step3_"$SLURM_JOB_ID".root" $CMSSW_BASE/bin/slc5_amd64_gcc462/Step3_EventLoop $CMSSW_BASE/../runconfs/step3_eventLoop_cfg.py
