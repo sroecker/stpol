@@ -98,9 +98,14 @@ process.mtMuCuts = cms.PSet(
 )
 
 process.finalVars = cms.PSet(
-    cosThetaSrc = cms.InputTag("cosThetaProducer", "cosTheta")
+    cosThetaSrc = cms.InputTag("cosTheta", "cosThetaLightJet")
+    nVerticesSrc = cms.InputTag("cosTheta", "cosThetaLightJet")
 )
 
 process.lumiBlockCounters = cms.PSet(
     totalPATProcessedCountSrc = cms.InputTag("singleTopPathStep1MuPreCount")
+)
+
+process.genParticles = cms.PSet(
+    #totalPATProcessedCountSrc = cms.InputTag("singleTopPathStep1MuPreCount")
 )

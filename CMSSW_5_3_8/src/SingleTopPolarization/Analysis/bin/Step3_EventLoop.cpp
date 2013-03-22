@@ -392,6 +392,7 @@ public:
     MTMuCuts(const edm::ParameterSet& pars, std::map<std::string, float>& _branch_vars) :
     CutsBase(_branch_vars)
     {
+        initialize_branches();
         mtMuSrc = pars.getParameter<edm::InputTag>("mtMuSrc");
         minVal = (float)pars.getParameter<double>("minVal");
     }
@@ -418,6 +419,7 @@ public:
     MiscVars(const edm::ParameterSet& pars, std::map<std::string, float>& _branch_vars) :
     CutsBase(_branch_vars)
     {
+        initialize_branches();
         cosThetaSrc = pars.getParameter<edm::InputTag>("cosThetaSrc");
     }
     
@@ -506,6 +508,7 @@ int main(int argc, char* argv[])
     count_map["pass_mt_cuts"] = 0;
     count_map["pass_jet_cuts"] = 0;
     count_map["pass_top_cuts"] = 0;
+    std::vector<std::string> count_map_order({"total_processed", "pass_lepton_cuts", "pass_mt_cuts", "pass_jet_cuts", "pass_top_cuts"});
     
     MuonCuts muon_cuts(mu_cuts_pars, branch_vars);
     JetCuts jet_cuts(jet_cuts_pars, branch_vars);
@@ -595,9 +598,9 @@ int main(int argc, char* argv[])
     count_map["pass_top_cuts"] += top_cuts.n_pass;
     
     int i = 1;
-    for (auto& elem : count_map) {
-        count_hist->AddBinContent(i, elem.second);
-        count_hist->GetXaxis()->SetBinLabel(i, elem.first.c_str());
+    for (auto& elem : count_map_order) {
+        count_hist->AddBinContent(i, count_map[elem]);
+        count_hist->GetXaxis()->SetBinLabel(i, elem.c_str());
         i++;
     }
     
