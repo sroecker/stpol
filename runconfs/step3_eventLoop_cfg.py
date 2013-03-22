@@ -7,12 +7,14 @@ import pdb
 import optparse
 import random
 import string
+import os
 
 #read input files from stdin
 input_files = []
 for line in sys.stdin.readlines():
     input_files.append(line.strip())
-outfile = "step3_out_%s.root" % (''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(6)))
+#outfile = "step3_out_%s.root" % (''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(6)))
+outfile = os.environ['STPOL_STEP3_OUTPUTFILE']
 
 #parser = optparse.OptionParser()
 #parser.add_option("--outfile", dest="outfile", type="string")
