@@ -82,5 +82,11 @@ To calculate the integrated luminosity from crab jobs, do the following
 >lumiCalc2.py --without-checkforupdate -i YOUR_DIR/res/lumiSummary.json overview
 
 #Step3 code
-The code is an FWLite loop, which is available in *CMSSW_5_3_8/src/SingleTopPolarization/Analysis/bin/Step3_EventLoop.cpp* and can be compiled by either setting up CMSSW_5_3_8 and compiling the code, or moving the code and *BuildFile.xml* to the relevant place *CMSSW_5_3_7_path4*. You should try to take the loop as an example and try to implement your own analysis code based on that. For batch running, the scripts in *analysis_step3* may be useful, in particular *run_step3_eventloop.sh
-input_files output_directory*.
+The code is an FWLite loop, which is available in *CMSSW_5_3_8/src/SingleTopPolarization/Analysis/bin/Step3_EventLoop.cpp*
+and can be compiled by either setting up *CMSSW_5_3_8* and compiling the code,
+or moving the code and *BuildFile.xml* to the relevant place *CMSSW_5_3_7_path4*.
+You should try to take the loop as an example and try to implement your own analysis
+code based on that. For batch running, the scripts in *analysis_step3* may be useful,
+in particular
+
+>run_step3_eventloop.sh input_files output_directory
