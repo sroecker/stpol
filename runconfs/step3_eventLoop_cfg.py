@@ -15,6 +15,7 @@ for line in sys.stdin.readlines():
     input_files.append(line.strip())
 #outfile = "step3_out_%s.root" % (''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(6)))
 outfile = os.environ['STPOL_STEP3_OUTPUTFILE']
+isMC = True
 
 #parser = optparse.OptionParser()
 #parser.add_option("--outfile", dest="outfile", type="string")
@@ -90,7 +91,7 @@ process.topCuts = cms.PSet(
 )
 
 process.weights = cms.PSet(
-    doWeights = cms.bool(True),
+    doWeights = cms.bool(isMC),
     bWeightNominalSrc = cms.InputTag("bTagWeightProducerNJMT", "bTagWeight"),
     puWeightSrc = cms.InputTag("puWeightProducer", "PUWeightNtrue")
 )
@@ -111,7 +112,7 @@ process.lumiBlockCounters = cms.PSet(
 )
 
 process.genParticles = cms.PSet(
-    doGenParticles = cms.bool(True),
+    doGenParticles = cms.bool(isMC),
     trueBJetCountSrc = cms.InputTag("trueBJetCount"),
     trueCJetCountSrc = cms.InputTag("trueCJetCount"),
     trueLJetCountSrc = cms.InputTag("trueLJetCount"),
