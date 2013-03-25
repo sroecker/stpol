@@ -664,7 +664,7 @@ def SingleTopStep2():
     process.trueLeptonNTupleProducer = process.recoTopNTupleProducer.clone(
         src=cms.InputTag("genParticleSelector", "trueLepton", "STPOLSEL2"),
     )
-    
+
     process.trueLightJetNTupleProducer = process.recoTopNTupleProducer.clone(
         src=cms.InputTag("genParticleSelector", "trueLightJet", "STPOLSEL2"),
     )
@@ -900,7 +900,7 @@ def SingleTopStep2():
                 'keep double_cosThetaProducerTrueTop_*_STPOLSEL2',
                 'keep double_cosThetaProducerTrueLepton_*_STPOLSEL2',
                 'keep double_cosThetaProducerTrueJet_*_STPOLSEL2',
-                'keep double_bTagWeightProducerNJMT_*_STPOLSEL2',
+                'keep *_bTagWeightProducerNJMT_*_STPOLSEL2',
                 'keep int_*__STPOLSEL2',
                 'keep int_*_*_STPOLSEL2',
                 'keep *_pdfInfo1_*_STPOLSEL2',
