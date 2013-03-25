@@ -83,10 +83,26 @@ To calculate the integrated luminosity from crab jobs, do the following
 
 #Step3 code
 The code is an FWLite loop, which is available in *CMSSW_5_3_8/src/SingleTopPolarization/Analysis/bin/Step3_EventLoop.cpp*
-and can be compiled by either setting up *CMSSW_5_3_8* and compiling the code,
-or moving the code and *BuildFile.xml* to the relevant place *CMSSW_5_3_7_path4*.
-You should try to take the loop as an example and try to implement your own analysis
-code based on that. For batch running, the scripts in *analysis_step3* may be useful,
-in particular
+and can be compiled by either setting up *CMSSW_5_3_8* using (make sure you have no uncommitted changes in your working directory)
+>setup.sh
+and compiling the code, or moving the code and *BuildFile.xml* to the relevant place in *CMSSW_5_3_7_patch4*.
 
->run_step3_eventloop.sh input_files output_directory
+You should try to take the loop as an example and try to implement your own analysis code based on that. 
+
+The step3 code is steered using the python config file *runconfs/step3_eventLoop_cfg.py* where you can turn on/off basic cuts:
+
+1. lepton
+2. M_T(W)
+3. nJets
+4. nTags
+5. top mass window
+
+If you need more variables in the trees, you should add them to the
+*process.finalVars* PSet and also in the code into the *MiscVars* class. If you are adding a large separate group of variables,
+it may make more sense to create a new class for these, which can be turned on/off via the config file.
+You should strive to use as strict cuts as is possible for your analysis and as few variables as is possible, in order to not
+be in the same situation as earlier, when running over the full step2 trees.
+
+For batch running, the scripts in *analysis_step3* may be useful, in particular
+
+>analysis_step3/run_step3_eventloop.sh input_files.txt /path/to/output_directory
