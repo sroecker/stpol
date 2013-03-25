@@ -204,7 +204,7 @@ if __name__=="__main__":
     hdraw = HistoDraw("histos.root", samples)
 
     histos = []
-    b_weight_range = [100, 1.02, 1.3]
+    b_weight_range = [100, 0.7, 1.5]
     histos += hdraw.drawHistogram("b_weight_nominal", plot_range=b_weight_range)
     histos += hdraw.drawHistogram("b_weight_nominal", plot_range=b_weight_range)
     histos += hdraw.drawHistogram("b_weight_nominal", cut="n_tags==0.0", plot_range=b_weight_range)
@@ -220,8 +220,8 @@ if __name__=="__main__":
 
     for h in histos:
         session.add(h)
-    #session.flush()
-    session.commit()
+        session.commit()
+        session.flush()
 
     #info = ROOT.TObjString(pickle.dumps(histos))
     #hdraw.tfile.WriteObject(info, "histo_info")
