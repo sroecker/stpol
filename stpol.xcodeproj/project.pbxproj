@@ -16,6 +16,45 @@
 		A70C274B16B0501C00495932 /* BuildFile.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
 		A70C274D16B0501C00495932 /* btagsystematicsweightproducer_cfi.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = btagsystematicsweightproducer_cfi.py; sourceTree = "<group>"; };
 		A70C274F16B0501C00495932 /* BTagSystematicsWeightProducer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BTagSystematicsWeightProducer.cc; sourceTree = "<group>"; };
+		A71F5D431700D0B000AB8E33 /* plots_base.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = plots_base.py; sourceTree = "<group>"; };
+		A71F5D441700E03C00AB8E33 /* loadHistos.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = loadHistos.py; sourceTree = "<group>"; };
+		A71F5D461700E3F100AB8E33 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		A71F5D471700E3F100AB8E33 /* autoLoad.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = autoLoad.py; sourceTree = "<group>"; };
+		A71F5D491700E3F100AB8E33 /* example.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = example.py; sourceTree = "<group>"; };
+		A71F5D4A1700E3F100AB8E33 /* quickexample.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = quickexample.py; sourceTree = "<group>"; };
+		A71F5D4B1700E3F100AB8E33 /* shapeexample.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = shapeexample.py; sourceTree = "<group>"; };
+		A71F5D4D1700E3F100AB8E33 /* plots.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = plots.py; sourceTree = "<group>"; };
+		A71F5D4E1700E3F100AB8E33 /* runOnCluster.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = runOnCluster.sh; sourceTree = "<group>"; };
+		A71F5D4F1700E3F100AB8E33 /* sub.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = sub.sh; sourceTree = "<group>"; };
+		A71F5D511700E3F100AB8E33 /* __init__.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
+		A71F5D521700E3F100AB8E33 /* __init__.pyc */ = {isa = PBXFileReference; lastKnownFileType = file; path = __init__.pyc; sourceTree = "<group>"; };
+		A71F5D531700E3F100AB8E33 /* argparse.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = argparse.py; sourceTree = "<group>"; };
+		A71F5D541700E3F100AB8E33 /* cross_sections.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = cross_sections.py; sourceTree = "<group>"; };
+		A71F5D551700E3F100AB8E33 /* cross_sections.pyc */ = {isa = PBXFileReference; lastKnownFileType = file; path = cross_sections.pyc; sourceTree = "<group>"; };
+		A71F5D561700E3F100AB8E33 /* drawfw.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = drawfw.py; sourceTree = "<group>"; };
+		A71F5D571700E3F100AB8E33 /* drawfw.pyc */ = {isa = PBXFileReference; lastKnownFileType = file; path = drawfw.pyc; sourceTree = "<group>"; };
+		A71F5D581700E3F100AB8E33 /* histogram.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = histogram.py; sourceTree = "<group>"; };
+		A71F5D591700E3F100AB8E33 /* methods.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = methods.py; sourceTree = "<group>"; };
+		A71F5D5A1700E3F100AB8E33 /* methods.pyc */ = {isa = PBXFileReference; lastKnownFileType = file; path = methods.pyc; sourceTree = "<group>"; };
+		A71F5D5B1700E3F100AB8E33 /* odict.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = odict.py; sourceTree = "<group>"; };
+		A71F5D5C1700E3F100AB8E33 /* odict.pyc */ = {isa = PBXFileReference; lastKnownFileType = file; path = odict.pyc; sourceTree = "<group>"; };
+		A71F5D5D1700E3F100AB8E33 /* params.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = params.py; sourceTree = "<group>"; };
+		A71F5D5E1700E3F100AB8E33 /* params.pyc */ = {isa = PBXFileReference; lastKnownFileType = file; path = params.pyc; sourceTree = "<group>"; };
+		A71F5D5F1700E3F100AB8E33 /* plotlog.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = plotlog.py; sourceTree = "<group>"; };
+		A71F5D601700E3F100AB8E33 /* plotlog.pyc */ = {isa = PBXFileReference; lastKnownFileType = file; path = plotlog.pyc; sourceTree = "<group>"; };
+		A71F5D611700E3F100AB8E33 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		A71F5D621700E3F100AB8E33 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		A71F5D631700E3F100AB8E33 /* samples.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = samples.py; sourceTree = "<group>"; };
+		A71F5D641700E3F100AB8E33 /* samples.pyc */ = {isa = PBXFileReference; lastKnownFileType = file; path = samples.pyc; sourceTree = "<group>"; };
+		A71F5D661700E3F100AB8E33 /* bTagWeightValid2.pyc */ = {isa = PBXFileReference; lastKnownFileType = file; path = bTagWeightValid2.pyc; sourceTree = "<group>"; };
+		A71F5D671700E3F100AB8E33 /* eletest.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = eletest.py; sourceTree = "<group>"; };
+		A71F5D681700E3F100AB8E33 /* runValid.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = runValid.py; sourceTree = "<group>"; };
+		A71F5D6B1700E3F100AB8E33 /* clean.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = clean.sh; sourceTree = "<group>"; };
+		A71F5D6C1700E3F100AB8E33 /* presentation.tex */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = presentation.tex; sourceTree = "<group>"; };
+		A71F5D6D1700E3F100AB8E33 /* ttbarest.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = ttbarest.py; sourceTree = "<group>"; };
+		A71F5D6E1700E3F100AB8E33 /* ttbarest_tex.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = ttbarest_tex.py; sourceTree = "<group>"; };
+		A71F5D6F1700E3F100AB8E33 /* ttbarshapes.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = ttbarshapes.py; sourceTree = "<group>"; };
+		A71F5D701700E3F100AB8E33 /* unpickle.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = unpickle.py; sourceTree = "<group>"; };
 		A726619D16FD7A72003D5534 /* loadHistos.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = loadHistos.py; path = newplots/tests/loadHistos.py; sourceTree = "<group>"; };
 		A726619E16FD7ACB003D5534 /* pickle_to_root_example.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = pickle_to_root_example.py; path = misc/pickle_to_root_example.py; sourceTree = "<group>"; };
 		A73D461D16A83DFB00703EF6 /* babysit2.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = babysit2.sh; sourceTree = "<group>"; };
@@ -218,7 +257,6 @@
 		A7AE61F816FB89A50001FFB7 /* BuildFile.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = BuildFile.xml; path = CMSSW_5_3_8/src/SingleTopPolarization/Analysis/bin/BuildFile.xml; sourceTree = "<group>"; };
 		A7AE61F916FB89A50001FFB7 /* Step3_EventLoop.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Step3_EventLoop.cpp; path = CMSSW_5_3_8/src/SingleTopPolarization/Analysis/bin/Step3_EventLoop.cpp; sourceTree = "<group>"; };
 		A7AE61FA16FB8A2D0001FFB7 /* step1_newCmdLine_cfg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = step1_newCmdLine_cfg.py; path = runconfs/step1_newCmdLine_cfg.py; sourceTree = "<group>"; };
-		A7AE61FB16FCE2A10001FFB7 /* bTagWeightValid2.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = bTagWeightValid2.py; path = newplots/tests/bTagWeightValid2.py; sourceTree = "<group>"; };
 		A7BB7EC316CA77F900B9DD28 /* fastSimValidationPlots.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = fastSimValidationPlots.py; sourceTree = "<group>"; };
 		A7D8670216C8E77C00514DDD /* plots.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = plots.py; sourceTree = "<group>"; };
 		A7EAECBF16D266CB004D032C /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
@@ -275,6 +313,107 @@
 			path = src;
 			sourceTree = "<group>";
 		};
+		A71F5D421700D0B000AB8E33 /* plots */ = {
+			isa = PBXGroup;
+			children = (
+				A71F5D441700E03C00AB8E33 /* loadHistos.py */,
+				A71F5D431700D0B000AB8E33 /* plots_base.py */,
+			);
+			path = plots;
+			sourceTree = "<group>";
+		};
+		A71F5D451700E3F100AB8E33 /* newplots */ = {
+			isa = PBXGroup;
+			children = (
+				A71F5D461700E3F100AB8E33 /* .gitignore */,
+				A71F5D471700E3F100AB8E33 /* autoLoad.py */,
+				A71F5D481700E3F100AB8E33 /* examples */,
+				A71F5D4C1700E3F100AB8E33 /* joosep */,
+				A71F5D501700E3F100AB8E33 /* plotfw */,
+				A71F5D621700E3F100AB8E33 /* README.md */,
+				A71F5D631700E3F100AB8E33 /* samples.py */,
+				A71F5D641700E3F100AB8E33 /* samples.pyc */,
+				A71F5D651700E3F100AB8E33 /* tests */,
+				A71F5D691700E3F100AB8E33 /* ttbarest */,
+				A71F5D701700E3F100AB8E33 /* unpickle.py */,
+			);
+			path = newplots;
+			sourceTree = "<group>";
+		};
+		A71F5D481700E3F100AB8E33 /* examples */ = {
+			isa = PBXGroup;
+			children = (
+				A71F5D491700E3F100AB8E33 /* example.py */,
+				A71F5D4A1700E3F100AB8E33 /* quickexample.py */,
+				A71F5D4B1700E3F100AB8E33 /* shapeexample.py */,
+			);
+			path = examples;
+			sourceTree = "<group>";
+		};
+		A71F5D4C1700E3F100AB8E33 /* joosep */ = {
+			isa = PBXGroup;
+			children = (
+				A71F5D4D1700E3F100AB8E33 /* plots.py */,
+				A71F5D4E1700E3F100AB8E33 /* runOnCluster.sh */,
+				A71F5D4F1700E3F100AB8E33 /* sub.sh */,
+			);
+			path = joosep;
+			sourceTree = "<group>";
+		};
+		A71F5D501700E3F100AB8E33 /* plotfw */ = {
+			isa = PBXGroup;
+			children = (
+				A71F5D511700E3F100AB8E33 /* __init__.py */,
+				A71F5D521700E3F100AB8E33 /* __init__.pyc */,
+				A71F5D531700E3F100AB8E33 /* argparse.py */,
+				A71F5D541700E3F100AB8E33 /* cross_sections.py */,
+				A71F5D551700E3F100AB8E33 /* cross_sections.pyc */,
+				A71F5D561700E3F100AB8E33 /* drawfw.py */,
+				A71F5D571700E3F100AB8E33 /* drawfw.pyc */,
+				A71F5D581700E3F100AB8E33 /* histogram.py */,
+				A71F5D591700E3F100AB8E33 /* methods.py */,
+				A71F5D5A1700E3F100AB8E33 /* methods.pyc */,
+				A71F5D5B1700E3F100AB8E33 /* odict.py */,
+				A71F5D5C1700E3F100AB8E33 /* odict.pyc */,
+				A71F5D5D1700E3F100AB8E33 /* params.py */,
+				A71F5D5E1700E3F100AB8E33 /* params.pyc */,
+				A71F5D5F1700E3F100AB8E33 /* plotlog.py */,
+				A71F5D601700E3F100AB8E33 /* plotlog.pyc */,
+				A71F5D611700E3F100AB8E33 /* README.md */,
+			);
+			path = plotfw;
+			sourceTree = "<group>";
+		};
+		A71F5D651700E3F100AB8E33 /* tests */ = {
+			isa = PBXGroup;
+			children = (
+				A71F5D661700E3F100AB8E33 /* bTagWeightValid2.pyc */,
+				A71F5D671700E3F100AB8E33 /* eletest.py */,
+				A71F5D681700E3F100AB8E33 /* runValid.py */,
+			);
+			path = tests;
+			sourceTree = "<group>";
+		};
+		A71F5D691700E3F100AB8E33 /* ttbarest */ = {
+			isa = PBXGroup;
+			children = (
+				A71F5D6A1700E3F100AB8E33 /* plots */,
+				A71F5D6D1700E3F100AB8E33 /* ttbarest.py */,
+				A71F5D6E1700E3F100AB8E33 /* ttbarest_tex.py */,
+				A71F5D6F1700E3F100AB8E33 /* ttbarshapes.py */,
+			);
+			path = ttbarest;
+			sourceTree = "<group>";
+		};
+		A71F5D6A1700E3F100AB8E33 /* plots */ = {
+			isa = PBXGroup;
+			children = (
+				A71F5D6B1700E3F100AB8E33 /* clean.sh */,
+				A71F5D6C1700E3F100AB8E33 /* presentation.tex */,
+			);
+			path = plots;
+			sourceTree = "<group>";
+		};
 		A73D461C16A83DFB00703EF6 /* util */ = {
 			isa = PBXGroup;
 			children = (
@@ -302,11 +441,12 @@
 		A76CF91716A6B29200DC8250 = {
 			isa = PBXGroup;
 			children = (
+				A71F5D451700E3F100AB8E33 /* newplots */,
 				A726619E16FD7ACB003D5534 /* pickle_to_root_example.py */,
 				A726619D16FD7A72003D5534 /* loadHistos.py */,
 				A7AE61F816FB89A50001FFB7 /* BuildFile.xml */,
 				A7AE61F916FB89A50001FFB7 /* Step3_EventLoop.cpp */,
-				A7AE61FB16FCE2A10001FFB7 /* bTagWeightValid2.py */,
+				A71F5D421700D0B000AB8E33 /* plots */,
 				A7AE61FA16FB8A2D0001FFB7 /* step1_newCmdLine_cfg.py */,
 				A7AE61F716FAD1BF0001FFB7 /* step3_eventLoop_cfg.py */,
 				A7EAECBE16D266CB004D032C /* newplots */,
