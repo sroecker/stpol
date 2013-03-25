@@ -17,56 +17,58 @@
 #include "FWCore/PythonParameterSet/interface/PythonProcessDesc.h"
 #include "DataFormats/Common/interface/MergeableCounter.h"
 
-class HistoCut {
-public:
-    TH1F* hist;
-    std::string cutname;
-    edm::InputTag var;
-    
-    HistoCut(std::string name, int n_bins, float bins_low, float bins_high, std::string _cutname, edm::InputTag& _var) :
-    hist(new TH1F(name.c_str(), name.c_str(), n_bins, bins_low, bins_high)),
-    cutname(_cutname),
-    var(_var)
-    {
-    }
-    
-    ~HistoCut() {
-        delete hist;
-    }
-    
-    virtual void Fill(edm::EventBase const & event) {
-        std::cout << "Calling HistoCut::Fill" << std::endl;
-        edm::Handle<float> handle;
-        event.getByLabel(var, handle);
-        hist->Fill((float)(*handle));
-    }
-};
+//Not used any more, for reference only
+//class HistoCut {
+//public:
+//    TH1F* hist;
+//    std::string cutname;
+//    edm::InputTag var;
+//    
+//    HistoCut(std::string name, int n_bins, float bins_low, float bins_high, std::string _cutname, edm::InputTag& _var) :
+//    hist(new TH1F(name.c_str(), name.c_str(), n_bins, bins_low, bins_high)),
+//    cutname(_cutname),
+//    var(_var)
+//    {
+//    }
+//    
+//    ~HistoCut() {
+//        delete hist;
+//    }
+//    
+//    virtual void Fill(edm::EventBase const & event) {
+//        std::cout << "Calling HistoCut::Fill" << std::endl;
+//        edm::Handle<float> handle;
+//        event.getByLabel(var, handle);
+//        hist->Fill((float)(*handle));
+//    }
+//};
+//
+//class HistoCutV : public HistoCut {
+//public:
+//    const int vec_index;
+//    HistoCutV(std::string name, int n_bins, float bins_low, float bins_high, std::string _cutname, edm::InputTag& _var, int index) :
+//    HistoCut(name, n_bins, bins_low, bins_high, _cutname, _var),
+//    vec_index(index)
+//    {
+//    }
+//    
+//    virtual void Fill(edm::EventBase const & event) {
+//        std::cout << "Calling HistoCutV::Fill" << std::endl;
+//        edm::Handle<std::vector<float> > handle;
+//        event.getByLabel(var, handle);
+//        if (vec_index<0) {
+//            for (auto& elem : *handle)
+//                hist->Fill(elem);
+//        }
+//        else if (vec_index>0 && (unsigned int)vec_index<handle->size()) {
+//            hist->Fill(handle->at(vec_index));
+//        } else {
+//            hist->Fill(TMath::QuietNaN());
+//        }
+//    }
+//};
 
-class HistoCutV : public HistoCut {
-public:
-    const int vec_index;
-    HistoCutV(std::string name, int n_bins, float bins_low, float bins_high, std::string _cutname, edm::InputTag& _var, int index) :
-    HistoCut(name, n_bins, bins_low, bins_high, _cutname, _var),
-    vec_index(index)
-    {
-    }
-    
-    virtual void Fill(edm::EventBase const & event) {
-        std::cout << "Calling HistoCutV::Fill" << std::endl;
-        edm::Handle<std::vector<float> > handle;
-        event.getByLabel(var, handle);
-        if (vec_index<0) {
-            for (auto& elem : *handle)
-                hist->Fill(elem);
-        }
-        else if (vec_index>0 && (unsigned int)vec_index<handle->size()) {
-            hist->Fill(handle->at(vec_index));
-        } else {
-            hist->Fill(TMath::QuietNaN());
-        }
-    }
-};
-
+//Shorthand for getting a value of type T from the event
 template <typename T>
 T get_collection(const edm::EventBase& evt, edm::InputTag src, const T& retval) {
     edm::Handle<T> coll;
@@ -77,6 +79,7 @@ T get_collection(const edm::EventBase& evt, edm::InputTag src, const T& retval) 
     return *coll;
 }
 
+//Shorthand for getting a value of type T from the event, where the original container is vector<T>
 template <typename T>
 float get_collection_n(const edm::EventBase& evt, edm::InputTag src, unsigned int n) {
     edm::Handle<std::vector<T>> coll;
@@ -87,22 +90,24 @@ float get_collection_n(const edm::EventBase& evt, edm::InputTag src, unsigned in
     return (float)(coll->at(n));
 }
 
-template <typename F>
-void check_cut(const std::string cutname, std::map<std::string, bool>& cut_map, std::map<std::string, int>& cut_count_map, F check) {
-    bool passes = check();
-    cut_map[cutname] = passes;
-    if(passes) {
-        cut_count_map[cutname] += 1;
-    }
-}
+//Not used anymore
+//template <typename F>
+//void check_cut(const std::string cutname, std::map<std::string, bool>& cut_map, std::map<std::string, int>& cut_count_map, F check) {
+//    bool passes = check();
+//    cut_map[cutname] = passes;
+//    if(passes) {
+//        cut_count_map[cutname] += 1;
+//    }
+//}
 
-void fill_histos(const edm::EventBase& evt, const std::string cutname, std::map<std::string, std::vector<std::unique_ptr<HistoCut>>> histos) {
-    if (histos.find(cutname) != histos.end()) {
-        //for(std::unique_ptr<HistoCut> h : histos[cutname]) {
-        //    h->Fill(evt);
-        //}
-    }
-}
+//Not used anymore
+//void fill_histos(const edm::EventBase& evt, const std::string cutname, std::map<std::string, std::vector<std::unique_ptr<HistoCut>>> histos) {
+//    if (histos.find(cutname) != histos.end()) {
+//        //for(std::unique_ptr<HistoCut> h : histos[cutname]) {
+//        //    h->Fill(evt);
+//        //}
+//    }
+//}
 
 //class Cut {
 //
@@ -118,20 +123,32 @@ void fill_histos(const edm::EventBase& evt, const std::string cutname, std::map<
 //
 //}
 
+//The default value for a TTree entry
 static const float def_val = (const float)(TMath::QuietNaN());
 
+//Base class for all work that is done inside the loop
 class CutsBase {
 public:
+
+    //Map of the branch variables
     std::map<std::string, float>& branch_vars;
+
+    //Counter for the number of processed events
     unsigned long n_processed;
+
+    //Counter for the number of events passing this Cut
     unsigned long n_pass;
+
+    //Abstract method that sets the branch variables to sensible defaults on each loop
     virtual void initialize_branches() = 0;
+
+    //Actually processes the event, loading the variables form the edm::EventBase into the branches
     virtual bool process(const edm::EventBase& event) = 0;
-    
+   
     CutsBase(std::map<std::string, float>& _branch_vars) :
     branch_vars(_branch_vars)
     {
-        //initialize_branches();
+        //initialize_branches(); //Can't call virtual method form constructor
         n_processed = 0;
         n_pass = 0;
     }
