@@ -53,7 +53,7 @@ process.eleCuts = cms.PSet(
 
 process.jetCuts = cms.PSet(
     cutOnNJets  = cms.bool(True),
-    cutOnNTags  = cms.bool(True),
+    cutOnNTags  = cms.bool(False),
     applyRmsLj  = cms.bool(False),
     applyEtaLj  = cms.bool(False),
 
@@ -97,7 +97,7 @@ process.weights = cms.PSet(
 
 process.mtMuCuts = cms.PSet(
     mtMuSrc = cms.InputTag("muAndMETMT"),
-    doMTCut = cms.bool(False),
+    doMTCut = cms.bool(True),
     minVal = cms.double(50)
 )
 
