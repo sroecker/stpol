@@ -1,19 +1,22 @@
 import ROOT
-from bTagWeightValid2 import Histogram
+from bTagWeightValid2 import Histogram, MetaData
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-engine = create_engine('sqlite:///histos.db')
-Session = sessionmaker(bind=engine)
-session = Session()
-#Base.metadata.create_all(engine)
+metadata = MetaData("histos.db")
 
 hists = []
 sample = "TTJets_FullLept"
-for hist in session.query(Histogram).\
+for hist in metadata.session.query(Histogram).\
             filter(Histogram.sample_name==sample).\
             filter(Histogram.var=="b_weight_nominal").\
-            filter((Histogram.cut=="n_tags==0.0") | (Histogram.cut=="n_tags==0.0 && true_b_count==0.0") | (Histogram.cut=="n_tags==0.0 && true_b_count==1.0") | (Histogram.cut=="n_tags==0.0 && true_b_count==2.0") | (Histogram.cut=="n_tags==0.0 && true_b_count==3.0")).\
+            filter(
+                (Histogram.cut=="n_tags==0.0") |
+                (Histogram.cut=="n_tags==0.0 && true_b_count==0.0") |
+                (Histogram.cut=="n_tags==0.0 && true_b_count==1.0") |
+                (Histogram.cut=="n_tags==0.0 && true_b_count==2.0") |
+                (Histogram.cut=="n_tags==0.0 && true_b_count==3.0")
+            ).\
             order_by(Histogram.id):
     hist.loadFile()
     hists.append(hist)

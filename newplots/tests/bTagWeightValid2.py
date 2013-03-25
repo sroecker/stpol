@@ -9,8 +9,10 @@ Base = declarative_base()
 from sqlalchemy import Column, Integer, String
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+import os
+import numpy
 
-logging.basicConfig(level=logging.DEBUG, format="%(asctime)s;%(levelname)s;%(name)s;%(message)s")
+logging.basicConfig(level=logging.WARNING, format="%(asctime)s;%(levelname)s;%(name)s;%(message)s")
 
 class TObjectOpenException(Exception): pass
 
@@ -145,6 +147,20 @@ class Sample:
         hist_.setHist(hist, n_entries=n_entries, var=var, cut=cut, weight=kwargs["weight"] if "weight" in kwargs.keys() else None, sample_name=self.name, sample_entries=self.getTotalEventCount())
         return hist_
 
+    def getColumn(self, col, cut):
+        N = self.tree.Draw(col, cut, "goff")
+        N = int(N)
+        if N < 0:
+            raise Exception("Could not get column %s: N=%d" % (col, N))
+        buf = self.tree.GetV1()
+        arr = ROOT.TArrayD(N, buf)
+        self.logger.debug("Column retrieved, copying to numpy array")
+        out = numpy.copy(numpy.frombuffer(arr.GetArray(), count=arr.GetSize()))
+        return out
+
+    def getEntries(self, cut):
+        return int(self.tree.GetEntries(cut))
+
     @staticmethod
     def fromFile(file_name):
         sample_name = (file_name.split(".root")[0]).split("/")[-1]
@@ -158,7 +174,8 @@ class Sample:
         samples = [Sample.fromFile(file_name) for file_name in file_names]
         return samples
 
-
+    def __repr__(self):
+        return "<Sample(%s, %s)>" % (self.name, self.file_name)
 
 
 class HistoDraw:
@@ -190,14 +207,34 @@ class HistoDraw:
             self.tfile.Write()
         return histos
 
-if __name__=="__main__":
-    engine = create_engine('sqlite:///histos.db')
-    Session = sessionmaker(bind=engine)
-    session = Session()
-    Base.metadata.create_all(engine)
+class MetaData:
+    def __init__(self, fname):
+        self.engine = create_engine('sqlite:///%s' % fname)
+        Session = sessionmaker(bind = self.engine)
+        self.session = Session()
+        Base.metadata.create_all(self.engine)
 
+    def save(self, obj):
+        self.session.add(obj)
+        self.session.commit()
+        #self.session.flush()
+
+def getBTaggingEff(sample, flavour, cut):
+    if flavour not in ["b", "c", "l"]:
+        raise ValueError("Flavour must be b, c or l")
+
+    N_tagged = numpy.sum(sample.getColumn("true_%s_tagged_count" % flavour, cut))
+    N = numpy.sum(sample.getColumn("true_%s_count" % flavour, cut))
+    return N_tagged/N
+
+if __name__=="__main__":
+
+    metadata = MetaData("histos.db")
     samples = list()
     samples = Sample.fromDirectory("/Users/joosep/Documents/stpol/data/")
+    samplesDict = dict()
+    for sample in samples:
+        samplesDict[sample.name] = sample
     #samples = [Sample.fromFile("/Users/joosep/Documents/stpol/TTJets_FullLept_sf.root")]
 
     histos = dict()
@@ -205,24 +242,39 @@ if __name__=="__main__":
 
     histos = []
     b_weight_range = [100, 0.7, 1.5]
-    histos += hdraw.drawHistogram("b_weight_nominal", plot_range=b_weight_range)
-    histos += hdraw.drawHistogram("b_weight_nominal", plot_range=b_weight_range)
-    histos += hdraw.drawHistogram("b_weight_nominal", cut="n_tags==0.0", plot_range=b_weight_range)
-    histos += hdraw.drawHistogram("b_weight_nominal", cut="n_tags==0.0 && true_b_count==0.0", plot_range=b_weight_range)
-    histos += hdraw.drawHistogram("b_weight_nominal", cut="n_tags==0.0 && true_b_count==1.0", plot_range=b_weight_range)
-    histos += hdraw.drawHistogram("b_weight_nominal", cut="n_tags==0.0 && true_b_count==2.0", plot_range=b_weight_range)
-    histos += hdraw.drawHistogram("b_weight_nominal", cut="n_tags==0.0 && true_b_count==3.0", plot_range=b_weight_range)
-#    histos += hdraw.drawHistogram("scale_factors", cut="n_tags==0.0 && true_b_count==3.0", plot_range=[40, 0, 2])
+    #histos += hdraw.drawHistogram("b_weight_nominal", plot_range=b_weight_range)
+    #histos += hdraw.drawHistogram("b_weight_nominal", plot_range=b_weight_range)
+    #histos += hdraw.drawHistogram("b_weight_nominal", cut="n_tags==0.0", plot_range=b_weight_range)
+    #histos += hdraw.drawHistogram("b_weight_nominal", cut="n_tags==0.0 && true_b_count==0.0", plot_range=b_weight_range)
+    #histos += hdraw.drawHistogram("b_weight_nominal", cut="n_tags==0.0 && true_b_count==1.0", plot_range=b_weight_range)
+    #histos += hdraw.drawHistogram("b_weight_nominal", cut="n_tags==0.0 && true_b_count==2.0", plot_range=b_weight_range)
+    #histos += hdraw.drawHistogram("b_weight_nominal", cut="n_tags==0.0 && true_b_count==3.0", plot_range=b_weight_range)
+#   # histos += hdraw.drawHistogram("scale_factors", cut="n_tags==0.0 && true_b_count==3.0", plot_range=[40, 0, 2])
 
-    histos += hdraw.drawHistogram("true_b_count", plot_range=[4, 0, 4])
-    histos += hdraw.drawHistogram("n_tags", plot_range=[4, 0, 4])
-    histos += hdraw.drawHistogram("true_b_tagged_count", plot_range=[4, 0, 4])
+    #histos += hdraw.drawHistogram("true_b_count", plot_range=[4, 0, 4])
+    #histos += hdraw.drawHistogram("n_tags", plot_range=[4, 0, 4])
+    #histos += hdraw.drawHistogram("true_b_tagged_count", plot_range=[4, 0, 4])
 
     for h in histos:
-        session.add(h)
-        session.commit()
-        session.flush()
+        metadata.save(h)
+    metadata.session.close_all()
 
-    #info = ROOT.TObjString(pickle.dumps(histos))
-    #hdraw.tfile.WriteObject(info, "histo_info")
+    logging.info("Done saving to histos.db")
+
+    cuts = []
+    cuts.append("n_jets==2 && top_mass>130 && top_mass<220 && mt_mu>50")
+    cuts.append("n_jets==3 && top_mass>130 && top_mass<220 && mt_mu>50")
+    cuts.append("n_jets==2 && !(top_mass>130 && top_mass<220) && mt_mu>50")
+    cuts.append("n_jets==3 && !(top_mass>130 && top_mass<220) && mt_mu>50")
+    for cut in cuts:
+        print cut
+        for sample in ["TTJets_FullLept", "TTJets_SemiLept", "TTJets_MassiveBinDECAY", "T_t", "WJets_inclusive"]:
+            for flavour in ["b", "c", "l"]:
+                entries = samplesDict[sample].getEntries(cut)
+                total = samplesDict[sample].getTotalEventCount()
+                eff = getBTaggingEff(samplesDict[sample], flavour, cut)
+                print "%s | %s | %.3E/%.3E | %.3E" % (sample, flavour, entries, total, eff)
+
+    hdraw.tfile.Write()
     hdraw.tfile.Close()
+    del hdraw
