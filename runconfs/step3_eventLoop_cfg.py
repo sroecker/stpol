@@ -85,8 +85,8 @@ process.jetCuts = cms.PSet(
 process.topCuts = cms.PSet(
         applyMassCut = cms.bool(False),
         signalRegion = cms.bool(True),
-        signalRegionMassLow = cms.double(170-30),
-        signalRegionMassHigh = cms.double(170+30),
+        signalRegionMassLow = cms.double(170-40),
+        signalRegionMassHigh = cms.double(170+40),
         topMassSrc = cms.InputTag("recoTopNTupleProducer", "Mass")
 )
 
