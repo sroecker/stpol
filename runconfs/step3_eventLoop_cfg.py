@@ -104,7 +104,8 @@ process.mtMuCuts = cms.PSet(
 
 process.finalVars = cms.PSet(
     cosThetaSrc = cms.InputTag("cosTheta", "cosThetaLightJet"),
-    nVerticesSrc = cms.InputTag("offlinePVCount")
+    nVerticesSrc = cms.InputTag("offlinePVCount"),
+    scaleFactorsSrc = cms.InputTag("bTagWeightProducerNJMT", "scaleFactors")
 )
 
 process.lumiBlockCounters = cms.PSet(
