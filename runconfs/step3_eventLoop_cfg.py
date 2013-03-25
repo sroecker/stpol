@@ -14,8 +14,11 @@ input_files = []
 for line in sys.stdin.readlines():
     input_files.append(line.strip())
 #outfile = "step3_out_%s.root" % (''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(6)))
-outfile = os.environ['STPOL_STEP3_OUTPUTFILE']
-isMC = True
+if "STPOL_STEP3_OUTPUTFILE" in os.environ.keys():
+    outfile = os.environ['STPOL_STEP3_OUTPUTFILE']
+else:
+    outfile = "out_step3.root"
+isMC = False
 
 #parser = optparse.OptionParser()
 #parser.add_option("--outfile", dest="outfile", type="string")
