@@ -85,15 +85,17 @@ process.jetCuts = cms.PSet(
 process.topCuts = cms.PSet(
         applyMassCut = cms.bool(False),
         signalRegion = cms.bool(True),
-        signalRegionMassLow = cms.double(170-30),
-        signalRegionMassHigh = cms.double(170+30),
+        signalRegionMassLow = cms.double(130),
+        signalRegionMassHigh = cms.double(220),
         topMassSrc = cms.InputTag("recoTopNTupleProducer", "Mass")
 )
 
 process.weights = cms.PSet(
     doWeights = cms.bool(isMC),
     bWeightNominalSrc = cms.InputTag("bTagWeightProducerNJMT", "bTagWeight"),
-    puWeightSrc = cms.InputTag("puWeightProducer", "PUWeightNtrue")
+    puWeightSrc = cms.InputTag("puWeightProducer", "PUWeightNtrue"),
+    muonIDWeightSrc = cms.InputTag("muonWeightsProducer", "muonIDWeight"),
+    muonIsoWeightSrc = cms.InputTag("muonWeightsProducer", "muonIsoWeight")
 )
 
 process.mtMuCuts = cms.PSet(

@@ -371,11 +371,15 @@ class Weights : public CutsBase {
 public:
     edm::InputTag bWeightNominalSrc;
     edm::InputTag puWeightSrc;
+    edm::InputTag muonIDWeightSrc;
+    edm::InputTag muonIsoWeightSrc;
     
     bool doWeights;
     void initialize_branches() {
         branch_vars["b_weight_nominal"] = def_val;
         branch_vars["pu_weight"] = def_val;
+        branch_vars["muon_IDWeight"] = def_val;
+        branch_vars["muon_IsoWeight"] = def_val;
     }
     
     Weights(const edm::ParameterSet& pars, std::map<std::string, float>& _branch_vars) :
@@ -386,6 +390,8 @@ public:
         
         bWeightNominalSrc = pars.getParameter<edm::InputTag>("bWeightNominalSrc");
         puWeightSrc = pars.getParameter<edm::InputTag>("puWeightSrc");
+        muonIDWeightSrc = pars.getParameter<edm::InputTag>("muonIDWeightSrc");
+        muonIsoWeightSrc = pars.getParameter<edm::InputTag>("muonIsoWeightSrc");
         
     }
     
@@ -394,7 +400,8 @@ public:
         
         branch_vars["b_weight_nominal"] = get_collection<double>(event, bWeightNominalSrc, def_val);
         branch_vars["pu_weight"] = get_collection<double>(event, puWeightSrc, def_val);
-        
+        branch_vars["muon_IDWeight"] = get_collection<double>(event, muonIDWeightSrc, def_val);
+        branch_vars["muon_IsoWeight"] = get_collection<double>(event, muonIsoWeightSrc, def_val);
         post_process();
         return true;
     }
