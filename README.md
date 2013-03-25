@@ -83,7 +83,7 @@ To calculate the integrated luminosity from crab jobs, do the following
 
 #Step2 output
 
-The canonical step2(iso) output is currently in *fileList_Step2_local/*,
+The canonical step2(iso) output is currently in *fileList_Step2/*,
 but note that the b-tag weight is currently not yet validated
 
 #Step3 code
