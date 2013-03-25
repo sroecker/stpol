@@ -1,0 +1,1 @@
+find . -name 'WD_*' | PATH=$PATH_SL5 parallel '( echo "Getting "{}; crab -c {} -status &> /dev/null; crab -c {} -get | grep "Results of" | wc -l; crab -USER.xml_report RReport.xml -c {} -status &> /dev/null; python $CMSSW_BASE/../util/crabXml.py {}/share/RReport.xml )'
