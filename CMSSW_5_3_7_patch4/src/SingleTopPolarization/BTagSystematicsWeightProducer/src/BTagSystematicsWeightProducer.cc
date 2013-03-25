@@ -358,6 +358,7 @@ BTagSystematicsWeightProducer::BTagSystematicsWeightProducer(const edm::Paramete
     produces<double>("bTagWeightSystBCDown");
     produces<double>("bTagWeightSystLUp");
     produces<double>("bTagWeightSystLDown");
+    produces<std::vector<float>>("scaleFactors");
 }
 
 /*
@@ -399,6 +400,7 @@ void
 BTagSystematicsWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 
+    std::vector<float> scale_factors;
     double P_mc = 0.0;
     double P_data = 0.0;
     double P_data_bcUp = 0.0;
@@ -511,7 +513,7 @@ BTagSystematicsWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup
                 //Calculate the pt, eta and flavour dependent scale factors, including the flavour-dependent variations.
                 double sfUp, sfDown;
                 double sf = scaleFactor(flavour, BTagSystematicsWeightProducer::bTagAlgo, jet.pt(), jet.eta(), sfUp, sfDown);
-                
+                scale_factors.push_back(sf); 
                 //if (inComb) LogDebug("jetLoop") << "\t\tpass b-tagging e_tag=" << e << " sf=" << sf << " sfUp=" << sfUp << " sfDown=" << sfDown;
                 //else LogDebug("jetLoop") << "\t\tfail b-tagging e_mistag=" << e << " sf=" << sf << " sfUp=" << sfUp << " sfDown=" << sfDown;
 
@@ -583,6 +585,7 @@ BTagSystematicsWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup
     iEvent.put(std::auto_ptr<double>(new double(w_bcDown)), "bTagWeightSystBCDown");
     iEvent.put(std::auto_ptr<double>(new double(w_lUp)), "bTagWeightSystLUp");
     iEvent.put(std::auto_ptr<double>(new double(w_lDown)), "bTagWeightSystLDown");
+    iEvent.put(std::auto_ptr<std::vector<float>>(new std::vector<float>(scale_factors)), "scaleFactors");
     
     
 }
