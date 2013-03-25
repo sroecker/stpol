@@ -28,7 +28,8 @@ Run the following to create the CMSSW directory, link the SingleTopPolarization 
 The generic analysis pathway is as follows, all the relevant *.py files are in $CMSSW_BASE/src/SingleTopPolarization/Analysis/python/:
 
 0. *selection_step1_cfg.py* for initial event skimming and slimming (both optional), PF2PAT sequence and object ID
-1. *selection_step2_cfg.py* for single-top specific event selection and reconstruction according 1 lepton, MET, N-Jet and M-tag.
+1. *selection_step2_cfg.py* for generic single-top specific event selection and reconstruction according 1 lepton, MET, N-Jet and M-tag.
+2. *step3_eventLoop_cfg.py* for projecting out the relevant variables from the step2 trees
 
 For convenience, the steps have been wrapped as methods that are called from the files *runconfs/step1_newCmdLine_cfg.py* and *runconfs/step2_newCmdLine_cfg.py*.
 
@@ -79,3 +80,7 @@ To create the crab.cfg files to run over the final analysis (step2)
 To calculate the integrated luminosity from crab jobs, do the following
 >crab -c YOUR_DIR -report
 >lumiCalc2.py --without-checkforupdate -i YOUR_DIR/res/lumiSummary.json overview
+
+#Step3 code
+The code is an FWLite loop, which is available in *CMSSW_5_3_8/src/SingleTopPolarization/Analysis/bin/Step3_EventLoop.cpp* and can be compiled by either setting up CMSSW_5_3_8 and compiling the code, or moving the code and *BuildFile.xml* to the relevant place *CMSSW_5_3_7_path4*. You should try to take the loop as an example and try to implement your own analysis code based on that. For batch running, the scripts in *analysis_step3* may be useful, in particular *run_step3_eventloop.sh
+input_files output_directory*.

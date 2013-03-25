@@ -417,19 +417,26 @@ class MiscVars : public CutsBase {
 public:
     edm::InputTag cosThetaSrc;
     edm::InputTag nVerticesSrc;
+    edm::InputTag scaleFactorsSrc;
+    
+    std::map<std::string, std::vector<float>>& branch_vars_vec;
     
     void initialize_branches() {
         branch_vars["cos_theta"] = def_val;
         branch_vars["n_vertices"] = def_val;
+        branch_vars_vec["scale_factors"] = std::vector<float>();
+        branch_vars_vec["scale_factors"].clear();
     }
     
     
-    MiscVars(const edm::ParameterSet& pars, std::map<std::string, float>& _branch_vars) :
-    CutsBase(_branch_vars)
+    MiscVars(const edm::ParameterSet& pars, std::map<std::string, float>& _branch_vars, std::map<std::string, std::vector<float>>& _branch_vars_vec) :
+    CutsBase(_branch_vars),
+    branch_vars_vec(_branch_vars_vec)
     {
         initialize_branches();
         cosThetaSrc = pars.getParameter<edm::InputTag>("cosThetaSrc");
         nVerticesSrc = pars.getParameter<edm::InputTag>("nVerticesSrc");
+        scaleFactorsSrc = pars.getParameter<edm::InputTag>("scaleFactorsSrc");
     }
     
     bool process(const edm::EventBase& event) {
@@ -437,7 +444,15 @@ public:
         
         branch_vars["cos_theta"] = get_collection<double>(event, cosThetaSrc, def_val);
         branch_vars["n_vertices"] = get_collection<int>(event, nVerticesSrc, def_val);
-        
+
+        edm::Handle<std::vector<float>> scale_factors;
+        event.getByLabel(scaleFactorsSrc, scale_factors);
+        if(scale_factors.isValid()) {
+            for (auto sf : *scale_factors) {
+                branch_vars_vec["scale_factors"].push_back(sf);
+            }
+        }
+         
         post_process();
         return true;
     }
@@ -537,6 +552,7 @@ int main(int argc, char* argv[])
     //const edm::ParameterSet& vars_to_save = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("varsToSave");
     
     std::map<std::string, float> branch_vars;
+    std::map<std::string, std::vector<float> > branch_vars_vec;
     std::map<std::string, unsigned int> event_id_branches;
     std::map<std::string, unsigned int> count_map;
     count_map["total_processed"] = 0;
@@ -551,7 +567,7 @@ int main(int argc, char* argv[])
     TopCuts top_cuts(top_cuts_pars, branch_vars);
     Weights weights(weight_pars, branch_vars);
     MTMuCuts mt_mu_cuts(mt_mu_cuts_pars, branch_vars);
-    MiscVars misc_vars(miscvars_pars, branch_vars);
+    MiscVars misc_vars(miscvars_pars, branch_vars, branch_vars_vec);
     GenParticles gen_particles(gen_particle_vars, branch_vars);
     
     fwlite::TFileService fs = fwlite::TFileService(outputFile_.c_str());
@@ -575,6 +591,9 @@ int main(int argc, char* argv[])
         out_tree->Branch(br_name.c_str(), p_branch);
     }
     for (auto & elem : event_id_branches) {
+        out_tree->Branch(elem.first.c_str(), &(elem.second));
+    }
+    for (auto & elem : branch_vars_vec) {
         out_tree->Branch(elem.first.c_str(), &(elem.second));
     }
     // loop the events
