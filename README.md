@@ -108,6 +108,10 @@ it may make more sense to create a new class for these, which can be turned on/o
 You should strive to use as strict cuts as is possible for your analysis and as few variables as is possible, in order to not
 be in the same situation as earlier, when running over the full step2 trees.
 
+For local running, the python config expects the input files over stdin:
+
+>cat fileList_Step2/T_t.txt | CMSSW_5_3_8/bin/slc5_amd64_gcc462/Step3_EventLoop runconfs/step3_eventLoop_cfg.py
+
 For batch running, the scripts in *analysis_step3* may be useful, in particular
 
 >analysis_step3/run_step3_eventloop.sh input_files.txt /path/to/output_directory
