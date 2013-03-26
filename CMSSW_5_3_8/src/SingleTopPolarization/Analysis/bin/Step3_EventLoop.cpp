@@ -376,10 +376,10 @@ public:
     
     bool doWeights;
     void initialize_branches() {
-        branch_vars["b_weight_nominal"] = def_val;
-        branch_vars["pu_weight"] = def_val;
-        branch_vars["muon_IDWeight"] = def_val;
-        branch_vars["muon_IsoWeight"] = def_val;
+        branch_vars["b_weight_nominal"] = 0.0;
+        branch_vars["pu_weight"] = 0.0;
+        branch_vars["muon_IDWeight"] = 0.0;
+        branch_vars["muon_IsoWeight"] = 0.0;
     }
     
     Weights(const edm::ParameterSet& pars, std::map<std::string, float>& _branch_vars) :
@@ -402,6 +402,19 @@ public:
         branch_vars["pu_weight"] = get_collection<double>(event, puWeightSrc, def_val);
         branch_vars["muon_IDWeight"] = get_collection<double>(event, muonIDWeightSrc, def_val);
         branch_vars["muon_IsoWeight"] = get_collection<double>(event, muonIsoWeightSrc, def_val);
+       
+        //Remove NaN weights
+        auto not_nan = [&branch_vars] (const std::string& key) {
+            if (branch_vars[key] != branch_vars[key]) {
+                branch_vars[key] = 0.0;
+            }
+        };
+
+        not_nan("b_weight_nominal");
+        not_nan("pu_weight");
+        not_nan("muon_IDWeight");
+        not_nan("muon_IsoWeight");
+        
         post_process();
         return true;
     }
