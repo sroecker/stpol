@@ -9,16 +9,28 @@ import random
 import string
 import os
 
-#read input files from stdin
-input_files = []
-for line in sys.stdin.readlines():
-    input_files.append(line.strip())
 #outfile = "step3_out_%s.root" % (''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(6)))
 if "STPOL_STEP3_OUTPUTFILE" in os.environ.keys():
     outfile = os.environ['STPOL_STEP3_OUTPUTFILE']
 else:
     outfile = "out_step3.root"
-isMC = True
+if "STPOL_ISMC" in os.environ.keys():
+    isMC_env = os.environ["STPOL_ISMC"]
+    if isMC_env.lower() == "true":
+        isMC = True
+    elif isMC_env.lower() == "false":
+        isMC = False
+    else:
+        raise ValueError("STPOL_ISMC must be true/false")
+else:
+    isMC = True
+print "isMC = %s" % isMC
+
+#read input files from stdin
+input_files = []
+print "Waiting for input files over stdin..."
+for line in sys.stdin.readlines():
+    input_files.append(line.strip())
 
 #parser = optparse.OptionParser()
 #parser.add_option("--outfile", dest="outfile", type="string")

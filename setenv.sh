@@ -17,7 +17,8 @@ cd ${SCRIPT_DIR}/$CMSSW_DIR
 eval `scramv1 runtime -sh`
 
 # Add plotfw to python library path
-PYTHONPATH=$PYTHONPATH:${SCRIPT_DIR}/newplots
+#PYTHONPATH=$PYTHONPATH:${SCRIPT_DIR}/newplots
+PYTHONPATH=$PYTHONPATH:`readlink -f runconfs`
 
 # Return to original directory
 cd $CURRENT_DIR
