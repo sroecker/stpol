@@ -1,6 +1,6 @@
 #!/bin/bash
 
-WD=/home/joosep/singletop/stpol
+WD=$CMSSW_BASE/..
 INFILE=$1
 OUTDIR=$2
 OFNAME=$SLURM_JOB_ID
