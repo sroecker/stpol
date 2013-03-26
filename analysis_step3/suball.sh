@@ -10,6 +10,7 @@ fi
 WD=$CMSSW_BASE/..
 for infile in $INFILES
 do
+    echo $infile
     fullpath=$(readlink -f $infile)
     filename=$(basename $infile)
     channel="${filename%.*}"

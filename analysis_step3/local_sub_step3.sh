@@ -1,7 +1,7 @@
 #!/bin/bash
 
-INFILE=$1
-OUTDIR=$2
+INFILE=`readlink -f $1`
+OUTDIR=`readlink -f $2`
 if [ -z "$INFILE" ]; then echo "Usage: $0 INFILE OUTDIR"; exit 1; fi
 if [ -z "$OUTDIR" ]; then echo "Usage: $0 INFILE OUTDIR"; exit 1; fi
 mkdir $OUTDIR
