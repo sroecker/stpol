@@ -10,17 +10,17 @@ xs = {
 	, "T_tW": 11.1
 	, "Tbar_tW": 11.1
 	, "TTbar": 234 #inclusive
-	, "WJets": 36257.2 #30400.0 LO
+	, "WJets_inclusive": 36257.2 #30400.0 LO
 
 	#FIXME: ttbar branching ratio
 	, "TTJets_SemiLept": (0.676*0.326*2) * 234.0
 	, "TTJets_FullLept": (0.326**2) * 234.0
 
 	#exclusive sample branching ratios, same as PREP
-	, "W1Jets": 5400.0 * WJets_lo_nnlo_scale_factor
-	, "W2Jets": 1750.0 * WJets_lo_nnlo_scale_factor
-	, "W3Jets": 519.0 * WJets_lo_nnlo_scale_factor
-	, "W4Jets": 214.0 * WJets_lo_nnlo_scale_factor
+	, "W1Jets_exclusive": 5400.0 * WJets_lo_nnlo_scale_factor
+	, "W2Jets_exclusive": 1750.0 * WJets_lo_nnlo_scale_factor
+	, "W3Jets_exclusive": 519.0 * WJets_lo_nnlo_scale_factor
+	, "W4Jets_exclusive": 214.0 * WJets_lo_nnlo_scale_factor
 
 	#http://cms.cern.ch/iCMS/prep/requestmanagement?dsn=*GJets_HT-*_8TeV-madgraph*
 	, "GJets1": 960.5 #200To400
