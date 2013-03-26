@@ -18,7 +18,7 @@ if "STPOL_STEP3_OUTPUTFILE" in os.environ.keys():
     outfile = os.environ['STPOL_STEP3_OUTPUTFILE']
 else:
     outfile = "out_step3.root"
-isMC = False
+isMC = True
 
 #parser = optparse.OptionParser()
 #parser.add_option("--outfile", dest="outfile", type="string")
@@ -57,7 +57,7 @@ process.eleCuts = cms.PSet(
 
 process.jetCuts = cms.PSet(
     cutOnNJets  = cms.bool(True),
-    cutOnNTags  = cms.bool(False),
+    cutOnNTags  = cms.bool(True),
     applyRmsLj  = cms.bool(False),
     applyEtaLj  = cms.bool(False),
 
@@ -66,11 +66,11 @@ process.jetCuts = cms.PSet(
 
     rmsMax = cms.double(0.025),
 
-    nJetsMin = cms.int32(2),
-    nJetsMax = cms.int32(3),
+    nJetsMin = cms.int32(0),
+    nJetsMax = cms.int32(4),
 
     nTagsMin = cms.int32(0),
-    nTagsMax = cms.int32(1),
+    nTagsMax = cms.int32(2),
 
     goodJetsPtSrc = cms.InputTag("goodJetsNTupleProducer", "Pt"),
     goodJetsEtaSrc = cms.InputTag("goodJetsNTupleProducer", "Eta"),
@@ -103,7 +103,7 @@ process.weights = cms.PSet(
 
 process.mtMuCuts = cms.PSet(
     mtMuSrc = cms.InputTag("muAndMETMT"),
-    doMTCut = cms.bool(True),
+    doMTCut = cms.bool(False),
     minVal = cms.double(50)
 )
 
