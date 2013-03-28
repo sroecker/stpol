@@ -32,6 +32,8 @@ class Config(C):
 
     globalTagMC = "START53_V20::All"
 
+    doPDFWeight = False
+
     #Whether to run the muon channel
     doMuon = True
 
