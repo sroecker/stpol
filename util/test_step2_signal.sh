@@ -1,5 +1,5 @@
 #!/bin/bash
-IN=$CMSSW_BASE/../fileLists_Step1/T_t.txt
+IN=$CMSSW_BASE/../fileList_Step1/T_t.txt
 OFDIR=$CMSSW_BASE/../testing_step2_signal
 rm -Rf $OFDIR
 mkdir $OFDIR
