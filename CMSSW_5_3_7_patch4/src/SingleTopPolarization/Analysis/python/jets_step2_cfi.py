@@ -220,7 +220,8 @@ def JetSetup(process, conf):
 
     process.deltaRJets = cms.EDProducer("DeltaRProducer",
         leptonSrc=cms.InputTag("goodSignalLeptons"),
-        jetSrc=cms.InputTag("noPUJets" if conf.Jets.source == "selectedPatJets" else conf.Jets.source)
+        #jetSrc=cms.InputTag("noPUJets" if conf.Jets.source == "selectedPatJets" else conf.Jets.source)
+        jetSrc=cms.InputTag("noPUJets")
     )
 
     if conf.isMC:
