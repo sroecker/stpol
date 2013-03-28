@@ -141,8 +141,10 @@ CleanNoPUJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       LogDebug("produce()") << " pass loose wp";
       outJets->push_back(jet);
 
+      //get the non-const jet
       pat::Jet& jet = outJets->back();
       jet.addUserFloat("rms", id->RMS());
+      LogDebug("produce()") << "jet rms=" << jet.userFloat("rms");
 
     } else {
       LogDebug("produce()") << " fail loose wp";
