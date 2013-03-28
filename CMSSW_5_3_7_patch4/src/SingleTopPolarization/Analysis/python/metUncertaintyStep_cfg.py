@@ -1,8 +1,9 @@
 import FWCore.ParameterSet.Config as cms
 from FWCore.ParameterSet.VarParsing import VarParsing
+from SingleTopPolarization.Analysis.config_step2_cfg import Config
 
 options = VarParsing('analysis')
-options.register ('globalTag', "START53_V15::All",
+options.register ('globalTag', Config.globalTagMC,
           VarParsing.multiplicity.singleton,
           VarParsing.varType.string,
           "Global tag"

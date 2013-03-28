@@ -30,6 +30,8 @@ class Config(C):
 
     metSource = "patMETs"
 
+    globalTagMC = "START53_V20::All"
+
     #Whether to run the muon channel
     doMuon = True
 

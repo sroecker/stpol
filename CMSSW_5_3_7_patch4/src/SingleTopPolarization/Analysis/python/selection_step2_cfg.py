@@ -51,7 +51,7 @@ def SingleTopStep2():
                   VarParsing.varType.bool,
                   "Run the gen particle paths (only works on specific MC)"
         )
-        options.register ('globalTag', "START53_V15::All",
+        options.register ('globalTag', Config.globalTagMC,
                   VarParsing.multiplicity.singleton,
                   VarParsing.varType.string,
                   "Global tag"

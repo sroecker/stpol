@@ -228,39 +228,39 @@ def SingleTopStep1(
           'keep recoGenJets_selectedPatJets_genJets_*', #For Jet MC smearing we need to keep the genJets
           "keep *_puJetId_*_*", # input variables
           "keep *_puJetMva_*_*", # final MVAs and working point flags
-          'keep *_jetClones__PAT',
+          'keep *_jetClones__*',
 
           # Muons
-          'keep patMuons_muonsWithID__PAT',
-          'keep *_muonClones__PAT',
+          'keep patMuons_muonsWithID__*',
+          'keep *_muonClones__*',
 
           # Electrons
-          'keep patElectrons_electronsWithID__PAT',
-          'keep *_electronClones__PAT',
+          'keep patElectrons_electronsWithID__*',
+          'keep *_electronClones__*',
 
           # METs
-          'keep patMETs_patMETs__PAT',
+          'keep patMETs_patMETs__*',
 
           #ECAL laser corr filter
-          'keep bool_ecalLaserCorrFilter__PAT',
+          'keep bool_ecalLaserCorrFilter__*',
 
           #For flavour analyzer
-          'keep GenEventInfoProduct_generator__SIM',
+          'keep GenEventInfoProduct_generator__*',
 
           #PU info
-          'keep PileupSummaryInfos_addPileupInfo__HLT',
+          'keep PileupSummaryInfos_addPileupInfo__*',
 
           #PFCandidates
           'keep recoPFCandidates_*_pfCandidates_PAT',
           'keep recoPFMETs_pfMET__*',
           'keep recoPFMETs_pfMet__*',
-          'keep recoGenMETs_genMetTrue__SIM',
-          'keep recoPFCandidates_particleFlow__RECO',
-          'keep recoConversions_allConversions__RECO',
-          'keep recoVertexCompositeCandidates_generalV0Candidates_*_RECO',
-          'keep recoTracks_generalTracks__RECO',
-          'keep recoBeamSpot_offlineBeamSpot__RECO',
-          'keep recoMuons_muons__RECO',
+          'keep recoGenMETs_genMetTrue__*',
+          'keep recoPFCandidates_particleFlow__*',
+          'keep recoConversions_allConversions__*',
+          'keep recoVertexCompositeCandidates_generalV0Candidates_*_*',
+          'keep recoTracks_generalTracks__*',
+          'keep recoBeamSpot_offlineBeamSpot__*',
+          'keep recoMuons_muons__*',
 
           'keep int_*__PAT',
           'keep ints_*__PAT',
