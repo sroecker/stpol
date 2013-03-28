@@ -252,8 +252,8 @@ def SingleTopStep1(
 
           #PFCandidates
           'keep recoPFCandidates_*_pfCandidates_PAT',
-          'keep recoPFMETs_pfMET__PAT',
-          'keep recoPFMETs_pfMet__RECO',
+          'keep recoPFMETs_pfMET__*',
+          'keep recoPFMETs_pfMet__*',
           'keep recoGenMETs_genMetTrue__SIM',
           'keep recoPFCandidates_particleFlow__RECO',
           'keep recoConversions_allConversions__RECO',
