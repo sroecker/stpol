@@ -243,22 +243,31 @@ if __name__=="__main__":
 
         canv, stacks = plot_hists_stacked(stack_group, styles=Styling.style, draw_styles={"data": "E1"}, **kwargs)
         #canvas_margin(canv, side="R", margin=0.3)
-        leg_hists = [hists_data[0]] + [hists_d["T_t"]] + [hists_d["TTJets_FullLept"]] + [hists_d["W3Jets_exclusive"]]  + [hists_d["T_tW"]] + [hists_d["T_s"]]
+        leg_hists = [hists_data[0]] + [hists_d["T_t"]] + [hists_d["TTJets_FullLept"]] + [hists_d["W1Jets_exclusive"]]  + [hists_d["T_tW"]] + [hists_d["T_s"]]
         leg = legend(leg_hists, styles=["p", "f"])
         text = lumi_textbox(lumi=7274)
         canv.SaveAs(canv.GetName() + ".pdf")
 #        return canv, stacks, leg, hists_mc, hists_data, text
 
+    ret0 = stack_plot("n_jets", Cuts.mt_mu,
+        #weight="pu_weight",
+        name="n_jets_plot",
+        title="N_{jets} in mu",
+        do_log_y=True,
+    )
+    
     ret1 = stack_plot("n_tags", Cuts.mt_mu*Cuts.n_jets(2),
         #weight="pu_weight",
         name="n_tags_plot_2J",
         title="N_{tags} in mu, 2J",
+        do_log_y=True,
     )
 
     ret2 = stack_plot("n_tags", Cuts.mt_mu*Cuts.n_jets(3),
         #weight="pu_weight",
         name="n_tags_plot_3J",
         title="N_{tags} in mu, 3J",
+        do_log_y=True,
     )
 
 

@@ -399,9 +399,16 @@ if __name__=="__main__":
 
     with Cleanup(metadata, hdraw, histos):
         try:
-            histos += hdraw.drawHistogram("n_jets", cut=Cuts.mt_mu, plot_range=[5, 0, 5])
+            histos += hdraw.drawHistogram("n_jets", cut=Cuts.mt_mu, plot_range=[9, 1, 10])
             histos += hdraw.drawHistogram("n_tags", cut=Cuts.mt_mu*Cuts.n_jets(2), plot_range=[5, 0, 5])
             histos += hdraw.drawHistogram("n_tags", cut=Cuts.mt_mu*Cuts.n_jets(3), plot_range=[5, 0, 5])
+            
+            
+            histos += hdraw.drawHistogram("n_jets", cut=Cuts.mt_mu, plot_range=[9, 1, 10], weight="pu_weight")
+            histos += hdraw.drawHistogram("n_tags", cut=Cuts.mt_mu*Cuts.n_jets(2), plot_range=[5, 0, 5], weight="pu_weight")
+            histos += hdraw.drawHistogram("n_tags", cut=Cuts.mt_mu*Cuts.n_jets(3), plot_range=[5, 0, 5], weight="pu_weight")
+            
+            
             histos += hdraw.drawHistogram("top_mass", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj, plot_range=[40, 100, 350])
             histos += hdraw.drawHistogram("cos_theta", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig, plot_range=[40, -1, 1])
 
