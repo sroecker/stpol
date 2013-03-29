@@ -44,4 +44,5 @@ if __name__=="__main__":
         
     canv = plot_hists(hists, do_log_y=True, title=title, x_label="cos #theta")
     leg = legend(hists, pos="top-right-small")
+    canv.SaveAs("cutflow_%s.pdf" % sample.name)
     #canvas_margin(canv, 0.3)
