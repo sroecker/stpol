@@ -4,6 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from collections import OrderedDict as dict
 from common.colors import sample_colors_same as sample_colors
+import itertools
 
 import pdb
 
@@ -15,9 +16,9 @@ class ColorStyleGen:
     col_index = 0
     style_index = 0
 
-    colors = [ROOT.kRed, ROOT.kBlue, ROOT.kGreen, ROOT.kMagenta, ROOT.kViolet, ROOT.kSpring]
-    styles = [1001, 3005, 3006]
-    
+    colors = [ROOT.kRed, ROOT.kBlue, ROOT.kGreen, ROOT.kMagenta, ROOT.kYellow, ROOT.kBlack]
+    styles = [1001]#, 3005, 3006]
+
     colstyles = itertools.product(colors, styles)
 
     @staticmethod
@@ -46,18 +47,22 @@ def legend(hists, pos="top-right", **kwargs):
     if len(styles) != len(hists):
         raise ValueError("styles must have the sme number of objects as hists")
     styles.reverse()
-    
+
     if pos=="top-right":
         leg_coords = [0.73, 0.61, 0.88, 0.88]
+    if pos=="top-right-small":
+        leg_coords = [0.70, 0.77, 0.78, 0.88]
     elif pos=="top-left":
         leg_coords = [0.1, 0.62, 0.26, 0.89]
+    elif pos=="bottom-center":
+        leg_coords = [0.53, 0.12, 0.58, 0.39]
 
     leg = ROOT.TLegend(*leg_coords)
-    
+
     for hist in hists:
         leg_style = styles.pop()
         leg.AddEntry(hist.hist, hist.pretty_name, leg_style)
-        
+
     leg.Draw()
     leg.SetFillColor(ROOT.kWhite)
     leg.SetLineColor(ROOT.kWhite)
@@ -67,7 +72,7 @@ def legend(hists, pos="top-right", **kwargs):
 def plot_hists(hists, name="canv", **kwargs):
     canv = ROOT.TCanvas(name, name)
     do_normalized = kwargs["do_normalized"] if "do_normalized" in kwargs.keys() else False
-    draw_cmd = kwargs["draw_cmd"] if "draw_cmd" in kwargs.keys() else "BAR E1"
+    draw_cmd = kwargs["draw_cmd"] if "draw_cmd" in kwargs.keys() else "E1"
     title = kwargs["title"] if "title" in kwargs.keys() else "NOTITLE"
     line_width = kwargs["line_width"] if "line_width" in kwargs.keys() else 2
     x_label = kwargs["x_label"] if "x_label" in kwargs.keys() else "NOLABEL"
@@ -77,7 +82,7 @@ def plot_hists(hists, name="canv", **kwargs):
             h.normalize()
 
     max_bin = get_max_bin([hist.hist for hist in hists])
-    
+
     first = False
     for hist in hists:
         hist.hist.Draw(draw_cmd + (" SAME" if first else ""))
@@ -91,11 +96,12 @@ def plot_hists(hists, name="canv", **kwargs):
     hists[0].hist.SetTitle(title)
     hists[0].hist.SetStats(False)
     hists[0].hist.SetMaximum(1.5*max_bin)
+    hists[0].hist.SetMinimum(1)
     hists[0].hist.GetXaxis().SetTitle(x_label)
-    
+
     if do_log_y:
         canv.SetLogy()
-        
+
     return canv
 
 def plot_hists_stacked(hist_groups, **kwargs):
@@ -114,7 +120,7 @@ def plot_hists_stacked(hist_groups, **kwargs):
         print name
         for hist in group:
             print hist.name
-            
+
             if not styles:
                 (color, style) = ColorStyleGen.next()
                 hist.hist.SetLineColor(color)
@@ -124,12 +130,12 @@ def plot_hists_stacked(hist_groups, **kwargs):
             else:
                 styles[name](hist)
             stacks[name].Add(hist.hist)
-    
+
     max_bin = get_max_bin(stacks.values())
     for name, stack in stacks.items():
         stack.Draw()
     canv.Draw()
- 
+
     first = True
     for name, stack in stacks.items():
         if name in draw_styles.keys():
@@ -193,21 +199,21 @@ if __name__=="__main__":
         "T_t", "Tbar_t",
     ]
     mc_sample_titles = dict()
-    mc_sample_titles["T_t"] = "t-channel (t)"
-    mc_sample_titles["Tbar_t"] = "t-channel (#bar{t})"
-    mc_sample_titles["T_s"] = "s-channel (t)"
-    mc_sample_titles["Tbar_s"] = "s-channel (#bar{t})"
-    mc_sample_titles["T_tW"] = "tW-channel (t)"
-    mc_sample_titles["Tbar_tW"] = "tW-channel (#bar{t})"
-    mc_sample_titles["W1Jets_exclusive"] = "W+jets (excl)"
-    mc_sample_titles["W2Jets_exclusive"] = "W+jets (excl)"
-    mc_sample_titles["W3Jets_exclusive"] = "W+jets (excl)"
-    mc_sample_titles["W4Jets_exclusive"] = "W+jets (excl)"
-    mc_sample_titles["TTJets_MassiveBinDECAY"] = "t#bar{t}"
-    mc_sample_titles["TTJets_FullLept"] = "t#bar{t} (excl)"
-    mc_sample_titles["TTJets_SemiLept"] = "t#bar{t} (excl)"
-    
-    
+    mc_sample_titles["T_t"] = "t-channel"
+    #mc_sample_titles["Tbar_t"] = "t-channel (#bar{t})"
+    mc_sample_titles["T_s"] = "s-channel"
+    #mc_sample_titles["Tbar_s"] = "s-channel (#bar{t})"
+    mc_sample_titles["T_tW"] = "tW-channel"
+    #mc_sample_titles["Tbar_tW"] = "tW-channel (#bar{t})"
+    mc_sample_titles["W1Jets_exclusive"] = "W+jets"
+    #mc_sample_titles["W2Jets_exclusive"] = "W+jets (excl)"
+    #mc_sample_titles["W3Jets_exclusive"] = "W+jets (excl)"
+    #mc_sample_titles["W4Jets_exclusive"] = "W+jets (excl)"
+    #mc_sample_titles["TTJets_MassiveBinDECAY"] = "t#bar{t}"
+    mc_sample_titles["TTJets_FullLept"] = "t#bar{t}"
+    #mc_sample_titles["TTJets_SemiLept"] = "t#bar{t} (excl)"
+
+
     data_sample_names = ["SingleMuD_7274_pb"]
     def stack_plot(var, cut, weight=None, **kwargs):
 
@@ -215,25 +221,25 @@ if __name__=="__main__":
         hists_d = dict()
         for hist in hists_mc:
             hists_d[hist.sample_name] = hist
-        
+
         for hist in hists_mc:
             if hist.sample_name in mc_sample_titles.keys():
                 hist.pretty_name = mc_sample_titles[hist.sample_name]
             else:
                 hist.pretty_name = hist.sample_name
-    
+
         data_sample_names = ["SingleMuD_7274_pb"]
         hists_data = [metadata.get_histogram(sample_name, var, cut_str=cut.cut_str, weight=None) for sample_name in data_sample_names]
-        
+
         for hist in hists_data:
             hist.pretty_name = "SingleMu"
-            
+
         stack_group = dict()
         stack_group["mc"] = hists_mc
         stack_group["data"] = hists_data
         for hist in stack_group["mc"]:
             hist.normalize_lumi(7274)
-    
+
 
         canv, stacks = plot_hists_stacked(stack_group, styles=Styling.style, draw_styles={"data": "E1"}, **kwargs)
         #canvas_margin(canv, side="R", margin=0.3)
@@ -241,21 +247,27 @@ if __name__=="__main__":
         leg = legend(leg_hists, styles=["p", "f"])
         text = lumi_textbox(lumi=7274)
         canv.SaveAs(canv.GetName() + ".pdf")
-        return canv, stacks, leg, hists_mc, hists_data, text
+#        return canv, stacks, leg, hists_mc, hists_data, text
 
-#    ret1 = stack_plot("n_tags", Cuts.mt_mu*Cuts.n_jets(2),
-#        weight="pu_weight",
-#        name="n_tags_plot_2J1T",
-#        title="N_{tags} in mu, 2J, PUw."
-#    )
-#    
-    
+    ret1 = stack_plot("n_tags", Cuts.mt_mu*Cuts.n_jets(2),
+        #weight="pu_weight",
+        name="n_tags_plot_2J",
+        title="N_{tags} in mu, 2J",
+    )
+
+    ret2 = stack_plot("n_tags", Cuts.mt_mu*Cuts.n_jets(3),
+        #weight="pu_weight",
+        name="n_tags_plot_3J",
+        title="N_{tags} in mu, 3J",
+    )
+
+
     ret3 = stack_plot("top_mass", Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj,
         name="top_mass_plot_2J1T",
         title="M_{bl#nu} in mu, M_{t}(W)>50 GeV, M_{t}(W)>50 GeV, 2J1T, #eta_{lj}>2.5",
         x_label="M_{bl#nu} [GeV]"
     )
-    
+
     ret4 = stack_plot("cos_theta", Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig,
         name="cos_theta_plot_2J1T",
         title="cos #theta_{lj} in mu, M_{t}(W)>50 GeV, 2J1T, #eta_{lj}>2.5, M_{bl#nu} #in [130, 220] GeV",
@@ -274,43 +286,28 @@ if __name__=="__main__":
     weights = [None, "pu_weight"]
     rets = []
     for nj, nt, weight in itertools.product(n_jets, n_tags, weights):
-        ret = stack_plot("eta_lj", Cuts.mt_mu*Cuts.n_jets(nj)*Cuts.n_tags(nt),
+        def title(nj, nt, weight):
+            ret = "#eta_{lj} in mu, M_{t}(W)>50 GeV, %dJ%dT" % (nj, nt)
+            if weight=="pu_weight":
+                ret += ", PUw."
+            return ret
+        ret = stack_plot("eta_lj", Cuts.rms_lj*Cuts.mt_mu*Cuts.n_jets(nj)*Cuts.n_tags(nt),
             weight=weight,
-            name="eta_lj_%dJ%dT_" % (nj, nt, weight),
-            title="#eta_{lj} in mu, M_{t}(W)>50 GeV, %dJ%dT %s" % (nj, nt, weight),
+            name="eta_lj_%dJ%dT_%s" % (nj, nt, weight),
+            title=title(nj, nt, weight),
             x_label="#eta_{lj}"
         )
         rets.append(ret)
 
-    ret2 = stack_plot("eta_lj", Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1),
+    ret5 = stack_plot("n_vertices", Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig,
         weight="pu_weight",
-        name="eta_lj_plot_2J1T",
-        title="#eta_{lj} in mu, 2J1T, PUw."
+        name="n_vertices_2J1T_pu_weighted",
+        title="N_{vtx.} in mu, M_{t}(W)>50 GeV, 2J1T, #eta_{lj}>2.5, M_{bl#nu} #in [130, 220] GeV, PUw.",
+        x_label="cos #theta_{lj}"
     )
-
-    ret6 = stack_plot("eta_lj", Cuts.mt_mu*Cuts.n_jets(3)*Cuts.n_tags(0),
-        weight="pu_weight",
-        name="eta_lj_3J0T",
-        title="#eta_{lj} in mu, M_{t}(W)>50, 3J0T, PUw",
-        x_label="#eta_{lj}"
+    ret5_1 = stack_plot("n_vertices", Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig,
+        #weight="pu_weight",
+        name="n_vertices_2J1T_unweighted",
+        title="N_{vtx.} in mu, M_{t}(W)>50 GeV, 2J1T, #eta_{lj}>2.5, M_{bl#nu} #in [130, 220] GeV",
+        x_label="cos #theta_{lj}"
     )
-    ret7 = stack_plot("eta_lj", Cuts.mt_mu*Cuts.n_jets(3)*Cuts.n_tags(1),
-        weight="pu_weight",
-        name="eta_lj_3J1T",
-        title="#eta_{lj} in mu, M_{t}(W)>50 GeV, 3J1T, PUw",
-        x_label="#eta_{lj}"
-    )
-    ret8 = stack_plot("eta_lj", Cuts.mt_mu*Cuts.n_jets(3)*Cuts.n_tags(2),
-        weight="pu_weight",
-        name="eta_lj_3J2T",
-        title="#eta_{lj} in mu, M_{t}(W)>50 GeV, 3J2T, PUw",
-        x_label="#eta_{lj}"
-    )
-
-    ret9 = stack_plot("eta_lj", Cuts.mt_mu*Cuts.rms_lj*Cuts.n_jets(3)*Cuts.n_tags(2),
-        weight="pu_weight",
-        name="eta_lj_3J2T_rms_lj",
-        title="#eta_{lj} in mu, M_{t}(W)>50 GeV, 3J2T, RMS_{lj}<0.025, PUw",
-        x_label="#eta_{lj}"
-    )
-    #canv.SaveAs("eta_lj.pdf")

@@ -260,6 +260,7 @@
 		A7AE61FA16FB8A2D0001FFB7 /* step1_newCmdLine_cfg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = step1_newCmdLine_cfg.py; path = runconfs/step1_newCmdLine_cfg.py; sourceTree = "<group>"; };
 		A7BB7EC316CA77F900B9DD28 /* fastSimValidationPlots.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = fastSimValidationPlots.py; sourceTree = "<group>"; };
 		A7D8670216C8E77C00514DDD /* plots.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = plots.py; sourceTree = "<group>"; };
+		A7D9917917058A3E00CEF269 /* cutflow_test.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = cutflow_test.py; sourceTree = "<group>"; };
 		A7EAECBF16D266CB004D032C /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		A7EAECC216D266CB004D032C /* __init__.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
 		A7EAECC316D266CB004D032C /* argparse.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = argparse.py; sourceTree = "<group>"; };
@@ -409,6 +410,7 @@
 				A71F5D791701D8A200AB8E33 /* common */,
 				A71F5D7C1701D8A200AB8E33 /* make_plots.py */,
 				A71F5D7D1701D8A200AB8E33 /* project_histos.py */,
+				A7D9917917058A3E00CEF269 /* cutflow_test.py */,
 			);
 			path = plots;
 			sourceTree = "<group>";
