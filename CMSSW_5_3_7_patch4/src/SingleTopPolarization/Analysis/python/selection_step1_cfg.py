@@ -16,7 +16,7 @@ from SingleTopPolarization.Analysis.eventCounting import *
 from PhysicsTools.PatAlgos.selectionLayer1.jetSelector_cfi import *
 
 from FWCore.ParameterSet.VarParsing import VarParsing
-import pdb
+from SingleTopPolarization.Analysis.config_step2_cfg import Config
 
 def SingleTopStep1(
   process,
@@ -56,7 +56,7 @@ def SingleTopStep1(
 
 #Tag from https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions?redirectedfrom=CMS.SWGuideFrontierConditions#2012_MC_production
 # Latest for "53Y Releases (MC)"
-  options.register ('globalTag', "START53_V15::All",
+  options.register ('globalTag', Config.globalTagMC,
     VarParsing.multiplicity.singleton,
     VarParsing.varType.string,
     "Global tag"
