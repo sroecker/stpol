@@ -728,6 +728,12 @@ def SingleTopStep2():
                     #["bDiscriminatorCSV_MVA", "bDiscriminator('%s')" % Config.Jets.BTagDiscriminant.CSV_MVA],
                     ["rms", "userFloat('rms')"],
                     ["partonFlavour", "partonFlavour()"],
+                    ["area", "jetArea()"],
+
+                    #These require PFCandidates to be present (huge collection)
+                    #["n90", "n90()"],
+                    #["n60", "n60()"],
+
                     #["genJetFlavour", "? genJet()>0 ? (genJet()->pdgId()) : 0"], #FIXME
                     ["deltaR", "userFloat('deltaR')"]
                 ]
