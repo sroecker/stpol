@@ -214,7 +214,8 @@ if __name__=="__main__":
     #mc_sample_titles["TTJets_SemiLept"] = "t#bar{t} (excl)"
 
 
-    data_sample_names = ["SingleMuD_7274_pb"]
+    data_sample_names = ["SingleMuAB_5306_pb", "SingleMuC_6781_pb", "SingleMuD_7274_pb"]
+    lumi_total = 5306+6781+7274
     def stack_plot(var, cut, weight=None, **kwargs):
 
         hists_mc = [metadata.get_histogram(sample_name, var, cut_str=cut.cut_str, weight=weight) for sample_name in mc_sample_names]
@@ -228,7 +229,6 @@ if __name__=="__main__":
             else:
                 hist.pretty_name = hist.sample_name
 
-        data_sample_names = ["SingleMuD_7274_pb"]
         hists_data = [metadata.get_histogram(sample_name, var, cut_str=cut.cut_str, weight=None) for sample_name in data_sample_names]
 
         for hist in hists_data:
@@ -236,16 +236,19 @@ if __name__=="__main__":
 
         stack_group = dict()
         stack_group["mc"] = hists_mc
-        stack_group["data"] = hists_data
+        #stack_group["data"] = hists_data
+        stack_group["data"] = [hists_data[0]]
         for hist in stack_group["mc"]:
-            hist.normalize_lumi(7274)
+            hist.normalize_lumi(lumi_total)
+        for hist in hists_data[1:]:
+            stack_group["data"][0].hist.Add(hist.hist)
 
 
         canv, stacks = plot_hists_stacked(stack_group, styles=Styling.style, draw_styles={"data": "E1"}, **kwargs)
         #canvas_margin(canv, side="R", margin=0.3)
         leg_hists = [hists_data[0]] + [hists_d["T_t"]] + [hists_d["TTJets_FullLept"]] + [hists_d["W1Jets_exclusive"]]  + [hists_d["T_tW"]] + [hists_d["T_s"]]
         leg = legend(leg_hists, styles=["p", "f"])
-        text = lumi_textbox(lumi=7274)
+        text = lumi_textbox(lumi=lumi_total)
         canv.SaveAs(canv.GetName() + ".pdf")
 #        return canv, stacks, leg, hists_mc, hists_data, text
 
@@ -255,7 +258,7 @@ if __name__=="__main__":
         title="N_{jets} in mu",
         do_log_y=True,
     )
-    
+
     ret1 = stack_plot("n_tags", Cuts.mt_mu*Cuts.n_jets(2),
         #weight="pu_weight",
         name="n_tags_plot_2J",
@@ -287,6 +290,13 @@ if __name__=="__main__":
         weight="pu_weight",
         name="cos_theta_plot_2J1T_pu_weight",
         title="cos #theta_{lj} in mu, M_{t}(W)>50 GeV, 2J1T, #eta_{lj}>2.5, M_{bl#nu} #in [130, 220] GeV, PUw.",
+        x_label="cos #theta_{lj}"
+    )
+
+    ret4_2 = stack_plot("cos_theta", Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig,
+        weight="pu_weight*b_weight_nominal",
+        name="cos_theta_plot_2J1T_pu_weight_b_weight",
+        title="cos #theta_{lj} in mu, M_{t}(W)>50 GeV, 2J1T, #eta_{lj}>2.5, M_{bl#nu} #in [130, 220] GeV, PUw., Bw.",
         x_label="cos #theta_{lj}"
     )
 

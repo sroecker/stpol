@@ -357,16 +357,6 @@ class MetaData:
 
         return hist
 
-
-
-def getBTaggingEff(sample, flavour, cut):
-    if flavour not in ["b", "c", "l"]:
-        raise ValueError("Flavour must be b, c or l")
-
-    N_tagged = numpy.sum(sample.getColumn("true_%s_tagged_count" % flavour, cut))
-    N = numpy.sum(sample.getColumn("true_%s_count" % flavour, cut))
-    return N_tagged/N
-
 if __name__=="__main__":
 
     metadata = MetaData("histos.db", create_new=True)
@@ -398,6 +388,7 @@ if __name__=="__main__":
             print "Done cleanup"
 
     with Cleanup(metadata, hdraw, histos):
+        n_bins = 40
         try:
             histos += hdraw.drawHistogram("n_jets", cut=Cuts.mt_mu, plot_range=[9, 1, 10])
             histos += hdraw.drawHistogram("n_tags", cut=Cuts.mt_mu*Cuts.n_jets(2), plot_range=[5, 0, 5])
@@ -409,11 +400,14 @@ if __name__=="__main__":
             histos += hdraw.drawHistogram("n_tags", cut=Cuts.mt_mu*Cuts.n_jets(3), plot_range=[5, 0, 5], weight="pu_weight")
             
             
-            histos += hdraw.drawHistogram("top_mass", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj, plot_range=[40, 100, 350])
-            histos += hdraw.drawHistogram("cos_theta", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig, plot_range=[40, -1, 1])
+            histos += hdraw.drawHistogram("top_mass", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj, plot_range=[n_bins, 100, 350])
+            histos += hdraw.drawHistogram("cos_theta", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig, plot_range=[n_bins, -1, 1])
 
             histos += hdraw.drawHistogram("cos_theta", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig,
-                plot_range=[40, -1, 1], weight="pu_weight", skip_weights=["SingleMu*"]
+                plot_range=[n_bins, -1, 1], weight="pu_weight", skip_weights=["SingleMu*"]
+            )
+            histos += hdraw.drawHistogram("cos_theta", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig,
+                plot_range=[n_bins, -1, 1], weight="pu_weight*b_weight_nominal", skip_weights=["SingleMu*"]
             )
 
             histos += hdraw.drawHistogram("n_vertices", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig,
@@ -428,7 +422,7 @@ if __name__=="__main__":
             n_tags = [0,1,2]
             weights = [None, "pu_weight"]
             for nj, nt, weight in itertools.product(n_jets, n_tags, weights):
-                histos += hdraw.drawHistogram("eta_lj", cut=Cuts.rms_lj*Cuts.mt_mu*Cuts.n_jets(nj)*Cuts.n_tags(nt), plot_range=[40, -5, 5],
+                histos += hdraw.drawHistogram("eta_lj", cut=Cuts.rms_lj*Cuts.mt_mu*Cuts.n_jets(nj)*Cuts.n_tags(nt), plot_range=[n_bins, -5, 5],
                     weight=weight,
                     skip_weight=["QCD*", "SingleMu*"]
                 )
