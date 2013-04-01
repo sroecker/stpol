@@ -235,7 +235,7 @@ step1_FSIM_Valid = [
 
 step1B_out_MC = [
       DS_S2MC("Tbar_t_ToLeptons", "/TBarToLeptons_t-channel_8TeV-powheg-tauola/joosep-stpol_step1B_out_MC-7dee8f5886a058feb3a776faa931adee/USER", "Tbar_t")
-    , DS_S2MC("T_t_ToLeptons", "FIXME", "T_t") #FIXME: finish processing T_t_ToLeptons
+    , DS_S2MC("T_t_ToLeptons", "", "T_t") #FIXME: finish processing T_t_ToLeptons
     , DS_S2MC("WJets_inclusive", "/WJetsToLNu_TuneZ2Star_8TeV-madgraph-tarball/joosep-stpol_step1B_out_MC-7dee8f5886a058feb3a776faa931adee/USER", "WJets")
 
     , DS_S2MC("W1Jets_exclusive", "/W1JetsToLNu_TuneZ2Star_8TeV-madgraph/joosep-stpol_step1B_out_MC-7dee8f5886a058feb3a776faa931adee/USER", "WJets")
@@ -282,7 +282,7 @@ step1B_out_MC = [
 ]
 step1_out_MC = [
      DS_S2MC("Tbar_t_ToLeptons", "/TBarToLeptons_t-channel_8TeV-powheg-tauola/joosep-step1_MC_Feb6-243fe90abe1b1cf7bc2119dc7c0b2e28/USER", "Tbar_t")
-    , DS_S2MC("T_t_ToLeptons", "/TToLeptons_t-channel_8TeV-powheg-tauola/joosep-step1_MC_Feb6-243fe90abe1b1cf7bc2119dc7c0b2e28/USER", "T_t")
+    , DS_S2MC("T_t_ToLeptons", "/TToLeptons_t-channel_8TeV-powheg-tauola/joosep-step1_MC_Mar28-52e40e8c6282c3e22a3e3b059aa1559a/USER", "T_t")
     , DS_S2MC("WJets_inclusive", "/WJetsToLNu_TuneZ2Star_8TeV-madgraph-tarball/joosep-step1_MC_Feb6-243fe90abe1b1cf7bc2119dc7c0b2e28/USER", "WJets")
 
     , DS_S2MC("W1Jets_exclusive", "/W1JetsToLNu_TuneZ2Star_8TeV-madgraph/jpata-Jan31_WJets_samples-6154e41574fbefb9af6528e169eaecf5/USER", "W1Jets")
