@@ -1,4 +1,5 @@
 #!/bin/bash
+echo "Running step2 test on signal"
 IN=$CMSSW_BASE/../fileList_Step1/T_t.txt
 OFDIR=$CMSSW_BASE/../testing_step2_signal
 rm -Rf $OFDIR
