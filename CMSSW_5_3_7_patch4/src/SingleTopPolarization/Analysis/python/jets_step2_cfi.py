@@ -19,7 +19,10 @@ def JetSetup(process, conf):
 
     jetCut += ' && abs(eta) < %f' % conf.Jets.etaCut
     jetCut += ' && numberOfDaughters > 1'
-    jetCut += ' && neutralHadronEnergyFraction < 0.99'
+    #jetCut += ' && neutralHadronEnergyFraction < 0.99'
+    #Use the new hadron energy fraction definition
+    #https://hypernews.cern.ch/HyperNews/CMS/get/JetMET/1429.html
+    jetCut += ' && (neutralHadronEnergy() + HFHadronEnergy())/energy() < 0.99'
     jetCut += ' && neutralEmEnergyFraction < 0.99'
     jetCut += ' && (chargedEmEnergyFraction < 0.99 || abs(eta) >= 2.4)'
     jetCut += ' && (chargedHadronEnergyFraction > 0. || abs(eta) >= 2.4)'
@@ -55,6 +58,13 @@ def JetSetup(process, conf):
 #        )
 
     bTagCutStr = 'bDiscriminator("%s") >= %f' % (conf.Jets.bTagDiscriminant, conf.Jets.BTagWorkingPointVal())
+
+
+    process.deltaRJets = cms.EDProducer("DeltaRProducer",
+        leptonSrc=cms.InputTag("goodSignalLeptons"),
+        #jetSrc=cms.InputTag("noPUJets" if conf.Jets.source == "selectedPatJets" else conf.Jets.source)
+        jetSrc=cms.InputTag("noPUJets")
+    )
 
     process.goodJets = cms.EDFilter("CandViewSelector",
         src=cms.InputTag("deltaRJets"),
@@ -216,12 +226,6 @@ def JetSetup(process, conf):
         src=cms.InputTag("untaggedJets"),
         minNumber=cms.uint32(1),
         maxNumber=cms.uint32(9999999),
-    )
-
-    process.deltaRJets = cms.EDProducer("DeltaRProducer",
-        leptonSrc=cms.InputTag("goodSignalLeptons"),
-        #jetSrc=cms.InputTag("noPUJets" if conf.Jets.source == "selectedPatJets" else conf.Jets.source)
-        jetSrc=cms.InputTag("noPUJets")
     )
 
     if conf.isMC:
