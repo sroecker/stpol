@@ -142,13 +142,14 @@ def MuonPath(process, conf):
     ))
 
     process.muPath = cms.Path(
-        process.muIsoSequence *
-        process.eleIsoSequence *
 
         process.muPathPreCount *
 
         #Optionally select the HLT
         process.stepHLTsyncMu *
+
+        process.muIsoSequence *
+        process.eleIsoSequence *
 
         #Select one isolated muon and veto additional loose muon/electron
         process.goodSignalMuons *
@@ -204,7 +205,7 @@ def MuonPath(process, conf):
             process.muPath.index(process.singleIsoMu)+1,
             process.muonWeightsProducer
         )
-        
+
 
 
     #Count number of events passing the selection filters

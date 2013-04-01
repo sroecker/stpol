@@ -172,12 +172,13 @@ def ElectronPath(process, conf):
     ))
 
     process.elePath = cms.Path(
-        process.muIsoSequence *
-        process.eleIsoSequence *
 
         process.elePathPreCount *
 
         process.stepHLTsyncEle *
+
+        process.muIsoSequence *
+        process.eleIsoSequence *
 
         process.goodSignalElectrons *
         process.electronCount *
