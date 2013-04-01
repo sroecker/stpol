@@ -1,7 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
 def HLTSetup(process, conf):
-    #HLT
     import HLTrigger.HLTfilters.triggerResultsFilter_cfi as HLT
 
     process.stepHLTsyncMu = HLT.triggerResultsFilter.clone(
