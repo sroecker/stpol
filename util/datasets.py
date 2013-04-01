@@ -235,7 +235,7 @@ step1_FSIM_Valid = [
 
 step1B_out_MC = [
       DS_S2MC("Tbar_t_ToLeptons", "/TBarToLeptons_t-channel_8TeV-powheg-tauola/joosep-stpol_step1B_out_MC-7dee8f5886a058feb3a776faa931adee/USER", "Tbar_t")
-    , DS_S2MC("T_t_ToLeptons", "", "T_t") #FIXME: finish processing T_t_ToLeptons
+    , DS_S2MC("T_t_ToLeptons", "/TToLeptons_t-channel_8TeV-powheg-tauola/joosep-stpol_step1B-c9249c44a215ffeb8c9ba40f59092334/USER", "T_t")
     , DS_S2MC("WJets_inclusive", "/WJetsToLNu_TuneZ2Star_8TeV-madgraph-tarball/joosep-stpol_step1B_out_MC-7dee8f5886a058feb3a776faa931adee/USER", "WJets")
 
     , DS_S2MC("W1Jets_exclusive", "/W1JetsToLNu_TuneZ2Star_8TeV-madgraph/joosep-stpol_step1B_out_MC-7dee8f5886a058feb3a776faa931adee/USER", "WJets")
