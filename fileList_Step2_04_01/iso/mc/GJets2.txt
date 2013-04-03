@@ -1,0 +1,11 @@
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_04_01/WD_GJets2/res/output_10_1_NLI.root
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_04_01/WD_GJets2/res/output_11_1_3K6.root
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_04_01/WD_GJets2/res/output_1_2_VNR.root
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_04_01/WD_GJets2/res/output_2_2_R3C.root
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_04_01/WD_GJets2/res/output_3_2_mn6.root
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_04_01/WD_GJets2/res/output_4_2_ik5.root
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_04_01/WD_GJets2/res/output_5_2_5Mu.root
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_04_01/WD_GJets2/res/output_6_2_dtn.root
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_04_01/WD_GJets2/res/output_7_1_Ypv.root
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_04_01/WD_GJets2/res/output_8_1_KBR.root
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_04_01/WD_GJets2/res/output_9_1_aXg.root

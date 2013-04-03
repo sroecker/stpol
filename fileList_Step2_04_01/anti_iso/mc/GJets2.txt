@@ -1,0 +1,11 @@
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_01/WD_GJets2/res/output_10_1_wHH.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_01/WD_GJets2/res/output_11_1_hl4.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_01/WD_GJets2/res/output_1_1_B0e.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_01/WD_GJets2/res/output_2_2_RAS.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_01/WD_GJets2/res/output_3_1_ejv.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_01/WD_GJets2/res/output_4_2_bCj.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_01/WD_GJets2/res/output_5_2_YfF.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_01/WD_GJets2/res/output_6_2_zKY.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_01/WD_GJets2/res/output_7_1_oun.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_01/WD_GJets2/res/output_8_1_Ya1.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_01/WD_GJets2/res/output_9_1_3Od.root
