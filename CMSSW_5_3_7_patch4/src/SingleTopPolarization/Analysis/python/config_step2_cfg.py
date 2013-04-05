@@ -61,6 +61,9 @@ class Config(C):
     #A string that gives the MC sample you are running on
     subChannel = "T_t"
 
+    #If using comphep-generated input
+    isCompHep = False
+
     """
     Specifies the jet configuration.
     """

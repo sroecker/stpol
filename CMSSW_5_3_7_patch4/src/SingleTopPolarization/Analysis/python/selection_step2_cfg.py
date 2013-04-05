@@ -66,6 +66,12 @@ def SingleTopStep2():
                   VarParsing.varType.string,
                   "destination pile-up distribution"
         )
+        
+        options.register ('compHep', False,
+                  VarParsing.multiplicity.singleton,
+                  VarParsing.varType.bool,
+                  "Turn on debugging messages")
+        
         options.parseArguments()
 
 
@@ -85,6 +91,7 @@ def SingleTopStep2():
         Config.subChannel = options.subChannel
         Config.doDebug = options.doDebug
         Config.isMC = options.isMC
+        Config.isCompHep = options.compHep
 
     if Config.isMC:
         logging.info("Changing jet source from %s to smearedPatJetsWithOwnRef" % Config.Jets.source)
@@ -654,9 +661,14 @@ def SingleTopStep2():
     process.trueNuNTupleProducer = process.recoNuNTupleProducer.clone(
         src=cms.InputTag("genParticleSelector", "trueNeutrino", "STPOLSEL2"),
     )
-    process.trueTopNTupleProducer = process.recoTopNTupleProducer.clone(
-        src=cms.InputTag("genParticleSelector", "trueTop", "STPOLSEL2"),
-    )
+    if Config.isCompHep:
+        process.trueTopNTupleProducer = process.recoTopNTupleProducer.clone(
+            src=cms.InputTag("recoTrueTop"),
+        )
+    else:
+        process.trueTopNTupleProducer = process.recoTopNTupleProducer.clone(
+            src=cms.InputTag("genParticleSelector", "trueTop", "STPOLSEL2"),
+        )
     process.patMETNTupleProducer = process.recoTopNTupleProducer.clone(
         src=cms.InputTag(Config.metSource),
     )
@@ -818,7 +830,10 @@ def SingleTopStep2():
     )
 
     if Config.isMC and options.doGenParticlePath:
-        from SingleTopPolarization.Analysis.partonStudy_step2_cfi import PartonStudySetup
+        if Config.isCompHep:
+            from SingleTopPolarization.Analysis.partonStudy_comphep_step2_cfi import PartonStudySetup
+        else:
+            from SingleTopPolarization.Analysis.partonStudy_step2_cfi import PartonStudySetup
         PartonStudySetup(process)
         process.partonPath = cms.Path()
         #process.partonPath = cms.Path(process.commonPartonSequence)

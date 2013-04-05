@@ -66,7 +66,6 @@ class GenParticleSelector : public edm::EDProducer {
       int which_sibling;
       int fstateMothers[200][200];
       int fstateSiblings[200][200];
-      
 };
 
 //
@@ -88,17 +87,7 @@ GenParticleSelector::GenParticleSelector(const edm::ParameterSet& iConfig)
    produces<std::vector<GenParticle>>("trueLepton");
    produces<std::vector<GenParticle>>("trueNeutrino");
    produces<int>("trueLeptonPdgId");
-   //register your products
-/* Examples
-   produces<ExampleData2>();
 
-   //if do put with a label
-   produces<ExampleData2>("label");
- 
-   //if you want to put into the Run
-   produces<ExampleData2,InRun>();
-*/
-   //now do what ever other initialization is needed
    count_t = 0;
    count_other = 0;
    count_events = 0;
@@ -130,14 +119,12 @@ GenParticleSelector::~GenParticleSelector()
 void
 GenParticleSelector::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-   //using namespace edm;
    count_siblings = 0;
    which_sibling = 0;
    s1_mother1 = s1_mother2 = s2_mother1 = s2_mother2 = 0;
    Handle<GenParticleCollection> genParticles;
    iEvent.getByLabel("genParticles", genParticles);
    count_events++;
-   count_nu = 0;
 
    std::auto_ptr<std::vector<GenParticle> > outTops(new std::vector<GenParticle>());
    std::auto_ptr<std::vector<GenParticle> > outLightJets(new std::vector<GenParticle>());
@@ -156,18 +143,14 @@ GenParticleSelector::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
      double vx = p.vx(), vy = p.vy(), vz = p.vz();
      int charge = p.charge();
      int n = p.numberOfDaughters();
-     //if(id == 13 || id == -13 || abs(id)<7){
-     //cout << id << endl;
+
      if(abs(id) == 6){ //t-quark
         const GenParticle& top = p;
         outTops->push_back(top);
-        
-        //pOut->push_back(p);
         count_t++;
         //cout << id << " " << st << " " << pt << " " << eta << " " << n << endl;
         for(size_t mi = 0; mi < p.numberOfMothers(); ++ mi){
           mom = p.mother(mi);
-          //cout << mom->pdgId() << " ";
           if (mi==0)
             mother1 = mom->pdgId();
           else{
@@ -178,8 +161,7 @@ GenParticleSelector::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
                mother1 = mom->pdgId();
             }
           }
-        }         
-        //cout << endl; 
+        }
 
         int index1 = mother1;
         int index2 = mother2;
@@ -193,40 +175,29 @@ GenParticleSelector::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
           int dauId = d->pdgId();
           int n2 = d->numberOfDaughters();
           if (abs(dauId) == 24){ //W-boson
-            //cout << "  " << dauId << endl;
             for(int j2 = 0; j2 < n2; ++ j2) {
                const GenParticle* d2 = (GenParticle*)d->daughter( j2 );
                int dau2Id = d2->pdgId();
                if(abs(dau2Id) == 13 || abs(dau2Id) == 11){  //muon or electron
-                  //cout << "    " << dau2Id << endl;
-                  //nst GenParticle* lepton = (GenParticle*)d2;
                   trueLeptonPdgId = dau2Id;
                   outLeptons->push_back(*d2);                  
                }
-               else if(abs(dau2Id) == 14 || abs(dau2Id) == 12){  //mu-neutrino
-                  //cout << "    " << dau2Id << endl;
-                  //nst GenParticle* lepton = (GenParticle*)d2;
-                  outNeutrinos->push_back(*d2);
-                  //count_nu++;
+               else if(abs(dau2Id) == 14 || abs(dau2Id) == 12){  //neutrino
+                  outNeutrinos->push_back(*d2);                  
                }
    
              }
           }
-          
-          
-          // . . . 
         }
      }
      if(p.numberOfMothers() > 2 && st==3)
          count_over3++;
      if(p.numberOfMothers() >= 2 && abs(id) != 6 && st==3){
-         //cout << "N: " << p.numberOfMothers() << endl;
          int x, y;
          count_other++;
-         //cout << id << " " << st << " " << pt << " " << eta << " " << n << endl;
          for(size_t mi = 0; mi < p.numberOfMothers(); ++ mi){
             mom = p.mother(mi);
-            //cout << mom->pdgId() << " ";
+            //cout << mom->pdgId() << endl;
             if(mi==0)
                x = mom->pdgId();
             if(mi==1){
@@ -243,7 +214,6 @@ GenParticleSelector::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
           s1_mother1 = x;
           s1_mother2 = y;
           sibling1 = id;
-          //lightJet = &p;
           lightJet = const_cast<reco::GenParticle*>(&p);
           //lightJet* = (const_cast<const reco::GenParticle*>(&p);
         }
