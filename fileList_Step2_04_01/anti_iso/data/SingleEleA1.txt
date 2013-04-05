@@ -1,0 +1,17 @@
+file:/hdfs/local/joosep/stpol/step2_Data_antiIso_04_01/WD_SingleEleA1/res/output_10_1_3fv.root
+file:/hdfs/local/joosep/stpol/step2_Data_antiIso_04_01/WD_SingleEleA1/res/output_11_1_CWb.root
+file:/hdfs/local/joosep/stpol/step2_Data_antiIso_04_01/WD_SingleEleA1/res/output_12_1_qf2.root
+file:/hdfs/local/joosep/stpol/step2_Data_antiIso_04_01/WD_SingleEleA1/res/output_13_1_2xs.root
+file:/hdfs/local/joosep/stpol/step2_Data_antiIso_04_01/WD_SingleEleA1/res/output_14_1_ts9.root
+file:/hdfs/local/joosep/stpol/step2_Data_antiIso_04_01/WD_SingleEleA1/res/output_15_1_BcC.root
+file:/hdfs/local/joosep/stpol/step2_Data_antiIso_04_01/WD_SingleEleA1/res/output_16_1_JgD.root
+file:/hdfs/local/joosep/stpol/step2_Data_antiIso_04_01/WD_SingleEleA1/res/output_17_1_6hG.root
+file:/hdfs/local/joosep/stpol/step2_Data_antiIso_04_01/WD_SingleEleA1/res/output_1_1_NdB.root
+file:/hdfs/local/joosep/stpol/step2_Data_antiIso_04_01/WD_SingleEleA1/res/output_2_1_Lvr.root
+file:/hdfs/local/joosep/stpol/step2_Data_antiIso_04_01/WD_SingleEleA1/res/output_3_1_8FE.root
+file:/hdfs/local/joosep/stpol/step2_Data_antiIso_04_01/WD_SingleEleA1/res/output_4_1_j5I.root
+file:/hdfs/local/joosep/stpol/step2_Data_antiIso_04_01/WD_SingleEleA1/res/output_5_1_Iav.root
+file:/hdfs/local/joosep/stpol/step2_Data_antiIso_04_01/WD_SingleEleA1/res/output_6_1_zsp.root
+file:/hdfs/local/joosep/stpol/step2_Data_antiIso_04_01/WD_SingleEleA1/res/output_7_1_1yo.root
+file:/hdfs/local/joosep/stpol/step2_Data_antiIso_04_01/WD_SingleEleA1/res/output_8_1_gKB.root
+file:/hdfs/local/joosep/stpol/step2_Data_antiIso_04_01/WD_SingleEleA1/res/output_9_1_vAV.root

@@ -1,0 +1,17 @@
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_01/WD_QCD_Pt_250_350_BCtoE/res/output_10_1_rm3.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_01/WD_QCD_Pt_250_350_BCtoE/res/output_11_1_WZG.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_01/WD_QCD_Pt_250_350_BCtoE/res/output_12_1_TVh.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_01/WD_QCD_Pt_250_350_BCtoE/res/output_13_1_jyE.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_01/WD_QCD_Pt_250_350_BCtoE/res/output_14_1_gpH.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_01/WD_QCD_Pt_250_350_BCtoE/res/output_15_1_7O8.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_01/WD_QCD_Pt_250_350_BCtoE/res/output_16_2_Z86.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_01/WD_QCD_Pt_250_350_BCtoE/res/output_17_1_vI1.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_01/WD_QCD_Pt_250_350_BCtoE/res/output_1_1_Uls.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_01/WD_QCD_Pt_250_350_BCtoE/res/output_2_1_vt9.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_01/WD_QCD_Pt_250_350_BCtoE/res/output_3_1_p90.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_01/WD_QCD_Pt_250_350_BCtoE/res/output_4_2_BQQ.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_01/WD_QCD_Pt_250_350_BCtoE/res/output_5_2_whk.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_01/WD_QCD_Pt_250_350_BCtoE/res/output_6_2_qsw.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_01/WD_QCD_Pt_250_350_BCtoE/res/output_7_2_I9L.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_01/WD_QCD_Pt_250_350_BCtoE/res/output_8_1_06i.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_01/WD_QCD_Pt_250_350_BCtoE/res/output_9_1_bvH.root

@@ -1,0 +1,4 @@
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_01/WD_T_tW/res/output_1_1_iag.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_01/WD_T_tW/res/output_2_1_ZNT.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_01/WD_T_tW/res/output_3_1_fqw.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_01/WD_T_tW/res/output_4_1_MJY.root

@@ -189,14 +189,11 @@ def parseDir(d, resub, ofile):
 
     #Get all jobs
     jobsNotGot = []
-    while True:
-        statuses = CrabStatus.getStatus(d)
-        jobsToGet = filter(lambda x: x.status=="Done" and x.retcode is None, statuses)
-        if len(jobsToGet)>0:
-            print "Getting {0} jobs: {1}".format(len(jobsToGet), JobStatus.indices(jobsToGet))
-            gotJobIDs = CrabStatus.getResults(d)
-        else:
-            break
+    statuses = CrabStatus.getStatus(d)
+    jobsToGet = filter(lambda x: x.status=="Done" and x.retcode is None, statuses)
+    if len(jobsToGet)>0:
+        print "Getting {0} jobs: {1}".format(len(jobsToGet), JobStatus.indices(jobsToGet))
+        gotJobIDs = CrabStatus.getResults(d)
         if len(jobsToGet)!=len(gotJobIDs) or sum(map(lambda x: x[0]!=x[1].N, zip(gotJobIDs, jobsToGet)))>0:
             couldNotGet = list(set(JobStatus.indices(jobsToGet)).difference(set(gotJobIDs)))
             print "Problem getting {1} jobs: {0}".format(couldNotGet, len(couldNotGet))
@@ -206,14 +203,13 @@ def parseDir(d, resub, ofile):
                 for j in couldNotGet:
                     jobLog(ofile, crabdir, j, "forceResubmit", "COULDNOTGET")
 
-        statuses = CrabStatus.getStatus(d)
-        jobsToResub = filter(lambda x: x.requiresResub(), statuses)
-        jobsSuccess = filter(lambda x: x.N in gotJobIDs and not x.requiresResub(), statuses)
-        for j in jobsSuccess:
-            jobLog(ofile, crabdir, j, "get", "DONE")
+    statuses = CrabStatus.getStatus(d)
+    jobsToResub = filter(lambda x: x.requiresResub(), statuses)
+    #jobsSuccess = filter(lambda x: x.N in gotJobIDs and not x.requiresResub(), statuses)
+    #for j in jobsSuccess:
+    #    jobLog(ofile, crabdir, j, "get", "DONE")
 
-        if len(jobsToResub)==0:
-            break
+    if len(jobsToResub)>0:
         print "Resubmitting {0} jobs: {1}".format(len(jobsToResub), JobStatus.indices(jobsToResub))
         retCodes = [x.retcode for x in jobsToResub]
         orderByFreq = list(set([(x, retCodes.count(x)) for x in retCodes]))
@@ -227,7 +223,7 @@ def parseDir(d, resub, ofile):
         except CrabFailedException as e:
             print "Could not resubmit with crab: {0}".format(e.message)
 
-        statuses = CrabStatus.getStatus(d)
+    statuses = CrabStatus.getStatus(d)
 
     statusTable = JobStatus.statusTable(statuses)
     print "Status total of {0} jobs: {1} | {2:.0%} done".format(len(statuses), JobStatus.statusTable(statuses), float(statusTable["Retrieved"][0])/float(len(statuses)))
