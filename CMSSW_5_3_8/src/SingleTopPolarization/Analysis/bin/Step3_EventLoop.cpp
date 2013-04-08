@@ -189,9 +189,9 @@ public:
     CutsBase(_branch_vars)
     {
         initialize_branches();
-        cutOnIso = pars.getParameter<bool>("cutOnIso");
         requireOneMuon = pars.getParameter<bool>("requireOneMuon");
         
+        cutOnIso = pars.getParameter<bool>("cutOnIso");
         reverseIsoCut = pars.getParameter<bool>("reverseIsoCut");
         isoCut = (float)pars.getParameter<double>("isoCut");
         
