@@ -747,7 +747,19 @@ def SingleTopStep2():
                     #["n60", "n60()"],
 
                     #["genJetFlavour", "? genJet()>0 ? (genJet()->pdgId()) : 0"], #FIXME
-                    ["deltaR", "userFloat('deltaR')"]
+                    ["deltaR", "userFloat('deltaR')"],
+
+                    ["numberOfDaughters", "numberOfDaughters"],
+                    ["neutralHadronEnergy", "neutralHadronEnergy"],
+                    ["HFHadronEnergy", "HFHadronEnergy"],
+                    ["chargedEmEnergyFraction", "chargedEmEnergyFraction"],
+                    ["neutralEmEnergyFraction", "neutralEmEnergyFraction"],
+                    ["chargedHadronEnergyFraction", "chargedHadronEnergyFraction"],
+                    ["chargedMultiplicity", "chargedMultiplicity"],
+                    ["nParticles", "userFloat('nParticles')"],
+                    ["puMva", "userFloat('mva')"],
+                    ["nCharged", "userFloat('nCharged')"],
+                    ["nNeutral", "userFloat('nNeutral')"],
                 ]
         )
     )
