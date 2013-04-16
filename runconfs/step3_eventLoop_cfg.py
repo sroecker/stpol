@@ -100,6 +100,19 @@ process.jetCuts = cms.PSet(
     bJetPtSrc = cms.InputTag("highestBTagJetNTupleProducer", "Pt"),
 )
 
+process.bTagCuts = cms.PSet(
+    cutOnNTags  = cms.bool(False),
+
+    bTagJetsCountSrc = cms.InputTag("bJetCount"),
+
+    nTagsMin = cms.int32(0),
+    nTagsMax = cms.int32(9),
+
+    bJetEtaSrc = cms.InputTag("highestBTagJetNTupleProducer", "Eta"),
+    bJetBdiscrSrc = cms.InputTag("highestBTagJetNTupleProducer", "bDiscriminatorTCHP"),
+    bJetPtSrc = cms.InputTag("highestBTagJetNTupleProducer", "Pt"),
+)
+
 process.topCuts = cms.PSet(
         applyMassCut = cms.bool(False),
         signalRegion = cms.bool(True),
@@ -141,3 +154,16 @@ process.genParticles = cms.PSet(
     trueCJetTaggedCountSrc = cms.InputTag("btaggedTrueCJetCount"),
     trueLJetTaggedCountSrc = cms.InputTag("btaggedTrueLJetCount"),
 )
+
+doSync = True
+if doSync:
+    process.jetCuts.cutOnNJets = True
+    process.jetCuts.nJetsMin = 2
+    process.jetCuts.nJetsMax = 2
+
+    process.bTagCuts.cutOnNTags = True
+    process.bTagCuts.nTagsMin = 1
+    process.bTagCuts.nTagsMax = 1
+
+    process.mtMuCuts.doMTCut = True
+    process.mtMuCuts.minVal = 40

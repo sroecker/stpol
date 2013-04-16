@@ -180,10 +180,6 @@ public:
     edm::InputTag muonRelIsoSrc;
     edm::InputTag muonCountSrc;
 
-    bool doVetoLeptonCut;
-    edm::InputTag vetoMuCountSrc;
-    edm::InputTag vetoEleCountSrc;
-    
     virtual void initialize_branches() {
         branch_vars["mu_pt"] = def_val;
         branch_vars["mu_iso"] = def_val;
@@ -203,10 +199,6 @@ public:
         muonRelIsoSrc = pars.getParameter<edm::InputTag>("muonRelIsoSrc");
         muonCountSrc = pars.getParameter<edm::InputTag>("muonCountSrc");
        
-        doVetoLeptonCut = pars.getParameter<bool>("doVetoLeptonCut");
-        vetoMuCountSrc = pars.getParameter<edm::InputTag>("vetoMuCountSrc");
-        vetoEleCountSrc = pars.getParameter<edm::InputTag>("vetoEleCountSrc");
-
     }
     
     bool process(const edm::EventBase& event) {
@@ -225,10 +217,37 @@ public:
                 passesMuIso = branch_vars["mu_iso"] > isoCut;
         }
         if(cutOnIso && !passesMuIso) return false;
+
+        post_process();
+        return true;
+    }
+};
+
+class VetoLeptonCuts : public CutsBase {
+public:
+    bool doVetoLeptonCut;
+    edm::InputTag vetoMuCountSrc;
+    edm::InputTag vetoEleCountSrc;
+   
+    void initialize_branches() {
+    }
+
+    VetoLeptonCuts(const edm::ParameterSet& pars, std::map< std::string, float> & _branch_vars) :
+    CutsBase(_branch_vars)
+    {
+        initialize_branches();
+        doVetoLeptonCut = pars.getParameter<bool>("doVetoLeptonCut");
+        vetoMuCountSrc = pars.getParameter<edm::InputTag>("vetoMuCountSrc");
+        vetoEleCountSrc = pars.getParameter<edm::InputTag>("vetoEleCountSrc");
+    }
+    
+    bool process(const edm::EventBase& event) {
+        pre_process();
+        
         if(doVetoLeptonCut) {
             int n_veto_mu = get_collection<int>(event, vetoMuCountSrc, -1);
             int n_veto_ele = get_collection<int>(event, vetoEleCountSrc, -1);
-            if (n_veto_mu != 0 || n_veto_ele!=0) return false; 
+            if (n_veto_mu != 0 || n_veto_ele!=0) return false;
         }
 
         post_process();
@@ -297,7 +316,6 @@ public:
         nTagsCutMin = pars.getParameter<int>("nTagsMin");
         
         goodJetsCountSrc = pars.getParameter<edm::InputTag>("goodJetsCountSrc");
-        bTagJetsCountSrc = pars.getParameter<edm::InputTag>("bTagJetsCountSrc");
         
         goodJetsPtSrc = pars.getParameter<edm::InputTag>("goodJetsPtSrc");
         goodJetsEtaSrc = pars.getParameter<edm::InputTag>("goodJetsEtaSrc");
@@ -307,9 +325,6 @@ public:
         lightJetPtSrc = pars.getParameter<edm::InputTag>("lightJetPtSrc");
         lightJetRmsSrc = pars.getParameter<edm::InputTag>("lightJetRmsSrc");
         
-        bJetEtaSrc = pars.getParameter<edm::InputTag>("bJetEtaSrc");
-        bJetBdiscrSrc = pars.getParameter<edm::InputTag>("bJetBdiscrSrc");
-        bJetPtSrc = pars.getParameter<edm::InputTag>("bJetPtSrc");
     }
     
     bool process(const edm::EventBase& event) {
@@ -329,6 +344,54 @@ public:
         if (cutOnNJets && (branch_vars["n_jets"] > nJetsCutMax || branch_vars["n_jets"] < nJetsCutMin)) return false;
         if (cutOnNTags && (branch_vars["n_tags"] > nTagsCutMax || branch_vars["n_tags"] < nTagsCutMin)) return false;
         if (applyRmsLj && !passes_rms_lj) return false;
+        
+        post_process();
+        return true;
+    }
+};
+
+class TagCuts : public CutsBase {
+public:
+    bool cutOnNTags;
+    
+    int nTagsCutMin;
+    int nTagsCutMax;
+    
+    edm::InputTag bJetEtaSrc;
+    edm::InputTag bJetBdiscrSrc;
+    edm::InputTag bJetPtSrc;
+    edm::InputTag bTagJetsCountSrc;
+    
+    virtual void initialize_branches() {
+        branch_vars["pt_bj"] = def_val;
+        branch_vars["eta_bj"] = def_val;
+        branch_vars["bdiscr_bj"] = def_val;
+        branch_vars["n_tags"] = def_val;
+    }
+    
+    TagCuts(const edm::ParameterSet& pars, std::map<std::string, float>& _branch_vars) :
+    CutsBase(_branch_vars)
+    {
+        initialize_branches();
+        cutOnNTags =  pars.getParameter<bool>("cutOnNTags");
+        nTagsCutMax = pars.getParameter<int>("nTagsMax");
+        nTagsCutMin = pars.getParameter<int>("nTagsMin");
+        
+        bJetEtaSrc = pars.getParameter<edm::InputTag>("bJetEtaSrc");
+        bJetBdiscrSrc = pars.getParameter<edm::InputTag>("bJetBdiscrSrc");
+        bJetPtSrc = pars.getParameter<edm::InputTag>("bJetPtSrc");
+        bTagJetsCountSrc = pars.getParameter<edm::InputTag>("bTagJetsCountSrc");
+    }
+    
+    bool process(const edm::EventBase& event) {
+        pre_process();
+        
+        branch_vars["pt_bj"] = get_collection_n<float>(event, bJetPtSrc, 0);
+        branch_vars["eta_bj"] = get_collection_n<float>(event, bJetEtaSrc, 0);
+        branch_vars["bdiscr_bj"] = get_collection_n<float>(event, bJetBdiscrSrc, 0);
+        branch_vars["n_tags"] = get_collection<int>(event, bTagJetsCountSrc, -1);
+        
+        if (cutOnNTags && (branch_vars["n_tags"] > nTagsCutMax || branch_vars["n_tags"] < nTagsCutMin)) return false;
         
         post_process();
         return true;
@@ -588,8 +651,12 @@ int main(int argc, char* argv[])
     std::vector<std::string> inputFiles_( in.getParameter<std::vector<std::string> >("fileNames") );
     
     const edm::ParameterSet& mu_cuts_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("muonCuts");
+    
     const edm::ParameterSet& ele_cuts_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("eleCuts");
     const edm::ParameterSet& jet_cuts_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("jetCuts");
+
+    const edm::ParameterSet& btag_cuts_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("bTagCuts");
+
     const edm::ParameterSet& top_cuts_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("topCuts");
     const edm::ParameterSet& mt_mu_cuts_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("mtMuCuts");
     const edm::ParameterSet& weight_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("weights");
@@ -599,21 +666,25 @@ int main(int argc, char* argv[])
     const edm::ParameterSet& lumiblock_counter_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("lumiBlockCounters");
     edm::InputTag totalPATProcessedCountSrc = lumiblock_counter_pars.getParameter<edm::InputTag>("totalPATProcessedCountSrc");
     
-    //const edm::ParameterSet& vars_to_save = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("varsToSave");
-    
     std::map<std::string, float> branch_vars;
     std::map<std::string, std::vector<float> > branch_vars_vec;
     std::map<std::string, unsigned int> event_id_branches;
     std::map<std::string, unsigned int> count_map;
+
     count_map["total_processed"] = 0;
     count_map["pass_lepton_cuts"] = 0;
+    count_map["pass_lepton_veto_cuts"] = 0;
     count_map["pass_mt_cuts"] = 0;
     count_map["pass_jet_cuts"] = 0;
+    count_map["pass_btag_cuts"] = 0;
     count_map["pass_top_cuts"] = 0;
-    std::vector<std::string> count_map_order({"total_processed", "pass_lepton_cuts", "pass_mt_cuts", "pass_jet_cuts", "pass_top_cuts"});
+    //Give the order of the map keys that will end up as the count histogram bins
+    std::vector<std::string> count_map_order({"total_processed", "pass_lepton_cuts", "pass_lepton_veto_cuts", "pass_mt_cuts", "pass_jet_cuts", "pass_btag_cuts", "pass_top_cuts"});
     
     MuonCuts muon_cuts(mu_cuts_pars, branch_vars);
+    VetoLeptonCuts veto_lepton_cuts(mu_cuts_pars, branch_vars);
     JetCuts jet_cuts(jet_cuts_pars, branch_vars);
+    TagCuts btag_cuts(btag_cuts_pars, branch_vars);
     TopCuts top_cuts(top_cuts_pars, branch_vars);
     Weights weights(weight_pars, branch_vars);
     MTMuCuts mt_mu_cuts(mt_mu_cuts_pars, branch_vars);
@@ -668,11 +739,17 @@ int main(int argc, char* argv[])
                 bool passes_muon_cuts = muon_cuts.process(event);
                 if(!passes_muon_cuts) continue;
                 
+                bool passes_veto_lepton_cuts = veto_lepton_cuts.process(event);
+                if(!passes_veto_lepton_cuts) continue;
+                
                 bool passes_mt_mu_cuts = mt_mu_cuts.process(event);
                 if(!passes_mt_mu_cuts) continue;
                 
                 bool passes_jet_cuts = jet_cuts.process(event);
                 if(!passes_jet_cuts) continue;
+                
+                bool passes_tag_cuts = btag_cuts.process(event);
+                if(!passes_tag_cuts) continue;
                 
                 bool passes_top_cuts = top_cuts.process(event);
                 if(!passes_top_cuts) continue;
@@ -700,8 +777,10 @@ int main(int argc, char* argv[])
     }
     
     count_map["pass_lepton_cuts"] += muon_cuts.n_pass;
+    count_map["pass_lepton_veto_cuts"] += veto_lepton_cuts.n_pass;
     count_map["pass_mt_cuts"] += mt_mu_cuts.n_pass;
     count_map["pass_jet_cuts"] += jet_cuts.n_pass;
+    count_map["pass_btag_cuts"] += btag_cuts.n_pass;
     count_map["pass_top_cuts"] += top_cuts.n_pass;
     
     int i = 1;
@@ -713,8 +792,10 @@ int main(int argc, char* argv[])
     
     std::cout << "total processed events " << count_map["total_processed"] << std::endl;
     std::cout << "muon cuts " << muon_cuts.toString() << std::endl;
+    std::cout << "veto lepton cuts " << veto_lepton_cuts.toString() << std::endl;
     std::cout << "mt_mu cuts " << mt_mu_cuts.toString() << std::endl;
     std::cout << "jet cuts " << jet_cuts.toString() << std::endl;
+    std::cout << "tag cuts " << btag_cuts.toString() << std::endl;
     std::cout << "top cuts " << top_cuts.toString() << std::endl;
     
     
