@@ -179,6 +179,10 @@ public:
     edm::InputTag muonPtSrc;
     edm::InputTag muonRelIsoSrc;
     edm::InputTag muonCountSrc;
+
+    bool doVetoLeptonCut;
+    edm::InputTag vetoMuCountSrc;
+    edm::InputTag vetoEleCountSrc;
     
     virtual void initialize_branches() {
         branch_vars["mu_pt"] = def_val;
@@ -198,7 +202,11 @@ public:
         muonPtSrc = pars.getParameter<edm::InputTag>("muonPtSrc");
         muonRelIsoSrc = pars.getParameter<edm::InputTag>("muonRelIsoSrc");
         muonCountSrc = pars.getParameter<edm::InputTag>("muonCountSrc");
-        
+       
+        doVetoLeptonCut = pars.getParameter<bool>("doVetoLeptonCut");
+        vetoMuCountSrc = pars.getParameter<edm::InputTag>("vetoMuCountSrc");
+        vetoEleCountSrc = pars.getParameter<edm::InputTag>("vetoEleCountSrc");
+
     }
     
     bool process(const edm::EventBase& event) {
@@ -217,7 +225,12 @@ public:
                 passesMuIso = branch_vars["mu_iso"] > isoCut;
         }
         if(cutOnIso && !passesMuIso) return false;
-        
+        if(doVetoLeptonCut) {
+            int n_veto_mu = get_collection<int>(event, vetoMuCountSrc, -1);
+            int n_veto_ele = get_collection<int>(event, vetoEleCountSrc, -1);
+            if (n_veto_mu != 0 || n_veto_ele!=0) return false; 
+        }
+
         post_process();
         return true;
     }
