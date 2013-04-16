@@ -179,13 +179,13 @@ def parseDir(d, resub, ofile):
     statuses = None
 
     #submit all created jobs
-    while True:
-        statuses = CrabStatus.getStatus(crabdir)
-        jobsToSub = filter(lambda x: x.status=="Created", statuses)
-        if len(jobsToSub)==0:
-            break
-        print "Submitting {0} jobs: {1}".format(len(jobsToSub), JobStatus.indices(jobsToSub))
-        CrabStatus.submit(crabdir, jobsToSub)
+    #while True:
+    #    statuses = CrabStatus.getStatus(crabdir)
+    #    jobsToSub = filter(lambda x: x.status=="Created", statuses)
+    #    if len(jobsToSub)==0:
+    #        break
+    #    print "Submitting {0} jobs: {1}".format(len(jobsToSub), JobStatus.indices(jobsToSub))
+    #    CrabStatus.submit(crabdir, jobsToSub)
 
     #Get all jobs
     jobsNotGot = []
@@ -226,7 +226,8 @@ def parseDir(d, resub, ofile):
     statuses = CrabStatus.getStatus(d)
 
     statusTable = JobStatus.statusTable(statuses)
-    print "Status total of {0} jobs: {1} | {2:.0%} done".format(len(statuses), JobStatus.statusTable(statuses), float(statusTable["Retrieved"][0])/float(len(statuses)))
+    if len(statuses)>0:
+        print "Status total of {0} jobs: {1} | {2:.0%} done".format(len(statuses), JobStatus.statusTable(statuses), float(statusTable["Retrieved"][0])/float(len(statuses)))
     if len(statuses)==statusTable["Retrieved"][0]:
         print "Job {0} is done!".format(crabdir)
 
