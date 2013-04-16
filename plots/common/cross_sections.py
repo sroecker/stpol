@@ -9,7 +9,7 @@ xs = {
 	, "Tbar_s": 1.76
 	, "T_tW": 11.1
 	, "Tbar_tW": 11.1
-	, "TTbar": 234 #inclusive
+	, "TTJets_MassiveBinDECAY": 234 #inclusive
 	, "WJets_inclusive": 36257.2 #30400.0 LO
 
 	#FIXME: ttbar branching ratio
