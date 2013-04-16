@@ -26,7 +26,9 @@ class JobStats:
         pending = filter(lambda j: j.isPending(), task.jobs)
         quantiles_submissions = scipy.stats.mstats.mquantiles(map(lambda j: j.n_submission, task.jobs), prob=[0.25, 0.5, 0.75, 0.95])
 
-        max_submissions = numpy.max(map(lambda j: j.n_submission, task.jobs))
+        if len(task.jobs)>0:
+            max_submissions = numpy.max(map(lambda j: j.n_submission, task.jobs))
+
         needs_resubmit = filter(lambda j: j.needsResubmit(), task.jobs)
         self.jobs_total = len(task.jobs)
         self.jobs_completed = len(completed)
@@ -77,8 +79,11 @@ class Task:
         getOutputTime = get(running_job, "getOutputTime", str)
         wrapperReturnCode = get(running_job, "wrapperReturnCode", int)
         applicationReturnCode = get(running_job, "applicationReturnCode", int)
+        lfn = get(running_job, "lfn", str)
+        if lfn:
+            lfn = lfn[2:-2]
         state = get(running_job, "state", str)
-        return Job(name, id, submission, schedulerId, submissionTime, getOutputTime, applicationReturnCode, wrapperReturnCode, state)
+        return Job(name, id, submission, schedulerId, submissionTime, getOutputTime, applicationReturnCode, wrapperReturnCode, state, lfn)
 
 
     def updateJobs(self, fname):
@@ -130,7 +135,8 @@ class Job:
         get_output_time,
         wrapper_ret_code,
         app_ret_code,
-        state
+        state,
+        lfn
     ):
         self.name = name
         self.job_id = job_id
@@ -141,6 +147,7 @@ class Job:
         self.wrapper_ret_code = wrapper_ret_code if wrapper_ret_code is not None else -1
         self.app_ret_code = app_ret_code if app_ret_code is not None else -1
         self.state = state
+        self.lfn = lfn
 
     def isCompleted(self):
         return self.state == "Cleared" and self.wrapper_ret_code == 0 and self.app_ret_code == 0
@@ -184,6 +191,9 @@ if len(reports)==1:
     try:
         t.updateJobs(reports[0])
         t.printStats()
+        for job in t.jobs:
+            if job.lfn:
+                print job.lfn
     except Exception as e:
         print "Skipping: %s" % str(e)
 elif len(reports)>1:
