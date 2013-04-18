@@ -74,6 +74,7 @@ T get_collection(const edm::EventBase& evt, edm::InputTag src, const T& retval) 
     edm::Handle<T> coll;
     evt.getByLabel(src, coll);
     if(!coll.isValid()) {
+        //std::cerr << "Collection is not valid!" << std::endl;
         return retval;
     }
     return *coll;
