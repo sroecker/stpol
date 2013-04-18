@@ -1,10 +1,10 @@
 import FWCore.ParameterSet.Config as cms
 
-process = cms.Process("OWNPARTICLES")
+process = cms.Process("TEST3")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
 
 process.source = cms.Source("PoolSource",
     # replace 'myfile.root' with the source file you want to use
@@ -13,19 +13,17 @@ process.source = cms.Source("PoolSource",
     )
 )
 
-process.myProducerLabel = cms.EDProducer('PDFweightsProducer',
-	PDFSetSrc			=	cms.string('cteq66.LHgrid'),		# weights of all PDF sets are saved
-#	PDFSetSrc			=	cms.string('CT10.LHgrid'),		# weights of all PDF sets are saved
-#	PDFSetSrc			=	cms.string('MSTW2008nlo68cl.LHgrid'),		# weights of all PDF sets are saved
-#	PDFSetSrc			=	cms.string('MRST2006nnlo.LHgrid'),		# weights of all PDF sets are saved
-#	PDFSetSrc			=	cms.string('NNPDF21_100.LHgrid'),		# weights of all PDF sets are saved
+process.PDFweigts = cms.EDProducer('PDFweightsProducer',
+	# max 3 PDF sets and they have to be in decreasing order of eigenvectors
+	PDFSets				=	cms.vstring('NNPDF21_100.LHgrid','CT10.LHgrid','MSTW2008nlo68cl.LHgrid')
 )
+
+process.p = cms.Path( process.PDFweigts )
+
 
 process.out = cms.OutputModule("PoolOutputModule",
-    fileName = cms.untracked.string('myOutputFile.root')
+    fileName = cms.untracked.string('myOutputFile10_x.root')
 )
 
-  
-process.p = cms.Path(process.myProducerLabel)
 
 process.e = cms.EndPath(process.out)
