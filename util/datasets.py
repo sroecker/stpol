@@ -300,6 +300,33 @@ step1B_out_MC = [
     , DS_S2MC("ZZ", "/ZZ_TuneZ2star_8TeV_pythia6_tauola/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "ZZ")
 ]
 
+#WIP step1 new reprocessing output
+#/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/joosep-stpol_step1_04_09-a00a848af5bea4447d5552cf98155e87/USER
+#/GJets_HT-200To400_8TeV-madgraph/joosep-stpol_step1_04_09-a00a848af5bea4447d5552cf98155e87/USER
+#/GJets_HT-400ToInf_8TeV-madgraph/joosep-stpol_step1_04_09-a00a848af5bea4447d5552cf98155e87/USER
+#/QCD_Pt_20_MuEnrichedPt_15_TuneZ2star_8TeV_pythia6/joosep-stpol_step1_04_09-a00a848af5bea4447d5552cf98155e87/USER
+#/Tbar_s-channel_TuneZ2star_8TeV-powheg-tauola/joosep-stpol_step1_04_09-a00a848af5bea4447d5552cf98155e87/USER
+#/Tbar_t-channel_TuneZ2star_8TeV-powheg-tauola/joosep-stpol_step1_04_09-a00a848af5bea4447d5552cf98155e87/USER
+#/Tbar_t-channel_TuneZ2star_8TeV-powheg-tauola/joosep-stpol_step1_04_09-a00a848af5bea4447d5552cf98155e87/USER
+#/TBarToLeptons_t-channel_8TeV-powheg-tauola/joosep-stpol_step1_04_09-a00a848af5bea4447d5552cf98155e87/USER
+#/Tbar_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola/joosep-stpol_step1_04_09-a00a848af5bea4447d5552cf98155e87/USER
+#/T_s-channel_TuneZ2star_8TeV-powheg-tauola/joosep-stpol_step1_04_09-a00a848af5bea4447d5552cf98155e87/USER
+#/T_t-channel_TuneZ2star_8TeV-powheg-tauola/joosep-stpol_step1_04_09-23c1176430eda647deca9b018483ee5d/USER
+#/T_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola/joosep-stpol_step1_04_09-a00a848af5bea4447d5552cf98155e87/USER
+#
+#/TTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola/joosep-stpol_step1_04_09-a00a848af5bea4447d5552cf98155e87/USER
+#/TTJets_SemiLeptMGDecays_8TeV-madgraph/joosep-stpol_step1_04_09-a00a848af5bea4447d5552cf98155e87/USER
+#
+#/TToLeptons_t-channel_8TeV-powheg-tauola/joosep-stpol_step1_04_09-a00a848af5bea4447d5552cf98155e87/USER
+#/WJetsToLNu_TuneZ2Star_8TeV-madgraph-tarball/joosep-stpol_step1_04_09-a00a848af5bea4447d5552cf98155e87/USER
+#/WJetsToLNu_TuneZ2Star_8TeV-madgraph-tarball/joosep-stpol_step1_04_09-a00a848af5bea4447d5552cf98155e87/USER
+#/WW_TuneZ2star_8TeV_pythia6_tauola/joosep-stpol_step1_04_09-a00a848af5bea4447d5552cf98155e87/USER
+#/WZ_TuneZ2star_8TeV_pythia6_tauola/joosep-stpol_step1_04_09-a00a848af5bea4447d5552cf98155e87/USER
+#/ZZ_TuneZ2star_8TeV_pythia6_tauola/joosep-stpol_step1_04_09-a00a848af5bea4447d5552cf98155e87/USER
+#
+#/TTJets_SemiLeptMGDecays_8TeV-madgraph/joosep-stpol_step1_04_09-a00a848af5bea4447d5552cf98155e87/USER#224ffd40-e376-4c5e-980f-c52a30ec1512
+#/TTJets_SemiLeptMGDecays_8TeV-madgraph/joosep-stpol_step1_04_09-a00a848af5bea4447d5552cf98155e87/USER#0c10dbe6-f7f9-4434-8c2d-7b0aede5ef50
+
 step1_out_MC_new = [
      DS_S2MC("T_t", "/T_t-channel_TuneZ2star_8TeV-powheg-tauola/joosep-stpol_step1_04_09-23c1176430eda647deca9b018483ee5d/USER", "T_t")
 ]
