@@ -32,12 +32,16 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "TMath.h"
 #include <vector>
+#include <map>
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "DataFormats/HepMCCandidate/interface/PdfInfo.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 
 #include "FWCore/ParameterSet/interface/FileInPath.h"
 #include "DataFormats/Math/interface/LorentzVector.h"
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
 using namespace std;
 
@@ -83,7 +87,8 @@ class PDFweightsProducer : public edm::EDProducer {
 	float	x1,x2;
 	int		id1,id2;
 	
-	const std::string	PDFSetSrc;
+	std::vector<std::string>	PDFSets;
+	std::vector<std::string>	PDFnames;
 
 };
 
@@ -100,13 +105,36 @@ class PDFweightsProducer : public edm::EDProducer {
 // constructors and destructor
 //
 PDFweightsProducer::PDFweightsProducer(const edm::ParameterSet& iConfig)
-: PDFSetSrc(iConfig.getParameter<std::string>("PDFSetSrc"))
+: PDFSets(iConfig.getParameter<std::vector<std::string>>("PDFSets"))
 {
+	std::map<string,int> map_name;
+	
+	for( unsigned int i = 0; i < PDFSets.size(); i++ ){
+		if( i > 2 ) break;	// lhapdf cannot manage with more PDFs 
 
-	produces<std::vector<float> > ("PDFSet");
-	produces<float>("w0");
-	produces<int>("nPDFSet");
-	LHAPDF::initPDFSet(1, PDFSetSrc);
+		// make names of PDF sets to be saved
+		string name = PDFSets[i];
+		size_t pos = name.find_first_not_of("ZXCVBNMASDFGHJKLQWERTYUIOPabcdefghijklmnopqrstuvwxyz1234567890");
+		if (pos!=std::string::npos) name = name.substr(0,pos);
+		if( map_name.count(name) == 0 ){
+			map_name[name]=0;
+			PDFnames.push_back(name);
+		}
+		else {
+			map_name[name]++;
+			ostringstream ostr;
+			ostr << name << "xxx" << map_name[name];
+			PDFnames.push_back(ostr.str());
+		}
+		
+		produces<std::vector<double> > (string("weights"+PDFnames[i]));
+		produces<double>(string("w0"+PDFnames[i]));
+		produces<int>(string("n"+PDFnames[i]));
+		
+		// initialise the PDF set
+		cout<<"PDFnames[i]="<<PDFnames[i]<<"\tPDFSets[i]="<<PDFSets[i]<<endl;
+		LHAPDF::initPDFSet(i+1, PDFSets[i]);		
+	}
 	
 }
 
@@ -141,32 +169,34 @@ PDFweightsProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	id2		=	genprod->pdf()->id.second;
 	
 	
-	
-	
-
-	// calculate the PDF weights
-	std::auto_ptr < std::vector<float> > weights(new std::vector<float>());
-	LHAPDF::usePDFMember(1, 0);
-	double	xpdf1 = LHAPDF::xfx(1, x1, scalePDF, id1);
-	double	xpdf2 = LHAPDF::xfx(1, x2, scalePDF, id2);
-	float	w0	= (float)(xpdf1 * xpdf2);
-	int		nPDFSet = LHAPDF::numberPDF();
-	for (int p = 1; p <= nPDFSet; ++p)
-	{
-		LHAPDF::usePDFMember(1, p);
-		double xpdf1_new = LHAPDF::xfx(1, x1, scalePDF, id1);
-		double xpdf2_new = LHAPDF::xfx(1, x2, scalePDF, id2);
-		float pweight = (float)(xpdf1_new * xpdf2_new / w0);
-		weights->push_back(pweight);
+	for( unsigned int i = 0; i < PDFSets.size(); i++ ){
+		if( i > 2 ) break;	// lhapdf cannot manage with more PDFs 
+		
+		int InitNr = i+1;
+		
+		// calculate the PDF weights
+		std::auto_ptr < std::vector<double> > weights(new std::vector<double>());
+		LHAPDF::usePDFMember(InitNr, 0);
+		double	xpdf1 = LHAPDF::xfx(InitNr, x1, scalePDF, id1);
+		double	xpdf2 = LHAPDF::xfx(InitNr, x2, scalePDF, id2);
+		double	w0	= xpdf1 * xpdf2;
+		int		nPDFSet = LHAPDF::numberPDF(InitNr);
+		for (int p = 1; p <= nPDFSet; ++p)
+		{
+			LHAPDF::usePDFMember(InitNr, p);
+			double xpdf1_new = LHAPDF::xfx(InitNr, x1, scalePDF, id1);
+			double xpdf2_new = LHAPDF::xfx(InitNr, x2, scalePDF, id2);
+			double pweight = xpdf1_new * xpdf2_new / w0;
+			weights->push_back(pweight);
+		}
+		
+		// save weights		
+		iEvent.put(weights, string("weights"+PDFnames[i]));
+		iEvent.put(std::auto_ptr<int>(new int(nPDFSet)), string("n"+PDFnames[i]));  
+		iEvent.put(std::auto_ptr<double>(new double(w0)), string("w0"+PDFnames[i]));  		
+		
 	}
 	
-	
-	
-	// save weights
-	LogDebug("produce()") << "PDF weights";
-	iEvent.put(weights, "PDFSet");
-	iEvent.put(std::auto_ptr<int>(new int(nPDFSet)), "nPDFSet");  
-	iEvent.put(std::auto_ptr<float>(new float(w0)), "w0");  
 	
 }
 

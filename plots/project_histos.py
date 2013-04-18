@@ -5,6 +5,7 @@ import copy
 import pdb
 import string
 import sys
+import argparse
 
 try:
     from sqlalchemy.ext.declarative import declarative_base
@@ -43,10 +44,11 @@ class Cuts:
             return "<Cut(%s)>" % self.cut_str
 
     top_mass = Cut("top_mass > 130 && top_mass < 220")
-    eta_lj = Cut("eta_lj > 2.5")
+    eta_lj = Cut("abs(eta_lj) > 2.5")
     mt_mu = Cut("mt_mu > 50")
     rms_lj = Cut("rms_lj < 0.025")
     top_mass_sig = Cut("top_mass >130 && top_mass<220")
+    no_cut = Cut("1")
 
     @staticmethod
     def n_jets(n):
@@ -75,18 +77,18 @@ class Histogram(Base):
     def __init__(self, *args, **kwargs):
         super(Histogram, self).__init__(*args, **kwargs)
         self.pretty_name = self.name
-
+        self.hist = None
 
     def setHist(self, hist, **kwargs):
         self.hist = hist
         self.name = str(self.hist.GetName())
-        self.histogram_entries = int(kwargs["histogram_entries"])
-        self.var = kwargs["var"]
-        self.cut = kwargs["cut"]
-        self.weight = kwargs["weight"]
-        self.sample_name = kwargs["sample_name"]
-        self.sample_entries_cut = kwargs["sample_entries_cut"]
-        self.sample_entries_total = kwargs["sample_entries_total"]
+        self.histogram_entries = int(kwargs.get("histogram_entries", -1))
+        self.var = kwargs.get("var")
+        self.cut = kwargs.get("cut")
+        self.weight = kwargs.get("weight")
+        self.sample_name = kwargs.get("sample_name")
+        self.sample_entries_cut = kwargs.get("sample_entries_cut")
+        self.sample_entries_total = kwargs.get("sample_entries_total")
         self.integral = None
         self.err = None
         self.is_normalized = False
@@ -115,8 +117,8 @@ class Histogram(Base):
     def update(self, file=None, dir=None):
         self.name = str(self.hist.GetName())
         if file and dir:
-            self.hist_dir = dir.GetName()
-            self.hist_file = file.GetName()
+            self.hist_dir = str(dir.GetName())
+            self.hist_file = str(file.GetName())
         else:
             try:
                 self.hist_dir = self.hist.GetDirectory().GetName()
@@ -130,7 +132,9 @@ class Histogram(Base):
 
     def loadFile(self):
         self.fi = ROOT.TFile(self.hist_file)
-        self.hist = self.fi.Get(self.hist_dir).Get(self.name)
+        #ROOT.gROOT.cd()
+        self.hist = self.fi.Get(self.hist_dir).Get(self.name)#.Clone()
+        #self.fi.Close()
         self.update()
 
     def __repr__(self):
@@ -159,7 +163,7 @@ class Sample:
         if not self.tree:
             raise TObjectOpenException("Could not open tree Events from file %s: %s" % (self.tfile.GetName(), self.tree))
         self.tree.SetCacheSize(100*1024*1024)
-        #self.tree.AddBranchToCache("*", 1)
+        self.tree.AddBranchToCache("*", 1)
 
         self.event_count = None
         self.event_count = self.getEventCount()
@@ -281,7 +285,7 @@ class HistoDraw:
         histos = dict()
         self.tfile.cd()
         plot_range = kwargs.get("plot_range")
-        skip_weight = kwargs.get("skip_weight", [])
+        skip_weight = kwargs.get("skip_weight", ["Single*"])
 
         cut_dir_name = filter_alnum(cut.cut_str)
         if not self.tfile.GetListOfKeys().FindObject(cut_dir_name):
@@ -357,18 +361,22 @@ class MetaData:
 
         return hist
 
-if __name__=="__main__":
-
-    metadata = MetaData("histos.db", create_new=True)
+if __name__=="__main__":    
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-t", "--type", type=str, default="iso")
+    parser.add_argument("-d", "--dir", type=str, default="/Users/joosep/Documents/stpol/data/step3_trees_Apr04")
+    args = parser.parse_args()
+    
     samples = list()
-    samples = Sample.fromDirectory("/Users/joosep/Documents/stpol/data/step3_trees_Mar28/")
+    samples = Sample.fromDirectory(args.dir + "/" + args.type + "/data")
+    samples += Sample.fromDirectory(args.dir + "/" + args.type + "/mc")
     samplesDict = dict()
     for sample in samples:
         samplesDict[sample.name] = sample
-    #samples = [Sample.fromFile("/Users/joosep/Documents/stpol/TTJets_FullLept_sf.root")]
 
     histos = dict()
-    hdraw = HistoDraw("histos.root", samples)
+    metadata = MetaData("histos_%s.db" % args.type, create_new=True)
+    hdraw = HistoDraw("histos_%s.root" % args.type, samples)
 
     histos = []
     b_weight_range = [100, 0.7, 1.5]
@@ -388,19 +396,31 @@ if __name__=="__main__":
             print "Done cleanup"
 
     with Cleanup(metadata, hdraw, histos):
-        n_bins = 40
+        n_bins = 20
         try:
-            histos += hdraw.drawHistogram("n_jets", cut=Cuts.mt_mu, plot_range=[9, 1, 10])
-            histos += hdraw.drawHistogram("n_tags", cut=Cuts.mt_mu*Cuts.n_jets(2), plot_range=[5, 0, 5])
-            histos += hdraw.drawHistogram("n_tags", cut=Cuts.mt_mu*Cuts.n_jets(3), plot_range=[5, 0, 5])
-            
-            
+            histos += hdraw.drawHistogram("mt_mu", cut=Cuts.no_cut, plot_range=[n_bins, 0, 200])
+            histos += hdraw.drawHistogram("mt_mu", cut=Cuts.no_cut, plot_range=[n_bins, 0, 200], weight="pu_weight")
+
+            histos += hdraw.drawHistogram("n_jets", cut=Cuts.mt_mu, plot_range=[5, 1, 5])
+            histos += hdraw.drawHistogram("n_tags", cut=Cuts.mt_mu*Cuts.n_jets(2), plot_range=[3, 0, 2])
+            histos += hdraw.drawHistogram("n_tags", cut=Cuts.mt_mu*Cuts.n_jets(3), plot_range=[3, 0, 2])
+
             histos += hdraw.drawHistogram("n_jets", cut=Cuts.mt_mu, plot_range=[9, 1, 10], weight="pu_weight")
             histos += hdraw.drawHistogram("n_tags", cut=Cuts.mt_mu*Cuts.n_jets(2), plot_range=[5, 0, 5], weight="pu_weight")
             histos += hdraw.drawHistogram("n_tags", cut=Cuts.mt_mu*Cuts.n_jets(3), plot_range=[5, 0, 5], weight="pu_weight")
             
             
-            histos += hdraw.drawHistogram("top_mass", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj, plot_range=[n_bins, 100, 350])
+            histos += hdraw.drawHistogram("top_mass",
+                cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj, plot_range=[n_bins, 100, 350],
+            )
+            histos += hdraw.drawHistogram("top_mass",
+                cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj, plot_range=[n_bins, 100, 350],
+                weight="pu_weight"
+            )
+            histos += hdraw.drawHistogram("top_mass",
+                cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj, plot_range=[n_bins, 100, 350],
+                weight="pu_weight*b_weight_nominal"
+            )
             histos += hdraw.drawHistogram("cos_theta", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig, plot_range=[n_bins, -1, 1])
 
             histos += hdraw.drawHistogram("cos_theta", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig,
@@ -417,10 +437,20 @@ if __name__=="__main__":
             histos += hdraw.drawHistogram("n_vertices", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig,
                 plot_range=[50, 0, 50], skip_weights=["SingleMu*"]
             )
+            
+            histos += hdraw.drawHistogram("rms_lj", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig,
+                plot_range=[n_bins, 0, 0.1], skip_weights=["SingleMu*"]
+            )
+            
+            histos += hdraw.drawHistogram("rms_lj", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(0), plot_range=[n_bins, 0, 0.1], weight="pu_weight")
+            histos += hdraw.drawHistogram("rms_lj", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1), plot_range=[n_bins, 0, 0.1], weight="pu_weight")
+            histos += hdraw.drawHistogram("rms_lj", cut=Cuts.mt_mu*Cuts.n_jets(3)*Cuts.n_tags(0), plot_range=[n_bins, 0, 0.1], weight="pu_weight")
+            histos += hdraw.drawHistogram("rms_lj", cut=Cuts.mt_mu*Cuts.n_jets(3)*Cuts.n_tags(1), plot_range=[n_bins, 0, 0.1], weight="pu_weight")
+            histos += hdraw.drawHistogram("rms_lj", cut=Cuts.mt_mu*Cuts.n_jets(3)*Cuts.n_tags(2), plot_range=[n_bins, 0, 0.1], weight="pu_weight")
 
             n_jets = [2,3]
             n_tags = [0,1,2]
-            weights = [None, "pu_weight"]
+            weights = [None, "pu_weight", "pu_weight*b_weight_nominal"]
             for nj, nt, weight in itertools.product(n_jets, n_tags, weights):
                 histos += hdraw.drawHistogram("eta_lj", cut=Cuts.rms_lj*Cuts.mt_mu*Cuts.n_jets(nj)*Cuts.n_tags(nt), plot_range=[n_bins, -5, 5],
                     weight=weight,
@@ -429,7 +459,7 @@ if __name__=="__main__":
 
             for h in histos:
                 metadata.save(h)
-            logging.info("Done saving %d histograms to histos.db" % len(histos))
+            logging.info("Done saving %d histograms." % len(histos))
         except HistogramException as e:
             pass
             #raise e

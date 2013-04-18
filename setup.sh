@@ -51,5 +51,5 @@ cmsenv
 scram setup lhapdffull
 cmsenv
 
-scram b -j 20 &> scram_log
+scram b -j 8 &> scram_log
 cd $CMSSW_BASE/../

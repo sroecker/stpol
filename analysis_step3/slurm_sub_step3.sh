@@ -21,9 +21,9 @@ OUTDIR=`readlink -f $OUTDIR`
 mkdir $OUTDIR
 cd $OUTDIR
 
-#split input file into 30-line pieces
-split $INFILE -l 50 -d
+#split input file into N-line pieces
+split $INFILE -l 100 -d
 for file in x*
 do
-    sbatch -p short $CMSSW_BASE/../analysis_step3/run_step3_eventloop.sh `readlink -f $file` $OUTDIR
+    sbatch $CMSSW_BASE/../analysis_step3/run_step3_eventloop.sh `readlink -f $file` $OUTDIR
 done

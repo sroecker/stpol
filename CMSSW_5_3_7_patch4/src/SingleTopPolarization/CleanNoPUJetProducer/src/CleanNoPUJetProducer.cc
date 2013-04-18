@@ -144,6 +144,10 @@ CleanNoPUJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       //get the non-const jet
       pat::Jet& jet = outJets->back();
       jet.addUserFloat("rms", id->RMS());
+      jet.addUserFloat("mva", mva);
+      jet.addUserFloat("nParticles", id->nParticles());
+      jet.addUserFloat("nCharged", id->nCharged());
+      jet.addUserFloat("nNeutral", id->nNeutrals());
       LogDebug("produce()") << "jet rms=" << jet.userFloat("rms");
 
     } else {

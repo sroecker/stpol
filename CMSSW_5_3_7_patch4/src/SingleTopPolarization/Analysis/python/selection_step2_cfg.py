@@ -747,7 +747,19 @@ def SingleTopStep2():
                     #["n60", "n60()"],
 
                     #["genJetFlavour", "? genJet()>0 ? (genJet()->pdgId()) : 0"], #FIXME
-                    ["deltaR", "userFloat('deltaR')"]
+                    ["deltaR", "userFloat('deltaR')"],
+
+                    ["numberOfDaughters", "numberOfDaughters"],
+                    ["neutralHadronEnergy", "neutralHadronEnergy"],
+                    ["HFHadronEnergy", "HFHadronEnergy"],
+                    ["chargedEmEnergyFraction", "chargedEmEnergyFraction"],
+                    ["neutralEmEnergyFraction", "neutralEmEnergyFraction"],
+                    ["chargedHadronEnergyFraction", "chargedHadronEnergyFraction"],
+                    ["chargedMultiplicity", "chargedMultiplicity"],
+                    ["nParticles", "userFloat('nParticles')"],
+                    ["puMva", "userFloat('mva')"],
+                    ["nCharged", "userFloat('nCharged')"],
+                    ["nNeutral", "userFloat('nNeutral')"],
                 ]
         )
     )
@@ -791,27 +803,12 @@ def SingleTopStep2():
 
     if Config.isMC and Config.doPDFWeight:
 
-        process.pdfInfo1 = cms.EDProducer('PDFweightsProducer',
-            PDFSetSrc = cms.string('cteq66.LHgrid')
-        )
-        process.pdfInfo2 = cms.EDProducer('PDFweightsProducer',
-            PDFSetSrc = cms.string('CT10.LHgrid')
-        )
-        process.pdfInfo3 = cms.EDProducer('PDFweightsProducer',
-            PDFSetSrc = cms.string('MSTW2008nlo68cl.LHgrid')
-        )
-        process.pdfInfo4 = cms.EDProducer('PDFweightsProducer',
-            PDFSetSrc = cms.string('MRST2006nnlo.LHgrid')
-        )
-        process.pdfInfo5 = cms.EDProducer('PDFweightsProducer',
-            PDFSetSrc = cms.string('NNPDF21_100.LHgrid')
+        process.PDFweights = cms.EDProducer('PDFweightsProducer',
+			# max 3 PDF sets and they have to be in decreasing order of eigenvectors
+			PDFSets = cms.vstring('NNPDF21_100.LHgrid','CT10.LHgrid','MSTW2008nlo68cl.LHgrid')
         )
         process.pdfPath = cms.Path(
-              process.pdfInfo1
-            #* process.pdfInfo2
-            #* process.pdfInfo3
-            #* process.pdfInfo4
-            #* process.pdfInfo5
+              process.PDFweights
         )
 
 

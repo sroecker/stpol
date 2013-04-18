@@ -50,7 +50,6 @@ def JetSetup(process, conf):
             isOriginal=cms.bool(False)
         )
 
-
 #    if conf.isMC:
 #        process.smearedJets = cms.EDProducer('JetMCSmearProducer',
 #            src=cms.InputTag("noPUJets"),
@@ -62,8 +61,8 @@ def JetSetup(process, conf):
 
     process.deltaRJets = cms.EDProducer("DeltaRProducer",
         leptonSrc=cms.InputTag("goodSignalLeptons"),
-        #jetSrc=cms.InputTag("noPUJets" if conf.Jets.source == "selectedPatJets" else conf.Jets.source)
         jetSrc=cms.InputTag("noPUJets")
+        #jetSrc=cms.InputTag(conf.Jets.source)
     )
 
     process.goodJets = cms.EDFilter("CandViewSelector",
