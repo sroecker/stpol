@@ -35,6 +35,9 @@ process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(options.maxEv
 process.patJetsWithOwnRef = cms.EDProducer('PatObjectOwnRefProducer<pat::Jet>',
     src=cms.InputTag("selectedPatJets")
 )
+
+#Note: this module causes a large memory increase when crossing the file boundary
+#Reason - unknown, solution: limit processing to ~1 file.
 from PhysicsTools.PatUtils.tools.metUncertaintyTools import runMEtUncertainties
 runMEtUncertainties(process,
      electronCollection=cms.InputTag("electronsWithID"),
@@ -42,6 +45,7 @@ runMEtUncertainties(process,
      muonCollection=cms.InputTag("muonsWithID"),
      tauCollection="", # "" means emtpy, None means cleanPatTaus
      jetCollection=cms.InputTag("patJetsWithOwnRef"),
+#     jetCollection=cms.InputTag("selectedPatJets"),
      addToPatDefaultSequence=False
 )
 process.metUncertaintyPath = cms.Path(
