@@ -1,3 +1,5 @@
+#Does the met uncertaintiy calculation using the official tool as documented in
+#https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuidePATTools#MET_Systematics_Tools
 import FWCore.ParameterSet.Config as cms
 from FWCore.ParameterSet.VarParsing import VarParsing
 from SingleTopPolarization.Analysis.config_step2_cfg import Config
