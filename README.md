@@ -11,8 +11,19 @@ For read-only access you can use
 If you also wish to commit, you'll have to have a github account and be added to the group, then you can use
 >git clone git@github.com:HEP-KBFI/stpol.git
 
+### Make sure you have sourced cmsset
+
+>source /cvmfs/cms.cern.ch/cmsset_default.sh
+or by using the following script
+>source setenv.sh
+
+### Create the workspace
+
+Run the following to create the CMSSW directory, link the SingleTopPolarization source code folder to it and compile everything
+>. ./setup.sh
+
 ---
-Note, your showtags output must be the following:          
+Note, your showtags output after the setup should be the following:          
 ``` bash
 	V00-02-10      CMGTools/External                                
 	V00-01-03      CommonTools/CandAlgos                            
@@ -69,17 +80,6 @@ Note, your showtags output must be the following:
 	NoTag          TopQuarkAnalysis/SingleTop                       
 ```
 ---
-
-### Make sure you have sourced cmsset
-
->source /cvmfs/cms.cern.ch/cmsset_default.sh
-or by using the following script
->source setenv.sh
-
-### Create the workspace
-
-Run the following to create the CMSSW directory, link the SingleTopPolarization source code folder to it and compile everything
->. ./setup.sh
 
 #ANALYSIS PATHWAY
 
