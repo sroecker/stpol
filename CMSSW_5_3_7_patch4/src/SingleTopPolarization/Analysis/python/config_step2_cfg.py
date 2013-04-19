@@ -124,9 +124,11 @@ class Config(C):
 
     class Electrons(Leptons):
         pt = "ecalDrivenMomentum.Pt()"
-        mvaCut = 0.5
+        mvaCut = 0.1
+        mvaCutAntiIso = 0.9
         cutOnMVA = True
-        cutWWlnuj = False #set cutOnMVA = False and cutOnIso = False to use this selection
+        cutOnIso = True
+        cutWWlnuj = False 
         relIsoCutRangeIsolatedRegion = [0.0, 0.1]
         relIsoCutRangeAntiIsolatedRegion = [0.1, 0.5]
         looseVetoRelIsoCut = 0.15
@@ -136,9 +138,9 @@ class Config(C):
 
     Electrons.relIsoType = Leptons.RelativeIsolation.rhoCorrRelIso
     Muons.relIsoType = Leptons.RelativeIsolation.deltaBetaCorrRelIso
-    Electrons.cutOnMVA = False
-    Electrons.cutOnIso = False
-    Electrons.cutWWlnuj = True
+    Electrons.cutOnMVA = True
+    Electrons.cutOnIso = True
+    Electrons.cutWWlnuj = False #set both cutOnMVA and cutOnIso 'False' to use this option
     # @classmethod
     # def toStr(c):
     #     s = "channel = %s" % Config.channel

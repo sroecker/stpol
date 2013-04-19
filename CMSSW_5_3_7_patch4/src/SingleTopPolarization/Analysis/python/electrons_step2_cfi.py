@@ -31,7 +31,12 @@ def ElectronSetup(process, conf):
             ( abs(eta) > 1.479 && electronID('mvaTrigV0') > 0.899 && userFloat('{0}') < 0.150 ) )""".format(conf.Electrons.relIsoType)
 
     if conf.Electrons.cutOnMVA:
-        goodSignalElectronCut += "&& electronID('mvaTrigV0') > %f" % conf.Electrons.mvaCut
+        if conf.Electrons.reverseIsoCut:
+            goodSignalElectronCut += "&& electronID('mvaTrigV0') > 0. && electronID('mvaTrigV0') < %f" % conf.Electrons.mvaCutAntiIso
+        else:
+            goodSignalElectronCut += "&& electronID('mvaTrigV0') > %f" % conf.Electrons.mvaCut
+        
+
     goodSignalElectronCut += "&& abs(userFloat('dxy')) < 0.02"
     goodSignalElectronCut += '&& userInt("gsfTrack_trackerExpectedHitsInner_numberOfHits") <= 0'
 
