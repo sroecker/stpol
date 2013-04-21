@@ -104,6 +104,11 @@ def ElectronSetup(process, conf):
         maxNumber=cms.uint32(0),
     )
 
+    # Scale factors #
+    process.electronWeightsProducer = cms.EDProducer("ElectronEfficiencyProducer",
+                                                     src = cms.InputTag("goodSignalElectrons")
+                                                     )
+
     #####################
     # MET/MtW cutting   #
     #####################
@@ -244,8 +249,12 @@ def ElectronPath(process, conf):
         process.elePath.insert(
             process.elePath.index(process.topRecoSequenceEle)+1,
             process.partonStudyCompareSequence
-        )
-
+            )
+        process.elePath.insert(
+            process.elePath.index(process.singleIsoEle)+1,
+            process.electronWeightsProducer
+            )
+        
     eventCounting.countAfter(process, process.elePath,
         [
         "stepHLTsyncEle",
