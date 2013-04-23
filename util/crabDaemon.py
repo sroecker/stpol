@@ -70,7 +70,7 @@ class CrabStatus:
         outfile = d+".out"
         lines = CrabStatus.extCommand("crab -c %s -status" % d, outfile)
         if not lines:
-            return None
+            raise CrabException("Failed to get status")
         statuslines = CrabStatus.getStatusLines(lines)
         statuses = [JobStatus(int(x[0]), x[2], x[3:]) for x in statuslines]
         return statuses
