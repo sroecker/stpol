@@ -31,7 +31,8 @@ class CrabStatus:
         return lines
 
     @staticmethod
-    def extCommand(cmd, fname, timeout=1200, retries=3, sleeptime=60):
+    def extCommand(cmd, fname, timeout=1200, retries=1, sleeptime=60):
+        lines = None
         for i in range(retries):
             try:
                 f = open(fname, "w")
@@ -58,7 +59,8 @@ class CrabStatus:
                 print "Sleeping {0} seconds before next try".format(sleeptime)
                 time.sleep(sleeptime)
                 if i+1 == retries:
-                    raise e
+                    break
+                    #raise e
 
         os.remove(fname)
         return lines
@@ -67,6 +69,8 @@ class CrabStatus:
     def getStatus(d):
         outfile = d+".out"
         lines = CrabStatus.extCommand("crab -c %s -status" % d, outfile)
+        if not lines:
+            return None
         statuslines = CrabStatus.getStatusLines(lines)
         statuses = [JobStatus(int(x[0]), x[2], x[3:]) for x in statuslines]
         return statuses
@@ -87,8 +91,9 @@ class CrabStatus:
         for chunk in c:
             s = ",".join(chunk)
             try:
-                out = CrabStatus.extCommand("crab -c %s -kill %s" % (d, s), "resub", retries=1, sleeptime=0)
-                out = CrabStatus.extCommand("crab -c %s -get %s" % (d, s), "resub", retries=1, sleeptime=0)
+                pass
+                #out = CrabStatus.extCommand("crab -c %s -kill %s" % (d, s), "resub", retries=1, sleeptime=0)
+                #out = CrabStatus.extCommand("crab -c %s -get %s" % (d, s), "resub", retries=1, sleeptime=0)
             except CrabFailedException as e:
                 print "Could not kill/get job to resubmit, probably no need to."
                 pass
