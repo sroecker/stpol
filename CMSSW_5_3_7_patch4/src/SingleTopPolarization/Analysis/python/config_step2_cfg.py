@@ -32,7 +32,7 @@ class Config(C):
 
     globalTagMC = "START53_V20::All"
 
-    doPDFWeight = False
+    doPDFWeight = True
 
     #Whether to run the muon channel
     doMuon = True
@@ -41,7 +41,7 @@ class Config(C):
     doElectron = True
 
     #Whether to filter the HLT
-    filterHLT = True
+    filterHLT = False
 
     #Whether to use the cross-strigger or the single lepton trigger
     useXTrigger = False
@@ -128,7 +128,7 @@ class Config(C):
         mvaCutAntiIso = 0.9
         cutOnMVA = True
         cutOnIso = True
-        cutWWlnuj = False 
+        cutWWlnuj = False
         relIsoCutRangeIsolatedRegion = [0.0, 0.1]
         relIsoCutRangeAntiIsolatedRegion = [0.1, 0.5]
         looseVetoRelIsoCut = 0.15
