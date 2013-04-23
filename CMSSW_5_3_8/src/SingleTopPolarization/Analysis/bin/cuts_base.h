@@ -1,11 +1,15 @@
 #include "DataFormats/FWLite/interface/Event.h"
 
+#ifndef CUTS_BASE_H
+#define CUTS_BASE_H
+
 //Base class for all work that is done inside the loop
+template <typename T>
 class CutsBase {
 public:
 
     //Map of the branch variables
-    std::map<std::string, float>& branch_vars;
+    std::map<std::string, T>& branch_vars;
 
     //Counter for the number of processed events
     unsigned long n_processed;
@@ -21,8 +25,12 @@ public:
     
     std::string toString();
 
-    CutsBase(std::map<std::string, float>& _branch_vars);
+    CutsBase(std::map<std::string, T>& _branch_vars);
 
     void pre_process();
     void post_process();
 };
+
+#endif
+typedef CutsBase<float> CutsBaseF;
+typedef CutsBase<int> CutsBaseI;

@@ -10,5 +10,5 @@
 <use   name="PhysicsTools/Utilities"/>
 <use   name="PhysicsTools/SelectorUtils"/>
 <environment>
-  <bin name="Step3_EventLoop" file="Step3_EventLoop.cpp,cuts_base.cpp"></bin>
+  <bin name="Step3_EventLoop" file="Step3_EventLoop.cpp,cuts_base.cpp,hlt_cuts.cpp"></bin>
 </environment>

@@ -17,6 +17,7 @@
 #include "FWCore/PythonParameterSet/interface/PythonProcessDesc.h"
 #include "DataFormats/Common/interface/MergeableCounter.h"
 #include "cuts_base.h"
+#include "hlt_cuts.h"
 
 //Shorthand for getting a value of type T from the event
 template <typename T>
@@ -44,50 +45,7 @@ float get_collection_n(const edm::EventBase& evt, edm::InputTag src, unsigned in
 //The default value for a TTree entry
 static const float def_val = (const float)(TMath::QuietNaN());
 
-////Base class for all work that is done inside the loop
-//class CutsBase {
-//public:
-//
-//    //Map of the branch variables
-//    std::map<std::string, float>& branch_vars;
-//
-//    //Counter for the number of processed events
-//    unsigned long n_processed;
-//
-//    //Counter for the number of events passing this Cut
-//    unsigned long n_pass;
-//
-//    //Abstract method that sets the branch variables to sensible defaults on each loop
-//    virtual void initialize_branches() = 0;
-//
-//    //Actually processes the event, loading the variables form the edm::EventBase into the branches
-//    virtual bool process(const edm::EventBase& event) = 0;
-//   
-//    CutsBase(std::map<std::string, float>& _branch_vars) :
-//    branch_vars(_branch_vars)
-//    {
-//        //initialize_branches(); //Can't call virtual method form constructor
-//        n_processed = 0;
-//        n_pass = 0;
-//    }
-//    
-//    std::string toString() {
-//        std::stringstream ss;
-//        ss << "Processed: " << n_processed << " Passed: " << n_pass;
-//        return ss.str();
-//    }
-//    
-//    void pre_process() {
-//        initialize_branches();
-//        n_processed += 1;
-//    }
-//    
-//    void post_process() {
-//        n_pass += 1;
-//    }
-//};
-
-class MuonCuts : public CutsBase {
+class MuonCuts : public CutsBaseF {
 public:
     bool cutOnIso;
     bool reverseIsoCut;
@@ -104,7 +62,7 @@ public:
     }
     
     MuonCuts(const edm::ParameterSet& pars, std::map< std::string, float> & _branch_vars) :
-    CutsBase(_branch_vars)
+    CutsBaseF(_branch_vars)
     {
         initialize_branches();
         requireOneMuon = pars.getParameter<bool>("requireOneMuon");
@@ -141,7 +99,7 @@ public:
     }
 };
 
-class VetoLeptonCuts : public CutsBase {
+class VetoLeptonCuts : public CutsBaseF {
 public:
     bool doVetoLeptonCut;
     edm::InputTag vetoMuCountSrc;
@@ -151,7 +109,7 @@ public:
     }
 
     VetoLeptonCuts(const edm::ParameterSet& pars, std::map< std::string, float> & _branch_vars) :
-    CutsBase(_branch_vars)
+    CutsBaseF(_branch_vars)
     {
         initialize_branches();
         doVetoLeptonCut = pars.getParameter<bool>("doVetoLeptonCut");
@@ -173,7 +131,7 @@ public:
     }
 };
 
-class JetCuts : public CutsBase {
+class JetCuts : public CutsBaseF {
 public:
     bool cutOnNJets;
     bool cutOnNTags;
@@ -218,7 +176,7 @@ public:
     }
     
     JetCuts(const edm::ParameterSet& pars, std::map<std::string, float>& _branch_vars) :
-    CutsBase(_branch_vars)
+    CutsBaseF(_branch_vars)
     {
         initialize_branches();
         cutOnNJets =  pars.getParameter<bool>("cutOnNJets");
@@ -268,7 +226,7 @@ public:
     }
 };
 
-class TagCuts : public CutsBase {
+class TagCuts : public CutsBaseF {
 public:
     bool cutOnNTags;
     
@@ -288,7 +246,7 @@ public:
     }
     
     TagCuts(const edm::ParameterSet& pars, std::map<std::string, float>& _branch_vars) :
-    CutsBase(_branch_vars)
+    CutsBaseF(_branch_vars)
     {
         initialize_branches();
         cutOnNTags =  pars.getParameter<bool>("cutOnNTags");
@@ -316,7 +274,7 @@ public:
     }
 };
 
-class TopCuts : public CutsBase {
+class TopCuts : public CutsBaseF {
 public:
     bool applyMassCut;
     bool signalRegion;
@@ -329,7 +287,7 @@ public:
     }
     
     TopCuts(const edm::ParameterSet& pars, std::map<std::string, float>& _branch_vars) :
-    CutsBase(_branch_vars)
+    CutsBaseF(_branch_vars)
     {
         initialize_branches();
         applyMassCut = pars.getParameter<bool>("applyMassCut");
@@ -361,7 +319,7 @@ public:
     }
 };
 
-class Weights : public CutsBase {
+class Weights : public CutsBaseF {
 public:
     edm::InputTag bWeightNominalSrc;
     edm::InputTag puWeightSrc;
@@ -377,7 +335,7 @@ public:
     }
     
     Weights(const edm::ParameterSet& pars, std::map<std::string, float>& _branch_vars) :
-    CutsBase(_branch_vars)
+    CutsBaseF(_branch_vars)
     {
         initialize_branches();
         doWeights = pars.getParameter<bool>("doWeights");
@@ -414,7 +372,7 @@ public:
     }
 };
 
-class MTMuCuts : public CutsBase {
+class MTMuCuts : public CutsBaseF {
 public:
     edm::InputTag mtMuSrc;
     float minVal;
@@ -425,7 +383,7 @@ public:
     }
     
     MTMuCuts(const edm::ParameterSet& pars, std::map<std::string, float>& _branch_vars) :
-    CutsBase(_branch_vars)
+    CutsBaseF(_branch_vars)
     {
         initialize_branches();
         mtMuSrc = pars.getParameter<edm::InputTag>("mtMuSrc");
@@ -444,7 +402,7 @@ public:
     }
 };
 
-class MiscVars : public CutsBase {
+class MiscVars : public CutsBaseF {
 public:
     edm::InputTag cosThetaSrc;
     edm::InputTag nVerticesSrc;
@@ -461,7 +419,7 @@ public:
     
     
     MiscVars(const edm::ParameterSet& pars, std::map<std::string, float>& _branch_vars, std::map<std::string, std::vector<float>>& _branch_vars_vec) :
-    CutsBase(_branch_vars),
+    CutsBaseF(_branch_vars),
     branch_vars_vec(_branch_vars_vec)
     {
         initialize_branches();
@@ -489,7 +447,7 @@ public:
     }
 };
 
-class GenParticles : public CutsBase {
+class GenParticles : public CutsBaseF {
 public:
     edm::InputTag trueBJetCount;
     edm::InputTag trueCJetCount;
@@ -511,7 +469,7 @@ public:
     }
     
     GenParticles(const edm::ParameterSet& pars, std::map<std::string, float>& _branch_vars) :
-    CutsBase(_branch_vars)
+    CutsBaseF(_branch_vars)
     {
         initialize_branches();
         
@@ -579,12 +537,14 @@ int main(int argc, char* argv[])
     const edm::ParameterSet& mt_mu_cuts_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("mtMuCuts");
     const edm::ParameterSet& weight_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("weights");
     const edm::ParameterSet& miscvars_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("finalVars");
-    const edm::ParameterSet& gen_particle_vars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("genParticles");
+    const edm::ParameterSet& gen_particle_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("genParticles");
+    const edm::ParameterSet& hlt_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("HLT");
     
     const edm::ParameterSet& lumiblock_counter_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("lumiBlockCounters");
     edm::InputTag totalPATProcessedCountSrc = lumiblock_counter_pars.getParameter<edm::InputTag>("totalPATProcessedCountSrc");
     
     std::map<std::string, float> branch_vars;
+    std::map<std::string, int> branch_varsI;
     std::map<std::string, std::vector<float> > branch_vars_vec;
     std::map<std::string, unsigned int> event_id_branches;
     std::map<std::string, unsigned int> count_map;
@@ -607,7 +567,8 @@ int main(int argc, char* argv[])
     Weights weights(weight_pars, branch_vars);
     MTMuCuts mt_mu_cuts(mt_mu_cuts_pars, branch_vars);
     MiscVars misc_vars(miscvars_pars, branch_vars, branch_vars_vec);
-    GenParticles gen_particles(gen_particle_vars, branch_vars);
+    GenParticles gen_particles(gen_particle_pars, branch_vars);
+    HLTCuts hlt_cuts(hlt_pars, branch_varsI);
     
     fwlite::TFileService fs = fwlite::TFileService(outputFile_.c_str());
     
