@@ -22,9 +22,22 @@ bool HLTCuts::process(const edm::EventBase& event) {
     event.getByLabel(hlt_src, trig_results);
     const edm::TriggerNames& trig_names = event.triggerNames(*trig_results);
     
+    //std::cout << trig_names.size() << std::endl;
+    //for(unsigned int i=0;i<trig_names.size(); i++) {
+    //    std::cout << trig_names.triggerName(i) << " "; 
+    //}
+    //std::cout << std::endl;
     //Tabulate specified HLT-s
     for(auto & name : hlt_names) {
-        branch_vars[name] = (int)trig_results->accept(trig_names.triggerIndex(name));  
+        //std::cout << "index=" << trig_names.triggerIndex(name) << std::endl;
+        unsigned int idx = trig_names.triggerIndex(name);
+        if(idx>=trig_results->size()) {
+            std::cerr << "Could not find trigger " << name << " idx=" << idx << std::endl; 
+        }
+        else {
+            branch_vars[name] = (int)trig_results->accept(idx);
+        } 
+        //std::cout << branch_vars[name] << std::endl; 
     }
 
     //Cut on one specific HLT

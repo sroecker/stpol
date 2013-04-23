@@ -549,16 +549,18 @@ int main(int argc, char* argv[])
     std::map<std::string, unsigned int> event_id_branches;
     std::map<std::string, unsigned int> count_map;
 
-    count_map["total_processed"] = 0;
-    count_map["pass_lepton_cuts"] = 0;
-    count_map["pass_lepton_veto_cuts"] = 0;
-    count_map["pass_mt_cuts"] = 0;
-    count_map["pass_jet_cuts"] = 0;
-    count_map["pass_btag_cuts"] = 0;
-    count_map["pass_top_cuts"] = 0;
     //Give the order of the map keys that will end up as the count histogram bins
-    std::vector<std::string> count_map_order({"total_processed", "pass_lepton_cuts", "pass_lepton_veto_cuts", "pass_mt_cuts", "pass_jet_cuts", "pass_btag_cuts", "pass_top_cuts"});
-    
+    std::vector<std::string> count_map_order({
+        "total_processed", "pass_hlt_cut",
+        "pass_lepton_cuts", "pass_lepton_veto_cuts",
+        "pass_mt_cuts", "pass_jet_cuts",
+        "pass_btag_cuts", "pass_top_cuts"
+    });
+   
+    for(auto& e : count_map_order) {
+        count_map[e] = 0; 
+    }
+
     MuonCuts muon_cuts(mu_cuts_pars, branch_vars);
     VetoLeptonCuts veto_lepton_cuts(mu_cuts_pars, branch_vars);
     JetCuts jet_cuts(jet_cuts_pars, branch_vars);
@@ -590,6 +592,14 @@ int main(int argc, char* argv[])
         float* p_branch = &(elem.second);
         out_tree->Branch(br_name.c_str(), p_branch);
     }
+    
+    //Create all the requested branches in the TTree
+    for (auto & elem : branch_varsI) {
+        const std::string& br_name = elem.first;
+        int* p_branch = &(elem.second);
+        out_tree->Branch(br_name.c_str(), p_branch);
+    }
+    
     for (auto & elem : event_id_branches) {
         out_tree->Branch(elem.first.c_str(), &(elem.second));
     }
@@ -614,6 +624,9 @@ int main(int argc, char* argv[])
                 
                 if(outputEvery_!=0 ? (ievt>0 && ievt%outputEvery_==0) : false)
                     std::cout << "  processing event: " << ievt << std::endl;
+                
+                bool passes_hlt_cuts = hlt_cuts.process(event);
+                if(!passes_hlt_cuts) continue;
                 
                 bool passes_muon_cuts = muon_cuts.process(event);
                 if(!passes_muon_cuts) continue;
@@ -655,6 +668,7 @@ int main(int argc, char* argv[])
         }
     }
     
+    count_map["pass_hlt_cuts"] += hlt_cuts.n_pass;
     count_map["pass_lepton_cuts"] += muon_cuts.n_pass;
     count_map["pass_lepton_veto_cuts"] += veto_lepton_cuts.n_pass;
     count_map["pass_mt_cuts"] += mt_mu_cuts.n_pass;
@@ -669,7 +683,9 @@ int main(int argc, char* argv[])
         i++;
     }
     
-    std::cout << "total processed events " << count_map["total_processed"] << std::endl;
+    std::cout << "total processed step1 " << count_map["total_processed"] << std::endl;
+    std::cout << "total processed step3 " << ievt << std::endl;
+    std::cout << "hlt cuts " << hlt_cuts.toString() << std::endl;
     std::cout << "muon cuts " << muon_cuts.toString() << std::endl;
     std::cout << "veto lepton cuts " << veto_lepton_cuts.toString() << std::endl;
     std::cout << "mt_mu cuts " << mt_mu_cuts.toString() << std::endl;
