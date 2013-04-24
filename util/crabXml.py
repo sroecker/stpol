@@ -8,6 +8,7 @@ import glob
 import scipy
 import scipy.stats
 import scipy.stats.mstats
+import pdb
 
 class TimeStats:
     def __init__(self, minimum, maximum, mean, quantiles):
@@ -24,10 +25,12 @@ class JobStats:
         completed = filter(lambda j: j.isCompleted(), task.jobs)
         needs_get = filter(lambda j: j.needsGet(), task.jobs)
         pending = filter(lambda j: j.isPending(), task.jobs)
-        quantiles_submissions = scipy.stats.mstats.mquantiles(map(lambda j: j.n_submission, task.jobs), prob=[0.25, 0.5, 0.75, 0.95])
-
         if len(task.jobs)>0:
+            quantiles_submissions = scipy.stats.mstats.mquantiles(map(lambda j: j.n_submission, task.jobs), prob=[0.25, 0.5, 0.75, 0.95])
+            self.quantiles_submissions = [int(x) for x in quantiles_submissions]
             max_submissions = numpy.max(map(lambda j: j.n_submission, task.jobs))
+        else:
+            self.quantiles_submissions = None
 
         needs_resubmit = filter(lambda j: j.needsResubmit(), task.jobs)
         self.jobs_total = len(task.jobs)
@@ -35,9 +38,9 @@ class JobStats:
         self.jobs_to_get = len(needs_get)
         self.jobs_pending = len(pending)
         self.jobs_to_resubmit = len(needs_resubmit)
-        self.quantiles_submissions = [int(x) for x in quantiles_submissions]
         self.max_submissions = max_submissions
         self.time_stats_success =  Task.timeStats(filter(lambda x: x.isCompleted(), task.jobs))
+        self.total_time = self.time_stats_success.mean * len(completed)
         self.time_stats_fail = Task.timeStats(filter(lambda x: x.needsResubmit(), task.jobs))
         self.fail_codes = Task.retCodes(filter(lambda x: x.needsResubmit(), task.jobs))
         self.name = task.name
@@ -55,7 +58,9 @@ class JobStats:
         s += "Successful job timing: %s\n" % str(self.time_stats_success)
         s += "Failed job timing: %s\n" % str(self.time_stats_fail)
         s += "Return codes for failed: %s\n" % str(self.fail_codes)
+        s += "Total time used so far (approx.): %s\n" % str(self.total_time)
         return s
+
 class Task:
     def __init__(self):
         self.prev_jobs = []
@@ -74,8 +79,9 @@ class Task:
         id = get(job, "jobId", int)
         name = get(job, "name", str)
         submission = get(running_job, "submission", int)
-        schedulerId = get(running_job, "schedulerId", int)
-        submissionTime = get(running_job, "submissionTime", str)
+        schedulerId = get(running_job, "schedulerId", str)
+        submissionTime = get(running_job, u'submissionTime', str)
+
         getOutputTime = get(running_job, "getOutputTime", str)
         wrapperReturnCode = get(running_job, "wrapperReturnCode", int)
         applicationReturnCode = get(running_job, "applicationReturnCode", int)
@@ -124,7 +130,10 @@ class Task:
         print str(stats)
 
 def maketime(s):
-    return datetime.datetime.fromtimestamp(time.mktime(time.strptime(s, "%Y-%m-%d %H:%M:%S")))
+    if s:
+        return datetime.datetime.fromtimestamp(time.mktime(time.strptime(s, "%Y-%m-%d %H:%M:%S")))
+    else:
+        return None
 class Job:
     def __init__(self,
         name,
@@ -163,7 +172,10 @@ class Job:
 
     def totalTime(self):
         t1 = self.get_output_time if self.get_output_time is not None else time.localtime()
-        return t1 - self.submission_time
+        if self.submission_time:
+            return t1 - self.submission_time
+        else:
+            return -1
 
     def __repr__(self):
         return "Job(%d,%d): %s %d %d %s %s" % (
@@ -177,32 +189,27 @@ class Job:
         )
 
 def get(node, name, f):
-    val = node.attributes.getNamedItem(name)
-    if val is None:
+    item = node.attributes.getNamedItem(name)
+    if item is None:
         return None
     else:
-        return f(val.nodeValue)
+        return f(item.nodeValue)
 
 
 reports = glob.glob(sys.argv[1])
 
 if len(reports)==1:
     t = Task()
-    try:
-        t.updateJobs(reports[0])
-        t.printStats()
-        for job in t.jobs:
-            if job.lfn:
-                print job.lfn
-    except Exception as e:
-        print "Skipping: %s" % str(e)
+    t.updateJobs(reports[0])
+    t.printStats()
+    for job in t.jobs:
+        if job.lfn:
+            print job.lfn
 elif len(reports)>1:
     t_tot = Task()
     for r in reports:
+        print r
         t = Task()
-        try:
-            t.updateJobs(r)
-            t_tot += t
-        except Exception as e:
-            print "Skipping: %s" % str(e)
+        t.updateJobs(r)
+        t_tot += t
     t_tot.printStats()
