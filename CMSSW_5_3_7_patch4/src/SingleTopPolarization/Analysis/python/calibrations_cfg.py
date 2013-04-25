@@ -70,6 +70,7 @@ def setEffs(eff_ex_T_t, eff_ex_TTbar, eff_ex_WJets):
     effs["WZ"] = BTaggingEfficiency(b_T_t, c_WJets, l_WJets)
     effs["ZZ"] = BTaggingEfficiency(b_T_t, c_WJets, l_WJets)
     effs["DYJets"] = BTaggingEfficiency(b_T_t, c_WJets, l_WJets)
+    effs["GJets*"] = BTaggingEfficiency(b_T_t, c_WJets, l_WJets)
 
     effs["TTbar"] = BTaggingEfficiency(b_T_t, c_WJets, l_TTbar)
     effs["T_tW"] = BTaggingEfficiency(b_T_t, c_WJets, l_TTbar)
