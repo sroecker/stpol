@@ -66,12 +66,12 @@ def SingleTopStep2():
                   VarParsing.varType.string,
                   "destination pile-up distribution"
         )
-        
+
         options.register ('compHep', False,
                   VarParsing.multiplicity.singleton,
                   VarParsing.varType.bool,
                   "Turn on debugging messages")
-        
+
         options.parseArguments()
 
 
@@ -896,6 +896,7 @@ def SingleTopStep2():
                 #'drop *',
                 'drop *',
                 'keep edmMergeableCounter_*__*',
+                'keep edmTriggerResults_TriggerResults__*',
                 'keep *_flavourAnalyzer_*_STPOLSEL2',
                 'keep floats_patMETNTupleProducer_*_STPOLSEL2',
                 'keep floats_recoTopNTupleProducer_*_STPOLSEL2',

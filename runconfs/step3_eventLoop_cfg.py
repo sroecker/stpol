@@ -57,12 +57,12 @@ process.fwliteOutput = cms.PSet(
 process.muonCuts = cms.PSet(
     cutOnIso  = cms.bool(False),
     reverseIsoCut  = cms.bool(False),
-    requireOneMuon  = cms.bool(True),
+    requireOneMuon  = cms.bool(False),
     isoCut  = cms.double(0.12),
     muonPtSrc  = cms.InputTag("goodSignalMuonsNTupleProducer", "Pt"),
     muonRelIsoSrc  = cms.InputTag("goodSignalMuonsNTupleProducer", "relIso"),
     muonCountSrc  = cms.InputTag("muonCount"),
-    doVetoLeptonCut = cms.bool(True),
+    doVetoLeptonCut = cms.bool(False),
     vetoMuCountSrc = cms.InputTag("looseVetoMuCount"),
     vetoEleCountSrc = cms.InputTag("looseVetoEleCount"),
 )
@@ -100,6 +100,19 @@ process.jetCuts = cms.PSet(
     bJetPtSrc = cms.InputTag("highestBTagJetNTupleProducer", "Pt"),
 )
 
+process.bTagCuts = cms.PSet(
+    cutOnNTags  = cms.bool(False),
+
+    bTagJetsCountSrc = cms.InputTag("bJetCount"),
+
+    nTagsMin = cms.int32(0),
+    nTagsMax = cms.int32(9),
+
+    bJetEtaSrc = cms.InputTag("highestBTagJetNTupleProducer", "Eta"),
+    bJetBdiscrSrc = cms.InputTag("highestBTagJetNTupleProducer", "bDiscriminatorTCHP"),
+    bJetPtSrc = cms.InputTag("highestBTagJetNTupleProducer", "Pt"),
+)
+
 process.topCuts = cms.PSet(
         applyMassCut = cms.bool(False),
         signalRegion = cms.bool(True),
@@ -122,6 +135,17 @@ process.mtMuCuts = cms.PSet(
     minVal = cms.double(40)
 )
 
+process.HLT = cms.PSet(
+    hltSrc = cms.InputTag("TriggerResults", "", "HLT"),
+    hltNames = cms.vstring([
+        "HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet50_40_30_v1",
+        "HLT_Ele25_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_TriCentralPFNoPUJet50_40_30_v5",
+        "HLT_Ele25_CaloIdVT_CaloIsoVL_TrkIdVL_TrkIsoT_TriCentralPFNoPUJet50_40_30_v1",
+    ]),
+    cutOnHLT = cms.string("None"),
+    doCutOnHLT = cms.bool(False)
+)
+
 process.finalVars = cms.PSet(
     cosThetaSrc = cms.InputTag("cosTheta", "cosThetaLightJet"),
     nVerticesSrc = cms.InputTag("offlinePVCount"),
@@ -141,3 +165,18 @@ process.genParticles = cms.PSet(
     trueCJetTaggedCountSrc = cms.InputTag("btaggedTrueCJetCount"),
     trueLJetTaggedCountSrc = cms.InputTag("btaggedTrueLJetCount"),
 )
+
+doSync = False
+if doSync:
+    process.muonCuts.requireOneMuon = True
+    process.muonCuts.doVetoLeptonCut = True
+    process.jetCuts.cutOnNJets = True
+    process.jetCuts.nJetsMin = 2
+    process.jetCuts.nJetsMax = 2
+
+    process.bTagCuts.cutOnNTags = True
+    process.bTagCuts.nTagsMin = 1
+    process.bTagCuts.nTagsMax = 1
+
+    process.mtMuCuts.doMTCut = True
+    process.mtMuCuts.minVal = 40

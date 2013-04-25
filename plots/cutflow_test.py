@@ -42,7 +42,7 @@ if __name__=="__main__":
     if args.normalize_lumi:
         title += " normalized to 20/fb"
         
-    canv = plot_hists(hists, do_log_y=True, title=title, x_label="cos #theta")
+    canv = plot_hists(hists, do_log_y=False, title=title, x_label="cos #theta")
     leg = legend(hists, pos="top-right-small")
     canv.SaveAs("cutflow_%s.pdf" % sample.name)
     #canvas_margin(canv, 0.3)
