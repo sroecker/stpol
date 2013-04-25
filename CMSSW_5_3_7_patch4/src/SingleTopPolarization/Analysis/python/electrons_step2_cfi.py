@@ -31,7 +31,12 @@ def ElectronSetup(process, conf):
             ( abs(eta) > 1.479 && electronID('mvaTrigV0') > 0.899 && userFloat('{0}') < 0.150 ) )""".format(conf.Electrons.relIsoType)
 
     if conf.Electrons.cutOnMVA:
-        goodSignalElectronCut += "&& electronID('mvaTrigV0') > %f" % conf.Electrons.mvaCut
+        if conf.Electrons.reverseIsoCut:
+            goodSignalElectronCut += "&& electronID('mvaTrigV0') > 0. && electronID('mvaTrigV0') < %f" % conf.Electrons.mvaCutAntiIso
+        else:
+            goodSignalElectronCut += "&& electronID('mvaTrigV0') > %f" % conf.Electrons.mvaCut
+
+
     goodSignalElectronCut += "&& abs(userFloat('dxy')) < 0.02"
     goodSignalElectronCut += '&& userInt("gsfTrack_trackerExpectedHitsInner_numberOfHits") <= 0'
 
@@ -78,6 +83,7 @@ def ElectronSetup(process, conf):
         maxNumber=cms.uint32(1),
     )
 
+    #Make a new named collection that contains the ONLY isolated(or anti-isolated) electron
     process.singleIsoEle = cms.EDFilter("CandViewSelector", src=cms.InputTag("goodSignalElectrons"), cut=cms.string(""))
 
     process.electronCount = cms.EDProducer(
@@ -98,6 +104,11 @@ def ElectronSetup(process, conf):
         minNumber=cms.uint32(0),
         maxNumber=cms.uint32(0),
     )
+
+    # Scale factors #
+    process.electronWeightsProducer = cms.EDProducer("ElectronEfficiencyProducer",
+                                                     src = cms.InputTag("goodSignalElectrons")
+                                                     )
 
     #####################
     # MET/MtW cutting   #
@@ -233,13 +244,18 @@ def ElectronPath(process, conf):
             process.metAnalyzer
         )
 
+    if conf.isMC:
+        process.elePath.insert(
+            process.elePath.index(process.singleIsoEle)+1,
+            process.electronWeightsProducer
+            )
 
     if conf.isMC and conf.channel == conf.Channel.signal:
         #Put the parton level study after the top reco sequence.
         process.elePath.insert(
             process.elePath.index(process.topRecoSequenceEle)+1,
             process.partonStudyCompareSequence
-        )
+            )
 
     eventCounting.countAfter(process, process.elePath,
         [

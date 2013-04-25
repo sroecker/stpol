@@ -66,16 +66,22 @@ def SingleTopStep2():
                   VarParsing.varType.string,
                   "destination pile-up distribution"
         )
-        
+
         options.register ('compHep', False,
                   VarParsing.multiplicity.singleton,
                   VarParsing.varType.bool,
                   "Use CompHep-specific processing")
+
         options.register ('systematic', None,
                   VarParsing.multiplicity.singleton,
                   VarParsing.varType.string,
                   "Apply Systematic variation")
         
+        options.register ('doPDFWeights', False,
+                  VarParsing.multiplicity.singleton,
+                  VarParsing.varType.bool,
+                  "Run the PDF weight generation module")
+
         options.parseArguments()
 
 
@@ -818,11 +824,10 @@ def SingleTopStep2():
     from SingleTopPolarization.Analysis.hlt_step2_cfi import HLTSetup
     HLTSetup(process, Config)
 
-    if Config.isMC and Config.doPDFWeight:
+    if Config.isMC and options.doPDFWeights:
 
         process.PDFweights = cms.EDProducer('PDFweightsProducer',
-			# max 3 PDF sets and they have to be in decreasing order of eigenvectors
-			PDFSets = cms.vstring('NNPDF21_100.LHgrid','CT10.LHgrid','MSTW2008nlo68cl.LHgrid')
+			PDFSets = cms.vstring('cteq66.LHgrid','MSTW2008nlo68cl.LHgrid')
         )
         process.pdfPath = cms.Path(
               process.PDFweights
@@ -913,6 +918,7 @@ def SingleTopStep2():
                 #'drop *',
                 'drop *',
                 'keep edmMergeableCounter_*__*',
+                'keep edmTriggerResults_TriggerResults__*',
                 'keep *_flavourAnalyzer_*_STPOLSEL2',
                 'keep floats_patMETNTupleProducer_*_STPOLSEL2',
                 'keep floats_recoTopNTupleProducer_*_STPOLSEL2',
