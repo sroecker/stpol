@@ -35,7 +35,7 @@ def ElectronSetup(process, conf):
             goodSignalElectronCut += "&& electronID('mvaTrigV0') > 0. && electronID('mvaTrigV0') < %f" % conf.Electrons.mvaCutAntiIso
         else:
             goodSignalElectronCut += "&& electronID('mvaTrigV0') > %f" % conf.Electrons.mvaCut
-        
+
 
     goodSignalElectronCut += "&& abs(userFloat('dxy')) < 0.02"
     goodSignalElectronCut += '&& userInt("gsfTrack_trackerExpectedHitsInner_numberOfHits") <= 0'
@@ -83,6 +83,7 @@ def ElectronSetup(process, conf):
         maxNumber=cms.uint32(1),
     )
 
+    #Make a new named collection that contains the ONLY isolated(or anti-isolated) electron
     process.singleIsoEle = cms.EDFilter("CandViewSelector", src=cms.InputTag("goodSignalElectrons"), cut=cms.string(""))
 
     process.electronCount = cms.EDProducer(
@@ -243,6 +244,11 @@ def ElectronPath(process, conf):
             process.metAnalyzer
         )
 
+    if conf.isMC:
+        process.elePath.insert(
+            process.elePath.index(process.singleIsoEle)+1,
+            process.electronWeightsProducer
+            )
 
     if conf.isMC and conf.channel == conf.Channel.signal:
         #Put the parton level study after the top reco sequence.
@@ -250,11 +256,7 @@ def ElectronPath(process, conf):
             process.elePath.index(process.topRecoSequenceEle)+1,
             process.partonStudyCompareSequence
             )
-        process.elePath.insert(
-            process.elePath.index(process.singleIsoEle)+1,
-            process.electronWeightsProducer
-            )
-        
+
     eventCounting.countAfter(process, process.elePath,
         [
         "stepHLTsyncEle",
