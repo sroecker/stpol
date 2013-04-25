@@ -52,7 +52,7 @@ lumis = {
 """
 Represents a generic datasets.
 """
-class DS:
+class DS(object):
     def __init__(self, name, ds):
         self.name = name
         self.ds = ds
@@ -101,12 +101,12 @@ class DS_S2MC(DS):
         else:
             self.channel = "background"
 
-    def parseTemplate(self, template, tag):
-        out = template
+    def parseTemplate(self, template, tag, syst=""):
+        out = super(DS_S2MC, self).parseTemplate(template, tag)
         out = out.replace("SUBCHAN", self.subchannel)
         out = out.replace("CHANNEL", self.channel)
-
-        out = DS.parseTemplate(self, out, tag)
+        out = out.replace("SYSTEMATIC", syst)
+        
         return out
 
 #Top samples are in https://twiki.cern.ch/twiki/bin/view/CMS/TopSamplesSummer12#Prioritisation_for_Moriond2013
@@ -391,6 +391,8 @@ possible_ds = {
     "S2_MC": step1B_out_MC_new,
     }
 
+  
+
 if __name__=="__main__":
     parser = argparse.ArgumentParser(description='Creates crab.cfg files based on \
                                                   a template file.')
@@ -402,10 +404,13 @@ if __name__=="__main__":
                         help="output directory for files")
     parser.add_argument("-d", "--data", type=str, default="", required=True,
                         help="name of the list of datasets to parse", choices=possible_ds.keys())
+    parser.add_argument("-s", "--systematic", type=str, default="", required=False,
+                        help="name of systematic uncertainty investigated")
     args = parser.parse_args()
     print args
     tag = args.tag
     ofdir = args.ofdir
+    systematic = args.systematic
 
     def read_template(fn):
         f = open(fn)
@@ -420,7 +425,7 @@ if __name__=="__main__":
     for ds in dslist:
         ofn = "{2}/crab_{0}_{1}.cfg".format(ds.name, tag, ofdir)
         of = open(ofn, "w")
-        cfg = ds.parseTemplate(template, tag)
+        cfg = ds.parseTemplate(template, tag, systematic)
         of.write(cfg)
         of.close()
         print "{0} done".format(ofn)

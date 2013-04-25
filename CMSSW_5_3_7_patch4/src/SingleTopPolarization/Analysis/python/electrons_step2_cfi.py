@@ -103,10 +103,10 @@ def ElectronSetup(process, conf):
     # MET/MtW cutting   #
     #####################
     process.goodMETsEle = cms.EDFilter("CandViewSelector",
-      src=cms.InputTag("patMETs"), cut=cms.string("pt>%f" % conf.Electrons.transverseMassCut)
+      src=cms.InputTag(conf.metSource), cut=cms.string("pt>%f" % conf.Electrons.transverseMassCut)
     )
     process.eleAndMETMT = cms.EDProducer('CandTransverseMassProducer',
-        collections=cms.untracked.vstring(["patMETs", "goodSignalElectrons"])
+        collections=cms.untracked.vstring([conf.metSource, "goodSignalElectrons"])
     )
 
     process.metEleSequence = cms.Sequence(
@@ -134,7 +134,7 @@ def ElectronSetup(process, conf):
         bjetSrc=cms.InputTag("btaggedJets"),
 
         #either patMETs if cutting on ele + MET transverse mass or goodMETs if cutting on patMETs->goodMets pt
-        metSrc=cms.InputTag("patMETs" if conf.Electrons.transverseMassType == conf.Leptons.WTransverseMassType.MET else "patMETs"),
+        metSrc=cms.InputTag(conf.metSource if conf.Electrons.transverseMassType == conf.Leptons.WTransverseMassType.MET else conf.metSource),
     )
 
     if conf.doDebug:
@@ -144,7 +144,7 @@ def ElectronSetup(process, conf):
         process.NJetIDs = cms.EDAnalyzer('EventIDAnalyzer', name=cms.untracked.string("NJet"))
         process.electronAnalyzer = cms.EDAnalyzer('SimpleElectronAnalyzer', interestingCollections=cms.untracked.VInputTag("elesWithIso"))
         process.electronVetoAnalyzer = cms.EDAnalyzer('SimpleElectronAnalyzer', interestingCollections=cms.untracked.VInputTag("looseVetoElectrons"))
-        process.metAnalyzer = cms.EDAnalyzer('SimpleMETAnalyzer', interestingCollections=cms.untracked.VInputTag("patMETs"))
+        process.metAnalyzer = cms.EDAnalyzer('SimpleMETAnalyzer', interestingCollections=cms.untracked.VInputTag(conf.metSource))
 
 """
 Configures the electron path with full selection.

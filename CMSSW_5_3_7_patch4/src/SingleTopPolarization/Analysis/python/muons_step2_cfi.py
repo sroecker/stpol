@@ -83,10 +83,10 @@ def MuonSetup(process, conf = None):
     #####################
     #produce the muon and MET invariant transverse mass
     process.muAndMETMT = cms.EDProducer('CandTransverseMassProducer',
-        collections=cms.untracked.vstring(["patMETs", "goodSignalMuons"])
+        collections=cms.untracked.vstring([conf.metSource, "goodSignalMuons"])
     )
     process.goodMETs = cms.EDFilter("CandViewSelector",
-      src=cms.InputTag("patMETs"), cut=cms.string("pt>%f" % conf.Muons.transverseMassCut)
+      src=cms.InputTag(conf.metSource), cut=cms.string("pt>%f" % conf.Muons.transverseMassCut)
     )
 
     process.metMuSequence = cms.Sequence(
@@ -117,7 +117,7 @@ def MuonSetup(process, conf = None):
     process.recoNuProducerMu = cms.EDProducer('ClassicReconstructedNeutrinoProducer',
         leptonSrc=cms.InputTag("singleIsoMu"),
         bjetSrc=cms.InputTag("btaggedJets"),
-        metSrc=cms.InputTag("goodMETs" if conf.Muons.transverseMassType == conf.Leptons.WTransverseMassType.MET else "patMETs"),
+        metSrc=cms.InputTag("goodMETs" if conf.Muons.transverseMassType == conf.Leptons.WTransverseMassType.MET else conf.metSource),
     )
 
 def MuonPath(process, conf):

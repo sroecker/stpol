@@ -64,6 +64,9 @@ class Config(C):
     #If using comphep-generated input
     isCompHep = False
 
+    #Which systematic to use
+    systematic = None
+
     """
     Specifies the jet configuration.
     """

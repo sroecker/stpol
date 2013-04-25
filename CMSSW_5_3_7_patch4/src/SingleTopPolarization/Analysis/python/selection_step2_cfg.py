@@ -70,7 +70,11 @@ def SingleTopStep2():
         options.register ('compHep', False,
                   VarParsing.multiplicity.singleton,
                   VarParsing.varType.bool,
-                  "Turn on debugging messages")
+                  "Use CompHep-specific processing")
+        options.register ('systematic', None,
+                  VarParsing.multiplicity.singleton,
+                  VarParsing.varType.string,
+                  "Apply Systematic variation")
         
         options.parseArguments()
 
@@ -92,10 +96,23 @@ def SingleTopStep2():
         Config.doDebug = options.doDebug
         Config.isMC = options.isMC
         Config.isCompHep = options.compHep
+        Config.systematic = options.systematic        
+        print "Systematic! ",Config.systematic
 
     if Config.isMC:
         logging.info("Changing jet source from %s to smearedPatJetsWithOwnRef" % Config.Jets.source)
         Config.Jets.source = "smearedPatJetsWithOwnRef"
+
+        if Config.systematic in ["ResUp", "ResDown"]:
+             logging.info("Changing jet source from %s to smearedPatJetsWithOwnRef%s" % (Config.Jets.source, Config.systematic))
+             Config.Jets.source = "smearedPatJetsWithOwnRef"+Config.systematic
+             logging.info("Changing MET source from %s to patPFMetJet%s" % (Config.metSource, Config.systematic))
+             Config.metSource = "patPFMetJet"+Config.systematic
+        elif Config.systematic in ["EnUp", "EnDown"]:
+             logging.info("Changing jet source from %s to shiftedPatJetsWithOwnRef%sForCorrMEt" % (Config.Jets.source, Config.systematic))
+             Config.Jets.source = "shiftedPatJetsWithOwnRef"+Config.systematic+"ForCorrMEt"
+             logging.info("Changing MET source from %s to patPFMetJet%s" % (Config.metSource, Config.systematic))
+             Config.metSource = "patPFMetJet"+Config.systematic
 
     print "Configuration"
     print Config._toStr()
