@@ -14,14 +14,7 @@ process.source = cms.Source("PoolSource",
 )
 
 process.PDFweigts = cms.EDProducer('PDFweightsProducer',
-	# max 3 PDF sets and they have to be in decreasing order of eigenvectors
-#	PDFSets				=	cms.vstring('CT10.LHgrid','cteq66.LHgrid','MSTW2008nlo68cl.LHgrid')
-#	PDFSets				=	cms.vstring('cteq66.LHgrid')
 	PDFSets				=	cms.vstring('cteq66.LHgrid','MSTW2008nlo68cl.LHgrid') #ok
-#	PDFSets				=	cms.vstring('cteq66.LHgrid','CT10.LHgrid')
-#	PDFSets				=	cms.vstring('NNPDF21_100.LHgrid','CT10.LHgrid','MSTW2008nlo68cl.LHgrid') #ok
-#	PDFSets				=	cms.vstring('CT10.LHgrid','cteq66.LHgrid')
-
 )
 
 process.p = cms.Path( process.PDFweigts )

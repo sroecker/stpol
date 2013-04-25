@@ -804,8 +804,7 @@ def SingleTopStep2():
     if Config.isMC and Config.doPDFWeight:
 
         process.PDFweights = cms.EDProducer('PDFweightsProducer',
-			# max 3 PDF sets and they have to be in decreasing order of eigenvectors
-			PDFSets = cms.vstring('NNPDF21_100.LHgrid','CT10.LHgrid','MSTW2008nlo68cl.LHgrid')
+			PDFSets = cms.vstring('cteq66.LHgrid','MSTW2008nlo68cl.LHgrid')
         )
         process.pdfPath = cms.Path(
               process.PDFweights
