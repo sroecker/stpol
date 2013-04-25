@@ -127,9 +127,9 @@ PDFweightsProducer::PDFweightsProducer(const edm::ParameterSet& iConfig)
 			PDFnames.push_back(ostr.str());
 		}
 		
-		produces<std::vector<double> > (string("weights"+PDFnames[i]));
+		if( i == 0) produces<std::vector<double> > (string("weights"+PDFnames[i]));
+		if( i == 0) produces<int>(string("n"+PDFnames[i]));
 		produces<double>(string("w0"+PDFnames[i]));
-		produces<int>(string("n"+PDFnames[i]));
 		
 		// initialise the PDF set
 		cout<<"PDFnames[i]="<<PDFnames[i]<<"\tPDFSets[i]="<<PDFSets[i]<<endl;
@@ -177,27 +177,24 @@ PDFweightsProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		// calculate the PDF weights
 		std::auto_ptr < std::vector<double> > weights(new std::vector<double>());
 		LHAPDF::usePDFMember(InitNr, 0);
-		double	xpdf1 = LHAPDF::xfx(InitNr, x1, scalePDF, id1);
-		double	xpdf2 = LHAPDF::xfx(InitNr, x2, scalePDF, id2);
-		double	w0	= xpdf1 * xpdf2;
+		double	xpdf1	= LHAPDF::xfx(InitNr, x1, scalePDF, id1);
+		double	xpdf2	= LHAPDF::xfx(InitNr, x2, scalePDF, id2);
+		double	w0		= xpdf1 * xpdf2;
 		int		nPDFSet = LHAPDF::numberPDF(InitNr);
-		for (int p = 1; p <= nPDFSet; ++p)
+		for (int p = 1; p <= nPDFSet; p++)
 		{
 			LHAPDF::usePDFMember(InitNr, p);
-			double xpdf1_new = LHAPDF::xfx(InitNr, x1, scalePDF, id1);
-			double xpdf2_new = LHAPDF::xfx(InitNr, x2, scalePDF, id2);
-			double pweight = xpdf1_new * xpdf2_new / w0;
+			double xpdf1_new	= LHAPDF::xfx(InitNr, x1, scalePDF, id1);
+			double xpdf2_new	= LHAPDF::xfx(InitNr, x2, scalePDF, id2);
+			double pweight		= xpdf1_new * xpdf2_new / w0;
 			weights->push_back(pweight);
 		}
 		
 		// save weights		
-		iEvent.put(weights, string("weights"+PDFnames[i]));
-		iEvent.put(std::auto_ptr<int>(new int(nPDFSet)), string("n"+PDFnames[i]));  
+		if( i == 0) iEvent.put(weights, string("weights"+PDFnames[i]));
+		if( i == 0) iEvent.put(std::auto_ptr<int>(new int(nPDFSet)), string("n"+PDFnames[i]));  
 		iEvent.put(std::auto_ptr<double>(new double(w0)), string("w0"+PDFnames[i]));  		
-		
 	}
-	
-	
 }
 
 // ------------ method called once each job just before starting event loop  ------------
