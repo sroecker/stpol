@@ -40,7 +40,10 @@ class JobStats:
         self.jobs_to_resubmit = len(needs_resubmit)
         self.max_submissions = max_submissions
         self.time_stats_success =  Task.timeStats(filter(lambda x: x.isCompleted(), task.jobs))
-        self.total_time = self.time_stats_success.mean * len(completed)
+        if self.time_stats_success:
+            self.total_time = self.time_stats_success.mean * len(completed)
+        else:
+            self.total_time = None
         self.time_stats_fail = Task.timeStats(filter(lambda x: x.needsResubmit(), task.jobs))
         self.fail_codes = Task.retCodes(filter(lambda x: x.needsResubmit(), task.jobs))
         self.name = task.name
