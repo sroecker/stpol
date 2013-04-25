@@ -70,7 +70,12 @@ def SingleTopStep2():
         options.register ('compHep', False,
                   VarParsing.multiplicity.singleton,
                   VarParsing.varType.bool,
-                  "Turn on debugging messages")
+                  "FIXME")
+
+        options.register ('doPDFWeights', False,
+                  VarParsing.multiplicity.singleton,
+                  VarParsing.varType.bool,
+                  "Run the PDF weight generation module")
 
         options.parseArguments()
 
@@ -801,7 +806,7 @@ def SingleTopStep2():
     from SingleTopPolarization.Analysis.hlt_step2_cfi import HLTSetup
     HLTSetup(process, Config)
 
-    if Config.isMC and Config.doPDFWeight:
+    if Config.isMC and options.doPDFWeights:
 
         process.PDFweights = cms.EDProducer('PDFweightsProducer',
 			PDFSets = cms.vstring('cteq66.LHgrid','MSTW2008nlo68cl.LHgrid')
