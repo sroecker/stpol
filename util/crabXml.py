@@ -9,6 +9,7 @@ import scipy
 import scipy.stats
 import scipy.stats.mstats
 import pdb
+import math
 
 class TimeStats:
     def __init__(self, minimum, maximum, mean, quantiles):
@@ -48,9 +49,12 @@ class JobStats:
         self.fail_codes = Task.retCodes(filter(lambda x: x.needsResubmit(), task.jobs))
         self.name = task.name
 
+    def summary(self):
+        return "%s: (%d|%d|%d) | %.2f %%" % (self.name, self.jobs_total, self.jobs_completed, self.jobs_pending, 100.0*(float(self.jobs_completed) / float(self.jobs_total)))
+
     def __str__(self):
         s = self.name
-        s += "Jobs: tot %d, comp %d , get %d, resub %d, pending %d\n" % (
+        s += "\nJobs: tot %d, comp %d , get %d, resub %d, pending %d\n" % (
             self.jobs_total,
             self.jobs_completed,
             self.jobs_to_get,
@@ -200,6 +204,7 @@ def get(node, name, f):
 
 
 reports = glob.glob(sys.argv[1])
+reports = sorted(reports)
 
 if len(reports)==1:
     t = Task()
@@ -211,8 +216,13 @@ if len(reports)==1:
 elif len(reports)>1:
     t_tot = Task()
     for r in reports:
-        print r
         t = Task()
         t.updateJobs(r)
+        js = JobStats(t)
+        print js.summary()
         t_tot += t
-    t_tot.printStats()
+    tot_stats = JobStats(t_tot)
+    tot_stats.name = "total"
+    print tot_stats.summary()
+    print "---"
+    print str(tot_stats)
