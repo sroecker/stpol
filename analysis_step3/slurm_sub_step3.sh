@@ -25,5 +25,5 @@ cd $OUTDIR
 split $INFILE -l 100 -d
 for file in x*
 do
-    sbatch $CMSSW_BASE/../analysis_step3/run_step3_eventloop.sh `readlink -f $file` $OUTDIR
+    sbatch -p prio $CMSSW_BASE/../analysis_step3/run_step3_eventloop.sh `readlink -f $file` $OUTDIR
 done
