@@ -1,0 +1,5 @@
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_25_withPDFw/WD_QCD_Pt_170_250_BCtoE/res/output_1_1_LCc.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_25_withPDFw/WD_QCD_Pt_170_250_BCtoE/res/output_2_1_6oH.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_25_withPDFw/WD_QCD_Pt_170_250_BCtoE/res/output_3_1_LhN.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_25_withPDFw/WD_QCD_Pt_170_250_BCtoE/res/output_4_1_V0u.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_25_withPDFw/WD_QCD_Pt_170_250_BCtoE/res/output_5_1_MSk.root
