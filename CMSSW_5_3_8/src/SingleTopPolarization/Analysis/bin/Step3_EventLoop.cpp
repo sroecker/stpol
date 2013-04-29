@@ -180,7 +180,6 @@ public:
     {
         initialize_branches();
         cutOnNJets =  pars.getParameter<bool>("cutOnNJets");
-        cutOnNTags =  pars.getParameter<bool>("cutOnNTags");
         applyRmsLj =  pars.getParameter<bool>("applyRmsLj");
         applyEtaLj =  pars.getParameter<bool>("applyEtaLj");
         
@@ -188,8 +187,6 @@ public:
         
         nJetsCutMax = pars.getParameter<int>("nJetsMax");
         nJetsCutMin = pars.getParameter<int>("nJetsMin");
-        nTagsCutMax = pars.getParameter<int>("nTagsMax");
-        nTagsCutMin = pars.getParameter<int>("nTagsMin");
         
         goodJetsCountSrc = pars.getParameter<edm::InputTag>("goodJetsCountSrc");
         
@@ -211,14 +208,9 @@ public:
         branch_vars["rms_lj"] = get_collection_n<float>(event, lightJetRmsSrc, 0);
         bool passes_rms_lj = (branch_vars["rms_lj"] < rmsMax);
         
-        branch_vars["pt_bj"] = get_collection_n<float>(event, bJetPtSrc, 0);
-        branch_vars["eta_bj"] = get_collection_n<float>(event, bJetEtaSrc, 0);
-        branch_vars["bdiscr_bj"] = get_collection_n<float>(event, bJetBdiscrSrc, 0);
         branch_vars["n_jets"] = get_collection<int>(event, goodJetsCountSrc, -1);
-        branch_vars["n_tags"] = get_collection<int>(event, bTagJetsCountSrc, -1);
         
         if (cutOnNJets && (branch_vars["n_jets"] > nJetsCutMax || branch_vars["n_jets"] < nJetsCutMin)) return false;
-        if (cutOnNTags && (branch_vars["n_tags"] > nTagsCutMax || branch_vars["n_tags"] < nTagsCutMin)) return false;
         if (applyRmsLj && !passes_rms_lj) return false;
         
         post_process();
@@ -613,6 +605,9 @@ int main(int argc, char* argv[])
     }
     // loop the events
     int ievt=0;
+
+    TStopwatch* stopwatch = new TStopwatch();
+    stopwatch->Start();
     for(unsigned int iFile=0; iFile<inputFiles_.size(); ++iFile) {
         // open input file (can be located on castor)
         TFile* in_file = TFile::Open(inputFiles_[iFile].c_str());
@@ -697,7 +692,10 @@ int main(int argc, char* argv[])
     std::cout << "jet cuts " << jet_cuts.toString() << std::endl;
     std::cout << "tag cuts " << btag_cuts.toString() << std::endl;
     std::cout << "top cuts " << top_cuts.toString() << std::endl;
-    
+    stopwatch->Stop();
+
+    int speed = (int)((float)ievt / stopwatch->RealTime());
+    std::cout << "processing speed = " << speed << " events/sec" << std::endl;
     
     //    for (auto& elem : cut_count_map) {
     //        std::cout << elem.first << " " << elem.second << std::endl;
