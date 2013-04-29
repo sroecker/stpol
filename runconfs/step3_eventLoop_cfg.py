@@ -72,7 +72,6 @@ process.eleCuts = cms.PSet(
 
 process.jetCuts = cms.PSet(
     cutOnNJets  = cms.bool(False),
-    cutOnNTags  = cms.bool(False),
     applyRmsLj  = cms.bool(False),
     applyEtaLj  = cms.bool(False),
 
@@ -81,11 +80,8 @@ process.jetCuts = cms.PSet(
 
     rmsMax = cms.double(0.025),
 
-    nJetsMin = cms.int32(2),
-    nJetsMax = cms.int32(2),
-
-    nTagsMin = cms.int32(0),
-    nTagsMax = cms.int32(9),
+    nJetsMin = cms.int32(0),
+    nJetsMax = cms.int32(4),
 
     goodJetsPtSrc = cms.InputTag("goodJetsNTupleProducer", "Pt"),
     goodJetsEtaSrc = cms.InputTag("goodJetsNTupleProducer", "Eta"),
@@ -106,7 +102,7 @@ process.bTagCuts = cms.PSet(
     bTagJetsCountSrc = cms.InputTag("bJetCount"),
 
     nTagsMin = cms.int32(0),
-    nTagsMax = cms.int32(9),
+    nTagsMax = cms.int32(2),
 
     bJetEtaSrc = cms.InputTag("highestBTagJetNTupleProducer", "Eta"),
     bJetBdiscrSrc = cms.InputTag("highestBTagJetNTupleProducer", "bDiscriminatorTCHP"),
@@ -141,8 +137,9 @@ process.HLT = cms.PSet(
         "HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet50_40_30_v1",
         "HLT_Ele25_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_TriCentralPFNoPUJet50_40_30_v5",
         "HLT_Ele25_CaloIdVT_CaloIsoVL_TrkIdVL_TrkIsoT_TriCentralPFNoPUJet50_40_30_v1",
+        "HLT_IsoMu24_eta2p1_v1"
     ]),
-    cutOnHLT = cms.string("None"),
+    cutOnHLT = cms.string("HLT_IsoMu24_eta2p1_v1"),
     doCutOnHLT = cms.bool(False)
 )
 
