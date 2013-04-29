@@ -1,5 +1,5 @@
 #!/bin/bash
-OFDIR=out_step3_04_29
+OFDIR=out_step3_04_29_2
 FLDIR=filelist_step2_04_25
 mkdir $OFDIR
 mkdir $OFDIR/iso
