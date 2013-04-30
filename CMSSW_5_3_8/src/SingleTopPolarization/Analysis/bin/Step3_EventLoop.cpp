@@ -19,6 +19,9 @@
 #include "cuts_base.h"
 #include "hlt_cuts.h"
 
+#include <stdio.h>
+#include <time.h>
+
 //Shorthand for getting a value of type T from the event
 template <typename T>
 T get_collection(const edm::EventBase& evt, edm::InputTag src, const T& retval) {
@@ -405,8 +408,8 @@ public:
     void initialize_branches() {
         branch_vars["cos_theta"] = def_val;
         branch_vars["n_vertices"] = def_val;
-        branch_vars_vec["scale_factors"] = std::vector<float>();
-        branch_vars_vec["scale_factors"].clear();
+        //branch_vars_vec["scale_factors"] = std::vector<float>();
+        //branch_vars_vec["scale_factors"].clear();
     }
     
     
@@ -417,7 +420,7 @@ public:
         initialize_branches();
         cosThetaSrc = pars.getParameter<edm::InputTag>("cosThetaSrc");
         nVerticesSrc = pars.getParameter<edm::InputTag>("nVerticesSrc");
-        scaleFactorsSrc = pars.getParameter<edm::InputTag>("scaleFactorsSrc");
+        //scaleFactorsSrc = pars.getParameter<edm::InputTag>("scaleFactorsSrc");
     }
     
     bool process(const edm::EventBase& event) {
@@ -426,13 +429,13 @@ public:
         branch_vars["cos_theta"] = get_collection<double>(event, cosThetaSrc, def_val);
         branch_vars["n_vertices"] = get_collection<int>(event, nVerticesSrc, def_val);
 
-        edm::Handle<std::vector<float>> scale_factors;
-        event.getByLabel(scaleFactorsSrc, scale_factors);
-        if(scale_factors.isValid()) {
-            for (auto sf : *scale_factors) {
-                branch_vars_vec["scale_factors"].push_back(sf);
-            }
-        }
+        //edm::Handle<std::vector<float>> scale_factors;
+        //event.getByLabel(scaleFactorsSrc, scale_factors);
+        //if(scale_factors.isValid()) {
+        //    for (auto sf : *scale_factors) {
+        //        branch_vars_vec["scale_factors"].push_back(sf);
+        //    }
+        //}
          
         post_process();
         return true;
@@ -499,6 +502,21 @@ public:
 //        counter_srcs(pars.getParameter<std::vector<edm::InputTag>>("trackedCounters"));
 //    }
 //};
+
+
+// Get current date/time, format is YYYY-MM-DD.HH:mm:ss
+const std::string currentDateTime() {
+    time_t     now = time(0);
+    struct tm  tstruct;
+    char       buf[80];
+    tstruct = *localtime(&now);
+    // Visit http://www.cplusplus.com/reference/clibrary/ctime/strftime/
+    // for more information about date/time format
+    strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
+
+    return buf;
+}
+#define LogInfo std::cout << currentDateTime() << ":"
 
 int main(int argc, char* argv[])
 {    
@@ -605,13 +623,16 @@ int main(int argc, char* argv[])
     }
     // loop the events
     int ievt=0;
-
+    long bytes_read = 0;
     TStopwatch* stopwatch = new TStopwatch();
     stopwatch->Start();
     for(unsigned int iFile=0; iFile<inputFiles_.size(); ++iFile) {
         // open input file (can be located on castor)
+        LogInfo << "Opening file " << inputFiles_[iFile] << std::endl;
         TFile* in_file = TFile::Open(inputFiles_[iFile].c_str());
         if( in_file ) {
+            double file_time = stopwatch->RealTime();
+            stopwatch->Continue();
             
             fwlite::Event ev(in_file);
             for(ev.toBegin(); !ev.atEnd(); ++ev, ++ievt) {
@@ -623,7 +644,7 @@ int main(int argc, char* argv[])
                 if(maxEvents_>0 ? ievt+1>maxEvents_ : false) break;
                 
                 if(outputEvery_!=0 ? (ievt>0 && ievt%outputEvery_==0) : false)
-                    std::cout << "  processing event: " << ievt << std::endl;
+                    LogInfo << "  processing event: " << ievt << std::endl;
                 
                 bool passes_hlt_cuts = hlt_cuts.process(event);
                 if(!passes_hlt_cuts) continue;
@@ -665,6 +686,10 @@ int main(int argc, char* argv[])
                 count_map["total_processed"] += counter->value;
             }
             in_file->Close();
+            file_time = stopwatch->RealTime() - file_time;
+            stopwatch->Continue();
+            bytes_read += in_file->GetBytesRead();
+            LogInfo << "Closing file " << in_file->GetPath() << " with " << in_file->GetBytesRead()/(1024*1024) << " Mb read, " << in_file->GetBytesRead()/(1024*1024) / file_time << " Mb/s" << std::endl;
         }
     }
     
@@ -693,10 +718,11 @@ int main(int argc, char* argv[])
     std::cout << "tag cuts " << btag_cuts.toString() << std::endl;
     std::cout << "top cuts " << top_cuts.toString() << std::endl;
     stopwatch->Stop();
-
-    int speed = (int)((float)ievt / stopwatch->RealTime());
-    std::cout << "processing speed = " << speed << " events/sec" << std::endl;
     
+    double time = stopwatch->RealTime();
+    int speed = (int)((float)ievt / time);
+    LogInfo << "processing speed = " << speed << " events/sec" << std::endl;
+    LogInfo << "read " << bytes_read/(1024*1024) << " Mb in total, average speed " << bytes_read/(1024*1024) / time << " Mb/s" << std::endl;  
     //    for (auto& elem : cut_count_map) {
     //        std::cout << elem.first << " " << elem.second << std::endl;
     //    }
