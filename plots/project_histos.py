@@ -33,29 +33,30 @@ def filter_alnum(s):
     """Filter out everything except ascii letters and digits"""
     return filter(lambda x: x in string.ascii_letters+string.digits + "_", s)
 
+class Cut:
+    def __init__(self, cut_str):
+        self.cut_str = cut_str
+    def __mul__(self, other):
+        cut_str = '('+self.cut_str+') && ('+other.cut_str+')'
+        return Cut(cut_str)
+    def __repr__(self):
+        return "<Cut(%s)>" % self.cut_str
+
 class Cuts:
-    class Cut:
-        def __init__(self, cut_str):
-            self.cut_str = cut_str
-        def __mul__(self, other):
-            cut_str = '('+self.cut_str+') && ('+other.cut_str+')'
-            return Cuts.Cut(cut_str)
-        def __repr__(self):
-            return "<Cut(%s)>" % self.cut_str
     hlt_isomu = Cut("HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet50_40_30_v1 == 1.0")
-    top_mass = Cut("top_mass > 130 && top_mass < 220")
     eta_lj = Cut("abs(eta_lj) > 2.5")
     mt_mu = Cut("mt_mu > 50")
     rms_lj = Cut("rms_lj < 0.025")
+    eta_jet = Cut("abs(eta_lj) < 4.5")*Cut("abs(eta_bj) < 4.5")
     top_mass_sig = Cut("top_mass >130 && top_mass<220")
     no_cut = Cut("1")
 
     @staticmethod
     def n_jets(n):
-        return Cuts.Cut("n_jets == %.1f" % float(n))
+        return Cut("n_jets == %.1f" % float(n))
     @staticmethod
     def n_tags(n):
-        return Cuts.Cut("n_tags == %.1f" % float(n))
+        return Cut("n_tags == %.1f" % float(n))
 
 
 
@@ -281,7 +282,7 @@ class HistoDraw:
         self.tfile = ROOT.TFile(file_name, "RECREATE")
         self.samples = samples
 
-    def drawHistogram(self, var, cut=Cuts.Cut("1"), **kwargs):
+    def drawHistogram(self, var, cut=Cut("1"), **kwargs):
         histos = dict()
         self.tfile.cd()
         plot_range = kwargs.get("plot_range")
