@@ -582,6 +582,11 @@ int main(int argc, char* argv[])
     TTree* out_tree = dir.make<TTree>("Events", "Events");
     TH1I* count_hist = dir.make<TH1I>("count_hist", "Event counts", count_map.size(), 0, count_map.size() - 1);
     
+    TFile::SetOpenTimeout(60000);
+    if(!TFile::SetCacheFileDir("/scratch/joosep")) {
+        std::cerr << "Cache directory was not writable" << std::endl;
+    }
+    
     event_id_branches["event_id"] = -1;
     event_id_branches["run_id"] = -1;
     event_id_branches["lumi_id"] = -1;
