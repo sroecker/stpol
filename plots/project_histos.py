@@ -42,7 +42,7 @@ class Cuts:
             return Cuts.Cut(cut_str)
         def __repr__(self):
             return "<Cut(%s)>" % self.cut_str
-
+    hlt_isomu = Cut("HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet50_40_30_v1 == 1.0")
     top_mass = Cut("top_mass > 130 && top_mass < 220")
     eta_lj = Cut("abs(eta_lj) > 2.5")
     mt_mu = Cut("mt_mu > 50")
@@ -196,7 +196,7 @@ class Sample:
             raise KeyError("Plot variable %s not defined in branches" % var)
 
         plot_range = kwargs.get("plot_range", [100, 0, 100])
-        
+
         weight_str = kwargs.get("weight", None)
 
         ROOT.gROOT.cd()
@@ -361,12 +361,12 @@ class MetaData:
 
         return hist
 
-if __name__=="__main__":    
+if __name__=="__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-t", "--type", type=str, default="iso")
     parser.add_argument("-d", "--dir", type=str, default="/Users/joosep/Documents/stpol/data/step3_trees_Apr04")
     args = parser.parse_args()
-    
+
     samples = list()
     samples = Sample.fromDirectory(args.dir + "/" + args.type + "/data")
     samples += Sample.fromDirectory(args.dir + "/" + args.type + "/mc")
@@ -408,8 +408,8 @@ if __name__=="__main__":
             histos += hdraw.drawHistogram("n_jets", cut=Cuts.mt_mu, plot_range=[9, 1, 10], weight="pu_weight")
             histos += hdraw.drawHistogram("n_tags", cut=Cuts.mt_mu*Cuts.n_jets(2), plot_range=[5, 0, 5], weight="pu_weight")
             histos += hdraw.drawHistogram("n_tags", cut=Cuts.mt_mu*Cuts.n_jets(3), plot_range=[5, 0, 5], weight="pu_weight")
-            
-            
+
+
             histos += hdraw.drawHistogram("top_mass",
                 cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj, plot_range=[n_bins, 100, 350],
             )
@@ -437,11 +437,11 @@ if __name__=="__main__":
             histos += hdraw.drawHistogram("n_vertices", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig,
                 plot_range=[50, 0, 50], skip_weights=["SingleMu*"]
             )
-            
+
             histos += hdraw.drawHistogram("rms_lj", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig,
                 plot_range=[n_bins, 0, 0.1], skip_weights=["SingleMu*"]
             )
-            
+
             histos += hdraw.drawHistogram("rms_lj", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(0), plot_range=[n_bins, 0, 0.1], weight="pu_weight")
             histos += hdraw.drawHistogram("rms_lj", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1), plot_range=[n_bins, 0, 0.1], weight="pu_weight")
             histos += hdraw.drawHistogram("rms_lj", cut=Cuts.mt_mu*Cuts.n_jets(3)*Cuts.n_tags(0), plot_range=[n_bins, 0, 0.1], weight="pu_weight")
