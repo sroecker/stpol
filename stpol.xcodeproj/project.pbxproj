@@ -251,6 +251,7 @@
 		A78CFD4116B9348800D54BF6 /* patobjectownrefproducer_cfg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = patobjectownrefproducer_cfg.py; sourceTree = "<group>"; };
 		A78CFD4316B9348800D54BF6 /* patobjectownrefproducer_cfi.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = patobjectownrefproducer_cfi.py; sourceTree = "<group>"; };
 		A78CFD4516B9348800D54BF6 /* PatObjectOwnRefProducer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PatObjectOwnRefProducer.cc; sourceTree = "<group>"; };
+		A796BCD4172A8EC300693672 /* tabulate.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = tabulate.py; sourceTree = "<group>"; };
 		A7A913A31709BDB4002832E3 /* b_eff_calcs.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = b_eff_calcs.py; sourceTree = "<group>"; };
 		A7AE61F716FAD1BF0001FFB7 /* step3_eventLoop_cfg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = step3_eventLoop_cfg.py; path = runconfs/step3_eventLoop_cfg.py; sourceTree = "<group>"; };
 		A7AE61F816FB89A50001FFB7 /* BuildFile.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = BuildFile.xml; path = CMSSW_5_3_8/src/SingleTopPolarization/Analysis/bin/BuildFile.xml; sourceTree = "<group>"; };
@@ -434,6 +435,7 @@
 				A73D462016A83DFB00703EF6 /* README.md */,
 				A73D462116A83DFB00703EF6 /* run_trees.sh */,
 				A73D462316A83E0A00703EF6 /* pickEvents_cfg.py */,
+				A796BCD4172A8EC300693672 /* tabulate.py */,
 			);
 			path = util;
 			sourceTree = "<group>";
