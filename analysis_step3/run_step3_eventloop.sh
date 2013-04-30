@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e #Abort if errors
 uname -a
-
+echo "SLURM job "$SLURM_JOBID
 WD=$CMSSW_BASE/..
 INFILE=$1
 OUTDIR=$2
@@ -13,6 +13,7 @@ fi
 
 cd $WD
 source setenv.sh CMSSW_5_3_8
+#scontrol checkpoint create $SLURM_JOBID.0 ImageDir=/home/joosep/slurmckpt
 ls /hdfs
 cd $OUTDIR
 #for f in `cat $INFILE`
