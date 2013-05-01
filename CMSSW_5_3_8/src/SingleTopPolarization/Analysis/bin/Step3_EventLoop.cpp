@@ -28,7 +28,7 @@ T get_collection(const edm::EventBase& evt, edm::InputTag src, const T& retval) 
     edm::Handle<T> coll;
     evt.getByLabel(src, coll);
     if(!coll.isValid()) {
-        //std::cerr << "Collection is not valid!" << std::endl;
+        //std::cerr << "Collection " << src.label() << " is not valid!" << std::endl;
         return retval;
     }
     return *coll;
@@ -109,6 +109,8 @@ public:
     edm::InputTag vetoEleCountSrc;
    
     void initialize_branches() {
+        branch_vars["n_veto_mu"] = -1.0;
+        branch_vars["n_veto_ele"] = -1.0;
     }
 
     VetoLeptonCuts(const edm::ParameterSet& pars, std::map< std::string, float> & _branch_vars) :
@@ -122,11 +124,12 @@ public:
     
     bool process(const edm::EventBase& event) {
         pre_process();
-        
+        int n_veto_mu = get_collection<int>(event, vetoMuCountSrc, -1);
+        int n_veto_ele = get_collection<int>(event, vetoEleCountSrc, -1);
+        branch_vars["n_veto_mu"] = (float)n_veto_mu;
+        branch_vars["n_veto_ele"] = (float)n_veto_ele;
         if(doVetoLeptonCut) {
-            int n_veto_mu = get_collection<int>(event, vetoMuCountSrc, -1);
-            int n_veto_ele = get_collection<int>(event, vetoEleCountSrc, -1);
-            if (n_veto_mu != 0 || n_veto_ele!=0) return false;
+            if (n_veto_mu != 0 || n_veto_ele != 0) return false;
         }
 
         post_process();
@@ -370,11 +373,13 @@ public:
 class MTMuCuts : public CutsBaseF {
 public:
     edm::InputTag mtMuSrc;
+    edm::InputTag metSrc;
     float minVal;
     bool doMTCut;
     
     void initialize_branches() {
         branch_vars["mt_mu"] = def_val;
+        branch_vars["met"] = def_val;
     }
     
     MTMuCuts(const edm::ParameterSet& pars, std::map<std::string, float>& _branch_vars) :
@@ -382,6 +387,7 @@ public:
     {
         initialize_branches();
         mtMuSrc = pars.getParameter<edm::InputTag>("mtMuSrc");
+        metSrc = pars.getParameter<edm::InputTag>("metSrc");
         minVal = (float)pars.getParameter<double>("minVal");
         doMTCut = pars.getParameter<bool>("doMTCut");
     }
@@ -390,6 +396,7 @@ public:
         pre_process();
         
         branch_vars["mt_mu"] = get_collection<double>(event, mtMuSrc, def_val);
+        branch_vars["met"] = get_collection_n<float>(event, metSrc, 0);
         if (doMTCut && branch_vars["mt_mu"] < minVal) return false;
         
         post_process();
