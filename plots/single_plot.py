@@ -2,7 +2,7 @@ import ROOT
 from project_histos import Sample, Cuts
 import argparse
 from collections import OrderedDict as dict
-from make_plots import plot_hists_stacked, Styling, merge_hists_g, g_merge_cmd
+from make_plots import plot_hists_stacked, Styling, merge_hists_g, g_merge_cmd, legend
 
 if __name__=="__main__":
     parser = argparse.ArgumentParser()
@@ -40,7 +40,9 @@ if __name__=="__main__":
                 stack,
                 styles=Styling.style, draw_styles={"data": "E1"},
         )
-        return canv, stacks
+        leg = legend(stack["data"] + stack["mc"], styles=["p", "f"])
+
+        return canv, stacks, leg
 
     cut = Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)
     A = compare_plot("abs(eta_lj)", [10, 0, 5], "1.0", cut)
