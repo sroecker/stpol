@@ -41,7 +41,7 @@ if __name__=="__main__":
                 stack,
                 styles=Styling.style, draw_styles={"data": "E1"},
                 title=title,
-                do_log_y=True
+                #do_log_y=True
         )
         leg = legend(stack["data"] + stack["mc"], styles=["p", "f"])
 
@@ -133,7 +133,6 @@ if __name__=="__main__":
     #cut = Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)
     #A = compare_plot("abs(eta_lj)", [10, 0, 5], "1.0", cut, "mt>50, 2J1T, no weight")
     #B = compare_plot("abs(eta_lj)", [10, 0, 5], "pu_weight", cut, "mt>50, 2J1T, pu weight")
-    A = compare_plot("mu_iso", [25, 0, 0.2], "1.0", Cuts.no_cut, "mu")
-    B = compare_plot("mu_iso", [25, 0, 0.2], "1.0", Cuts.mt_mu, "mu, mt>50")
+    A = compare_plot("mt_mu", [25, 40, 200], "1.0", Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj, "mu")
 
 
