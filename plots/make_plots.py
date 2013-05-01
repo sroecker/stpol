@@ -201,7 +201,19 @@ def lumi_textbox(lumi=10.435, pos="top-center"):
     text.Draw()
     return text
 
-def merge_hists_g(hists_d, merge_groups):
+g_merge_cmd = dict()
+g_merge_cmd["data"] = ["SingleMuAB", "SingleMuC", "SingleMuD"]
+g_merge_cmd["diboson"] = ["WW", "WZ", "ZZ"]
+g_merge_cmd["DY-jets"] = ["DYJets"]
+g_merge_cmd["s-channel"] = ["T_s", "Tbar_s"]
+g_merge_cmd["tW-channel"] = ["T_tW", "Tbar_tW"]
+g_merge_cmd["t#bar{t}"] = ["TTJets_FullLept", "TTJets_SemiLept"]
+g_merge_cmd["W+jets"] = ["W1Jets_exclusive", "W2Jets_exclusive", "W3Jets_exclusive", "W4Jets_exclusive"]
+#g_merge_cmd["W+jets"] = ["WJets_inclusive"]
+g_merge_cmd["t-channel"] = ["T_t", "Tbar_t"]
+
+
+def merge_hists_g(hists_d, merge_groups=g_merge_cmd):
     out_d = dict()
     for merge_name, items in merge_groups.items():
         hist = hists_d[items[0]].hist.Clone()
@@ -222,6 +234,7 @@ def merge_hists(hists, name):
         merged_hist.Add(hist.hist)
     outh.setHist(merged_hist)
     return outh
+
 
 if __name__=="__main__":
     metadata_iso = MetaData("histos_iso.db")
@@ -265,7 +278,7 @@ if __name__=="__main__":
     def stack_plot(var, cut, weight=None, **kwargs):
         qcd_weight = kwargs.get("qcd_weight", None)
         skip_samples = kwargs.get("skip_samples", [])
-        doDataDrivenQCD = kwargs.get("doDataDrivenQCD", False)
+        doDataDrivenQCD = kwargs.get("doDataDrivenQCD", True)
 
         hists_mc = [metadata_iso.get_histogram(sample_name, var, cut_str=cut.cut_str, weight=weight) for sample_name in mc_sample_names]
 
@@ -328,8 +341,8 @@ if __name__=="__main__":
             hist_data_antiiso.sample_name = "QCDMu"
             hist_data_antiiso.pretty_name = "QCD (dd.)"
 
-        for hist in hists_data[1:]:
-            stack_group["data"][0].hist.Add(hist.hist)
+        #for hist in hists_data[1:]:
+        #    stack_group["data"][0].hist.Add(hist.hist)
 
         stack_d = dict()
         if doDataDrivenQCD:
@@ -471,6 +484,8 @@ if __name__=="__main__":
                 ret = "#eta_{lj} in mu, M_{t}(W)>50 GeV, %dJ%dT" % (nj, nt)
                 if weight=="pu_weight":
                     ret += ", PUw."
+                if weight=="pu_weight*b_weight_nominal":
+                    ret += ", PUw., Bw."
                 return ret
             ret = stack_plot("eta_lj", Cuts.rms_lj*Cuts.mt_mu*Cuts.n_jets(nj)*Cuts.n_tags(nt),
                 weight=weight,
@@ -544,7 +559,10 @@ if __name__=="__main__":
             weight="pu_weight",
             qcd_weight="pu_weight",
         )
-    total_lumi = 5306+6781+7274
+
+#    total_lumi = 5306+6781+7274
+
+
     def data_mc_ratio(ratio_groups, var, cut, **kwargs):
         ColorStyleGen.reset()
         samples_mc = ratio_groups.keys()
@@ -578,12 +596,12 @@ if __name__=="__main__":
         canv.SaveAs(plot_name + ".pdf")
         return canv, leg
 
-    doRatio=False
+    doRatio=True
 
     if doRatio:
         ratio_d = dict()
-        ratio_d["W+jets excl."] = ["WJets_inclusive"]
-        ratio_d["W+jets incl."] = ["W1Jets_exclusive", "W2Jets_exclusive", "W3Jets_exclusive", "W4Jets_exclusive"]
+        ratio_d["W+jets incl."] = ["WJets_inclusive"]
+        ratio_d["W+jets excl."] = ["W1Jets_exclusive", "W2Jets_exclusive", "W3Jets_exclusive", "W4Jets_exclusive"]
         ratio_d["mc (W+jets incl.)"] = [
             "T_s", "Tbar_s",
             "T_tW", "Tbar_tW",
