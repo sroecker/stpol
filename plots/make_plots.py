@@ -477,7 +477,7 @@ if __name__=="__main__":
 
         n_jets = [2,3]
         n_tags = [0,1,2]
-        weights = [None, "pu_weight", "pu_weight*b_weight_nominal"]
+        weights = [None, "pu_weight", "pu_weight*b_weight_nominal", "pu_weight*b_weight_nominal*muon_IDWeight*muon_IsoWeight"]
         rets = []
         for nj, nt, weight in itertools.product(n_jets, n_tags, weights):
             def title(nj, nt, weight):
@@ -486,8 +486,16 @@ if __name__=="__main__":
                     ret += ", PUw."
                 if weight=="pu_weight*b_weight_nominal":
                     ret += ", PUw., Bw."
+                if weight=="pu_weight*b_weight_nominal*muon_IDWeight*muon_IsoWeight":
+                    ret += ", all weights"
                 return ret
             ret = stack_plot("eta_lj", Cuts.rms_lj*Cuts.mt_mu*Cuts.n_jets(nj)*Cuts.n_tags(nt),
+                weight=weight,
+                name="eta_lj_%dJ%dT_%s" % (nj, nt, weight),
+                title=title(nj, nt, weight),
+                x_label="#eta_{lj}"
+            )
+            ret = stack_plot("abs(eta_lj)", Cuts.rms_lj*Cuts.mt_mu*Cuts.n_jets(nj)*Cuts.n_tags(nt),
                 weight=weight,
                 name="eta_lj_%dJ%dT_%s" % (nj, nt, weight),
                 title=title(nj, nt, weight),
@@ -577,7 +585,7 @@ if __name__=="__main__":
 
             if name != "data":
                 for hist in samples_d[name]:
-                    hist.normalize_lumi(total_lumi)
+                    hist.normalize_lumi(lumi_total)
             merged = merge_hists(samples_d[name], name)
             samples_d[name] = merged
             samples_d[name].pretty_name = name
@@ -600,18 +608,18 @@ if __name__=="__main__":
 
     if doRatio:
         ratio_d = dict()
-        ratio_d["W+jets incl."] = ["WJets_inclusive"]
+        #ratio_d["W+jets incl."] = ["WJets_inclusive"]
         ratio_d["W+jets excl."] = ["W1Jets_exclusive", "W2Jets_exclusive", "W3Jets_exclusive", "W4Jets_exclusive"]
-        ratio_d["mc (W+jets incl.)"] = [
-            "T_s", "Tbar_s",
-            "T_tW", "Tbar_tW",
-            "WW", "ZZ", "WZ",
-            "WJets_inclusive",
-            "TTJets_FullLept", "TTJets_SemiLept",
-            "T_t", "Tbar_t",
-            "DYJets",
-            "QCDMu"
-        ]
+#        ratio_d["mc (W+jets incl.)"] = [
+#            "T_s", "Tbar_s",
+#            "T_tW", "Tbar_tW",
+#            "WW", "ZZ", "WZ",
+#            "WJets_inclusive",
+#            "TTJets_FullLept", "TTJets_SemiLept",
+#            "T_t", "Tbar_t",
+#            "DYJets",
+#            "QCDMu"
+#        ]
         ratio_d["mc (W+jets excl.)"] = [
             "T_s", "Tbar_s",
             "T_tW", "Tbar_tW",
