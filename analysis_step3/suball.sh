@@ -8,7 +8,7 @@ then
     exit 1
 fi
 WD=$CMSSW_BASE/..
-SUBSCRIPT=$WD/analysis_step3/slurm_sub_step3.sh
+SUBSCRIPT=$WD/analysis_step3/local_sub_step3.sh
 for infile in $INFILES
 do
     echo $infile
