@@ -51,6 +51,7 @@ class Cuts:
     mt_mu = Cut("mt_mu > 50")
     rms_lj = Cut("rms_lj < 0.025")
     eta_jet = Cut("abs(eta_lj) < 4.5")*Cut("abs(eta_bj) < 4.5")
+    pt_jet = Cut("pt_lj > 40")*Cut("pt_bj > 40")
     top_mass_sig = Cut("top_mass >130 && top_mass<220")
     no_cut = Cut("1")
 

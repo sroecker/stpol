@@ -4,8 +4,7 @@ import time
 import numpy
 
 file_list = [
-#'/hdfs/cms/store/user/joosep/T_t-channel_TuneZ2star_8TeV-powheg-tauola/stpol_step1B_04_10/c9249c44a215ffeb8c9ba40f59092334/output_1_2_33N.root',
-'/hdfs/cms/store/user/joosep/T_t-channel_TuneZ2star_8TeV-powheg-tauola/stpol_step1B_04_10/c9249c44a215ffeb8c9ba40f59092334/output_2_8_IvV.root'
+"/Users/joosep/Documents/stpol/data/output_1_2_33N.root"
 ]
 
 events = Events(
