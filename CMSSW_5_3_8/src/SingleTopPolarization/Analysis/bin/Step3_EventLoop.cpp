@@ -323,10 +323,10 @@ public:
     
     bool doWeights;
     void initialize_branches() {
-        branch_vars["b_weight_nominal"] = 0.0;
-        branch_vars["pu_weight"] = 0.0;
-        branch_vars["muon_IDWeight"] = 0.0;
-        branch_vars["muon_IsoWeight"] = 0.0;
+        branch_vars["b_weight_nominal"] = 1.0;
+        branch_vars["pu_weight"] = 1.0;
+        branch_vars["muon_IDWeight"] = 1.0;
+        branch_vars["muon_IsoWeight"] = 1.0;
     }
     
     Weights(const edm::ParameterSet& pars, std::map<std::string, float>& _branch_vars) :
