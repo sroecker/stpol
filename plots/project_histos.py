@@ -455,7 +455,7 @@ if __name__=="__main__":
 
             n_jets = [2,3]
             n_tags = [0,1,2]
-            weights = [None, "pu_weight", "pu_weight*b_weight_nominal"]
+            weights = [None, "pu_weight", "pu_weight*b_weight_nominal", "pu_weight*b_weight_nominal*muon_IDWeight*muon_IsoWeight"]
             for nj, nt, weight in itertools.product(n_jets, n_tags, weights):
                 histos += hdraw.drawHistogram("eta_lj", cut=Cuts.rms_lj*Cuts.mt_mu*Cuts.n_jets(nj)*Cuts.n_tags(nt), plot_range=[n_bins, -5, 5],
                     weight=weight,
