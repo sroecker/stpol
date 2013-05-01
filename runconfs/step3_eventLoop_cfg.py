@@ -64,7 +64,7 @@ process.muonCuts = cms.PSet(
     muonPtSrc  = cms.InputTag("goodSignalMuonsNTupleProducer", "Pt"),
     muonRelIsoSrc  = cms.InputTag("goodSignalMuonsNTupleProducer", "relIso"),
     muonCountSrc  = cms.InputTag("muonCount"),
-    doVetoLeptonCut = cms.bool(True),
+    doVetoLeptonCut = cms.bool(False),
     vetoMuCountSrc = cms.InputTag("looseVetoMuCount"),
     vetoEleCountSrc = cms.InputTag("looseVetoEleCount"),
 )
@@ -129,6 +129,7 @@ process.weights = cms.PSet(
 
 process.mtMuCuts = cms.PSet(
     mtMuSrc = cms.InputTag("muAndMETMT"),
+    metSrc = cms.InputTag("patMETNTupleProducer", "Pt"),
     doMTCut = cms.bool(False),
     minVal = cms.double(40)
 )
