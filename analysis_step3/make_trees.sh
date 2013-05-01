@@ -1,7 +1,7 @@
 #!/bin/bash
 timestamp=`eval date +%m_%d_%H_%M`
 OFDIR=out_step3_$timestamp
-FLDIR=filelist_step2_04_25
+FLDIR=filelist_step2_05_01
 mkdir $OFDIR
 mkdir $OFDIR/iso
 mkdir $OFDIR/iso/mc
