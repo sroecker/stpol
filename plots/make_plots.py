@@ -76,6 +76,7 @@ def legend(hists, pos="top-right", **kwargs):
     return leg
 
 def plot_hists(hists, name="canv", **kwargs):
+    ColorStyleGen.reset()
     canv = ROOT.TCanvas(name, name)
     do_normalized = kwargs["do_normalized"] if "do_normalized" in kwargs.keys() else False
     draw_cmd = kwargs["draw_cmd"] if "draw_cmd" in kwargs.keys() else "E1"
