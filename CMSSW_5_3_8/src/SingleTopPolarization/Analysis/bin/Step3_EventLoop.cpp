@@ -53,15 +53,38 @@ public:
     bool cutOnIso;
     bool reverseIsoCut;
     bool requireOneMuon;
+    bool doControlVars;
     
     float isoCut;
     edm::InputTag muonPtSrc;
     edm::InputTag muonRelIsoSrc;
     edm::InputTag muonCountSrc;
+    
+    edm::InputTag muonDbSrc;
+    edm::InputTag muonDzSrc;
+    edm::InputTag muonNormChi2Src;
+    edm::InputTag muonChargeSrc;
+
+    edm::InputTag muonGTrackHitsSrc;
+    edm::InputTag muonITrackHitsSrc;
+    edm::InputTag muonLayersSrc;
+    edm::InputTag muonStationsSrc;
 
     virtual void initialize_branches() {
         branch_vars["mu_pt"] = def_val;
         branch_vars["mu_iso"] = def_val;
+        
+        if(doControlVars) {
+            branch_vars["mu_db"] = def_val;
+            branch_vars["mu_dz"] = def_val;
+            branch_vars["mu_chi2"] = def_val;
+            branch_vars["mu_charge"] = def_val;
+            branch_vars["mu_gtrack"] = def_val;
+            branch_vars["mu_itrack"] = def_val;
+            branch_vars["mu_layers"] = def_val;
+            branch_vars["mu_stations"] = def_val;
+
+        }
     }
     
     MuonCuts(const edm::ParameterSet& pars, std::map< std::string, float> & _branch_vars) :
@@ -71,13 +94,26 @@ public:
         requireOneMuon = pars.getParameter<bool>("requireOneMuon");
         
         cutOnIso = pars.getParameter<bool>("cutOnIso");
+        doControlVars = pars.getParameter<bool>("doControlVars");
         reverseIsoCut = pars.getParameter<bool>("reverseIsoCut");
         isoCut = (float)pars.getParameter<double>("isoCut");
         
         muonPtSrc = pars.getParameter<edm::InputTag>("muonPtSrc");
         muonRelIsoSrc = pars.getParameter<edm::InputTag>("muonRelIsoSrc");
-        muonCountSrc = pars.getParameter<edm::InputTag>("muonCountSrc");
-       
+        
+        if(doControlVars) {
+            muonDbSrc = pars.getParameter<edm::InputTag>("muonDbSrc");
+            muonDzSrc = pars.getParameter<edm::InputTag>("muonDzSrc");
+            muonNormChi2Src = pars.getParameter<edm::InputTag>("muonNormChi2Src");
+            muonChargeSrc = pars.getParameter<edm::InputTag>("muonChargeSrc");
+
+            muonGTrackHitsSrc = pars.getParameter<edm::InputTag>("muonGTrackHitsSrc");
+            muonITrackHitsSrc = pars.getParameter<edm::InputTag>("muonITrackHitsSrc");
+            muonLayersSrc = pars.getParameter<edm::InputTag>("muonLayersSrc");
+            muonStationsSrc = pars.getParameter<edm::InputTag>("muonStationsSrc");
+        }
+        
+        muonCountSrc = pars.getParameter<edm::InputTag>("muonCountSrc"); 
     }
     
     bool process(const edm::EventBase& event) {
@@ -88,6 +124,18 @@ public:
         
         branch_vars["mu_pt"] = get_collection_n<float>(event, muonPtSrc, 0);
         branch_vars["mu_iso"] = get_collection_n<float>(event, muonRelIsoSrc, 0);
+        
+        if(doControlVars) {
+            branch_vars["mu_db"] = get_collection_n<float>(event, muonDbSrc, 0);
+            branch_vars["mu_dz"] = get_collection_n<float>(event, muonDzSrc, 0);
+            branch_vars["mu_chi2"] = get_collection_n<float>(event, muonNormChi2Src, 0);
+            branch_vars["mu_charge"] = get_collection_n<float>(event, muonChargeSrc, 0);
+            branch_vars["mu_gtrack"] = get_collection_n<float>(event, muonGTrackHitsSrc, 0);
+            branch_vars["mu_itrack"] = get_collection_n<float>(event, muonITrackHitsSrc, 0);
+            branch_vars["mu_layers"] = get_collection_n<float>(event, muonLayersSrc, 0);
+            branch_vars["mu_stations"] = get_collection_n<float>(event, muonStationsSrc, 0);
+        }
+        
         bool passesMuIso = true;
         if (cutOnIso) {
             if(!reverseIsoCut)
