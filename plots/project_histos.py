@@ -42,6 +42,9 @@ class Cut:
     def __repr__(self):
         return "<Cut(%s)>" % self.cut_str
 
+    def __str__(self):
+        return self.cut_str
+
 class Cuts:
     hlt_isomu = Cut("HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet50_40_30_v1 == 1.0")
     eta_lj = Cut("abs(eta_lj) > 2.5")
@@ -193,8 +196,8 @@ class Sample:
     def drawHistogram(self, var, cut, **kwargs):
         name = self.name + "_" + Histogram.unique_name(var, cut, kwargs.get("weight"))
 
-        if(var not in self.getBranches()):
-            raise KeyError("Plot variable %s not defined in branches" % var)
+        #if(var not in self.getBranches()):
+        #    raise KeyError("Plot variable %s not defined in branches" % var)
 
         plot_range = kwargs.get("plot_range", [100, 0, 100])
 
@@ -457,7 +460,10 @@ if __name__=="__main__":
                     weight=weight,
                     skip_weight=["QCD*", "SingleMu*"]
                 )
-
+                histos += hdraw.drawHistogram("abs(eta_lj)", cut=Cuts.rms_lj*Cuts.mt_mu*Cuts.n_jets(nj)*Cuts.n_tags(nt), plot_range=[n_bins, 0, 5],
+                    weight=weight,
+                    skip_weight=["QCD*", "SingleMu*"]
+                )
             for h in histos:
                 metadata.save(h)
             logging.info("Done saving %d histograms." % len(histos))
