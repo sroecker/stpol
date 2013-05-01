@@ -58,6 +58,7 @@ process.fwliteOutput = cms.PSet(
 
 process.muonCuts = cms.PSet(
     cutOnIso  = cms.bool(False),
+    doControlVars  = cms.bool(True),
     reverseIsoCut  = cms.bool(False),
     requireOneMuon  = cms.bool(True),
     isoCut  = cms.double(0.12),
@@ -67,6 +68,16 @@ process.muonCuts = cms.PSet(
     doVetoLeptonCut = cms.bool(False),
     vetoMuCountSrc = cms.InputTag("looseVetoMuCount"),
     vetoEleCountSrc = cms.InputTag("looseVetoEleCount"),
+
+    muonDbSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "db"),
+    muonDzSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "dz"),
+    muonNormChi2Src = cms.InputTag("goodSignalMuonsNTupleProducer", "normChi2"),
+    muonChargeSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "Charge"),
+    
+    muonGTrackHitsSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "globalTrackhitPatternnumberOfValidMuonHits"),
+    muonITrackHitsSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "innerTrackhitPatternnumberOfValidPixelHits"),
+    muonStationsSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "numberOfMatchedStations"),
+    muonLayersSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "trackhitPatterntrackerLayersWithMeasurement"),
 )
 
 process.eleCuts = cms.PSet(
