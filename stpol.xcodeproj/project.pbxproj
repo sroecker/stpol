@@ -68,6 +68,7 @@
 		A73D463416A84B1700703EF6 /* simpleTestSuccess.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = simpleTestSuccess.sh; sourceTree = "<group>"; };
 		A7500F9416A9A7F100279454 /* calcLumis.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = calcLumis.sh; sourceTree = "<group>"; };
 		A76785821730059200C77D80 /* single_plot.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = single_plot.py; sourceTree = "<group>"; };
+		A767858317312C4D00C77D80 /* qcd_plot.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = qcd_plot.py; sourceTree = "<group>"; };
 		A768B07B16E4A42A0076ADB3 /* crab_Data_step2_antiIso.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = crab_Data_step2_antiIso.cfg; path = crabs/crab_Data_step2_antiIso.cfg; sourceTree = "<group>"; };
 		A768B07C16E4A42A0076ADB3 /* crab_Data_step2_Iso.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = crab_Data_step2_Iso.cfg; path = crabs/crab_Data_step2_Iso.cfg; sourceTree = "<group>"; };
 		A768B07D16E4A42A0076ADB3 /* crab_MC_step1_glideInRemote.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = crab_MC_step1_glideInRemote.cfg; path = crabs/crab_MC_step1_glideInRemote.cfg; sourceTree = "<group>"; };
@@ -400,6 +401,7 @@
 				A71F5D791701D8A200AB8E33 /* common */,
 				A71F5D7C1701D8A200AB8E33 /* make_plots.py */,
 				A76785821730059200C77D80 /* single_plot.py */,
+				A767858317312C4D00C77D80 /* qcd_plot.py */,
 				A71F5D7D1701D8A200AB8E33 /* project_histos.py */,
 				A7D9917917058A3E00CEF269 /* cutflow_test.py */,
 				A7DC5ED5171E94E300AFD6B8 /* final_plot.py */,
