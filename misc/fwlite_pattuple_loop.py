@@ -4,7 +4,10 @@ import time
 import numpy
 
 file_list = [
-"/Users/joosep/Documents/stpol/data/output_1_2_33N.root"
+"/hdfs/cms/store/user/joosep/T_t-channel_TuneZ2star_8TeV-powheg-tauola/stpol_step1B/7dee8f5886a058feb3a776faa931adee/output_1_1_DEZ.root",
+"/hdfs/cms/store/user/joosep/T_t-channel_TuneZ2star_8TeV-powheg-tauola/stpol_step1B/7dee8f5886a058feb3a776faa931adee/output_1_1_iCi.root",
+"/hdfs/cms/store/user/joosep/T_t-channel_TuneZ2star_8TeV-powheg-tauola/stpol_step1B/7dee8f5886a058feb3a776faa931adee/output_1_1_txu.root",
+#"/Users/joosep/Documents/stpol/data/output_1_2_33N.root"
 ]
 
 events = Events(
@@ -30,13 +33,16 @@ t0 = time.time()
 nMuon_distr = []
 for event in events:
     print nEv
-    event.getByLabel(jetL, jetH)
-    jets = jetH.product()
-    if jetH.isValid():
-        for jet in jets:
-            pt,eta,phi = jet.pt(),jet.eta(),jet.phi()
-        nJets = len(jets)
 
+    try:
+        event.getByLabel(jetL, jetH)
+        jets = jetH.product()
+        if jetH.isValid():
+            for jet in jets:
+                pt,eta,phi = jet.pt(),jet.eta(),jet.phi()
+            nJets = len(jets)
+    except Exception as e:
+        print e
     try:
         event.getByLabel(eleL, eleH)
         if eleH.isValid():
