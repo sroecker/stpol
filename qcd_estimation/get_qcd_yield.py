@@ -18,7 +18,7 @@ from plot_fit import plot_fit
 from Fit import Fit
 
 def get_yield(var, fit_result, cutMT, filename):
-   infile = "fits/"+filename+".root"
+   infile = "fits/mtwMass_fit_"+filename+".root"
    f = TFile(infile)   
    QCDRATE = fit_result.qcd
    hQCD = f.Get(var.shortName+"__qcd")

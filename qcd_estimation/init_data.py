@@ -52,10 +52,11 @@ dgGJets.add([dGJHT40, dGJHT100, dGJHT200])
 """
 dgTCh = DatasetGroup("t-channel", kRed)
 dTCh = Dataset("t-channel", "TChannel", "T_t", 56.4)
-#dTCh2 = Dataset("t-channel2", "TChannel", "T_t_toLeptons", 56.4)
+dTCh2 = Dataset("t-channel_toLeptons", "TChannel", "T_t_ToLeptons", 56.4*0.326)
 dTbarCh = Dataset("t-channel_Tbar", "TbarChannel", "Tbar_t", 30.7)
-#dTbarCh2 = Dataset("t-channel_Tbar2", "TbarChannel", "Tbar_t_toLeptons", 30.7)
+dTbarCh2 = Dataset("t-channel_toLeptons_Tbar2", "TbarChannel", "Tbar_t_ToLeptons", 30.7*0.326)
 dgTCh.add([dTCh, dTbarCh])
+#dgTCh.add([dTCh2, dTbarCh2])
 
 dgTWCh = DatasetGroup("tW-channel", kOrange)
 dTWCh = Dataset("tW-channel", "TWChannel", "T_tW", 11.1)

@@ -84,7 +84,7 @@ def get_cuts_antiiso_mc(fit, iso_var=""):
    return weightsMC+"*("+get_cuts_antiiso(fit, iso_var)+")"
 
 def get_cuts_antiiso(fit, iso_var="", isQCD=False):
-   antiiso_cuts = base_cuts + " && " +get_isolation_cut(fit, iso_var)
+   antiiso_cuts = base_cuts + " && " +get_isolation_cut(iso_var, fit)
    antiiso_cuts += " && " + get_mtw_cut(fit)
    if fit.isSR:
       antiiso_cuts += " && "+cutsSR
@@ -116,10 +116,10 @@ def get_jet_cuts_manual(n_jets, n_tags):
 ###
 
 def get_cuts_antiiso_data_manual(cuts, n_jets, n_tags, iso_var=""):
-   return weightsData+"*("+get_cuts_antiiso_manual(cuts, n_jets, n_tags, iso_var="")+")"
+   return weightsData+"*("+get_cuts_antiiso_manual(cuts, n_jets, n_tags, iso_var)+")"
 
 def get_cuts_antiiso_mc_manual(cuts, n_jets, n_tags, iso_var=""):
-   return weightsMC+"*("+get_cuts_antiiso_manual(cuts, n_jets, n_tags, iso_var="")+")"
+   return weightsMC+"*("+get_cuts_antiiso_manual(cuts, n_jets, n_tags, iso_var)+")"
 
 def get_cuts_antiiso_manual(cuts, n_jets, n_tags, iso_var=""):
    antiiso_cuts = cuts + " && " + get_isolation_cut(iso_var)
@@ -127,7 +127,7 @@ def get_cuts_antiiso_manual(cuts, n_jets, n_tags, iso_var=""):
    return antiiso_cuts
    
 def get_cuts_antiiso_qcd_manual(cuts, n_jets, n_tags, iso_var=""):
-   return weightsQCD+"*("+get_cuts_antiiso_manual(cuts, n_jets, n_tags, iso_var="")+")"
+   return weightsQCD+"*("+get_cuts_antiiso_manual(cuts, n_jets, n_tags, iso_var)+")"
 
 
 
