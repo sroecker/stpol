@@ -47,7 +47,9 @@ process.fwliteInput = cms.PSet(
     maxEvents   = cms.int32(-1),
     outputEvery = cms.uint32(10000),
 )
-print "Input files: %s" % input_files
+print "Input files:"
+for fi in input_files:
+    print "\t",fi
 print "Output file: %s" %  outfile
 
 process.fwliteOutput = cms.PSet(
@@ -56,8 +58,9 @@ process.fwliteOutput = cms.PSet(
 
 process.muonCuts = cms.PSet(
     cutOnIso  = cms.bool(False),
+    doControlVars  = cms.bool(True),
     reverseIsoCut  = cms.bool(False),
-    requireOneMuon  = cms.bool(False),
+    requireOneMuon  = cms.bool(True),
     isoCut  = cms.double(0.12),
     muonPtSrc  = cms.InputTag("goodSignalMuonsNTupleProducer", "Pt"),
     muonRelIsoSrc  = cms.InputTag("goodSignalMuonsNTupleProducer", "relIso"),
@@ -65,6 +68,16 @@ process.muonCuts = cms.PSet(
     doVetoLeptonCut = cms.bool(False),
     vetoMuCountSrc = cms.InputTag("looseVetoMuCount"),
     vetoEleCountSrc = cms.InputTag("looseVetoEleCount"),
+
+    muonDbSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "db"),
+    muonDzSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "dz"),
+    muonNormChi2Src = cms.InputTag("goodSignalMuonsNTupleProducer", "normChi2"),
+    muonChargeSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "Charge"),
+    
+    muonGTrackHitsSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "globalTrackhitPatternnumberOfValidMuonHits"),
+    muonITrackHitsSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "innerTrackhitPatternnumberOfValidPixelHits"),
+    muonStationsSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "numberOfMatchedStations"),
+    muonLayersSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "trackhitPatterntrackerLayersWithMeasurement"),
 )
 
 process.eleCuts = cms.PSet(
@@ -72,7 +85,6 @@ process.eleCuts = cms.PSet(
 
 process.jetCuts = cms.PSet(
     cutOnNJets  = cms.bool(False),
-    cutOnNTags  = cms.bool(False),
     applyRmsLj  = cms.bool(False),
     applyEtaLj  = cms.bool(False),
 
@@ -81,11 +93,8 @@ process.jetCuts = cms.PSet(
 
     rmsMax = cms.double(0.025),
 
-    nJetsMin = cms.int32(2),
-    nJetsMax = cms.int32(2),
-
-    nTagsMin = cms.int32(0),
-    nTagsMax = cms.int32(9),
+    nJetsMin = cms.int32(0),
+    nJetsMax = cms.int32(4),
 
     goodJetsPtSrc = cms.InputTag("goodJetsNTupleProducer", "Pt"),
     goodJetsEtaSrc = cms.InputTag("goodJetsNTupleProducer", "Eta"),
@@ -106,7 +115,7 @@ process.bTagCuts = cms.PSet(
     bTagJetsCountSrc = cms.InputTag("bJetCount"),
 
     nTagsMin = cms.int32(0),
-    nTagsMax = cms.int32(9),
+    nTagsMax = cms.int32(2),
 
     bJetEtaSrc = cms.InputTag("highestBTagJetNTupleProducer", "Eta"),
     bJetBdiscrSrc = cms.InputTag("highestBTagJetNTupleProducer", "bDiscriminatorTCHP"),
@@ -131,6 +140,7 @@ process.weights = cms.PSet(
 
 process.mtMuCuts = cms.PSet(
     mtMuSrc = cms.InputTag("muAndMETMT"),
+    metSrc = cms.InputTag("patMETNTupleProducer", "Pt"),
     doMTCut = cms.bool(False),
     minVal = cms.double(40)
 )
@@ -141,8 +151,9 @@ process.HLT = cms.PSet(
         "HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet50_40_30_v1",
         "HLT_Ele25_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_TriCentralPFNoPUJet50_40_30_v5",
         "HLT_Ele25_CaloIdVT_CaloIsoVL_TrkIdVL_TrkIsoT_TriCentralPFNoPUJet50_40_30_v1",
+        "HLT_IsoMu24_eta2p1_v1"
     ]),
-    cutOnHLT = cms.string("None"),
+    cutOnHLT = cms.string("NONE"),
     doCutOnHLT = cms.bool(False)
 )
 
@@ -157,7 +168,7 @@ process.lumiBlockCounters = cms.PSet(
 )
 
 process.genParticles = cms.PSet(
-    doGenParticles = cms.bool(isMC),
+    doGenParticles = cms.bool(False),
     trueBJetCountSrc = cms.InputTag("trueBJetCount"),
     trueCJetCountSrc = cms.InputTag("trueCJetCount"),
     trueLJetCountSrc = cms.InputTag("trueLJetCount"),
@@ -179,4 +190,4 @@ if doSync:
     process.bTagCuts.nTagsMax = 1
 
     process.mtMuCuts.doMTCut = True
-    process.mtMuCuts.minVal = 40
+    process.mtMuCuts.minVal = 50

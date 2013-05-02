@@ -22,7 +22,7 @@ mkdir $OUTDIR
 cd $OUTDIR
 
 #split input file into N-line pieces
-split $INFILE -l 100 -d
+split $INFILE -a4 -l 50 -d
 for file in x*
 do
     sbatch -p prio $CMSSW_BASE/../analysis_step3/run_step3_eventloop.sh `readlink -f $file` $OUTDIR

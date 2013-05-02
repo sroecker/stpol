@@ -19,13 +19,16 @@
 #include "cuts_base.h"
 #include "hlt_cuts.h"
 
+#include <stdio.h>
+#include <time.h>
+
 //Shorthand for getting a value of type T from the event
 template <typename T>
 T get_collection(const edm::EventBase& evt, edm::InputTag src, const T& retval) {
     edm::Handle<T> coll;
     evt.getByLabel(src, coll);
     if(!coll.isValid()) {
-        //std::cerr << "Collection is not valid!" << std::endl;
+        //std::cerr << "Collection " << src.label() << " is not valid!" << std::endl;
         return retval;
     }
     return *coll;
@@ -50,15 +53,38 @@ public:
     bool cutOnIso;
     bool reverseIsoCut;
     bool requireOneMuon;
+    bool doControlVars;
     
     float isoCut;
     edm::InputTag muonPtSrc;
     edm::InputTag muonRelIsoSrc;
     edm::InputTag muonCountSrc;
+    
+    edm::InputTag muonDbSrc;
+    edm::InputTag muonDzSrc;
+    edm::InputTag muonNormChi2Src;
+    edm::InputTag muonChargeSrc;
+
+    edm::InputTag muonGTrackHitsSrc;
+    edm::InputTag muonITrackHitsSrc;
+    edm::InputTag muonLayersSrc;
+    edm::InputTag muonStationsSrc;
 
     virtual void initialize_branches() {
         branch_vars["mu_pt"] = def_val;
         branch_vars["mu_iso"] = def_val;
+        
+        if(doControlVars) {
+            branch_vars["mu_db"] = def_val;
+            branch_vars["mu_dz"] = def_val;
+            branch_vars["mu_chi2"] = def_val;
+            branch_vars["mu_charge"] = def_val;
+            branch_vars["mu_gtrack"] = def_val;
+            branch_vars["mu_itrack"] = def_val;
+            branch_vars["mu_layers"] = def_val;
+            branch_vars["mu_stations"] = def_val;
+
+        }
     }
     
     MuonCuts(const edm::ParameterSet& pars, std::map< std::string, float> & _branch_vars) :
@@ -68,13 +94,26 @@ public:
         requireOneMuon = pars.getParameter<bool>("requireOneMuon");
         
         cutOnIso = pars.getParameter<bool>("cutOnIso");
+        doControlVars = pars.getParameter<bool>("doControlVars");
         reverseIsoCut = pars.getParameter<bool>("reverseIsoCut");
         isoCut = (float)pars.getParameter<double>("isoCut");
         
         muonPtSrc = pars.getParameter<edm::InputTag>("muonPtSrc");
         muonRelIsoSrc = pars.getParameter<edm::InputTag>("muonRelIsoSrc");
-        muonCountSrc = pars.getParameter<edm::InputTag>("muonCountSrc");
-       
+        
+        if(doControlVars) {
+            muonDbSrc = pars.getParameter<edm::InputTag>("muonDbSrc");
+            muonDzSrc = pars.getParameter<edm::InputTag>("muonDzSrc");
+            muonNormChi2Src = pars.getParameter<edm::InputTag>("muonNormChi2Src");
+            muonChargeSrc = pars.getParameter<edm::InputTag>("muonChargeSrc");
+
+            muonGTrackHitsSrc = pars.getParameter<edm::InputTag>("muonGTrackHitsSrc");
+            muonITrackHitsSrc = pars.getParameter<edm::InputTag>("muonITrackHitsSrc");
+            muonLayersSrc = pars.getParameter<edm::InputTag>("muonLayersSrc");
+            muonStationsSrc = pars.getParameter<edm::InputTag>("muonStationsSrc");
+        }
+        
+        muonCountSrc = pars.getParameter<edm::InputTag>("muonCountSrc"); 
     }
     
     bool process(const edm::EventBase& event) {
@@ -85,6 +124,18 @@ public:
         
         branch_vars["mu_pt"] = get_collection_n<float>(event, muonPtSrc, 0);
         branch_vars["mu_iso"] = get_collection_n<float>(event, muonRelIsoSrc, 0);
+        
+        if(doControlVars) {
+            branch_vars["mu_db"] = get_collection_n<float>(event, muonDbSrc, 0);
+            branch_vars["mu_dz"] = get_collection_n<float>(event, muonDzSrc, 0);
+            branch_vars["mu_chi2"] = get_collection_n<float>(event, muonNormChi2Src, 0);
+            branch_vars["mu_charge"] = get_collection_n<float>(event, muonChargeSrc, 0);
+            branch_vars["mu_gtrack"] = get_collection_n<float>(event, muonGTrackHitsSrc, 0);
+            branch_vars["mu_itrack"] = get_collection_n<float>(event, muonITrackHitsSrc, 0);
+            branch_vars["mu_layers"] = get_collection_n<float>(event, muonLayersSrc, 0);
+            branch_vars["mu_stations"] = get_collection_n<float>(event, muonStationsSrc, 0);
+        }
+        
         bool passesMuIso = true;
         if (cutOnIso) {
             if(!reverseIsoCut)
@@ -106,6 +157,8 @@ public:
     edm::InputTag vetoEleCountSrc;
    
     void initialize_branches() {
+        branch_vars["n_veto_mu"] = -1.0;
+        branch_vars["n_veto_ele"] = -1.0;
     }
 
     VetoLeptonCuts(const edm::ParameterSet& pars, std::map< std::string, float> & _branch_vars) :
@@ -119,11 +172,12 @@ public:
     
     bool process(const edm::EventBase& event) {
         pre_process();
-        
+        int n_veto_mu = get_collection<int>(event, vetoMuCountSrc, -1);
+        int n_veto_ele = get_collection<int>(event, vetoEleCountSrc, -1);
+        branch_vars["n_veto_mu"] = (float)n_veto_mu;
+        branch_vars["n_veto_ele"] = (float)n_veto_ele;
         if(doVetoLeptonCut) {
-            int n_veto_mu = get_collection<int>(event, vetoMuCountSrc, -1);
-            int n_veto_ele = get_collection<int>(event, vetoEleCountSrc, -1);
-            if (n_veto_mu != 0 || n_veto_ele!=0) return false;
+            if (n_veto_mu != 0 || n_veto_ele != 0) return false;
         }
 
         post_process();
@@ -180,7 +234,6 @@ public:
     {
         initialize_branches();
         cutOnNJets =  pars.getParameter<bool>("cutOnNJets");
-        cutOnNTags =  pars.getParameter<bool>("cutOnNTags");
         applyRmsLj =  pars.getParameter<bool>("applyRmsLj");
         applyEtaLj =  pars.getParameter<bool>("applyEtaLj");
         
@@ -188,8 +241,6 @@ public:
         
         nJetsCutMax = pars.getParameter<int>("nJetsMax");
         nJetsCutMin = pars.getParameter<int>("nJetsMin");
-        nTagsCutMax = pars.getParameter<int>("nTagsMax");
-        nTagsCutMin = pars.getParameter<int>("nTagsMin");
         
         goodJetsCountSrc = pars.getParameter<edm::InputTag>("goodJetsCountSrc");
         
@@ -211,14 +262,9 @@ public:
         branch_vars["rms_lj"] = get_collection_n<float>(event, lightJetRmsSrc, 0);
         bool passes_rms_lj = (branch_vars["rms_lj"] < rmsMax);
         
-        branch_vars["pt_bj"] = get_collection_n<float>(event, bJetPtSrc, 0);
-        branch_vars["eta_bj"] = get_collection_n<float>(event, bJetEtaSrc, 0);
-        branch_vars["bdiscr_bj"] = get_collection_n<float>(event, bJetBdiscrSrc, 0);
         branch_vars["n_jets"] = get_collection<int>(event, goodJetsCountSrc, -1);
-        branch_vars["n_tags"] = get_collection<int>(event, bTagJetsCountSrc, -1);
         
         if (cutOnNJets && (branch_vars["n_jets"] > nJetsCutMax || branch_vars["n_jets"] < nJetsCutMin)) return false;
-        if (cutOnNTags && (branch_vars["n_tags"] > nTagsCutMax || branch_vars["n_tags"] < nTagsCutMin)) return false;
         if (applyRmsLj && !passes_rms_lj) return false;
         
         post_process();
@@ -328,10 +374,10 @@ public:
     
     bool doWeights;
     void initialize_branches() {
-        branch_vars["b_weight_nominal"] = 0.0;
-        branch_vars["pu_weight"] = 0.0;
-        branch_vars["muon_IDWeight"] = 0.0;
-        branch_vars["muon_IsoWeight"] = 0.0;
+        branch_vars["b_weight_nominal"] = 1.0;
+        branch_vars["pu_weight"] = 1.0;
+        branch_vars["muon_IDWeight"] = 1.0;
+        branch_vars["muon_IsoWeight"] = 1.0;
     }
     
     Weights(const edm::ParameterSet& pars, std::map<std::string, float>& _branch_vars) :
@@ -375,11 +421,13 @@ public:
 class MTMuCuts : public CutsBaseF {
 public:
     edm::InputTag mtMuSrc;
+    edm::InputTag metSrc;
     float minVal;
     bool doMTCut;
     
     void initialize_branches() {
         branch_vars["mt_mu"] = def_val;
+        branch_vars["met"] = def_val;
     }
     
     MTMuCuts(const edm::ParameterSet& pars, std::map<std::string, float>& _branch_vars) :
@@ -387,6 +435,7 @@ public:
     {
         initialize_branches();
         mtMuSrc = pars.getParameter<edm::InputTag>("mtMuSrc");
+        metSrc = pars.getParameter<edm::InputTag>("metSrc");
         minVal = (float)pars.getParameter<double>("minVal");
         doMTCut = pars.getParameter<bool>("doMTCut");
     }
@@ -395,6 +444,7 @@ public:
         pre_process();
         
         branch_vars["mt_mu"] = get_collection<double>(event, mtMuSrc, def_val);
+        branch_vars["met"] = get_collection_n<float>(event, metSrc, 0);
         if (doMTCut && branch_vars["mt_mu"] < minVal) return false;
         
         post_process();
@@ -413,8 +463,8 @@ public:
     void initialize_branches() {
         branch_vars["cos_theta"] = def_val;
         branch_vars["n_vertices"] = def_val;
-        branch_vars_vec["scale_factors"] = std::vector<float>();
-        branch_vars_vec["scale_factors"].clear();
+        //branch_vars_vec["scale_factors"] = std::vector<float>();
+        //branch_vars_vec["scale_factors"].clear();
     }
     
     
@@ -425,7 +475,7 @@ public:
         initialize_branches();
         cosThetaSrc = pars.getParameter<edm::InputTag>("cosThetaSrc");
         nVerticesSrc = pars.getParameter<edm::InputTag>("nVerticesSrc");
-        scaleFactorsSrc = pars.getParameter<edm::InputTag>("scaleFactorsSrc");
+        //scaleFactorsSrc = pars.getParameter<edm::InputTag>("scaleFactorsSrc");
     }
     
     bool process(const edm::EventBase& event) {
@@ -434,13 +484,13 @@ public:
         branch_vars["cos_theta"] = get_collection<double>(event, cosThetaSrc, def_val);
         branch_vars["n_vertices"] = get_collection<int>(event, nVerticesSrc, def_val);
 
-        edm::Handle<std::vector<float>> scale_factors;
-        event.getByLabel(scaleFactorsSrc, scale_factors);
-        if(scale_factors.isValid()) {
-            for (auto sf : *scale_factors) {
-                branch_vars_vec["scale_factors"].push_back(sf);
-            }
-        }
+        //edm::Handle<std::vector<float>> scale_factors;
+        //event.getByLabel(scaleFactorsSrc, scale_factors);
+        //if(scale_factors.isValid()) {
+        //    for (auto sf : *scale_factors) {
+        //        branch_vars_vec["scale_factors"].push_back(sf);
+        //    }
+        //}
          
         post_process();
         return true;
@@ -507,6 +557,21 @@ public:
 //        counter_srcs(pars.getParameter<std::vector<edm::InputTag>>("trackedCounters"));
 //    }
 //};
+
+
+// Get current date/time, format is YYYY-MM-DD.HH:mm:ss
+const std::string currentDateTime() {
+    time_t     now = time(0);
+    struct tm  tstruct;
+    char       buf[80];
+    tstruct = *localtime(&now);
+    // Visit http://www.cplusplus.com/reference/clibrary/ctime/strftime/
+    // for more information about date/time format
+    strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
+
+    return buf;
+}
+#define LogInfo std::cout << currentDateTime() << ":"
 
 int main(int argc, char* argv[])
 {    
@@ -582,6 +647,11 @@ int main(int argc, char* argv[])
     TTree* out_tree = dir.make<TTree>("Events", "Events");
     TH1I* count_hist = dir.make<TH1I>("count_hist", "Event counts", count_map.size(), 0, count_map.size() - 1);
     
+    TFile::SetOpenTimeout(60000);
+    if(!TFile::SetCacheFileDir("/scratch/joosep")) {
+        std::cerr << "Cache directory was not writable" << std::endl;
+    }
+    
     event_id_branches["event_id"] = -1;
     event_id_branches["run_id"] = -1;
     event_id_branches["lumi_id"] = -1;
@@ -608,10 +678,16 @@ int main(int argc, char* argv[])
     }
     // loop the events
     int ievt=0;
+    long bytes_read = 0;
+    TStopwatch* stopwatch = new TStopwatch();
+    stopwatch->Start();
     for(unsigned int iFile=0; iFile<inputFiles_.size(); ++iFile) {
         // open input file (can be located on castor)
+        LogInfo << "Opening file " << inputFiles_[iFile] << std::endl;
         TFile* in_file = TFile::Open(inputFiles_[iFile].c_str());
         if( in_file ) {
+            double file_time = stopwatch->RealTime();
+            stopwatch->Continue();
             
             fwlite::Event ev(in_file);
             for(ev.toBegin(); !ev.atEnd(); ++ev, ++ievt) {
@@ -623,7 +699,7 @@ int main(int argc, char* argv[])
                 if(maxEvents_>0 ? ievt+1>maxEvents_ : false) break;
                 
                 if(outputEvery_!=0 ? (ievt>0 && ievt%outputEvery_==0) : false)
-                    std::cout << "  processing event: " << ievt << std::endl;
+                    LogInfo << "  processing event: " << ievt << std::endl;
                 
                 bool passes_hlt_cuts = hlt_cuts.process(event);
                 if(!passes_hlt_cuts) continue;
@@ -665,6 +741,10 @@ int main(int argc, char* argv[])
                 count_map["total_processed"] += counter->value;
             }
             in_file->Close();
+            file_time = stopwatch->RealTime() - file_time;
+            stopwatch->Continue();
+            bytes_read += in_file->GetBytesRead();
+            LogInfo << "Closing file " << in_file->GetPath() << " with " << in_file->GetBytesRead()/(1024*1024) << " Mb read, " << in_file->GetBytesRead()/(1024*1024) / file_time << " Mb/s" << std::endl;
         }
     }
     
@@ -692,8 +772,12 @@ int main(int argc, char* argv[])
     std::cout << "jet cuts " << jet_cuts.toString() << std::endl;
     std::cout << "tag cuts " << btag_cuts.toString() << std::endl;
     std::cout << "top cuts " << top_cuts.toString() << std::endl;
+    stopwatch->Stop();
     
-    
+    double time = stopwatch->RealTime();
+    int speed = (int)((float)ievt / time);
+    LogInfo << "processing speed = " << speed << " events/sec" << std::endl;
+    LogInfo << "read " << bytes_read/(1024*1024) << " Mb in total, average speed " << bytes_read/(1024*1024) / time << " Mb/s" << std::endl;  
     //    for (auto& elem : cut_count_map) {
     //        std::cout << elem.first << " " << elem.second << std::endl;
     //    }

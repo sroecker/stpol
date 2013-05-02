@@ -8,11 +8,12 @@ then
     exit 1
 fi
 WD=$CMSSW_BASE/..
+SUBSCRIPT=$WD/analysis_step3/slurm_sub_step3.sh
 for infile in $INFILES
 do
     echo $infile
     fullpath=$(readlink -f $infile)
     filename=$(basename $infile)
     channel="${filename%.*}"
-    $WD/analysis_step3/slurm_sub_step3.sh $fullpath $OFDIR/$channel 
+    $SUBSCRIPT $fullpath $OFDIR/$channel 
 done

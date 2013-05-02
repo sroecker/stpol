@@ -32,7 +32,8 @@ bool HLTCuts::process(const edm::EventBase& event) {
         //std::cout << "index=" << trig_names.triggerIndex(name) << std::endl;
         unsigned int idx = trig_names.triggerIndex(name);
         if(idx>=trig_results->size()) {
-            std::cerr << "Could not find trigger " << name << " idx=" << idx << std::endl; 
+            //std::cerr << "Could not find trigger " << name << " idx=" << idx << std::endl; 
+            branch_vars[name] = -1;
         }
         else {
             branch_vars[name] = (int)trig_results->accept(idx);
@@ -42,7 +43,15 @@ bool HLTCuts::process(const edm::EventBase& event) {
 
     //Cut on one specific HLT
     if(cut_on_HLT) {
-        trig_results->accept(trig_names.triggerIndex(hlt_cut_name));
+        unsigned int idx = trig_names.triggerIndex(hlt_cut_name);
+        if(idx>=trig_results->size()) {
+            //std::cerr << "Could not find trigger " << name << " idx=" << idx << std::endl; 
+            branch_vars[hlt_cut_name] = -1;
+        }
+        else {
+            branch_vars[hlt_cut_name] = (int)trig_results->accept(idx);
+        }
+        if (branch_vars[hlt_cut_name] != 1) return false;
     }
 
     post_process();
