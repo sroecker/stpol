@@ -1,4 +1,8 @@
 import ROOT
+ROOT.gROOT.SetBatch(True)
+import tdrstyle
+tdrstyle.tdrstyle()
+
 from project_histos import Histogram, MetaData, Cuts, filter_alnum
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -72,7 +76,7 @@ def legend(hists, pos="top-right", **kwargs):
     leg.Draw()
     leg.SetFillColor(ROOT.kWhite)
     leg.SetLineColor(ROOT.kWhite)
-    leg.SetTextSize(0.03)
+    leg.SetTextSize(0.01)
     return leg
 
 def plot_hists(hists, name="canv", **kwargs):
@@ -130,6 +134,8 @@ def plot_hists_stacked(hist_groups, **kwargs):
     min_bin = kwargs.get("min_bin", 10)
 
     canv = ROOT.TCanvas(name, name)
+    canv.SetWindowSize(1000,1000)
+    canv.SetCanvasSize(1000,1000)
     for name, group in hist_groups.items():
         stacks[name] = ROOT.THStack(name, name)
         print name
@@ -275,7 +281,7 @@ if __name__=="__main__":
 
 
     data_sample_names = ["SingleMuAB", "SingleMuC", "SingleMuD"]
-    lumi_total = 18062
+    lumi_total = 19361
     def stack_plot(var, cut, weight=None, **kwargs):
         qcd_weight = kwargs.get("qcd_weight", None)
         skip_samples = kwargs.get("skip_samples", [])
@@ -473,8 +479,41 @@ if __name__=="__main__":
             name="cos_theta_plot_2J1T_pu_weight_b_weight",
             title="cos #theta_{lj} in mu, M_{t}(W)>50 GeV, 2J1T, #eta_{lj}>2.5, M_{bl#nu} #in [130, 220] GeV, PUw., Bw.",
             x_label="cos #theta_{lj}",
-            skip_samples=["QCD (MC)"]
+            #skip_samples=["QCD (MC)"]
         )
+
+        ret4_3 = stack_plot("cos_theta", Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig,
+            weight="pu_weight*b_weight_nominal*muon_IDWeight*muon_IsoWeight",
+            name="cos_theta_plot_2J1T_pu_weight_b_weight",
+            title="cos #theta_{lj} in mu, M_{t}(W)>50 GeV, 2J1T, #eta_{lj}>2.5, M_{bl#nu} #in [130, 220] GeV, PUw., Bw.",
+            x_label="cos #theta_{lj}",
+            #skip_samples=["QCD (MC)"]
+        )
+
+#        ret4_1A = stack_plot("cos_theta", Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(0)*Cuts.eta_lj*Cuts.top_mass_sig,
+#            weight="pu_weight",
+#            name="cos_theta_plot_2J1T_pu_weight",
+#            title="cos #theta_{lj} in mu, M_{t}(W)>50 GeV, 2J1T, #eta_{lj}>2.5, M_{bl#nu} #in [130, 220] GeV, PUw.",
+#            x_label="cos #theta_{lj}",
+#            #skip_samples=["QCD (MC)"]
+#        )
+#
+#        ret4_2A = stack_plot("cos_theta", Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(0)*Cuts.eta_lj*Cuts.top_mass_sig,
+#            weight="pu_weight*b_weight_nominal",
+#            name="cos_theta_plot_2J1T_pu_weight_b_weight",
+#            title="cos #theta_{lj} in mu, M_{t}(W)>50 GeV, 2J1T, #eta_{lj}>2.5, M_{bl#nu} #in [130, 220] GeV, PUw., Bw.",
+#            x_label="cos #theta_{lj}",
+#            skip_samples=["QCD (MC)"]
+#        )
+#
+#        ret4_3A = stack_plot("cos_theta", Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(0)*Cuts.eta_lj*Cuts.top_mass_sig,
+#            weight="pu_weight*b_weight_nominal*muon_IDWeight*muon_IsoWeight",
+#            name="cos_theta_plot_2J1T_pu_weight_b_weight",
+#            title="cos #theta_{lj} in mu, M_{t}(W)>50 GeV, 2J1T, #eta_{lj}>2.5, M_{bl#nu} #in [130, 220] GeV, PUw., Bw.",
+#            x_label="cos #theta_{lj}",
+#            skip_samples=["QCD (MC)"]
+#        )
+
 
         n_jets = [2,3]
         n_tags = [0,1,2]
@@ -605,7 +644,7 @@ if __name__=="__main__":
         canv.SaveAs(plot_name + ".pdf")
         return canv, leg
 
-    doRatio=True
+    doRatio=False
 
     if doRatio:
         ratio_d = dict()
