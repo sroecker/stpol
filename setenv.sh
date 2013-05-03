@@ -19,7 +19,7 @@ eval `scramv1 runtime -sh`
 
 # Add plotfw to python library path
 #PYTHONPATH=$PYTHONPATH:${SCRIPT_DIR}/newplots
-PYTHONPATH=$PYTHONPATH:`readlink -f runconfs`
+PYTHONPATH=$PYTHONPATH:`readlink -f runconfs`:$SCRIPT_DIR/plots
 
 # Return to original directory
 cd $CURRENT_DIR
