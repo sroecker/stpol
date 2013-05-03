@@ -4,7 +4,11 @@ import sys
 import os
 
 #Need to add parent dir to python path to import plots
-sys.path.append(os.environ["STPOL_DIR"] )
+try:
+    sys.path.append(os.environ["STPOL_DIR"] )
+except KeyError:
+    print "Could not find the STPOL_DIR environment variable, dod you run `source setenv.sh` in the code base directory?"
+    sys.exit(1)
 
 import ROOT
 import plots
@@ -72,6 +76,10 @@ if __name__=="__main__":
         do_log_y=False
     )
 
+    #Draws the lumi box
+    from plots.common.utils import lumi_textbox
+    lumibox = lumi_textbox(19432)
+
     #Draw the legend
     from plots.common.legend import legend
     leg = legend(
@@ -79,6 +87,7 @@ if __name__=="__main__":
         styles=["p", "f"],
         width=0.2
     )
+
     try:
         os.mkdir("muon_out")
     except OSError:
