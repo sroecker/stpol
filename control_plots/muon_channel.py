@@ -10,7 +10,7 @@ import ROOT
 import plots
 from plots.common.stack_plot import plot_hists_stacked
 from plots.common.odict import OrderedDict
-
+import plots.common.pretty_names as pretty_names
 import random
 
 if __name__=="__main__":
@@ -33,6 +33,7 @@ if __name__=="__main__":
     #Make some test MC histograms
     #In a real use case, you will retrieve them from the samples
     h_mc1 = ROOT.TH1F("h_mc1", "TTJets", 20, -5, 5)
+    h_mc1.SetTitle(pretty_names.sample_names["TTJets_FullLept"])
     for i in range(1500):
         h_mc1.Fill(random.normalvariate(0, 1))
 
