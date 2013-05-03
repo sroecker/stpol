@@ -1,5 +1,6 @@
 import ROOT
 
+#Different subtypes of the same physical samples have different names
 sample_colors_separate = {
     'T_t': ROOT.kRed,
     'Tbar_t': ROOT.kRed+1,
@@ -47,6 +48,8 @@ sample_colors_separate = {
     'SingleEle': ROOT.kBlack,
 }
 
+
+#Different types of the same physical samples have the same colors
 sample_colors_same = {
     'T_t': ROOT.kRed,
     'Tbar_t': ROOT.kRed,
