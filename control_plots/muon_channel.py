@@ -31,6 +31,7 @@ if __name__=="__main__":
     h_d1.SetTitle("data")
 
     #Make some test MC histograms
+    #In a real use case, you will retrieve them from the samples
     h_mc1 = ROOT.TH1F("h_mc1", "TTJets", 20, -5, 5)
     for i in range(1500):
         h_mc1.Fill(random.normalvariate(0, 1))
@@ -73,7 +74,7 @@ if __name__=="__main__":
     #Draw the legend
     from plots.common.legend import legend
     leg = legend(
-        [h_d1, h_mc3, h_mc2, h_mc1], # <<< need to reverse MC order here
+        [h_d1, h_mc3, h_mc2, h_mc1], # <<< need to reverse MC order here, mc3 is top-most
         styles=["p", "f"],
         width=0.2
     )
