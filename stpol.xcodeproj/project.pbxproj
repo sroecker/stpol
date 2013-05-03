@@ -76,6 +76,7 @@
 		A76785881733EB2E00C77D80 /* pretty_names.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = pretty_names.py; sourceTree = "<group>"; };
 		A76785891734068C00C77D80 /* utils.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = utils.py; sourceTree = "<group>"; };
 		A767858B173406BB00C77D80 /* muon_channel.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = muon_channel.py; sourceTree = "<group>"; };
+		A767858E1734400E00C77D80 /* mu_quality_vars.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = mu_quality_vars.py; sourceTree = "<group>"; };
 		A768B07B16E4A42A0076ADB3 /* crab_Data_step2_antiIso.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = crab_Data_step2_antiIso.cfg; path = crabs/crab_Data_step2_antiIso.cfg; sourceTree = "<group>"; };
 		A768B07C16E4A42A0076ADB3 /* crab_Data_step2_Iso.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = crab_Data_step2_Iso.cfg; path = crabs/crab_Data_step2_Iso.cfg; sourceTree = "<group>"; };
 		A768B07D16E4A42A0076ADB3 /* crab_MC_step1_glideInRemote.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = crab_MC_step1_glideInRemote.cfg; path = crabs/crab_MC_step1_glideInRemote.cfg; sourceTree = "<group>"; };
@@ -413,6 +414,7 @@
 				A7D9917917058A3E00CEF269 /* cutflow_test.py */,
 				A7DC5ED5171E94E300AFD6B8 /* final_plot.py */,
 				A7A913A31709BDB4002832E3 /* b_eff_calcs.py */,
+				A767858E1734400E00C77D80 /* mu_quality_vars.py */,
 			);
 			path = plots;
 			sourceTree = "<group>";

@@ -41,11 +41,11 @@ def legend(hists, pos="top-right", **kwargs):
     text_size = kwargs.get("text_size", 0.03)
     
     #If you have long names you should make the width larger
-    width = kwargs.get("width", 0.1)
+    width = kwargs.get("width", 0.21)
     
     #The height is determined automatically with some sensible settings from
     #the number of legend items
-    height = kwargs.get("height", 0.05*len(hists))
+    height = kwargs.get("height", 0.03*len(hists))
 
     #The style characters for drawing the legend
     styles = kwargs.get("styles", ["p", "f"])

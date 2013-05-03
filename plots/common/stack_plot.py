@@ -22,7 +22,7 @@ def plot_hists_stacked(canv, hist_groups, **kwargs):
     y_label - label of the y axis
     do_log_y - True/False to set log scale on y axis
     min_bin - the lower cutoff on the y axis, which may be necessary for log y scale
-
+    max_bin_mult - the y axis upper limit will be this multipier times the maimal bin height
     ***returns
     a dictionary with the instances of the drawn TStacks.
     """
@@ -36,9 +36,10 @@ def plot_hists_stacked(canv, hist_groups, **kwargs):
     title = kwargs.get("title", "title")
 
     x_label = kwargs.get("x_label", "x_label")
-    y_label = kwargs.get("y_label", "y_label")
+    y_label = kwargs.get("y_label", "")
 
     min_bin = kwargs.get("min_bin", 10)
+    max_bin_mult = kwargs.get("max_bin_mult", 1.8)
 
 
     for name, group in hist_groups.items():
@@ -66,12 +67,13 @@ def plot_hists_stacked(canv, hist_groups, **kwargs):
 
         #Set the plot style on the first stack
         if first:
-            stack.SetMaximum(1.8*max_bin)
+            stack.SetMaximum(max_bin_mult*max_bin)
             if do_log_y:
                 stack.SetMinimum(min_bin)
             stack.SetTitle(title)
             stack.GetXaxis().SetTitle(x_label)
-            stack.GetYaxis().SetTitle(y_label)
+            if len(y_label)>0:
+                stack.GetYaxis().SetTitle(y_label)
 
         first = False
     if do_log_y:

@@ -3,7 +3,9 @@ import ROOT
 #Different subtypes of the same physical samples have different names
 sample_colors_separate = {
     'T_t': ROOT.kRed,
+    'T_t_ToLeptons+2': ROOT.kRed,
     'Tbar_t': ROOT.kRed+1,
+    'Tbar_t_ToLeptons+2': ROOT.kRed+3,
     'T_tW': ROOT.kYellow+3,
     'Tbar_tW': ROOT.kYellow+4,
     'T_s': ROOT.kYellow,
@@ -53,6 +55,8 @@ sample_colors_separate = {
 sample_colors_same = {
     'T_t': ROOT.kRed,
     'Tbar_t': ROOT.kRed,
+    'T_t_ToLeptons': ROOT.kRed,
+    'Tbar_t_ToLeptons': ROOT.kRed,
     'T_tW': ROOT.kYellow+4,
     'Tbar_tW': ROOT.kYellow+4,
     'T_s': ROOT.kYellow,
