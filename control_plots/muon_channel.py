@@ -32,7 +32,7 @@ if __name__=="__main__":
 
     #Merge the different data samples
     h_d1.Add(h_d2)
-    h_d1.SetTitle("data")
+    h_d1.SetTitle("single #mu")
 
     #Make some test MC histograms
     #In a real use case, you will retrieve them from the samples
@@ -42,10 +42,12 @@ if __name__=="__main__":
         h_mc1.Fill(random.normalvariate(0, 1))
 
     h_mc2 = ROOT.TH1F("h_mc2", "t-channel", 20, -5, 5)
+
     for i in range(900):
         h_mc2.Fill(random.normalvariate(0, 0.9))
 
     h_mc3 = ROOT.TH1F("h_mc3", "W+Jets", 20, -5, 5)
+    h_mc3.SetTitle(pretty_names.sample_names["W1Jets_exclusive"])
     for i in range(5000):
         h_mc3.Fill(random.normalvariate(0,  1.2))
 
@@ -85,7 +87,7 @@ if __name__=="__main__":
     leg = legend(
         [h_d1, h_mc3, h_mc2, h_mc1], # <<< need to reverse MC order here, mc3 is top-most
         styles=["p", "f"],
-        width=0.2
+        width=0.25
     )
 
     try:
