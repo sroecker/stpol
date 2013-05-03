@@ -69,6 +69,10 @@
 		A7500F9416A9A7F100279454 /* calcLumis.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = calcLumis.sh; sourceTree = "<group>"; };
 		A76785821730059200C77D80 /* single_plot.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = single_plot.py; sourceTree = "<group>"; };
 		A767858317312C4D00C77D80 /* qcd_plot.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = qcd_plot.py; sourceTree = "<group>"; };
+		A76785841733C75E00C77D80 /* legend.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = legend.py; sourceTree = "<group>"; };
+		A76785851733CB2500C77D80 /* tdrstyle.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = tdrstyle.py; sourceTree = "<group>"; };
+		A76785861733D3D000C77D80 /* stack_plot.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = stack_plot.py; sourceTree = "<group>"; };
+		A76785871733E45B00C77D80 /* sample_style.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = sample_style.py; sourceTree = "<group>"; };
 		A768B07B16E4A42A0076ADB3 /* crab_Data_step2_antiIso.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = crab_Data_step2_antiIso.cfg; path = crabs/crab_Data_step2_antiIso.cfg; sourceTree = "<group>"; };
 		A768B07C16E4A42A0076ADB3 /* crab_Data_step2_Iso.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = crab_Data_step2_Iso.cfg; path = crabs/crab_Data_step2_Iso.cfg; sourceTree = "<group>"; };
 		A768B07D16E4A42A0076ADB3 /* crab_MC_step1_glideInRemote.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = crab_MC_step1_glideInRemote.cfg; path = crabs/crab_MC_step1_glideInRemote.cfg; sourceTree = "<group>"; };
@@ -415,6 +419,10 @@
 			children = (
 				A71F5D7A1701D8A200AB8E33 /* colors.py */,
 				A71F5D7B1701D8A200AB8E33 /* cross_sections.py */,
+				A76785841733C75E00C77D80 /* legend.py */,
+				A76785851733CB2500C77D80 /* tdrstyle.py */,
+				A76785861733D3D000C77D80 /* stack_plot.py */,
+				A76785871733E45B00C77D80 /* sample_style.py */,
 			);
 			path = common;
 			sourceTree = "<group>";
