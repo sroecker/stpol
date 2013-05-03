@@ -22,25 +22,25 @@ def plot_hists_stacked(canv, hist_groups, **kwargs):
     y_label - label of the y axis
     do_log_y - True/False to set log scale on y axis
     min_bin - the lower cutoff on the y axis, which may be necessary for log y scale
-    
+
     ***returns
     a dictionary with the instances of the drawn TStacks.
     """
-    
+
     stacks = OrderedDict()
-    
+
     draw_styles = kwargs.get("draw_styles", {"data": "E1"})
-    
+
     do_log_y = kwargs.get("do_log_y", False)
-    
+
     title = kwargs.get("title", "title")
-    
+
     x_label = kwargs.get("x_label", "x_label")
     y_label = kwargs.get("y_label", "y_label")
-    
+
     min_bin = kwargs.get("min_bin", 10)
 
-    
+
     for name, group in hist_groups.items():
         stacks[name] = ROOT.THStack(name, name)
         for hist in group:
@@ -93,7 +93,7 @@ if __name__=="__main__":
     h_d2 = ROOT.TH1F("h_d2", "data2", 20, -5, 5)
     for i in range(10000):
         h_d2.Fill(random.normalvariate(0, 0.8))
-    
+
     #Merge the different data samples
     h_d1.Add(h_d2)
     h_d1.SetTitle("data")
