@@ -178,25 +178,6 @@ def plot_hists_stacked(hist_groups, **kwargs):
         canv.SetLogy()
     return canv, stacks
 
-class Styling:
-
-    def mc_style(hist):
-        print "MC style on histogram %s" % hist.name
-        color = sample_colors[hist.sample_name]
-        hist.hist.SetLineColor(color)
-        hist.hist.SetLineWidth(2)
-        hist.hist.SetFillColor(color)
-        hist.hist.SetFillStyle(1001)
-
-    def data_style(hist):
-        hist.hist.SetMarkerStyle(20)
-        hist.hist.SetMarkerColor(ROOT.kBlack)
-        hist.hist.SetFillStyle(4001)
-
-    style = dict()
-    style["mc"] = mc_style
-    style["data"] = data_style
-
 def lumi_textbox(lumi=10.435, pos="top-center"):
     if pos=="top-center":
         coords = [0.25, 0.73, 0.71, 0.88]
