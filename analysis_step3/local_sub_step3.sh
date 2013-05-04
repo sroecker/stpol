@@ -7,7 +7,7 @@ if [ -z "$OUTDIR" ]; then echo "Usage: $0 INFILE OUTDIR"; exit 1; fi
 mkdir $OUTDIR
 cd $OUTDIR
 
-split $INFILE -l 50 -d
+split $INFILE -l 100 -d
 I=0
 for file in x*
 do
