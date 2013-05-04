@@ -1,7 +1,10 @@
 import ROOT
 
 #Need to import ordereddict from python 2.7
-from collections import OrderedDict
+try:
+    from collections import OrderedDict as dict
+except ImportError:
+        from odict import OrderedDict as dict
 
 def plot_hists_stacked(canv, hist_groups, **kwargs):
     """
@@ -27,7 +30,7 @@ def plot_hists_stacked(canv, hist_groups, **kwargs):
     a dictionary with the instances of the drawn TStacks.
     """
 
-    stacks = OrderedDict()
+    stacks = dict()
 
     draw_styles = kwargs.get("draw_styles", {"data": "E1"})
 

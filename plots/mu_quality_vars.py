@@ -9,7 +9,10 @@ except KeyError:
     sys.exit(1)
 from project_histos import Sample, Cuts, Cut
 import argparse
-from collections import OrderedDict as dict
+try:
+    from collections import OrderedDict as dict
+except ImportError:
+    from common.odict import OrderedDict as dict
 from common.stack_plot import plot_hists_stacked
 from common.utils import merge_hists, merge_cmds
 from common.utils import lumi_textbox
