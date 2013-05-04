@@ -13,4 +13,4 @@ mkdir $OFDIR/anti-iso/data
 STPOL_ISMC=false analysis_step3/suball.sh $OFDIR/iso/data $FLDIR/iso/data/*
 STPOL_ISMC=false analysis_step3/suball.sh $OFDIR/anti-iso/data $FLDIR/anti-iso/data/*
 STPOL_ISMC=true analysis_step3/suball.sh $OFDIR/iso/mc $FLDIR/iso/mc/*
-STPOL_ISMC=true analysis_step3/suball.sh $OFDIR/anti-iso/mc $FLDIR/anti-iso/mc/*
+#STPOL_ISMC=true analysis_step3/suball.sh $OFDIR/anti-iso/mc $FLDIR/anti-iso/mc/*
