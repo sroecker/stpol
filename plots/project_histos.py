@@ -14,8 +14,7 @@ try:
     from sqlalchemy import create_engine
     from sqlalchemy.orm import sessionmaker
 except:
-    print "SQLAlchemy needed, please install"
-    sys.exit(1)
+    print "project_histos.py: SQLAlchemy needed, please install"
 
 import os
 import numpy

@@ -1,5 +1,12 @@
 import ROOT
 ROOT.gROOT.SetBatch(True)
+import sys
+import os
+try:
+    sys.path.append(os.environ["STPOL_DIR"] )
+except KeyError:
+    print "Could not find the STPOL_DIR environment variable, dod you run `source setenv.sh` in the code base directory?"
+    sys.exit(1)
 from project_histos import Sample, Cuts, Cut
 import argparse
 from collections import OrderedDict as dict
@@ -13,7 +20,7 @@ import copy
 if __name__=="__main__":
     from common.tdrstyle import tdrstyle
     tdrstyle()
-    
+
     parser = argparse.ArgumentParser()
     parser.add_argument("-t", "--type", type=str, default="iso")
     parser.add_argument("-d", "--dir", type=str, default="/Users/joosep/Documents/stpol/data/05_02/out_step3_05_01_22_36/")
@@ -40,7 +47,7 @@ if __name__=="__main__":
         hists_thD = dict()
         for (k,v) in histsD.items():
             hists_thD[k] = v.hist
-            
+
         merge_cmd = copy.deepcopy(merge_cmds)
         merge_cmd["QCD (MC)"] = ["QCDMu"]
         merged = merge_hists(hists_thD, merge_cmd)
@@ -58,7 +65,7 @@ if __name__=="__main__":
 
     cut = Cuts.no_cut
     cutname = "hlt"
-    
+
     ret1 = compare_plot("cos_theta", [20, -1, 1], "1.0", cut, filename="cos_theta_"+cutname)
     ret1A = compare_plot("mu_pt", [20, 0, 200], "1.0", cut, do_log_y=True, filename="mu_pt_"+cutname, x_label="pt_{#mu} [GeV]",
         min_bin=10, max_bin_mult=100)
@@ -70,7 +77,7 @@ if __name__=="__main__":
         min_bin=10, max_bin_mult=100)
     ret4 = compare_plot("mu_iso", [20, 0, 0.15], "1.0", cut, do_log_y=True, filename="mu_iso_"+cutname, x_label="Iso_{#mu}",
         min_bin=10, max_bin_mult=100)
-    
+
     ret5 = compare_plot("mu_gtrack", [21, 0, 20], "1.0", cut, do_log_y=True, filename="mu_gtrack_"+cutname, x_label="gtrack_{#mu}",
         min_bin=10, max_bin_mult=100)
     ret6 = compare_plot("mu_layers", [21, 0, 20], "1.0", cut, do_log_y=True, filename="mu_layers_"+cutname, x_label="layers_{#mu}",
