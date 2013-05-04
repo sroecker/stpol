@@ -56,13 +56,17 @@ if __name__=="__main__":
         canv.SaveAs(kwargs.get("filename", "plot") + ".pdf")
         return stack, canv, pl, leg, lb
 
-    cut = Cuts.final
-    cutname = "final"
+    cut = Cuts.no_cut
+    cutname = "hlt"
     
     ret1 = compare_plot("cos_theta", [20, -1, 1], "1.0", cut, filename="cos_theta_"+cutname)
-    ret2 = compare_plot("mu_db", [20, 0, 1.2*0.2], "1.0", cut, do_log_y=True, filename="mu_db_"+cutname, x_label="db_{#mu}",
+    ret1A = compare_plot("mu_pt", [20, 0, 200], "1.0", cut, do_log_y=True, filename="mu_pt_"+cutname, x_label="pt_{#mu} [GeV]",
         min_bin=10, max_bin_mult=100)
-    ret3 = compare_plot("abs(mu_dz)", [20, 0, 1.2*0.5], "1.0", cut, do_log_y=True, filename="mu_dz_"+cutname, x_label="|dz_{#mu}|",
+    #ret1B = compare_plot("abs(mu_eta)", [20, 0, 3.0], "1.0", cut, do_log_y=True, filename="mu_eta_"+cutname, x_label="#eta_{#mu}",
+    #    min_bin=10, max_bin_mult=100)
+    ret2 = compare_plot("mu_db", [20, 0, 1.2*0.2], "1.0", cut, do_log_y=True, filename="mu_db_"+cutname, x_label="db_{#mu} [cm]",
+        min_bin=10, max_bin_mult=100)
+    ret3 = compare_plot("abs(mu_dz)", [20, 0, 1.2*0.5], "1.0", cut, do_log_y=True, filename="mu_dz_"+cutname, x_label="|dz_{#mu}| [cm]",
         min_bin=10, max_bin_mult=100)
     ret4 = compare_plot("mu_iso", [20, 0, 0.15], "1.0", cut, do_log_y=True, filename="mu_iso_"+cutname, x_label="Iso_{#mu}",
         min_bin=10, max_bin_mult=100)
