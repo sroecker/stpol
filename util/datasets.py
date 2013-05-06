@@ -452,6 +452,7 @@ Possible datasets to process
 possible_ds = {
     "S1_D": step1_data_rereco_2013Jan, #direct data
     "S1_MC": step1_MC, #direct AODSIM
+    "S1_MC_syst": step1_MC_systematic, #direct AODSIM
 
     #step1B: runMEtUncertainties
     "S1B_MC": step1_out_MC_new,
@@ -495,7 +496,10 @@ if __name__=="__main__":
     for ds in dslist:
         ofn = "{2}/crab_{0}_{1}.cfg".format(ds.name, tag, ofdir)
         of = open(ofn, "w")
-        cfg = ds.parseTemplate(template, tag, systematic)
+        if isinstance(ds, DS_S2MC):
+            cfg = ds.parseTemplate(template, tag, systematic)
+        else:
+            cfg = ds.parseTemplate(template, tag)
         of.write(cfg)
         of.close()
         print "{0} done".format(ofn)
