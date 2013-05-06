@@ -1,12 +1,12 @@
 import ROOT
 ROOT.gROOT.SetBatch(True)
-import tdrstyle
-tdrstyle.tdrstyle()
+import common.tdrstyle
+common.tdrstyle.tdrstyle()
 
 from project_histos import Histogram, MetaData, Cuts, filter_alnum
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from collections import OrderedDict as dict
+from common.odict import OrderedDict as dict
 from common.colors import sample_colors_same as sample_colors
 import itertools
 
