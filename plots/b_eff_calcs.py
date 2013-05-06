@@ -15,7 +15,7 @@ def getBTaggingEff(sample, flavour, cut):
 
 if __name__=="__main__":
 
-    sample_dir = "/Users/joosep/Documents/stpol/data/out_step3_05_02_13_55/iso/mc/"
+    sample_dir = "out_step3_05_03_17_42/iso/mc/"
     samples = []
     samples.append(project_histos.Sample.fromFile(sample_dir + "TTJets_FullLept.root"))
     samples.append(project_histos.Sample.fromFile(sample_dir + "TTJets_MassiveBinDECAY.root"))
@@ -23,7 +23,7 @@ if __name__=="__main__":
     samples.append(project_histos.Sample.fromFile(sample_dir + "T_t.root"))
     #samples.append(project_histos.Sample.fromFile(sample_dir + "WJets_inclusive.root"))
     logging.info("Doing b-tagging efficiency calculations")
-    cuts = [Cuts.final]
+    cuts = [Cuts.hlt_isomu * Cuts.n_jets(2) * Cuts.eta_lj * Cuts.top_mass_sig]
 #    cuts.append("n_jets==2 && !(top_mass>130 && top_mass<220) && mt_mu>50")
 #    cuts.append("n_jets==3 && !(top_mass>130 && top_mass<220) && mt_mu>50")
     for cut in cuts:
