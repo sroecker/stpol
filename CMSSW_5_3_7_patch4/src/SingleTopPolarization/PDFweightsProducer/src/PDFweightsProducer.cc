@@ -44,22 +44,6 @@
 #include <sstream>
 
 using namespace std;
-
-namespace LHAPDF
-{
-	void initPDFSet(int nset, const std::string &filename, int member = 0);
-	int numberPDF(int nset);
-	void usePDFMember(int nset, int member);
-	double xfx(int nset, double x, double Q, int fl);
-	double getXmin(int nset, int member);
-	double getXmax(int nset, int member);
-	double getQ2min(int nset, int member);
-	double getQ2max(int nset, int member);
-	void extrapolate(bool extrapolate = true);
-	int	numberPDF();
-}
-
-
 //
 // class declaration
 //
@@ -105,36 +89,12 @@ class PDFweightsProducer : public edm::EDProducer {
 // constructors and destructor
 //
 PDFweightsProducer::PDFweightsProducer(const edm::ParameterSet& iConfig)
-: PDFSets(iConfig.getParameter<std::vector<std::string>>("PDFSets"))
 {
-	std::map<string,int> map_name;
-	
-	for( unsigned int i = 0; i < PDFSets.size(); i++ ){
-		if( i > 2 ) break;	// lhapdf cannot manage with more PDFs 
-
-		// make names of PDF sets to be saved
-		string name = PDFSets[i];
-		size_t pos = name.find_first_not_of("ZXCVBNMASDFGHJKLQWERTYUIOPabcdefghijklmnopqrstuvwxyz1234567890");
-		if (pos!=std::string::npos) name = name.substr(0,pos);
-		if( map_name.count(name) == 0 ){
-			map_name[name]=0;
-			PDFnames.push_back(name);
-		}
-		else {
-			map_name[name]++;
-			ostringstream ostr;
-			ostr << name << "xxx" << map_name[name];
-			PDFnames.push_back(ostr.str());
-		}
-		
-		if( i == 0) produces<std::vector<double> > (string("weights"+PDFnames[i]));
-		if( i == 0) produces<int>(string("n"+PDFnames[i]));
-		produces<double>(string("w0"+PDFnames[i]));
-		
-		// initialise the PDF set
-		cout<<"PDFnames[i]="<<PDFnames[i]<<"\tPDFSets[i]="<<PDFSets[i]<<endl;
-		LHAPDF::initPDFSet(i+1, PDFSets[i]);		
-	}
+	produces<float>(string("scalePDF"));
+	produces<float>(string("x1"));
+	produces<float>(string("x2"));
+	produces<int>(string("id1"));
+	produces<int>(string("id2"));
 	
 }
 
@@ -167,34 +127,12 @@ PDFweightsProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	x2		=	genprod->pdf()->x.second;
 	id1		=	genprod->pdf()->id.first;
 	id2		=	genprod->pdf()->id.second;
-	
-	
-	for( unsigned int i = 0; i < PDFSets.size(); i++ ){
-		if( i > 2 ) break;	// lhapdf cannot manage with more PDFs 
-		
-		int InitNr = i+1;
-		
-		// calculate the PDF weights
-		std::auto_ptr < std::vector<double> > weights(new std::vector<double>());
-		LHAPDF::usePDFMember(InitNr, 0);
-		double	xpdf1	= LHAPDF::xfx(InitNr, x1, scalePDF, id1);
-		double	xpdf2	= LHAPDF::xfx(InitNr, x2, scalePDF, id2);
-		double	w0		= xpdf1 * xpdf2;
-		int		nPDFSet = LHAPDF::numberPDF(InitNr);
-		for (int p = 1; p <= nPDFSet; p++)
-		{
-			LHAPDF::usePDFMember(InitNr, p);
-			double xpdf1_new	= LHAPDF::xfx(InitNr, x1, scalePDF, id1);
-			double xpdf2_new	= LHAPDF::xfx(InitNr, x2, scalePDF, id2);
-			double pweight		= xpdf1_new * xpdf2_new / w0;
-			weights->push_back(pweight);
-		}
-		
-		// save weights		
-		if( i == 0) iEvent.put(weights, string("weights"+PDFnames[i]));
-		if( i == 0) iEvent.put(std::auto_ptr<int>(new int(nPDFSet)), string("n"+PDFnames[i]));  
-		iEvent.put(std::auto_ptr<double>(new double(w0)), string("w0"+PDFnames[i]));  		
-	}
+
+    iEvent.put(std::auto_ptr<float>(new float(scalePDF)), string("scalePDF"));
+	iEvent.put(std::auto_ptr<float>(new float(x1)), string("x1"));
+	iEvent.put(std::auto_ptr<float>(new float(x2)), string("x2"));
+	iEvent.put(std::auto_ptr<int>(new int(id1)), string("id1"));
+	iEvent.put(std::auto_ptr<int>(new int(id2)), string("id2"));
 }
 
 // ------------ method called once each job just before starting event loop  ------------
