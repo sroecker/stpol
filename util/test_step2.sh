@@ -1,5 +1,5 @@
 #!/bin/bash
-IN=`\ls -1 $CMSSW_BASE/../testing_step1B/out*.root`
+IN=`\ls -1 $CMSSW_BASE/../testing_step1/out*.root`
 OFDIR=$CMSSW_BASE/../testing_step2
 rm -Rf $OFDIR
 mkdir $OFDIR
