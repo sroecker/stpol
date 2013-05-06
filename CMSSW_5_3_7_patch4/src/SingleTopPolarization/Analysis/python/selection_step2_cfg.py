@@ -76,7 +76,7 @@ def SingleTopStep2():
                   VarParsing.multiplicity.singleton,
                   VarParsing.varType.string,
                   "Apply Systematic variation")
-        
+
         options.register ('doPDFWeights', False,
                   VarParsing.multiplicity.singleton,
                   VarParsing.varType.bool,
@@ -102,7 +102,7 @@ def SingleTopStep2():
         Config.doDebug = options.doDebug
         Config.isMC = options.isMC
         Config.isCompHep = options.compHep
-        Config.systematic = options.systematic        
+        Config.systematic = options.systematic
         print "Systematic! ",Config.systematic
 
     if Config.isMC:
@@ -716,6 +716,7 @@ def SingleTopStep2():
                 ["relIso", "userFloat('%s')" % Config.Muons.relIsoType],
                 ["Charge", "charge"],
                 ["genPdgId", "? genParticlesSize() > 0 ? genParticle(0).pdgId() : 0"],
+                ["motherGenPdgId", "? genParticlesSize() > 0 ? genParticle(0).mother(0).pdgId() : 0"],
                 ["normChi2", "? globalTrack().isNonnull() ? normChi2 : -1.0"],
                 ["trackhitPatterntrackerLayersWithMeasurement", "userFloat('track_hitPattern_trackerLayersWithMeasurement')"],
                 ["globalTrackhitPatternnumberOfValidMuonHits", "userFloat('globalTrack_hitPattern_numberOfValidMuonHits')"],
@@ -742,7 +743,9 @@ def SingleTopStep2():
                     ["Charge", "charge"],
                     ["superClustereta", "superCluster.eta"],
                     ["passConversionVeto", "passConversionVeto()"],
-                    ["gsfTracktrackerExpectedHitsInnernumberOfHits", "userInt('gsfTrack_trackerExpectedHitsInner_numberOfHits')"]
+                    ["gsfTracktrackerExpectedHitsInnernumberOfHits", "userInt('gsfTrack_trackerExpectedHitsInner_numberOfHits')"],
+                    ["genPdgId", "? genParticlesSize() > 0 ? genParticle(0).pdgId() : 0"],
+                    ["motherGenPdgId", "? genParticlesSize() > 0 ? genParticle(0).mother(0).pdgId() : 0"],
                 ]
       )
     )

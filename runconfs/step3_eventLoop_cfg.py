@@ -62,9 +62,11 @@ process.muonCuts = cms.PSet(
     reverseIsoCut  = cms.bool(False),
     requireOneMuon  = cms.bool(True),
     isoCut  = cms.double(0.12),
+
     muonPtSrc  = cms.InputTag("goodSignalMuonsNTupleProducer", "Pt"),
     muonRelIsoSrc  = cms.InputTag("goodSignalMuonsNTupleProducer", "relIso"),
     muonCountSrc  = cms.InputTag("muonCount"),
+
     doVetoLeptonCut = cms.bool(False),
     vetoMuCountSrc = cms.InputTag("looseVetoMuCount"),
     vetoEleCountSrc = cms.InputTag("looseVetoEleCount"),
@@ -73,7 +75,7 @@ process.muonCuts = cms.PSet(
     muonDzSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "dz"),
     muonNormChi2Src = cms.InputTag("goodSignalMuonsNTupleProducer", "normChi2"),
     muonChargeSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "Charge"),
-    
+
     muonGTrackHitsSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "globalTrackhitPatternnumberOfValidMuonHits"),
     muonITrackHitsSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "innerTrackhitPatternnumberOfValidPixelHits"),
     muonStationsSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "numberOfMatchedStations"),
@@ -151,9 +153,12 @@ process.HLT = cms.PSet(
         "HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet50_40_30_v1",
         "HLT_Ele25_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_TriCentralPFNoPUJet50_40_30_v5",
         "HLT_Ele25_CaloIdVT_CaloIsoVL_TrkIdVL_TrkIsoT_TriCentralPFNoPUJet50_40_30_v1",
-        "HLT_IsoMu24_eta2p1_v1"
+        "HLT_IsoMu24_eta2p1_v11",
+        "HLT_IsoMu24_eta2p1_v12",
+        "HLT_IsoMu24_eta2p1_v13",
+        "HLT_IsoMu24_eta2p1_v14",
+        "HLT_IsoMu24_eta2p1_v15",
     ]),
-    cutOnHLT = cms.string("NONE"),
     doCutOnHLT = cms.bool(False)
 )
 
@@ -168,7 +173,7 @@ process.lumiBlockCounters = cms.PSet(
 )
 
 process.genParticles = cms.PSet(
-    doGenParticles = cms.bool(False),
+    doGenParticles = cms.bool(isMC),
     trueBJetCountSrc = cms.InputTag("trueBJetCount"),
     trueCJetCountSrc = cms.InputTag("trueCJetCount"),
     trueLJetCountSrc = cms.InputTag("trueLJetCount"),

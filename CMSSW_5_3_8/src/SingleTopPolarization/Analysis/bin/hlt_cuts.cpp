@@ -11,7 +11,6 @@ CutsBaseI(_branch_vars)
 {
     hlt_src = pars.getParameter<edm::InputTag>("hltSrc");
     hlt_names = pars.getParameter<std::vector<std::string> >("hltNames");
-    hlt_cut_name = pars.getParameter<std::string>("cutOnHLT");
     cut_on_HLT = pars.getParameter<bool>("doCutOnHLT");
     initialize_branches();
 }
@@ -28,6 +27,7 @@ bool HLTCuts::process(const edm::EventBase& event) {
     //}
     //std::cout << std::endl;
     //Tabulate specified HLT-s
+    bool passes = false;
     for(auto & name : hlt_names) {
         //std::cout << "index=" << trig_names.triggerIndex(name) << std::endl;
         unsigned int idx = trig_names.triggerIndex(name);
@@ -37,22 +37,11 @@ bool HLTCuts::process(const edm::EventBase& event) {
         }
         else {
             branch_vars[name] = (int)trig_results->accept(idx);
+            passes = passes || trig_results->accept(idx);
         } 
         //std::cout << branch_vars[name] << std::endl; 
     }
-
-    //Cut on one specific HLT
-    if(cut_on_HLT) {
-        unsigned int idx = trig_names.triggerIndex(hlt_cut_name);
-        if(idx>=trig_results->size()) {
-            //std::cerr << "Could not find trigger " << name << " idx=" << idx << std::endl; 
-            branch_vars[hlt_cut_name] = -1;
-        }
-        else {
-            branch_vars[hlt_cut_name] = (int)trig_results->accept(idx);
-        }
-        if (branch_vars[hlt_cut_name] != 1) return false;
-    }
+    if (cut_on_HLT && !passes) return false;
 
     post_process();
     return true;

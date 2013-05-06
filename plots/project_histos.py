@@ -14,8 +14,7 @@ try:
     from sqlalchemy import create_engine
     from sqlalchemy.orm import sessionmaker
 except:
-    print "SQLAlchemy needed, please install"
-    sys.exit(1)
+    print "project_histos.py: SQLAlchemy needed, please install by running util/install_sqlalchemy.sh"
 
 import os
 import numpy
@@ -46,7 +45,7 @@ class Cut:
         return self.cut_str
 
 class Cuts:
-    hlt_isomu = Cut("HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet50_40_30_v1 == 1.0")
+    hlt_isomu = Cut("HLT_IsoMu24_eta2p1_v11 == 1.0 || HLT_IsoMu24_eta2p1_v12 == 1.0 || HLT_IsoMu24_eta2p1_v13 == 1.0 || HLT_IsoMu24_eta2p1_v14 == 1.0 || HLT_IsoMu24_eta2p1_v15 == 1.0")
     eta_lj = Cut("abs(eta_lj) > 2.5")
     mt_mu = Cut("mt_mu > 50")
     rms_lj = Cut("rms_lj < 0.025")
@@ -62,6 +61,7 @@ class Cuts:
     def n_tags(n):
         return Cut("n_tags == %.1f" % float(n))
 
+Cuts.final = Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig
 
 
 class Histogram(Base):
@@ -434,6 +434,19 @@ if __name__=="__main__":
             histos += hdraw.drawHistogram("cos_theta", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig,
                 plot_range=[n_bins, -1, 1], weight="pu_weight*b_weight_nominal", skip_weights=["SingleMu*"]
             )
+            histos += hdraw.drawHistogram("cos_theta", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig,
+                plot_range=[n_bins, -1, 1], weight="pu_weight*b_weight_nominal*muon_IDWeight*muon_IsoWeight", skip_weights=["SingleMu*"]
+            )
+            histos += hdraw.drawHistogram("cos_theta", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(0)*Cuts.eta_lj*Cuts.top_mass_sig,
+                plot_range=[n_bins, -1, 1], weight="pu_weight", skip_weights=["SingleMu*"]
+            )
+            histos += hdraw.drawHistogram("cos_theta", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(0)*Cuts.eta_lj*Cuts.top_mass_sig,
+                plot_range=[n_bins, -1, 1], weight="pu_weight*b_weight_nominal", skip_weights=["SingleMu*"]
+            )
+            histos += hdraw.drawHistogram("cos_theta", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(0)*Cuts.eta_lj*Cuts.top_mass_sig,
+                plot_range=[n_bins, -1, 1], weight="pu_weight*b_weight_nominal*muon_IDWeight*muon_IsoWeight", skip_weights=["SingleMu*"]
+            )
+
 
             histos += hdraw.drawHistogram("n_vertices", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig,
                 plot_range=[50, 0, 50], weight="pu_weight", skip_weights=["SingleMu*"]

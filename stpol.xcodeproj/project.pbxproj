@@ -69,6 +69,14 @@
 		A7500F9416A9A7F100279454 /* calcLumis.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = calcLumis.sh; sourceTree = "<group>"; };
 		A76785821730059200C77D80 /* single_plot.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = single_plot.py; sourceTree = "<group>"; };
 		A767858317312C4D00C77D80 /* qcd_plot.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = qcd_plot.py; sourceTree = "<group>"; };
+		A76785841733C75E00C77D80 /* legend.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = legend.py; sourceTree = "<group>"; };
+		A76785851733CB2500C77D80 /* tdrstyle.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = tdrstyle.py; sourceTree = "<group>"; };
+		A76785861733D3D000C77D80 /* stack_plot.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = stack_plot.py; sourceTree = "<group>"; };
+		A76785871733E45B00C77D80 /* sample_style.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = sample_style.py; sourceTree = "<group>"; };
+		A76785881733EB2E00C77D80 /* pretty_names.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = pretty_names.py; sourceTree = "<group>"; };
+		A76785891734068C00C77D80 /* utils.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = utils.py; sourceTree = "<group>"; };
+		A767858B173406BB00C77D80 /* muon_channel.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = muon_channel.py; sourceTree = "<group>"; };
+		A767858E1734400E00C77D80 /* mu_quality_vars.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = mu_quality_vars.py; sourceTree = "<group>"; };
 		A768B07B16E4A42A0076ADB3 /* crab_Data_step2_antiIso.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = crab_Data_step2_antiIso.cfg; path = crabs/crab_Data_step2_antiIso.cfg; sourceTree = "<group>"; };
 		A768B07C16E4A42A0076ADB3 /* crab_Data_step2_Iso.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = crab_Data_step2_Iso.cfg; path = crabs/crab_Data_step2_Iso.cfg; sourceTree = "<group>"; };
 		A768B07D16E4A42A0076ADB3 /* crab_MC_step1_glideInRemote.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = crab_MC_step1_glideInRemote.cfg; path = crabs/crab_MC_step1_glideInRemote.cfg; sourceTree = "<group>"; };
@@ -406,6 +414,7 @@
 				A7D9917917058A3E00CEF269 /* cutflow_test.py */,
 				A7DC5ED5171E94E300AFD6B8 /* final_plot.py */,
 				A7A913A31709BDB4002832E3 /* b_eff_calcs.py */,
+				A767858E1734400E00C77D80 /* mu_quality_vars.py */,
 			);
 			path = plots;
 			sourceTree = "<group>";
@@ -415,6 +424,12 @@
 			children = (
 				A71F5D7A1701D8A200AB8E33 /* colors.py */,
 				A71F5D7B1701D8A200AB8E33 /* cross_sections.py */,
+				A76785841733C75E00C77D80 /* legend.py */,
+				A76785851733CB2500C77D80 /* tdrstyle.py */,
+				A76785861733D3D000C77D80 /* stack_plot.py */,
+				A76785871733E45B00C77D80 /* sample_style.py */,
+				A76785881733EB2E00C77D80 /* pretty_names.py */,
+				A76785891734068C00C77D80 /* utils.py */,
 			);
 			path = common;
 			sourceTree = "<group>";
@@ -444,9 +459,18 @@
 			path = test;
 			sourceTree = "<group>";
 		};
+		A767858A173406BB00C77D80 /* control_plots */ = {
+			isa = PBXGroup;
+			children = (
+				A767858B173406BB00C77D80 /* muon_channel.py */,
+			);
+			path = control_plots;
+			sourceTree = "<group>";
+		};
 		A76CF91716A6B29200DC8250 = {
 			isa = PBXGroup;
 			children = (
+				A767858A173406BB00C77D80 /* control_plots */,
 				A71F5D781701D8A200AB8E33 /* plots */,
 				A71F5D451700E3F100AB8E33 /* newplots */,
 				A726619E16FD7ACB003D5534 /* pickle_to_root_example.py */,
