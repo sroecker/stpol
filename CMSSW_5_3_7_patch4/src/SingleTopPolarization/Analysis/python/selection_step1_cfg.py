@@ -206,9 +206,31 @@ def SingleTopStep1(
   #    src = cms.InputTag("seletedPatJets")
   #)
 
-  #-----------------------------------------------
-  # Slimming
-  #-----------------------------------------------
+  #-------------------------------------------------
+  # MET uncertainty step
+  #-------------------------------------------------
+  #Embed the reference to the original jet in the jets, which is constant during the propagation
+  if options.isMC:
+    process.patJetsWithOwnRef = cms.EDProducer('PatObjectOwnRefProducer<pat::Jet>',
+        src=cms.InputTag("selectedPatJets")
+    )
+
+    #Note: this module causes a large memory increase when crossing the file boundary
+    #Reason - unknown, solution: limit processing to ~1 file.
+    from PhysicsTools.PatUtils.tools.metUncertaintyTools import runMEtUncertainties
+    runMEtUncertainties(process,
+         electronCollection=cms.InputTag("electronsWithID"),
+         photonCollection=None,
+         muonCollection=cms.InputTag("muonsWithID"),
+         tauCollection="", # "" means emtpy, None means cleanPatTaus
+         jetCollection=cms.InputTag("patJetsWithOwnRef"),
+    #     jetCollection=cms.InputTag("selectedPatJets"),
+         addToPatDefaultSequence=False
+    )
+    process.stpolMetUncertaintySequence = cms.Sequence(
+        process.patJetsWithOwnRef *
+        process.metUncertaintySequence
+    )
 
   if not options.doSlimming:
       process.out.outputCommands = cms.untracked.vstring('keep *')
@@ -223,7 +245,7 @@ def SingleTopStep1(
           'keep recoVertexs_goodOfflinePrimaryVertices__*', #keep the offline PV-s
 
           # Jets
-          'keep patJets_selectedPatJets__*',
+          'keep patJets_*__*',
           'keep double_*_rho_*', #For rho-corr rel iso
           'keep recoGenJets_selectedPatJets_genJets_*', #For Jet MC smearing we need to keep the genJets
           "keep *_puJetId_*_*", # input variables
@@ -231,15 +253,15 @@ def SingleTopStep1(
           'keep *_jetClones__*',
 
           # Muons
-          'keep patMuons_muonsWithID__*',
+          'keep patMuons_*__*',
           'keep *_muonClones__*',
 
           # Electrons
-          'keep patElectrons_electronsWithID__*',
+          'keep patElectrons_*__*',
           'keep *_electronClones__*',
 
           # METs
-          'keep patMETs_patMETs__*',
+          'keep patMETs_*__*',
 
           #ECAL laser corr filter
           'keep bool_ecalLaserCorrFilter__*',
@@ -250,17 +272,17 @@ def SingleTopStep1(
           #PU info
           'keep PileupSummaryInfos_addPileupInfo__*',
 
-          #PFCandidates
-          'keep recoPFCandidates_*_pfCandidates_PAT',
-          'keep recoPFMETs_pfMET__*',
-          'keep recoPFMETs_pfMet__*',
-          'keep recoGenMETs_genMetTrue__*',
-          'keep recoPFCandidates_particleFlow__*',
-          'keep recoConversions_allConversions__*',
-          'keep recoVertexCompositeCandidates_generalV0Candidates_*_*',
-          'keep recoTracks_generalTracks__*',
-          'keep recoBeamSpot_offlineBeamSpot__*',
-          'keep recoMuons_muons__*',
+          ##PFCandidates
+          #'keep recoPFCandidates_*_pfCandidates_PAT',
+          #'keep recoPFMETs_pfMET__*',
+          #'keep recoPFMETs_pfMet__*',
+          #'keep recoGenMETs_genMetTrue__*',
+          #'keep recoPFCandidates_particleFlow__*',
+          #'keep recoConversions_allConversions__*',
+          #'keep recoVertexCompositeCandidates_generalV0Candidates_*_*',
+          #'keep recoTracks_generalTracks__*',
+          #'keep recoBeamSpot_offlineBeamSpot__*',
+          #'keep recoMuons_muons__*',
 
           'keep int_*__PAT',
           'keep ints_*__PAT',
@@ -323,6 +345,10 @@ def SingleTopStep1(
 
   process.GlobalTag.globaltag = cms.string(options.globalTag)
   if options.isMC:
+    if options.doMuon:
+      process.singleTopPathStep1Mu.insert(-1, process.stpolMetUncertaintySequence)
+    if options.doElectron:
+      process.singleTopPathStep1Ele.insert(-1, process.stpolMetUncertaintySequence)
 
     #https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideBTagJetProbabilityCalibration?redirectedfrom=CMS.SWGuideBTagJetProbabilityCalibration#Calibration_in_53x_Data_and_MC
     process.GlobalTag.toGet = cms.VPSet(
@@ -374,7 +400,6 @@ def SingleTopStep1(
     process.out.fileName.setValue(process.out.fileName.value().replace(".root", "_Skim.root"))
   else:
     process.out.fileName.setValue(process.out.fileName.value().replace(".root", "_noSkim.root"))
-
 
   #-----------------------------------------------
   # Skimming
