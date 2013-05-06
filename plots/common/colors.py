@@ -2,6 +2,7 @@ import ROOT
 
 #Different subtypes of the same physical samples have different names
 sample_colors_separate = {
+    'signal': ROOT.kRed,
     'T_t': ROOT.kRed,
     'T_t_ToLeptons+2': ROOT.kRed,
     'Tbar_t': ROOT.kRed+1,
@@ -19,14 +20,17 @@ sample_colors_separate = {
     'W3Jets_exclusive': ROOT.kGreen+3,
     'W4Jets_exclusive': ROOT.kGreen+4,
 
+    'diboson': ROOT.kBlue,
     'WW': ROOT.kBlue,
     'WZ': ROOT.kBlue,
     'ZZ': ROOT.kBlue,
 
+    'TTJets': ROOT.kOrange,
     'TTJets_MassiveBinDECAY': ROOT.kOrange,
     'TTJets_FullLept': ROOT.kOrange+1,
     'TTJets_SemiLept': ROOT.kOrange+2,
 
+    'QCD': ROOT.kGray,
     'QCDMu': ROOT.kGray,
     'GJets1': ROOT.kGray,
     'GJets2': ROOT.kGray,
@@ -53,6 +57,7 @@ sample_colors_separate = {
 
 #Different types of the same physical samples have the same colors
 sample_colors_same = {
+    'signal': ROOT.kRed,
     'T_t': ROOT.kRed,
     'Tbar_t': ROOT.kRed,
     'T_t_ToLeptons': ROOT.kRed,
@@ -70,14 +75,17 @@ sample_colors_same = {
     'W3Jets_exclusive': ROOT.kGreen,
     'W4Jets_exclusive': ROOT.kGreen,
 
+    'diboson': ROOT.kBlue,
     'WW': ROOT.kBlue,
     'WZ': ROOT.kBlue,
     'ZZ': ROOT.kBlue,
 
+    'TTJets': ROOT.kOrange,
     'TTJets_MassiveBinDECAY': ROOT.kOrange,
     'TTJets_FullLept': ROOT.kOrange,
     'TTJets_SemiLept': ROOT.kOrange,
 
+    'QCD': ROOT.kGray,
     'QCDMu': ROOT.kGray,
     'GJets1': ROOT.kGray,
     'GJets2': ROOT.kGray,
