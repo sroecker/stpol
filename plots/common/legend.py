@@ -8,7 +8,10 @@ def legend(hists, pos="top-right", **kwargs):
                 The legend will be in the order of the histograms.
         
         ***Optional arguments:
-        
+        names - names of the processes displayed at the legend instead of the histogram titles. Order
+                1. data
+                2. MC samples in the reverse order to appear in the legend
+
         pos - a string specifying the desired position on the canvas
         
         width, height - the size of the legend in relative coordinates
@@ -33,9 +36,9 @@ def legend(hists, pos="top-right", **kwargs):
                 ...
                 legend([h], ...)
     """
-    
-    #A string specifying the position of the legend
-    pos = kwargs.get("pos", "top-right")
+
+    #Names of the processes as displayed on a legend
+    names = kwargs.get("names")
     
     #The relative size of the text in the legend
     text_size = kwargs.get("text_size", 0.03)
@@ -66,8 +69,8 @@ def legend(hists, pos="top-right", **kwargs):
     #FIXME: fine-tune and make your own
     if pos=="top-right":
         leg_coords = [-1, -1, 0.93, 0.91]
-    elif pos=="top-left":
-        leg_coords = [-1, -1, 0.3, 0.9]
+    if pos=="top-left":
+        leg_coords = [-1, -1, 0.45, 0.91]
 
     #Calculate the bottom-left coordinate from top right using the width and height
     if leg_coords[0]==-1:
@@ -78,9 +81,21 @@ def legend(hists, pos="top-right", **kwargs):
     #Expand the array using the wildcard
     leg = ROOT.TLegend(*leg_coords)
 
-    for hist in hists:
-        leg_style = styles.pop()
-        leg.AddEntry(hist, hist.GetTitle(), leg_style)
+    if "names" in kwargs:
+        rnames = names[::-1]
+        data = rnames.pop()
+        rnames.insert(0,data)
+        from odict import OrderedDict as dict
+        name_hist_pairs =dict(zip( rnames, hists))
+        
+        for name in name_hist_pairs:
+            leg_style = styles.pop()
+            leg.AddEntry(name_hist_pairs[name],name,leg_style)
+        
+    else:
+        for hist in hists:
+            leg_style = styles.pop()
+            leg.AddEntry(hist, hist.GetTitle(), leg_style)
 
     leg.Draw()
 
