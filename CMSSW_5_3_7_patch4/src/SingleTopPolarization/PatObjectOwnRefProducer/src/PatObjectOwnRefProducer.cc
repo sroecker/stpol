@@ -98,7 +98,7 @@ PatObjectOwnRefProducer<T>::produce(edm::Event& iEvent, const edm::EventSetup& i
     iEvent.getByLabel(src, inColl);
     
     if(!inColl.isValid() || !inCollCand.isValid())
-        throw cms::Exception("produce") << "Input collections were invalid";
+        throw cms::Exception("produce") << "Input collections were invalid: inColl=" << inColl.isValid() << " inCollCand=" << inCollCand.isValid();
     LogDebug("produce") << "Input collections have " << inColl->size() << ", " << inCollCand->size() << " items"; 
     
     std::auto_ptr<std::vector<T>> outColl(new std::vector<T>());
