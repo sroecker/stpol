@@ -13,10 +13,10 @@ public:
     edm::InputTag hlt_src;
     std::vector<std::string> hlt_names;
     bool cut_on_HLT;
-    std::string hlt_cut_name;
+    std::vector<std::string> hlt_cut_names;
 
     edm::Handle<edm::TriggerResults> trig_results;
-    void initialize_branches(); 
+    void initialize_branches();
      
     HLTCuts(const edm::ParameterSet& pars, std::map<std::string, int>& _branch_vars);
 
