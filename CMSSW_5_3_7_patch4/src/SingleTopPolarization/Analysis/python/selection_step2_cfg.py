@@ -112,13 +112,16 @@ def SingleTopStep2():
         if Config.systematic in ["ResUp", "ResDown"]:
              logging.info("Changing jet source from %s to smearedPatJetsWithOwnRef%s" % (Config.Jets.source, Config.systematic))
              Config.Jets.source = "smearedPatJetsWithOwnRef"+Config.systematic
-             logging.info("Changing MET source from %s to patPFMetJet%s" % (Config.metSource, Config.systematic))
-             Config.metSource = "patPFMetJet"+Config.systematic
+             logging.info("Changing MET source from %s to patType1CorrectedPFMetJet%s" % (Config.metSource, Config.systematic))
+             Config.metSource = "patType1CorrectedPFMetJet"+Config.systematic
         elif Config.systematic in ["EnUp", "EnDown"]:
              logging.info("Changing jet source from %s to shiftedPatJetsWithOwnRef%sForCorrMEt" % (Config.Jets.source, Config.systematic))
              Config.Jets.source = "shiftedPatJetsWithOwnRef"+Config.systematic+"ForCorrMEt"
-             logging.info("Changing MET source from %s to patPFMetJet%s" % (Config.metSource, Config.systematic))
-             Config.metSource = "patPFMetJet"+Config.systematic
+             logging.info("Changing MET source from %s to patType1CorrectedPFMetJet%s" % (Config.metSource, Config.systematic))
+             Config.metSource = "patType1CorrectedPFMetJet"+Config.systematic
+        elif Config.systematic in ["UnclusteredEnUp", "UnclusteredEnDown"]:
+             logging.info("Changing MET source from %s to patType1CorrectedPFMetJet%s" % (Config.metSource, Config.systematic))
+             Config.metSource = "patType1CorrectedPFMetJet"+Config.systematic
 
     print "Configuration"
     print Config._toStr()

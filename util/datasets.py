@@ -272,7 +272,7 @@ step1_FSIM_Valid = [
     DS("TTJets_FSIM_Valid_FullSim", "/TTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola/Summer12_DR53X-PU_S10_START53_V7C-v1/AODSIM"),
 ]
 
-step1B_out_MC_new = [
+step1B_out_MC_noQCD_new = [
     DS_S2MC("T_t_ToLeptons", "/TBarToLeptons_t-channel_8TeV-powheg-tauola/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "T_t"),
     DS_S2MC("T_t", "/T_t-channel_TuneZ2star_8TeV-powheg-tauola/joosep-stpol_step1B_04_10-c9249c44a215ffeb8c9ba40f59092334/USER", "T_t"),
     DS_S2MC("T_s", "/T_s-channel_TuneZ2star_8TeV-powheg-tauola/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "T_s"),
@@ -299,8 +299,10 @@ step1B_out_MC_new = [
     DS_S2MC("W3Jets_exclusive", "/W3JetsToLNu_TuneZ2Star_8TeV-madgraph/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "WJets"),
     DS_S2MC("W4Jets_exclusive", "/W4JetsToLNu_TuneZ2Star_8TeV-madgraph/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "WJets"),
 
-    DS_S2MC("WJets_inclusive", "/WJetsToLNu_TuneZ2Star_8TeV-madgraph-tarball/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "WJets"),
+    DS_S2MC("WJets_inclusive", "/WJetsToLNu_TuneZ2Star_8TeV-madgraph-tarball/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "WJets")
+]
 
+step1B_out_MC_QCD_new = [
     DS_S2MC("QCDMu", "/QCD_Pt_20_MuEnrichedPt_15_TuneZ2star_8TeV_pythia6/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "QCDMu"),
 
     DS_S2MC("QCD_Pt_20_30_BCtoE", "/QCD_Pt_20_30_BCtoE_TuneZ2star_8TeV_pythia6/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "QCD_BCtoE"),
@@ -322,6 +324,10 @@ step1B_out_MC_new = [
 
 
 ]
+
+step1B_out_MC_new = step1B_out_MC_noQCD_new[:]
+step1B_out_MC_new.extend(step1B_out_MC_QCD_new)
+
 
 step1B_out_MC = [
       DS_S2MC("Tbar_t_ToLeptons", "/TBarToLeptons_t-channel_8TeV-powheg-tauola/joosep-stpol_step1B-7dee8f5886a058feb3a776faa931adee/USER", "Tbar_t")
@@ -460,6 +466,8 @@ possible_ds = {
     #step2
     "S2_D": step1_out_Data,
     "S2_MC": step1B_out_MC_new,
+    "S2_MC_noQCD": step1B_out_MC_noQCD_new,
+    "S2_MC_QCD": step1B_out_MC_QCD_new,
     }
 
 
