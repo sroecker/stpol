@@ -827,7 +827,7 @@ def SingleTopStep2():
     from SingleTopPolarization.Analysis.hlt_step2_cfi import HLTSetup
     HLTSetup(process, Config)
 
-    if Config.isMC:
+    if Config.isMC and Config.doPDFWeights:
         process.PDFweights = cms.EDProducer('PDFweightsProducer')
         process.pdfPath = cms.Path(
               process.PDFweights
