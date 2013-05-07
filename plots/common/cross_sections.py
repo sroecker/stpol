@@ -3,10 +3,10 @@ WJets_lo_nnlo_scale_factor = 36257.2/30400.0
 xs = {
 
 	#Cross-sections from AN2012-273-v7, page 4
-	  "T_t": 56.4
-	, "T_t_ToLeptons": 1.0*56.4 #FIXME
+        "T_t": 56.4
+	, "T_t_ToLeptons": 0.326*56.4
 	, "Tbar_t": 30.7
-    , "Tbar_t_ToLeptons": 1.0*30.7 #FIXME
+        , "Tbar_t_ToLeptons": 0.326*30.7
 	, "T_s": 3.79
 	, "Tbar_s": 1.76
 	, "T_tW": 11.1
