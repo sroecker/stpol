@@ -26,7 +26,7 @@ def MuonSetup(process, conf = None):
                 )
         #Choose isolated region
         else:
-            goodSignalMuonCut += ' && userFloat("{0}") >= {1} && userFloat("{0}") < {2}'.format(
+            goodSignalMuonCut += " && (userFloat('{0}') >= {1}) && (userFloat('{0}') < {2})".format(
                 conf.Muons.relIsoType,
                 conf.Muons.relIsoCutRangeIsolatedRegion[0],
                 conf.Muons.relIsoCutRangeIsolatedRegion[1]
@@ -34,11 +34,11 @@ def MuonSetup(process, conf = None):
     print "goodSignalMuonCut = %s" % goodSignalMuonCut
 
     looseVetoMuonCut = "isPFMuon"
-    looseVetoMuonCut += "&& (isGlobalMuon | isTrackerMuon)"
-    looseVetoMuonCut += "&& pt > 10"
-    looseVetoMuonCut += "&& abs(eta)<2.5"
-    looseVetoMuonCut += ' && userFloat("{0}") < {1}'.format(conf.Muons.relIsoType, conf.Muons.looseVetoRelIsoCut)
-    looseVetoMuonCut += "&& !(%s)" % goodSignalMuonCut #Remove 'good signal muons from the veto collection'
+    looseVetoMuonCut += " && (isGlobalMuon | isTrackerMuon)"
+    looseVetoMuonCut += " && pt > 10"
+    looseVetoMuonCut += " && abs(eta)<2.5"
+    looseVetoMuonCut += " && userFloat('{0}') < {1}".format(conf.Muons.relIsoType, conf.Muons.looseVetoRelIsoCut)
+    looseVetoMuonCut += " && !(%s)" % goodSignalMuonCut #Remove 'good signal muons from the veto collection'
 
     process.goodSignalMuons = cms.EDFilter("CandViewSelector",
       src=cms.InputTag("muonsWithIso"), cut=cms.string(goodSignalMuonCut)

@@ -12,9 +12,9 @@ reverseIsoCut - 'True' to choose the anti-isolated leptons, 'False' to choose is
 def ElectronSetup(process, conf):
 
     goodElectronCut = "%s>30" % conf.Electrons.pt
-    goodElectronCut += "&& abs(eta)<2.5"
-    goodElectronCut += "&& !(1.4442 < abs(superCluster.eta) < 1.5660)"
-    goodElectronCut += "&& passConversionVeto()"
+    goodElectronCut += " && (abs(eta) < 2.5)"
+    goodElectronCut += " && !(1.4442 < abs(superCluster.eta) < 1.5660)"
+    goodElectronCut += " && passConversionVeto() "
     #goodElectronCut += "&& (0.0 < electronID('mvaTrigV0') < 1.0)"
     goodSignalElectronCut = goodElectronCut
     if conf.Electrons.cutWWlnuj:
@@ -32,13 +32,13 @@ def ElectronSetup(process, conf):
 
     if conf.Electrons.cutOnMVA:
         if conf.Electrons.reverseIsoCut:
-            goodSignalElectronCut += "&& electronID('mvaTrigV0') > 0. && electronID('mvaTrigV0') < %f" % conf.Electrons.mvaCutAntiIso
+            goodSignalElectronCut += " && (electronID('mvaTrigV0') > 0.0) && (electronID('mvaTrigV0') < %f)" % conf.Electrons.mvaCutAntiIso
         else:
-            goodSignalElectronCut += "&& electronID('mvaTrigV0') > %f" % conf.Electrons.mvaCut
+            goodSignalElectronCut += " && (electronID('mvaTrigV0') > %f)" % conf.Electrons.mvaCut
 
 
-    goodSignalElectronCut += "&& abs(userFloat('dxy')) < 0.02"
-    goodSignalElectronCut += '&& userInt("gsfTrack_trackerExpectedHitsInner_numberOfHits") <= 0'
+    goodSignalElectronCut += " && abs(userFloat('dxy')) < 0.02"
+    goodSignalElectronCut += " && userInt('gsfTrack_trackerExpectedHitsInner_numberOfHits') <= 0"
 
     if conf.Electrons.cutOnIso:
         if conf.Electrons.reverseIsoCut:
@@ -57,13 +57,13 @@ def ElectronSetup(process, conf):
             )
 
 
-    looseVetoElectronCut = "%s > 20" % conf.Electrons.pt
-    looseVetoElectronCut += "&& abs(eta) < 2.5"
-    looseVetoElectronCut += "&& electronID('mvaTrigV0') > %f" % 0.1
-    looseVetoElectronCut += '&& userFloat("{0}") < {1}'.format(conf.Electrons.relIsoType, conf.Electrons.looseVetoRelIsoCut)
+    looseVetoElectronCut = "%s > 20.0" % conf.Electrons.pt
+    looseVetoElectronCut += " && (abs(eta) < 2.5)"
+    looseVetoElectronCut += " && (electronID('mvaTrigV0') > %f)" % 0.1
+    looseVetoElectronCut += " && (userFloat('{0}') < {1})".format(conf.Electrons.relIsoType, conf.Electrons.looseVetoRelIsoCut)
 
     #Loose veto electrons must not overlap with good signal electrons
-    looseVetoElectronCut += "&& !(%s)" % goodSignalElectronCut
+    looseVetoElectronCut += " && !(%s)" % goodSignalElectronCut
 
     print "goodSignalElectronCut={0}".format(goodSignalElectronCut)
     print "looseVetoElectronCut={0}".format(looseVetoElectronCut)
