@@ -1,9 +1,10 @@
 import ROOT
 from project_histos import Sample, Cuts, Cut
 import argparse
-from collections import OrderedDict as dict
-from make_plots import plot_hists_stacked, Styling, merge_hists_g, g_merge_cmd, legend
+from common.odict import OrderedDict as dict
+#from make_plots import plot_hists_stacked, Styling, merge_hists_g, g_merge_cmd, legend
 import copy
+from common.utils import merge_cmds, merge_hists
 
 if __name__=="__main__":
     parser = argparse.ArgumentParser()
@@ -15,36 +16,36 @@ if __name__=="__main__":
     samples_mc = Sample.fromDirectory(args.dir + "/" + args.type + "/mc")
     samples_data = Sample.fromDirectory(args.dir + "/" + args.type + "/data")
 
-    def compare_plot(var, plot_range, weight, cut, **kwargs):
-        histsD = dict()
-
-        for samp in samples_mc:
-            histsD[samp.name] = samp.drawHistogram(var, str(cut), weight=weight, plot_range=plot_range)
-
-        for name, hist in histsD.items():
-            hist.normalize_lumi(lumi_total)
-
-        for samp in samples_data:
-            histsD[samp.name] = samp.drawHistogram(var, str(cut), plot_range=plot_range)
-
-
-        merge_cmd = g_merge_cmd
-        merge_cmd["QCD (MC)"] = ["QCDMu"]
-        merged_hists = merge_hists_g(histsD, merge_cmd)
-
-        stack = dict()
-        stack["mc"] = [merged_hists[name] for name in merged_hists.keys() if name!="data"]
-        stack["data"] = [merged_hists["data"]]
-
-
-        canv, stacks = plot_hists_stacked(
-                stack,
-                styles=Styling.style, draw_styles={"data": "E1"},
-                **kwargs
-        )
-        leg = legend(stack["data"] + stack["mc"], styles=["p", "f"])
-
-        return canv, stacks, leg
+#    def compare_plot(var, plot_range, weight, cut, **kwargs):
+#        histsD = dict()
+#
+#        for samp in samples_mc:
+#            histsD[samp.name] = samp.drawHistogram(var, str(cut), weight=weight, plot_range=plot_range)
+#
+#        for name, hist in histsD.items():
+#            hist.normalize_lumi(lumi_total)
+#
+#        for samp in samples_data:
+#            histsD[samp.name] = samp.drawHistogram(var, str(cut), plot_range=plot_range)
+#
+#
+#        merge_cmd = g_merge_cmd
+#        merge_cmd["QCD (MC)"] = ["QCDMu"]
+#        merged_hists = merge_hists_g(histsD, merge_cmd)
+#
+#        stack = dict()
+#        stack["mc"] = [merged_hists[name] for name in merged_hists.keys() if name!="data"]
+#        stack["data"] = [merged_hists["data"]]
+#
+#
+#        canv, stacks = plot_hists_stacked(
+#                stack,
+#                styles=Styling.style, draw_styles={"data": "E1"},
+#                **kwargs
+#        )
+#        leg = legend(stack["data"] + stack["mc"], styles=["p", "f"])
+#
+#        return canv, stacks, leg
 
     def mc_amount(cut, weight, lumi, ref=None):
         histsD = dict()
@@ -53,22 +54,23 @@ if __name__=="__main__":
 
         for name, hist in histsD.items():
             hist.normalize_lumi(lumi)
-
-        merge_cmd = copy.deepcopy(g_merge_cmd)
+        for name, hist in histsD.items():
+            histsD[name] = hist.hist
+        merge_cmd = copy.deepcopy(merge_cmds)
         merge_cmd["QCD (MC)"] = ["QCDMu"]
         merge_cmd["t#bar{t} incl."] = ["TTJets_MassiveBinDECAY"]
-        merge_cmd.pop("data")
-        merged_hists = merge_hists_g(histsD, merge_cmd)
+        merge_cmd.pop("single #mu")
+        merged_hists = merge_hists(histsD, merge_cmd)
 
-        interesting = ["t#bar{t}", "t#bar{t} incl.", "W+jets", "QCD (MC)", "t-channel"]
+        interesting = ["t#bar{t}", "t#bar{t} incl.", "W(#rightarrow l #nu) + jets", "QCD (MC)", "t-channel"]
 
         for i in interesting:
             r = 0.0
             r0 = 0.0
             if ref and i in ref.keys():
                 r0 = ref[i]
-                r = 100.0*merged_hists[i].hist.Integral() / float(r0)
-            print "%s | %d | %d | %.2f %%" % (i, merged_hists[i].hist.Integral(), r0, r)
+                r = 100.0*merged_hists[i].Integral() / float(r0)
+            print "%s | %d | %d | %.2f %%" % (i, merged_hists[i].Integral(), r0, r)
 
 
     weight = "pu_weight*muon_IDWeight*muon_IsoWeight"
@@ -81,8 +83,8 @@ if __name__=="__main__":
         ref["W+jets"] = 47758738
         ref["QCD (MC)"] = 1873957
         ref["t-channel"] = 54769
-        mc_amount(Cuts.no_cut, weight, 12210, ref=ref)
-        previous = Cuts.no_cut
+        previous = Cuts.hlt_isomu
+        mc_amount(previous, weight, 12210, ref=ref)
         print
 
         print "2 jets"
