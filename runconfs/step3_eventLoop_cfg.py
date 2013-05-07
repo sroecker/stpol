@@ -66,6 +66,7 @@ process.muonCuts = cms.PSet(
     muonPtSrc  = cms.InputTag("goodSignalMuonsNTupleProducer", "Pt"),
     muonRelIsoSrc  = cms.InputTag("goodSignalMuonsNTupleProducer", "relIso"),
     muonCountSrc  = cms.InputTag("muonCount"),
+    eleCountSrc  = cms.InputTag("electronCount"),
 
     doVetoLeptonCut = cms.bool(False),
     vetoMuCountSrc = cms.InputTag("looseVetoMuCount"),
