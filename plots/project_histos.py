@@ -52,6 +52,8 @@ class Cuts:
     eta_jet = Cut("abs(eta_lj) < 4.5")*Cut("abs(eta_bj) < 4.5")
     pt_jet = Cut("pt_lj > 40")*Cut("pt_bj > 40")
     top_mass_sig = Cut("top_mass >130 && top_mass<220")
+    one_muon = Cut("n_muons==1.0 && n_eles==0.0")
+    lepton_veto = Cut("n_veto_mu==0.0 && n_veto_ele==0.0")
     no_cut = Cut("1")
 
     @staticmethod
