@@ -77,7 +77,7 @@ def SingleTopStep2():
                   VarParsing.varType.string,
                   "Apply Systematic variation")
 
-        options.register ('doPDFWeights', False,
+        options.register ('doPDFWeights', True,
                   VarParsing.multiplicity.singleton,
                   VarParsing.varType.bool,
                   "Run the PDF weight generation module")
@@ -827,7 +827,7 @@ def SingleTopStep2():
     from SingleTopPolarization.Analysis.hlt_step2_cfi import HLTSetup
     HLTSetup(process, Config)
 
-    if Config.isMC and Config.doPDFWeights:
+    if Config.isMC and options.doPDFWeights:
         process.PDFweights = cms.EDProducer('PDFweightsProducer')
         process.pdfPath = cms.Path(
               process.PDFweights
