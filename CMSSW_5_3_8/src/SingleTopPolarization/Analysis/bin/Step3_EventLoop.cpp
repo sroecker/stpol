@@ -59,6 +59,7 @@ public:
     edm::InputTag muonPtSrc;
     edm::InputTag muonRelIsoSrc;
     edm::InputTag muonCountSrc;
+    edm::InputTag eleCountSrc;
     
     edm::InputTag muonDbSrc;
     edm::InputTag muonDzSrc;
@@ -73,6 +74,9 @@ public:
     virtual void initialize_branches() {
         branch_vars["mu_pt"] = def_val;
         branch_vars["mu_iso"] = def_val;
+        
+        branch_vars["n_muons"] = def_val;
+        branch_vars["n_eles"] = def_val;
         
         if(doControlVars) {
             branch_vars["mu_db"] = def_val;
@@ -114,13 +118,17 @@ public:
         }
         
         muonCountSrc = pars.getParameter<edm::InputTag>("muonCountSrc"); 
+        eleCountSrc = pars.getParameter<edm::InputTag>("eleCountSrc"); 
     }
     
     bool process(const edm::EventBase& event) {
         pre_process();
         
         int n_muons = get_collection<int>(event, muonCountSrc, -1);
-        if(requireOneMuon && n_muons!=1) return false;
+        int n_eles = get_collection<int>(event, eleCountSrc, -1);
+        branch_vars["n_muons"] = (float)n_muons;
+        branch_vars["n_eles"] = (float)n_eles;
+        if(requireOneMuon && (n_muons!=1 || n_eles !=0)) return false;
         
         branch_vars["mu_pt"] = get_collection_n<float>(event, muonPtSrc, 0);
         branch_vars["mu_iso"] = get_collection_n<float>(event, muonRelIsoSrc, 0);
