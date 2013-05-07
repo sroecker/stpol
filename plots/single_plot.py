@@ -59,7 +59,7 @@ if __name__=="__main__":
         merge_cmd = copy.deepcopy(merge_cmds)
         merge_cmd["QCD (MC)"] = ["QCDMu"]
         merge_cmd["t#bar{t} incl."] = ["TTJets_MassiveBinDECAY"]
-        merge_cmd.pop("single #mu")
+        merge_cmd.pop("data")
         merged_hists = merge_hists(histsD, merge_cmd)
 
         interesting = ["t#bar{t}", "t#bar{t} incl.", "W(#rightarrow l #nu) + jets", "QCD (MC)", "t-channel"]
@@ -83,7 +83,7 @@ if __name__=="__main__":
         ref["W+jets"] = 47758738
         ref["QCD (MC)"] = 1873957
         ref["t-channel"] = 54769
-        previous = Cuts.hlt_isomu
+        previous = Cuts.hlt_isomu*Cuts.one_muon
         mc_amount(previous, weight, 12210, ref=ref)
         print
 
