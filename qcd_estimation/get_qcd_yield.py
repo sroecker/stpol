@@ -20,12 +20,13 @@ from Fit import Fit
 def get_yield(var, fit_result, cutMT, filename):
    infile = "fits/mtwMass_fit_"+filename+".root"
    f = TFile(infile)   
-   QCDRATE = fit_result.qcd
+   #QCDRATE = fit_result.qcd
+   
    hQCD = f.Get(var.shortName+"__qcd")
    if cutMT:
-      return hQCD.Integral(6,20)
+      return (hQCD.Integral(6,20), hQCD.Integral(6,20)*(fit_result.qcd_uncert/fit_result.qcd))
    else:
-      return hQCD.Integral()
+      return (hQCD.Integral(), hQCD.Integral()*(fit_result.qcd_uncert/fit_result.qcd))
 
 def get_qcd_yield(n_jets, n_tags, cutMT, other_cuts):
    isos = ["iso", "antiiso"]
@@ -48,4 +49,5 @@ if __name__=="__main__":
    other_cuts += " && abs(eta_lj)>2.5" 
    other_cuts += " && (top_mass < 220 && top_mass > 130)"
    other_cuts += " && rms_lj<0.025"
-   print get_qcd_yield(n_jets, n_tags, cutMT, other_cuts)
+   (y, error) = get_qcd_yield(n_jets, n_tags, cutMT, other_cuts)
+   print y, "+-", error

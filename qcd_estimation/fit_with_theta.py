@@ -85,6 +85,7 @@ def fit_qcd(fit, filename=""):
                #print line2
                if process == "qcd":
                   qcd_yield = t[channel][process].get_value_sum()
+                  uncert = t[channel][process].get_value_sum_uncertainty()
                   #print qcd_yield
                #use reflection here
                setattr(fit, process, t[channel][process].get_value_sum())
@@ -99,7 +100,7 @@ def fit_qcd(fit, filename=""):
          results_file.write(line3+"\n")  
          results_file.write("\n")
          write_histograms_to_rootfile(t, outfile)         
-         return qcd_yield
+         return (qcd_yield, uncert)
       except IOError as e:
          print e.strerror
          exit()
