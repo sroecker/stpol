@@ -19,7 +19,7 @@ eval `scramv1 runtime -sh`
 
 # Add plotfw to python library path
 #PYTHONPATH=$PYTHONPATH:${SCRIPT_DIR}/newplots
-PYTHONPATH=$PYTHONPATH:`readlink -f runconfs`:$SCRIPT_DIR/plots:$STPOL_DIR/local/lib/python2.6/site-packages/
+PYTHONPATH=$PYTHONPATH:`readlink -f runconfs`:$STPOL_DIR:$STPOL_DIR/plots:$STPOL_DIR/local/lib/python2.6/site-packages/
 
 #Add QCD estimation stuff
 PYTHONPATH=$PYTHONPATH:$STPOL_DIR/qcd_estimation
