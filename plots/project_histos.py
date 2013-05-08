@@ -196,7 +196,7 @@ class Sample:
             raise TObjectOpenException("Failed to open count histogram")
         return count_hist.GetBinContent(1)
 
-    def drawHistogram(self, var, cut, **kwargs):
+    def drawHistogram(self, var, cut, dtype="float", **kwargs):
         name = self.name + "_" + Histogram.unique_name(var, cut, kwargs.get("weight"))
 
         #if(var not in self.getBranches()):
@@ -208,7 +208,11 @@ class Sample:
 
         ROOT.gROOT.cd()
 #        ROOT.TH1.AddDirectory(False)
-        hist = ROOT.TH1F("htemp", "htemp", plot_range[0], plot_range[1], plot_range[2])
+        if dtype=="float":
+            hist = ROOT.TH1F("htemp", "htemp", plot_range[0], plot_range[1], plot_range[2])
+        elif dtype=="int":
+            hist = ROOT.TH1I("htemp", "htemp", plot_range[0], plot_range[1], plot_range[2])
+
         hist.Sumw2()
 
 #        hist.SetDirectory(ROOT.gROOT)
