@@ -1,0 +1,184 @@
+Setting up stpol env...
+2013-03-19 07:56:04,431;INFO;__main__;Running plots.py
+2013-03-19 07:56:04,616;DEBUG;root;Opening `/hdfs/local/joosep/stpol/step2_Data_Iso_Mar15//overview` for lumi data.
+2013-03-19 07:56:04,688;DEBUG;root;Lumi of `WD_SingleEleA1` = 82.000000
+2013-03-19 07:56:04,688;DEBUG;root;Lumi of `WD_SingleEleB` = 5221.000000
+2013-03-19 07:56:04,688;DEBUG;root;Lumi of `WD_SingleEleC1` = 495.000000
+2013-03-19 07:56:04,688;DEBUG;root;Lumi of `WD_SingleEleC2` = 6112.000000
+2013-03-19 07:56:04,688;DEBUG;root;Lumi of `WD_SingleEleD` = 7225.000000
+2013-03-19 07:56:04,689;DEBUG;root;Lumi of `WD_SingleMuAB` = 5306.000000
+2013-03-19 07:56:04,689;DEBUG;root;Lumi of `WD_SingleMuC` = 6781.000000
+2013-03-19 07:56:04,689;DEBUG;root;Lumi of `WD_SingleMuD` = 7274.000000
+2013-03-19 07:56:04,692;DEBUG;root;Matched in string `WD_SingleMuAB` - name:`SingleMuAB`, lumi:`5306.0`
+2013-03-19 07:56:04,692;DEBUG;SingleMuAB_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_Data_Iso_Mar15//WD_SingleMuAB/res/*.root`
+2013-03-19 07:56:06,755;DEBUG;SingleMuAB_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:06,755;DEBUG;root;Matched in string `WD_SingleMuC` - name:`SingleMuC`, lumi:`6781.0`
+2013-03-19 07:56:06,755;DEBUG;SingleMuC_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_Data_Iso_Mar15//WD_SingleMuC/res/*.root`
+2013-03-19 07:56:08,780;DEBUG;SingleMuC_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:08,781;DEBUG;root;Matched in string `WD_SingleMuD` - name:`SingleMuD`, lumi:`7274.0`
+2013-03-19 07:56:08,781;DEBUG;SingleMuD_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_Data_Iso_Mar15//WD_SingleMuD/res/*.root`
+2013-03-19 07:56:10,685;DEBUG;SingleMuD_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:10,686;DEBUG;root;Matched in string `WD_SingleEleA1` - name:`SingleEleA1`, lumi:`82.0`
+2013-03-19 07:56:10,686;DEBUG;SingleEleA1_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_Data_Iso_Mar15//WD_SingleEleA1/res/*.root`
+2013-03-19 07:56:10,767;DEBUG;SingleEleA1_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:10,767;DEBUG;root;Matched in string `WD_SingleEleB` - name:`SingleEleB`, lumi:`5221.0`
+2013-03-19 07:56:10,767;DEBUG;SingleEleB_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_Data_Iso_Mar15//WD_SingleEleB/res/*.root`
+2013-03-19 07:56:12,524;DEBUG;SingleEleB_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:12,525;DEBUG;root;Matched in string `WD_SingleEleC1` - name:`SingleEleC1`, lumi:`495.0`
+2013-03-19 07:56:12,525;DEBUG;SingleEleC1_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_Data_Iso_Mar15//WD_SingleEleC1/res/*.root`
+2013-03-19 07:56:12,725;DEBUG;SingleEleC1_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:12,726;DEBUG;root;Matched in string `WD_SingleEleC2` - name:`SingleEleC2`, lumi:`6112.0`
+2013-03-19 07:56:12,726;DEBUG;SingleEleC2_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_Data_Iso_Mar15//WD_SingleEleC2/res/*.root`
+2013-03-19 07:56:14,566;DEBUG;SingleEleC2_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:14,566;DEBUG;root;Matched in string `WD_SingleEleD` - name:`SingleEleD`, lumi:`7225.0`
+2013-03-19 07:56:14,566;DEBUG;SingleEleD_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_Data_Iso_Mar15//WD_SingleEleD/res/*.root`
+2013-03-19 07:56:16,418;DEBUG;SingleEleD_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:16,419;DEBUG;TTJets_SemiLept_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_TTJets_SemiLept/res/*.root`
+2013-03-19 07:56:19,609;DEBUG;TTJets_SemiLept_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:19,609;DEBUG;TTJets_FullLept_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_TTJets_FullLept/res/*.root`
+2013-03-19 07:56:21,397;DEBUG;TTJets_FullLept_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:21,398;DEBUG;T_t_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_T_t/res/*.root`
+2013-03-19 07:56:21,936;DEBUG;T_t_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:21,936;DEBUG;Tbar_t_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_Tbar_t/res/*.root`
+2013-03-19 07:56:22,087;DEBUG;Tbar_t_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:22,087;DEBUG;T_s_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_T_s/res/*.root`
+2013-03-19 07:56:22,146;DEBUG;T_s_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:22,146;DEBUG;Tbar_s_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_Tbar_s/res/*.root`
+2013-03-19 07:56:22,167;DEBUG;Tbar_s_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:22,168;DEBUG;T_tW_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_T_tW/res/*.root`
+2013-03-19 07:56:22,195;DEBUG;T_tW_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:22,195;DEBUG;Tbar_tW_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_Tbar_tW/res/*.root`
+2013-03-19 07:56:22,226;DEBUG;Tbar_tW_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:22,226;DEBUG;W1Jets_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_W1Jets_exclusive/res/*.root`
+2013-03-19 07:56:23,523;DEBUG;W1Jets_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:23,523;DEBUG;W2Jets_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_W2Jets_exclusive/res/*.root`
+2013-03-19 07:56:25,155;DEBUG;W2Jets_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:25,155;DEBUG;W3Jets_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_W3Jets_exclusive/res/*.root`
+2013-03-19 07:56:26,115;DEBUG;W3Jets_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:26,116;DEBUG;W4Jets_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_W4Jets_exclusive/res/*.root`
+2013-03-19 07:56:26,988;DEBUG;W4Jets_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:26,988;DEBUG;DYJets_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_DYJets/res/*.root`
+2013-03-19 07:56:28,972;DEBUG;DYJets_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:28,973;DEBUG;WW_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_WW/res/*.root`
+2013-03-19 07:56:29,367;DEBUG;WW_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:29,368;DEBUG;WZ_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_WZ/res/*.root`
+2013-03-19 07:56:29,504;DEBUG;WZ_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:29,504;DEBUG;ZZ_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_ZZ/res/*.root`
+2013-03-19 07:56:29,660;DEBUG;ZZ_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:29,660;DEBUG;QCDMu_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_QCDMu/res/*.root`
+2013-03-19 07:56:29,807;DEBUG;QCDMu_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:29,807;DEBUG;GJets1_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_GJets1/res/*.root`
+2013-03-19 07:56:29,976;DEBUG;GJets1_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:29,976;DEBUG;GJets2_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_GJets2/res/*.root`
+2013-03-19 07:56:30,038;DEBUG;GJets2_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:30,038;DEBUG;QCD_Pt_20_30_BCtoE_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_QCD_Pt_20_30_BCtoE/res/*.root`
+2013-03-19 07:56:30,066;DEBUG;QCD_Pt_20_30_BCtoE_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:30,066;DEBUG;QCD_Pt_30_80_BCtoE_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_QCD_Pt_30_80_BCtoE/res/*.root`
+2013-03-19 07:56:30,108;DEBUG;QCD_Pt_30_80_BCtoE_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:30,108;DEBUG;QCD_Pt_80_170_BCtoE_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_QCD_Pt_80_170_BCtoE/res/*.root`
+2013-03-19 07:56:30,236;DEBUG;QCD_Pt_80_170_BCtoE_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:30,236;DEBUG;QCD_Pt_170_250_BCtoE_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_QCD_Pt_170_250_BCtoE/res/*.root`
+2013-03-19 07:56:30,322;DEBUG;QCD_Pt_170_250_BCtoE_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:30,322;DEBUG;QCD_Pt_250_350_BCtoE_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_QCD_Pt_250_350_BCtoE/res/*.root`
+2013-03-19 07:56:30,389;DEBUG;QCD_Pt_250_350_BCtoE_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:30,389;DEBUG;QCD_Pt_350_BCtoE_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_QCD_Pt_350_BCtoE/res/*.root`
+2013-03-19 07:56:30,454;DEBUG;QCD_Pt_350_BCtoE_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:30,454;DEBUG;QCD_Pt_20_30_EMEnriched_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_QCD_Pt_20_30_EMEnriched/res/*.root`
+2013-03-19 07:56:30,573;DEBUG;QCD_Pt_20_30_EMEnriched_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:30,573;DEBUG;QCD_Pt_30_80_EMEnriched_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_QCD_Pt_30_80_EMEnriched/res/*.root`
+2013-03-19 07:56:30,780;DEBUG;QCD_Pt_30_80_EMEnriched_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:30,780;DEBUG;QCD_Pt_80_170_EMEnriched_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_QCD_Pt_80_170_EMEnriched/res/*.root`
+2013-03-19 07:56:31,170;DEBUG;QCD_Pt_80_170_EMEnriched_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:31,170;DEBUG;QCD_Pt_170_250_EMEnriched_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_QCD_Pt_170_250_EMEnriched/res/*.root`
+2013-03-19 07:56:31,652;DEBUG;QCD_Pt_170_250_EMEnriched_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:31,653;DEBUG;QCD_Pt_250_350_EMEnriched_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_QCD_Pt_250_350_EMEnriched/res/*.root`
+2013-03-19 07:56:32,402;DEBUG;QCD_Pt_250_350_EMEnriched_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:32,403;DEBUG;QCD_Pt_350_EMEnriched_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_QCD_Pt_350_EMEnriched/res/*.root`
+2013-03-19 07:56:33,268;DEBUG;QCD_Pt_350_EMEnriched_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:33,269;DEBUG;WJets_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_WJets_inclusive/res/*.root`
+2013-03-19 07:56:34,729;DEBUG;WJets_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:34,729;DEBUG;W1Jets_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_W1Jets_exclusive/res/*.root`
+2013-03-19 07:56:35,465;DEBUG;W1Jets_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:35,466;DEBUG;W2Jets_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_W2Jets_exclusive/res/*.root`
+2013-03-19 07:56:36,154;DEBUG;W2Jets_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:36,154;DEBUG;W3Jets_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_W3Jets_exclusive/res/*.root`
+2013-03-19 07:56:36,560;DEBUG;W3Jets_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:36,560;DEBUG;W4Jets_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_W4Jets_exclusive/res/*.root`
+2013-03-19 07:56:36,986;DEBUG;W4Jets_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:36,987;DEBUG;TTJets_SemiLept_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_TTJets_SemiLept/res/*.root`
+2013-03-19 07:56:38,354;DEBUG;TTJets_SemiLept_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:38,354;DEBUG;TTJets_FullLept_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_TTJets_FullLept/res/*.root`
+2013-03-19 07:56:39,214;DEBUG;TTJets_FullLept_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:39,214;DEBUG;TTbar_MainProcess;Opening file: `/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14//WD_TTJets_MassiveBinDECAY/res/*.root`
+2013-03-19 07:56:39,441;DEBUG;TTbar_MainProcess;Done opening file and creating caches.
+2013-03-19 07:56:39,441;INFO;plotfw.drawfw;Switching to multicore mode: n_cores=10
+2013-03-19 07:56:39,441;INFO;plotfw.drawfw;Switching to multicore mode: n_cores=10
+2013-03-19 07:56:39,441;INFO;root;Using 5 cores
+2013-03-19 07:56:39,441;INFO;root;Running on 100.00 percent of events
+2013-03-19 07:56:39,441;INFO;plotfw.drawfw;Switching to multicore mode: n_cores=5
+2013-03-19 07:56:39,442;INFO;plotfw.drawfw;Switching to multicore mode: n_cores=5
+2013-03-19 07:56:39,442;INFO;plotfw.drawfw;Plotting samples diboson: (WW, WZ, ZZ), t-channel: (T_t, Tbar_t), data: (SingleMuAB, SingleMuC, SingleMuD), QCD: (QCDMu, GJets1, GJets2, QCD_Pt_20_30_BCtoE, QCD_Pt_30_80_BCtoE, QCD_Pt_80_170_BCtoE, QCD_Pt_170_250_BCtoE, QCD_Pt_250_350_BCtoE, QCD_Pt_350_BCtoE, QCD_Pt_20_30_EMEnriched, QCD_Pt_30_80_EMEnriched, QCD_Pt_80_170_EMEnriched, QCD_Pt_170_250_EMEnriched, QCD_Pt_250_350_EMEnriched, QCD_Pt_350_EMEnriched), WJets: (W1Jets, W2Jets, W3Jets, W4Jets), tW-channel: (T_tW, Tbar_tW), TTbar: (TTJets_SemiLept, TTJets_FullLept), DYJets: (DYJets), s-channel: (T_s, Tbar_s) with Cut(mu & muIso & looseMuVeto & looseEleVeto & None & None & 2J), plots: [PlotParams: M_{t}(W #rightarrow #mu^{#pm} #nu_{#mu})(double__muAndMETMT__STPOLSEL2.obj) in range (0, 150) with weights None, PlotParams: M_{t}(W #rightarrow #mu^{#pm} #nu_{#mu})(double__muAndMETMT__STPOLSEL2.obj) in range (0, 150) with weights [<plotfw.params.Var instance at 0x42c6bd8>]]
+2013-03-19 07:56:39,442;DEBUG;plotfw.drawfw;Cut string: ((((int_muonCount__STPOLSEL2.obj==1) && (floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.obj[0]<0.12)) && (int_looseVetoMuCount__STPOLSEL2.obj==0)) && (int_looseVetoEleCount__STPOLSEL2.obj==0)) && (((int_lightJetCount__STPOLSEL2.obj>=0) && (int_bJetCount__STPOLSEL2.obj>=0)) && ((int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj)==2))
+2013-03-19 07:56:39,644;INFO;plotfw.drawfw;Plotting: plot_cut1529902353_doublemuAndMETMTSTPOLSEL2obj
+2013-03-19 07:56:39,644;DEBUG;root;P `Variable`: double__muAndMETMT__STPOLSEL2.obj
+2013-03-19 07:56:39,644;DEBUG;root;P `HT min`: 0
+2013-03-19 07:56:39,644;DEBUG;root;P `HT max`: 150
+2013-03-19 07:56:39,644;DEBUG;root;P `HT bins`: 20
+2013-03-19 07:56:39,645;DEBUG;root;Generated cutstring: "((((int_muonCount__STPOLSEL2.obj==1) && (floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.obj[0]<0.12)) && (int_looseVetoMuCount__STPOLSEL2.obj==0)) && (int_looseVetoEleCount__STPOLSEL2.obj==0)) && (((int_lightJetCount__STPOLSEL2.obj>=0) && (int_bJetCount__STPOLSEL2.obj>=0)) && ((int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj)==2))"
+Namespace(doBDiscriminators=False, doBWeightControl=False, doEtaLJ=False, doFinalSel=False, doLepIso=False, doMET=True, doNBTags=False, doNJets=False, doPVCount=False, doReweighted=True, doTTbarControl=False, doTopMass=False, doWJetsControl=False, doWeights=False, n_cores=5, ofdir='plots_out_cluster_565286', percent=100.0, useHDFS=True)
+{'frac_entries': 1.0}
+2013-03-19 07:56:42,048;DEBUG;SingleMuAB_PoolWorker-1;Opening file: `/hdfs/local/joosep/stpol/step2_Data_Iso_Mar15//WD_SingleMuAB/res/*.root`
+2013-03-19 07:56:42,975;DEBUG;SingleMuAB_PoolWorker-1;Done opening file and creating caches.
+2013-03-19 07:56:42,976;DEBUG;plotfw.methods_PoolWorker-1_SingleMuAB;Started multiprocessing draw on one sample
+2013-03-19 07:56:42,976;INFO;SingleMuAB_PoolWorker-1;Drawing histogram plot_cut1529902353_doublemuAndMETMTSTPOLSEL2obj_hist_data_data_SingleMuAB
+2013-03-19 07:56:42,976;DEBUG;SingleMuAB_PoolWorker-1;Caching count of entries in TTree
+2013-03-19 07:56:43,091;DEBUG;SingleMuC_PoolWorker-2;Opening file: `/hdfs/local/joosep/stpol/step2_Data_Iso_Mar15//WD_SingleMuC/res/*.root`
+2013-03-19 07:56:44,001;DEBUG;SingleMuC_PoolWorker-2;Done opening file and creating caches.
+2013-03-19 07:56:44,003;DEBUG;plotfw.methods_PoolWorker-2_SingleMuC;Started multiprocessing draw on one sample
+2013-03-19 07:56:44,003;INFO;SingleMuC_PoolWorker-2;Drawing histogram plot_cut1529902353_doublemuAndMETMTSTPOLSEL2obj_hist_data_data_SingleMuC
+2013-03-19 07:56:44,003;DEBUG;SingleMuC_PoolWorker-2;Caching count of entries in TTree
+2013-03-19 07:56:44,124;DEBUG;SingleMuD_PoolWorker-3;Opening file: `/hdfs/local/joosep/stpol/step2_Data_Iso_Mar15//WD_SingleMuD/res/*.root`
+2013-03-19 07:56:44,934;DEBUG;SingleMuD_PoolWorker-3;Done opening file and creating caches.
+2013-03-19 07:56:44,935;DEBUG;plotfw.methods_PoolWorker-3_SingleMuD;Started multiprocessing draw on one sample
+2013-03-19 07:56:44,936;INFO;SingleMuD_PoolWorker-3;Drawing histogram plot_cut1529902353_doublemuAndMETMTSTPOLSEL2obj_hist_data_data_SingleMuD
+2013-03-19 07:56:44,936;DEBUG;SingleMuD_PoolWorker-3;Caching count of entries in TTree
+2013-03-19 08:52:08,648;DEBUG;SingleMuAB_PoolWorker-1;Done caching count of entries
+2013-03-19 08:52:08,649;DEBUG;SingleMuAB_PoolWorker-1;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*']
+2013-03-19 08:52:08,653;INFO;SingleMuAB_PoolWorker-1;Caching entry list with cut mu & muIso & looseMuVeto & looseEleVeto & None & None & 2J over 43358163 entries
+2013-03-19 08:58:24,905;DEBUG;SingleMuC_PoolWorker-2;Done caching count of entries
+2013-03-19 08:58:24,906;DEBUG;SingleMuC_PoolWorker-2;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*']
+2013-03-19 08:58:24,911;INFO;SingleMuC_PoolWorker-2;Caching entry list with cut mu & muIso & looseMuVeto & looseEleVeto & None & None & 2J over 56344934 entries
+2013-03-19 08:59:50,205;DEBUG;SingleMuD_PoolWorker-3;Done caching count of entries
+2013-03-19 08:59:50,206;DEBUG;SingleMuD_PoolWorker-3;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*']
+2013-03-19 08:59:50,210;INFO;SingleMuD_PoolWorker-3;Caching entry list with cut mu & muIso & looseMuVeto & looseEleVeto & None & None & 2J over 63419108 entries
+******TreeCache statistics for file: /hdfs/local/joosep/stpol/step2_Data_Iso_Mar15//WD_SingleMuC/res/output_9_1_gHr.root ******
+Number of branches in the cache ...: 18
+Cache Efficiency ..................: 0.000566
+Cache Efficiency Rel...............: 0.999949
+Learn entries......................: 100
+Reading............................: 397619 bytes in 62 transactions
+Readahead..........................: 256000 bytes with overhead = 2141760 bytes
+Average transaction................: 6.413210 Kbytes
+Number of2013-03-19 11:00:44,917;DEBUG;SingleMuC_PoolWorker-2;Caching entry list took 7340.01 seconds, 7676.41 events/second
+2013-03-19 11:00:44,919;DEBUG;SingleMuC_PoolWorker-2;Cut result: 768226 events
+2013-03-19 11:00:44,919;DEBUG;SingleMuC_PoolWorker-2;Switching variables on: ['double__muAndMETMT__STPOLSEL2*']
+Error in <TTree::SetBranchStatus>: unknown branch -> double__muAndMETMT__STPOLSEL2*
+2013-03-19 11:00:44,920;DEBUG;SingleMuC_PoolWorker-2;Calling TChain.Draw(double__muAndMETMT__STPOLSEL2.obj >> plot_cut1529902353_doublemuAndMETMTSTPOLSEL2obj_hist_data_data_SingleMuC(20, 0, 150), 1.0)
+Error in <TTree::SetBranchStatus>: unknown branch -> double__muAndMETMT__STPOLSEL2*
+Error in <TTreeFormula::Compile>:  Bad numerical expression : "double__muAndMETMT__STPOLSEL2.obj"
+2013-03-19 11:00:46,129;DEBUG;SingleMuC_PoolWorker-2;Histogram drawn with -1 entries
+2013-03-19 11:00:46,129;ERROR;SingleMuC_PoolWorker-2;Failed to draw histogram: cut result -1 but histogram drawn with 768226 entries
+Traceback (most recent call last):
+  File "plots.py", line 159, in <module>
+    if args.doReweighted:
+  File "/home/joosep/singletop/stpol/newplots/plotfw/drawfw.py", line 126, in plot
+    retplots = [self._plot(x, cut) for x in plots]
+  File "/home/joosep/singletop/stpol/newplots/plotfw/drawfw.py", line 199, in _plot
+    ret = self._data.drawHists(data_hist_name, plot_params, cut, frac_entries=self.frac_entries, n_cores=self.n_cores)
+  File "/home/joosep/singletop/stpol/newplots/plotfw/methods.py", line 510, in drawHists
+    res = pool.map(mp_Sample_drawHist, arg_list)
+  File "/cvmfs/cms.cern.ch/slc5_amd64_gcc462/external/python/2.6.4/lib/python2.6/multiprocessing/pool.py", line 148, in map
+    return self.map_async(func, iterable, chunksize).get()
+  File "/cvmfs/cms.cern.ch/slc5_amd64_gcc462/external/python/2.6.4/lib/python2.6/multiprocessing/pool.py", line 422, in get
+    raise self._value
+Exception: Failed to get histogram

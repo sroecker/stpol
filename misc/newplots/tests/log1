@@ -1,0 +1,272 @@
+2013-03-19 08:54:56,652;DEBUG;TTJets_FullLept_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_TTJets_FullLept/res/*.root`
+2013-03-19 08:54:56,683;DEBUG;TTJets_FullLept_MainProcess;Done opening file and creating caches.
+2013-03-19 08:54:56,683;DEBUG;TTJets_SemiLept_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_TTJets_SemiLept/res/*.root`
+2013-03-19 08:54:56,697;DEBUG;TTJets_SemiLept_MainProcess;Done opening file and creating caches.
+2013-03-19 08:54:56,697;DEBUG;TTbar_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_TTJets_MassiveBinDECAY/res/*.root`
+2013-03-19 08:54:56,698;DEBUG;TTbar_MainProcess;Done opening file and creating caches.
+2013-03-19 08:54:56,698;DEBUG;T_t_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_T_t/res/*.root`
+2013-03-19 08:54:56,701;DEBUG;T_t_MainProcess;Done opening file and creating caches.
+2013-03-19 08:54:56,701;DEBUG;W1Jets_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_W1Jets_exclusive/res/*.root`
+2013-03-19 08:54:56,706;DEBUG;W1Jets_MainProcess;Done opening file and creating caches.
+2013-03-19 08:54:56,707;DEBUG;W2Jets_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_W2Jets_exclusive/res/*.root`
+2013-03-19 08:54:56,714;DEBUG;W2Jets_MainProcess;Done opening file and creating caches.
+2013-03-19 08:54:56,714;DEBUG;W3Jets_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_W3Jets_exclusive/res/*.root`
+2013-03-19 08:54:56,719;DEBUG;W3Jets_MainProcess;Done opening file and creating caches.
+2013-03-19 08:54:56,719;DEBUG;W4Jets_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_W4Jets_exclusive/res/*.root`
+2013-03-19 08:54:56,723;DEBUG;W4Jets_MainProcess;Done opening file and creating caches.
+2013-03-19 08:54:56,724;INFO;plotfw.drawfw;Switching to multicore mode: n_cores=10
+2013-03-19 08:54:56,724;INFO;plotfw.drawfw;Switching to multicore mode: n_cores=8
+2013-03-19 08:54:56,724;INFO;plotfw.drawfw;Plotting samples TTJets_FullLept: (TTJets_FullLept), W4Jets: (W4Jets), W2Jets: (W2Jets), W1Jets: (W1Jets), TTbar: (TTbar), TTJets_SemiLept: (TTJets_SemiLept), W3Jets: (W3Jets), T_t: (T_t) with Cut(final_mu_3J1T), plots: [PlotParams: b-weight (nominal)(double_bTagWeightProducerNJMT_bTagWeight_STPOLSEL2.obj) in range (0, 5) with weights None]
+2013-03-19 08:54:56,724;DEBUG;plotfw.drawfw;Cut string: (((((((((int_muonCount__STPOLSEL2.obj==1) && (floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.obj[0]<0.12)) && (int_looseVetoMuCount__STPOLSEL2.obj==0)) && (int_looseVetoEleCount__STPOLSEL2.obj==0)) && (double_muAndMETMT__STPOLSEL2.obj > 50)) && ((floats_recoTopNTupleProducer_Mass_STPOLSEL2.obj[0]>130) && (floats_recoTopNTupleProducer_Mass_STPOLSEL2.obj[0]<220))) && ((floats_goodJetsNTupleProducer_Pt_STPOLSEL2.obj[0]>40) && (floats_goodJetsNTupleProducer_Pt_STPOLSEL2.obj[1]>40))) && (abs(floats_lowestBTagJetNTupleProducer_Eta_STPOLSEL2.obj[0])>2.5)) && (abs(floats_goodJetsNTupleProducer_Eta_STPOLSEL2.obj[0])<4.5 && abs(floats_goodJetsNTupleProducer_Eta_STPOLSEL2.obj[1])<4.5)) && ((int_lightJetCount__STPOLSEL2.obj==2) && (int_bJetCount__STPOLSEL2.obj==1))
+2013-03-19 08:54:56,798;DEBUG;plotfw.drawfw;Plotting: plot_cut1180106482_doublebTagWeightProducerNJMTbTagWeightSTPOLSEL2obj
+2013-03-19 08:54:57,488;DEBUG;TTJets_FullLept_PoolWorker-1;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_TTJets_FullLept/res/*.root`
+2013-03-19 08:54:57,498;DEBUG;TTJets_FullLept_PoolWorker-1;Done opening file and creating caches.
+2013-03-19 08:54:57,498;DEBUG;plotfw.methods_PoolWorker-1_TTJets_FullLept;Started multiprocessing draw on one group
+2013-03-19 08:54:57,499;DEBUG;plotfw.methods_PoolWorker-1_TTJets_FullLept;Started multiprocessing draw on one sample
+2013-03-19 08:54:57,499;INFO;TTJets_FullLept_PoolWorker-1;Drawing histogram plot_cut1180106482_doublebTagWeightProducerNJMTbTagWeightSTPOLSEL2obj_TTJets_FullLept_TTJets_FullLept
+2013-03-19 08:54:57,499;DEBUG;TTJets_FullLept_PoolWorker-1;Caching count of entries in TTree
+2013-03-19 08:54:57,582;DEBUG;W4Jets_PoolWorker-2;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_W4Jets_exclusive/res/*.root`
+2013-03-19 08:54:57,589;DEBUG;W4Jets_PoolWorker-2;Done opening file and creating caches.
+2013-03-19 08:54:57,589;DEBUG;plotfw.methods_PoolWorker-2_W4Jets;Started multiprocessing draw on one group
+2013-03-19 08:54:57,594;DEBUG;plotfw.methods_PoolWorker-2_W4Jets;Started multiprocessing draw on one sample
+2013-03-19 08:54:57,594;INFO;W4Jets_PoolWorker-2;Drawing histogram plot_cut1180106482_doublebTagWeightProducerNJMTbTagWeightSTPOLSEL2obj_W4Jets_W4Jets
+2013-03-19 08:54:57,594;DEBUG;W4Jets_PoolWorker-2;Caching count of entries in TTree
+2013-03-19 08:54:57,682;DEBUG;W2Jets_PoolWorker-3;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_W2Jets_exclusive/res/*.root`
+2013-03-19 08:54:57,694;DEBUG;W2Jets_PoolWorker-3;Done opening file and creating caches.
+2013-03-19 08:54:57,694;DEBUG;plotfw.methods_PoolWorker-3_W2Jets;Started multiprocessing draw on one group
+2013-03-19 08:54:57,695;DEBUG;plotfw.methods_PoolWorker-3_W2Jets;Started multiprocessing draw on one sample
+2013-03-19 08:54:57,695;INFO;W2Jets_PoolWorker-3;Drawing histogram plot_cut1180106482_doublebTagWeightProducerNJMTbTagWeightSTPOLSEL2obj_W2Jets_W2Jets
+2013-03-19 08:54:57,695;DEBUG;W2Jets_PoolWorker-3;Caching count of entries in TTree
+2013-03-19 08:54:57,787;DEBUG;W1Jets_PoolWorker-4;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_W1Jets_exclusive/res/*.root`
+2013-03-19 08:54:57,795;DEBUG;W1Jets_PoolWorker-4;Done opening file and creating caches.
+2013-03-19 08:54:57,795;DEBUG;plotfw.methods_PoolWorker-4_W1Jets;Started multiprocessing draw on one group
+2013-03-19 08:54:57,800;DEBUG;plotfw.methods_PoolWorker-4_W1Jets;Started multiprocessing draw on one sample
+2013-03-19 08:54:57,800;INFO;W1Jets_PoolWorker-4;Drawing histogram plot_cut1180106482_doublebTagWeightProducerNJMTbTagWeightSTPOLSEL2obj_W1Jets_W1Jets
+2013-03-19 08:54:57,800;DEBUG;W1Jets_PoolWorker-4;Caching count of entries in TTree
+2013-03-19 08:54:57,899;DEBUG;TTbar_PoolWorker-5;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_TTJets_MassiveBinDECAY/res/*.root`
+2013-03-19 08:54:57,902;DEBUG;TTbar_PoolWorker-5;Done opening file and creating caches.
+2013-03-19 08:54:57,903;DEBUG;plotfw.methods_PoolWorker-5_TTbar;Started multiprocessing draw on one group
+2013-03-19 08:54:57,903;DEBUG;plotfw.methods_PoolWorker-5_TTbar;Started multiprocessing draw on one sample
+2013-03-19 08:54:57,903;INFO;TTbar_PoolWorker-5;Drawing histogram plot_cut1180106482_doublebTagWeightProducerNJMTbTagWeightSTPOLSEL2obj_TTbar_TTbar
+2013-03-19 08:54:57,904;DEBUG;TTbar_PoolWorker-5;Caching count of entries in TTree
+2013-03-19 08:54:58,024;DEBUG;TTJets_SemiLept_PoolWorker-6;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_TTJets_SemiLept/res/*.root`
+2013-03-19 08:54:58,045;DEBUG;TTJets_SemiLept_PoolWorker-6;Done opening file and creating caches.
+2013-03-19 08:54:58,046;DEBUG;plotfw.methods_PoolWorker-6_TTJets_SemiLept;Started multiprocessing draw on one group
+2013-03-19 08:54:58,047;DEBUG;plotfw.methods_PoolWorker-6_TTJets_SemiLept;Started multiprocessing draw on one sample
+2013-03-19 08:54:58,047;INFO;TTJets_SemiLept_PoolWorker-6;Drawing histogram plot_cut1180106482_doublebTagWeightProducerNJMTbTagWeightSTPOLSEL2obj_TTJets_SemiLept_TTJets_SemiLept
+2013-03-19 08:54:58,047;DEBUG;TTJets_SemiLept_PoolWorker-6;Caching count of entries in TTree
+2013-03-19 08:54:58,188;DEBUG;W3Jets_PoolWorker-7;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_W3Jets_exclusive/res/*.root`
+2013-03-19 08:54:58,196;DEBUG;W3Jets_PoolWorker-7;Done opening file and creating caches.
+2013-03-19 08:54:58,197;DEBUG;plotfw.methods_PoolWorker-7_W3Jets;Started multiprocessing draw on one group
+2013-03-19 08:54:58,197;DEBUG;plotfw.methods_PoolWorker-7_W3Jets;Started multiprocessing draw on one sample
+2013-03-19 08:54:58,197;INFO;W3Jets_PoolWorker-7;Drawing histogram plot_cut1180106482_doublebTagWeightProducerNJMTbTagWeightSTPOLSEL2obj_W3Jets_W3Jets
+2013-03-19 08:54:58,197;DEBUG;W3Jets_PoolWorker-7;Caching count of entries in TTree
+2013-03-19 08:54:58,346;DEBUG;T_t_PoolWorker-8;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_T_t/res/*.root`
+2013-03-19 08:54:58,351;DEBUG;T_t_PoolWorker-8;Done opening file and creating caches.
+2013-03-19 08:54:58,352;DEBUG;plotfw.methods_PoolWorker-8_T_t;Started multiprocessing draw on one group
+2013-03-19 08:54:58,352;DEBUG;plotfw.methods_PoolWorker-8_T_t;Started multiprocessing draw on one sample
+2013-03-19 08:54:58,352;INFO;T_t_PoolWorker-8;Drawing histogram plot_cut1180106482_doublebTagWeightProducerNJMTbTagWeightSTPOLSEL2obj_T_t_T_t
+2013-03-19 08:54:58,352;DEBUG;T_t_PoolWorker-8;Caching count of entries in TTree
+2013-03-19 08:55:00,060;DEBUG;TTbar_PoolWorker-5;Done caching count of entries
+2013-03-19 08:55:00,062;DEBUG;TTbar_PoolWorker-5;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'floats_goodJetsNTupleProducer_Pt_STPOLSEL2.*', 'floats_lowestBTagJetNTupleProducer_Eta_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'floats_goodJetsNTupleProducer_Eta_STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'floats_recoTopNTupleProducer_Mass_STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 08:55:00,069;INFO;TTbar_PoolWorker-5;Caching entry list with cut final_mu_3J1T over 2254634 entries
+2013-03-19 08:55:00,783;DEBUG;T_t_PoolWorker-8;Done caching count of entries
+2013-03-19 08:55:00,785;DEBUG;T_t_PoolWorker-8;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'floats_goodJetsNTupleProducer_Pt_STPOLSEL2.*', 'floats_lowestBTagJetNTupleProducer_Eta_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'floats_goodJetsNTupleProducer_Eta_STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'floats_recoTopNTupleProducer_Mass_STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 08:55:00,791;INFO;T_t_PoolWorker-8;Caching entry list with cut final_mu_3J1T over 3753221 entries
+2013-03-19 08:55:01,141;DEBUG;W4Jets_PoolWorker-2;Done caching count of entries
+2013-03-19 08:55:01,142;DEBUG;W4Jets_PoolWorker-2;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'floats_goodJetsNTupleProducer_Pt_STPOLSEL2.*', 'floats_lowestBTagJetNTupleProducer_Eta_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'floats_goodJetsNTupleProducer_Eta_STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'floats_recoTopNTupleProducer_Mass_STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 08:55:01,148;INFO;W4Jets_PoolWorker-2;Caching entry list with cut final_mu_3J1T over 7159352 entries
+2013-03-19 08:55:01,470;DEBUG;W3Jets_PoolWorker-7;Done caching count of entries
+2013-03-19 08:55:01,472;DEBUG;W3Jets_PoolWorker-7;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'floats_goodJetsNTupleProducer_Pt_STPOLSEL2.*', 'floats_lowestBTagJetNTupleProducer_Eta_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'floats_goodJetsNTupleProducer_Eta_STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'floats_recoTopNTupleProducer_Mass_STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 08:55:01,478;INFO;W3Jets_PoolWorker-7;Caching entry list with cut final_mu_3J1T over 7763814 entries
+2013-03-19 08:55:01,583;DEBUG;W1Jets_PoolWorker-4;Done caching count of entries
+2013-03-19 08:55:01,615;DEBUG;W1Jets_PoolWorker-4;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'floats_goodJetsNTupleProducer_Pt_STPOLSEL2.*', 'floats_lowestBTagJetNTupleProducer_Eta_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'floats_goodJetsNTupleProducer_Eta_STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'floats_recoTopNTupleProducer_Mass_STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 08:55:01,622;INFO;W1Jets_PoolWorker-4;Caching entry list with cut final_mu_3J1T over 9588903 entries
+2013-03-19 08:55:02,018;DEBUG;TTJets_FullLept_PoolWorker-1;Done caching count of entries
+2013-03-19 08:55:02,020;DEBUG;TTJets_FullLept_PoolWorker-1;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'floats_goodJetsNTupleProducer_Pt_STPOLSEL2.*', 'floats_lowestBTagJetNTupleProducer_Eta_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'floats_goodJetsNTupleProducer_Eta_STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'floats_recoTopNTupleProducer_Mass_STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 08:55:02,026;INFO;TTJets_FullLept_PoolWorker-1;Caching entry list with cut final_mu_3J1T over 13554231 entries
+2013-03-19 08:55:02,358;DEBUG;W2Jets_PoolWorker-3;Done caching count of entries
+2013-03-19 08:55:02,359;DEBUG;W2Jets_PoolWorker-3;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'floats_goodJetsNTupleProducer_Pt_STPOLSEL2.*', 'floats_lowestBTagJetNTupleProducer_Eta_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'floats_goodJetsNTupleProducer_Eta_STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'floats_recoTopNTupleProducer_Mass_STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 08:55:02,365;INFO;W2Jets_PoolWorker-3;Caching entry list with cut final_mu_3J1T over 12988554 entries
+2013-03-19 08:55:05,261;DEBUG;TTJets_SemiLept_PoolWorker-6;Done caching count of entries
+2013-03-19 08:55:05,263;DEBUG;TTJets_SemiLept_PoolWorker-6;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'floats_goodJetsNTupleProducer_Pt_STPOLSEL2.*', 'floats_lowestBTagJetNTupleProducer_Eta_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'floats_goodJetsNTupleProducer_Eta_STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'floats_recoTopNTupleProducer_Mass_STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 08:55:05,269;INFO;TTJets_SemiLept_PoolWorker-6;Caching entry list with cut final_mu_3J1T over 24364860 entries
+{}
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_TTJets_MassiveBinDECAY/res/output_47_1_ATT.root ******
+Number of branches in the cache ...: 33
+Cache Efficiency ..................: 0.000470
+Cache Efficiency Rel...............: 0.999401
+Learn entries......................: 100
+Reading............................: 930947 bytes in 80 transactions
+Readahead..........................: 256000 bytes with overhead = 8515111 bytes
+Average transaction................: 11.636838 Kbytes
+Nu2013-03-19 08:55:20,673;DEBUG;TTbar_PoolWorker-5;Caching entry list took 20.61 seconds, 109394.22 events/second
+2013-03-19 08:55:20,673;DEBUG;TTbar_PoolWorker-5;Cut result: 3006 events
+2013-03-19 08:55:20,673;DEBUG;TTbar_PoolWorker-5;Switching variables on: ['double_bTagWeightProducerNJMT_bTagWeight_STPOLSEL2*']
+2013-03-19 08:55:20,674;DEBUG;TTbar_PoolWorker-5;Calling TChain.Draw(double_bTagWeightProducerNJMT_bTagWeight_STPOLSEL2.obj >> plot_cut1180106482_doublebTagWeightProducerNJMTbTagWeightSTPOLSEL2obj_TTbar_TTbar(20, 0, 5), 1.0)
+2013-03-19 08:55:30,707;DEBUG;TTbar_PoolWorker-5;Histogram drawn with 3006 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 08:55:30,723;INFO;root;Drawing stats: 3006/2254634.0 in 32.8192219734 sec, all evts: 68698.5816369/sec, drawn evts: 91.5926648851
+2013-03-19 08:55:30,723;DEBUG;plotfw.methods_PoolWorker-5_TTbar;Done multiprocessing draw one sample
+2013-03-19 08:55:30,736;DEBUG;plotfw.methods_PoolWorker-5_TTbar;Done multiprocessing draw on one group
+2013-03-19 08:55:30,761;DEBUG;TTbar_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_TTJets_MassiveBinDECAY/res/*.root`
+2013-03-19 08:55:30,764;DEBUG;TTbar_MainProcess;Done opening file and creating caches.
+{}
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_T_t/res/output_126_1_nYM.root ******
+Number of branches in the cache ...: 33
+Cache Efficiency ..................: 0.000413
+Cache Efficiency Rel...............: 0.999688
+Learn entries......................: 100
+Reading............................: 542132 bytes in 55 transactions
+Readahead..........................: 256000 bytes with overhead = 6354750 bytes
+Average transaction................: 9.856945 Kbytes
+Number of blocks in c2013-03-19 08:55:33,358;DEBUG;T_t_PoolWorker-8;Caching entry list took 32.57 seconds, 115222.12 events/second
+2013-03-19 08:55:33,358;DEBUG;T_t_PoolWorker-8;Cut result: 1487 events
+2013-03-19 08:55:33,359;DEBUG;T_t_PoolWorker-8;Switching variables on: ['double_bTagWeightProducerNJMT_bTagWeight_STPOLSEL2*']
+2013-03-19 08:55:33,359;DEBUG;T_t_PoolWorker-8;Calling TChain.Draw(double_bTagWeightProducerNJMT_bTagWeight_STPOLSEL2.obj >> plot_cut1180106482_doublebTagWeightProducerNJMTbTagWeightSTPOLSEL2obj_T_t_T_t(20, 0, 5), 1.0)
+2013-03-19 08:55:48,448;DEBUG;T_t_PoolWorker-8;Histogram drawn with 1487 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 08:55:48,463;INFO;root;Drawing stats: 1487/3753221.0 in 50.1105840206 sec, all evts: 74898.7678622/sec, drawn evts: 29.6743697776
+2013-03-19 08:55:48,463;DEBUG;plotfw.methods_PoolWorker-8_T_t;Done multiprocessing draw one sample
+2013-03-19 08:55:48,476;DEBUG;plotfw.methods_PoolWorker-8_T_t;Done multiprocessing draw on one group
+2013-03-19 08:55:48,492;DEBUG;T_t_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_T_t/res/*.root`
+2013-03-19 08:55:48,499;DEBUG;T_t_MainProcess;Done opening file and creating caches.
+{}
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_W4Jets_exclusive/res/output_141_1_UMs.root ******
+Number of branches in the cache ...: 33
+Cache Efficiency ..................: 0.000466
+Cache Efficiency Rel...............: 0.999814
+Learn entries......................: 100
+Reading............................: 988934 bytes in 100 transactions
+Readahead..........................: 256000 bytes with overhead = 7308378 bytes
+Average transaction................: 9.889340 Kbytes
+Number 2013-03-19 08:56:07,841;DEBUG;W4Jets_PoolWorker-2;Caching entry list took 66.70 seconds, 107338.74 events/second
+2013-03-19 08:56:07,841;DEBUG;W4Jets_PoolWorker-2;Cut result: 512 events
+2013-03-19 08:56:07,841;DEBUG;W4Jets_PoolWorker-2;Switching variables on: ['double_bTagWeightProducerNJMT_bTagWeight_STPOLSEL2*']
+2013-03-19 08:56:07,842;DEBUG;W4Jets_PoolWorker-2;Calling TChain.Draw(double_bTagWeightProducerNJMT_bTagWeight_STPOLSEL2.obj >> plot_cut1180106482_doublebTagWeightProducerNJMTbTagWeightSTPOLSEL2obj_W4Jets_W4Jets(20, 0, 5), 1.0)
+{}
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_W3Jets_exclusive/res/output_194_1_8Bn.root ******
+Number of branches in the cache ...: 33
+Cache Efficiency ..................: 0.000454
+Cache Efficiency Rel...............: 0.999856
+Learn entries......................: 100
+Reading............................: 893332 bytes in 91 transactions
+Readahead..........................: 256000 bytes with overhead = 7566362 bytes
+Average transaction................: 9.816835 Kbytes
+Number o2013-03-19 08:56:11,550;DEBUG;W3Jets_PoolWorker-7;Caching entry list took 70.08 seconds, 110787.76 events/second
+2013-03-19 08:56:11,550;DEBUG;W3Jets_PoolWorker-7;Cut result: 144 events
+2013-03-19 08:56:11,550;DEBUG;W3Jets_PoolWorker-7;Switching variables on: ['double_bTagWeightProducerNJMT_bTagWeight_STPOLSEL2*']
+2013-03-19 08:56:11,551;DEBUG;W3Jets_PoolWorker-7;Calling TChain.Draw(double_bTagWeightProducerNJMT_bTagWeight_STPOLSEL2.obj >> plot_cut1180106482_doublebTagWeightProducerNJMTbTagWeightSTPOLSEL2obj_W3Jets_W3Jets(20, 0, 5), 1.0)
+2013-03-19 08:56:14,825;DEBUG;W3Jets_PoolWorker-7;Histogram drawn with 144 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 08:56:14,843;INFO;root;Drawing stats: 144/7763814.0 in 76.6452229023 sec, all evts: 101295.471603/sec, drawn evts: 1.87878636851
+2013-03-19 08:56:14,843;DEBUG;plotfw.methods_PoolWorker-7_W3Jets;Done multiprocessing draw one sample
+2013-03-19 08:56:14,855;DEBUG;plotfw.methods_PoolWorker-7_W3Jets;Done multiprocessing draw on one group
+2013-03-19 08:56:14,872;DEBUG;W3Jets_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_W3Jets_exclusive/res/*.root`
+2013-03-19 08:56:14,883;DEBUG;W3Jets_MainProcess;Done opening file and creating caches.
+2013-03-19 08:56:16,474;DEBUG;W4Jets_PoolWorker-2;Histogram drawn with 512 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 08:56:16,489;INFO;root;Drawing stats: 512/7159352.0 in 78.8954801559 sec, all evts: 90744.767455/sec, drawn evts: 6.48959863085
+2013-03-19 08:56:16,490;DEBUG;plotfw.methods_PoolWorker-2_W4Jets;Done multiprocessing draw one sample
+2013-03-19 08:56:16,502;DEBUG;plotfw.methods_PoolWorker-2_W4Jets;Done multiprocessing draw on one group
+2013-03-19 08:56:16,523;DEBUG;W4Jets_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_W4Jets_exclusive/res/*.root`
+2013-03-19 08:56:16,529;DEBUG;W4Jets_MainProcess;Done opening file and creating caches.
+{}
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_W1Jets_exclusive/res/output_91_1_HKq.root ******
+Number of branches in the cache ...: 33
+Cache Efficiency ..................: 0.000390
+Cache Efficiency Rel...............: 0.999928
+Learn entries......................: 100
+Reading............................: 664804 bytes in 67 transactions
+Readahead..........................: 256000 bytes with overhead = 5739541 bytes
+Average transaction................: 9.922448 Kbytes
+Number of2013-03-19 08:56:22,599;DEBUG;W1Jets_PoolWorker-4;Caching entry list took 80.98 seconds, 118405.05 events/second
+2013-03-19 08:56:22,599;DEBUG;W1Jets_PoolWorker-4;Cut result: 2 events
+2013-03-19 08:56:22,600;DEBUG;W1Jets_PoolWorker-4;Switching variables on: ['double_bTagWeightProducerNJMT_bTagWeight_STPOLSEL2*']
+2013-03-19 08:56:22,600;DEBUG;W1Jets_PoolWorker-4;Calling TChain.Draw(double_bTagWeightProducerNJMT_bTagWeight_STPOLSEL2.obj >> plot_cut1180106482_doublebTagWeightProducerNJMTbTagWeightSTPOLSEL2obj_W1Jets_W1Jets(20, 0, 5), 1.0)
+2013-03-19 08:56:22,674;DEBUG;W1Jets_PoolWorker-4;Histogram drawn with 2 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 08:56:22,688;INFO;root;Drawing stats: 2/9588903.0 in 84.8881299496 sec, all evts: 112959.291313/sec, drawn evts: 0.0235604200633
+2013-03-19 08:56:22,688;DEBUG;plotfw.methods_PoolWorker-4_W1Jets;Done multiprocessing draw one sample
+2013-03-19 08:56:22,701;DEBUG;plotfw.methods_PoolWorker-4_W1Jets;Done multiprocessing draw on one group
+2013-03-19 08:56:22,706;DEBUG;W1Jets_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_W1Jets_exclusive/res/*.root`
+2013-03-19 08:56:22,713;DEBUG;W1Jets_MainProcess;Done opening file and creating caches.
+{}
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_W2Jets_exclusive/res/output_250_1_YnE.root ******
+Number of branches in the cache ...: 33
+Cache Efficiency ..................: 0.000441
+Cache Efficiency Rel...............: 0.999912
+Learn entries......................: 100
+Reading............................: 789962 bytes in 73 transactions
+Readahead..........................: 256000 bytes with overhead = 7121846 bytes
+Average transaction................: 10.821397 Kbytes
+Number 2013-03-19 08:56:56,687;DEBUG;W2Jets_PoolWorker-3;Caching entry list took 114.33 seconds, 113608.20 events/second
+2013-03-19 08:56:56,687;DEBUG;W2Jets_PoolWorker-3;Cut result: 13 events
+2013-03-19 08:56:56,687;DEBUG;W2Jets_PoolWorker-3;Switching variables on: ['double_bTagWeightProducerNJMT_bTagWeight_STPOLSEL2*']
+2013-03-19 08:56:56,688;DEBUG;W2Jets_PoolWorker-3;Calling TChain.Draw(double_bTagWeightProducerNJMT_bTagWeight_STPOLSEL2.obj >> plot_cut1180106482_doublebTagWeightProducerNJMTbTagWeightSTPOLSEL2obj_W2Jets_W2Jets(20, 0, 5), 1.0)
+2013-03-19 08:56:57,035;DEBUG;W2Jets_PoolWorker-3;Histogram drawn with 13 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 08:56:57,049;INFO;root;Drawing stats: 13/12988554.0 in 119.35433197 sec, all evts: 108823.482027/sec, drawn evts: 0.108919381353
+2013-03-19 08:56:57,049;DEBUG;plotfw.methods_PoolWorker-3_W2Jets;Done multiprocessing draw one sample
+2013-03-19 08:56:57,061;DEBUG;plotfw.methods_PoolWorker-3_W2Jets;Done multiprocessing draw on one group
+2013-03-19 08:56:57,068;DEBUG;W2Jets_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_W2Jets_exclusive/res/*.root`
+2013-03-19 08:56:57,078;DEBUG;W2Jets_MainProcess;Done opening file and creating caches.
+{}
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_TTJets_FullLept/res/output_332_1_d94.root ******
+Number of branches in the cache ...: 33
+Cache Efficiency ..................: 0.000469
+Cache Efficiency Rel...............: 0.999901
+Learn entries......................: 100
+Reading............................: 980311 bytes in 80 transactions
+Readahead..........................: 256000 bytes with overhead = 8565438 bytes
+Average transaction................: 12.253888 Kbytes
+Number o2013-03-19 08:57:06,728;DEBUG;TTJets_FullLept_PoolWorker-1;Caching entry list took 124.71 seconds, 108687.56 events/second
+2013-03-19 08:57:06,728;DEBUG;TTJets_FullLept_PoolWorker-1;Cut result: 28752 events
+2013-03-19 08:57:06,728;DEBUG;TTJets_FullLept_PoolWorker-1;Switching variables on: ['double_bTagWeightProducerNJMT_bTagWeight_STPOLSEL2*']
+2013-03-19 08:57:06,729;DEBUG;TTJets_FullLept_PoolWorker-1;Calling TChain.Draw(double_bTagWeightProducerNJMT_bTagWeight_STPOLSEL2.obj >> plot_cut1180106482_doublebTagWeightProducerNJMTbTagWeightSTPOLSEL2obj_TTJets_FullLept_TTJets_FullLept(20, 0, 5), 1.0)
+2013-03-19 08:58:08,363;DEBUG;TTJets_FullLept_PoolWorker-1;Histogram drawn with 28752 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 08:58:08,384;INFO;root;Drawing stats: 28752/13554231.0 in 190.885128021 sec, all evts: 71007.2656812/sec, drawn evts: 150.624620671
+2013-03-19 08:58:08,384;DEBUG;plotfw.methods_PoolWorker-1_TTJets_FullLept;Done multiprocessing draw one sample
+2013-03-19 08:58:08,397;DEBUG;plotfw.methods_PoolWorker-1_TTJets_FullLept;Done multiprocessing draw on one group
+2013-03-19 08:58:08,452;DEBUG;TTJets_FullLept_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_TTJets_FullLept/res/*.root`
+2013-03-19 08:58:08,462;DEBUG;TTJets_FullLept_MainProcess;Done opening file and creating caches.
+{}
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_TTJets_SemiLept/res/output_407_1_U00.root ******
+Number of branches in the cache ...: 33
+Cache Efficiency ..................: 0.000505
+Cache Efficiency Rel...............: 0.999956
+Learn entries......................: 100
+Reading............................: 1089813 bytes in 87 transactions
+Readahead..........................: 256000 bytes with overhead = 8669856 bytes
+Average transaction................: 12.526586 Kbytes
+Number 2013-03-19 08:58:53,889;DEBUG;TTJets_SemiLept_PoolWorker-6;Caching entry list took 228.63 seconds, 106570.98 events/second
+2013-03-19 08:58:53,889;DEBUG;TTJets_SemiLept_PoolWorker-6;Cut result: 41634 events
+2013-03-19 08:58:53,889;DEBUG;TTJets_SemiLept_PoolWorker-6;Switching variables on: ['double_bTagWeightProducerNJMT_bTagWeight_STPOLSEL2*']
+2013-03-19 08:58:53,890;DEBUG;TTJets_SemiLept_PoolWorker-6;Calling TChain.Draw(double_bTagWeightProducerNJMT_bTagWeight_STPOLSEL2.obj >> plot_cut1180106482_doublebTagWeightProducerNJMTbTagWeightSTPOLSEL2obj_TTJets_SemiLept_TTJets_SemiLept(20, 0, 5), 1.0)
+2013-03-19 09:00:43,727;DEBUG;TTJets_SemiLept_PoolWorker-6;Histogram drawn with 41634 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 09:00:43,751;INFO;root;Drawing stats: 41634/24364860.0 in 345.703863144 sec, all evts: 70478.9925644/sec, drawn evts: 120.432556412
+2013-03-19 09:00:43,751;DEBUG;plotfw.methods_PoolWorker-6_TTJets_SemiLept;Done multiprocessing draw one sample
+2013-03-19 09:00:43,763;DEBUG;plotfw.methods_PoolWorker-6_TTJets_SemiLept;Done multiprocessing draw on one group
+2013-03-19 09:00:43,861;DEBUG;TTJets_SemiLept_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_TTJets_SemiLept/res/*.root`
+2013-03-19 09:00:43,878;DEBUG;TTJets_SemiLept_MainProcess;Done opening file and creating caches.
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 09:00:44,041;INFO;plotfw.drawfw;Plotting took 347.3 seconds
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 09:00:44,205;INFO;plotfw.drawfw;Saving as: plots_out_PH1D/doublebTagWeightProducerNJMTbTagWeightSTPOLSEL2obj_1180106482.pdf
+Info in <TCanvas::Print>: pdf file plots_out_PH1D/doublebTagWeightProducerNJMTbTagWeightSTPOLSEL2obj_1180106482.pdf has been created

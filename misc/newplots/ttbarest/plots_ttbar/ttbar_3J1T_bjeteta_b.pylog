@@ -1,0 +1,60 @@
+(iplotfw.plotlog
+PlotLog
+p1
+(dp2
+S'_v'
+p3
+I01
+sS'cutstring'
+p4
+S'((((((int_topCount__STPOLSEL2.obj==1) && ((((int_muonCount__STPOLSEL2.obj==1) && (floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.obj[0]<0.12)) && (int_looseVetoMuCount__STPOLSEL2.obj==0)) && (int_looseVetoEleCount__STPOLSEL2.obj==0))) && ((floats_goodJetsNTupleProducer_Pt_STPOLSEL2.obj[0]>40) && (floats_goodJetsNTupleProducer_Pt_STPOLSEL2.obj[1]>40))) && (floats_lowestBTagJetNTupleProducer_rms_STPOLSEL2.obj[0] < 0.025)) && (abs(floats_goodJetsNTupleProducer_Eta_STPOLSEL2.obj[0])<4.5 && abs(floats_goodJetsNTupleProducer_Eta_STPOLSEL2.obj[1])<4.5)) && (double_muAndMETMT__STPOLSEL2.obj > 50)) && ((int_lightJetCount__STPOLSEL2.obj==2) && (int_bJetCount__STPOLSEL2.obj==1))'
+p5
+sS'_variables'
+p6
+(dp7
+S'int'
+p8
+(dp9
+S'title'
+p10
+S'Integrated events'
+p11
+ssS'filled'
+p12
+(dp13
+g10
+S'Events filled'
+p14
+sssS'cuts'
+p15
+(lp16
+S''
+asS'_processes'
+p17
+(dp18
+sS'_params'
+p19
+(dp20
+S'HT bins'
+p21
+I20
+sS'MC binmax'
+p22
+F5099.0322265625
+sS'HT max'
+p23
+I5
+sS'Kolmogorov test'
+p24
+F0
+sS'Chi2/ndf'
+p25
+Fnan
+sS'HT min'
+p26
+I0
+sS'Variable'
+p27
+S'abs(floats_lowestBTagJetNTupleProducer_Eta_STPOLSEL2.obj[0])'
+p28
+ssb.

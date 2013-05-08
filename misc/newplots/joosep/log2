@@ -1,0 +1,1432 @@
+2013-03-19 15:54:23,917;INFO;__main__;Running plots.py
+2013-03-19 15:54:23,927;DEBUG;root;Opening `/scratch/joosep/step2_Data_Iso_Mar15//overview` for lumi data.
+2013-03-19 15:54:23,927;DEBUG;root;Lumi of `WD_SingleEleA1` = 82.000000
+2013-03-19 15:54:23,927;DEBUG;root;Lumi of `WD_SingleEleB` = 5221.000000
+2013-03-19 15:54:23,927;DEBUG;root;Lumi of `WD_SingleEleC1` = 495.000000
+2013-03-19 15:54:23,927;DEBUG;root;Lumi of `WD_SingleEleC2` = 6112.000000
+2013-03-19 15:54:23,927;DEBUG;root;Lumi of `WD_SingleEleD` = 7225.000000
+2013-03-19 15:54:23,928;DEBUG;root;Lumi of `WD_SingleMuAB` = 5306.000000
+2013-03-19 15:54:23,928;DEBUG;root;Lumi of `WD_SingleMuC` = 6781.000000
+2013-03-19 15:54:23,928;DEBUG;root;Lumi of `WD_SingleMuD` = 7274.000000
+2013-03-19 15:54:23,928;DEBUG;root;Matched in string `WD_SingleMuAB` - name:`SingleMuAB`, lumi:`5306.0`
+2013-03-19 15:54:23,929;DEBUG;SingleMuAB_MainProcess;Opening file: `/scratch/joosep/step2_Data_Iso_Mar15//WD_SingleMuAB/res/*.root`
+2013-03-19 15:54:23,960;DEBUG;SingleMuAB_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:23,960;DEBUG;root;Matched in string `WD_SingleMuC` - name:`SingleMuC`, lumi:`6781.0`
+2013-03-19 15:54:23,960;DEBUG;SingleMuC_MainProcess;Opening file: `/scratch/joosep/step2_Data_Iso_Mar15//WD_SingleMuC/res/*.root`
+2013-03-19 15:54:23,976;DEBUG;SingleMuC_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:23,976;DEBUG;root;Matched in string `WD_SingleMuD` - name:`SingleMuD`, lumi:`7274.0`
+2013-03-19 15:54:23,977;DEBUG;SingleMuD_MainProcess;Opening file: `/scratch/joosep/step2_Data_Iso_Mar15//WD_SingleMuD/res/*.root`
+2013-03-19 15:54:23,995;DEBUG;SingleMuD_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:23,996;DEBUG;root;Matched in string `WD_SingleEleA1` - name:`SingleEleA1`, lumi:`82.0`
+2013-03-19 15:54:23,996;DEBUG;SingleEleA1_MainProcess;Opening file: `/scratch/joosep/step2_Data_Iso_Mar15//WD_SingleEleA1/res/*.root`
+2013-03-19 15:54:23,997;DEBUG;SingleEleA1_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:23,997;DEBUG;root;Matched in string `WD_SingleEleC2` - name:`SingleEleC2`, lumi:`6112.0`
+2013-03-19 15:54:23,997;DEBUG;SingleEleC2_MainProcess;Opening file: `/scratch/joosep/step2_Data_Iso_Mar15//WD_SingleEleC2/res/*.root`
+2013-03-19 15:54:24,010;DEBUG;SingleEleC2_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,010;DEBUG;root;Matched in string `WD_SingleEleD` - name:`SingleEleD`, lumi:`7225.0`
+2013-03-19 15:54:24,010;DEBUG;SingleEleD_MainProcess;Opening file: `/scratch/joosep/step2_Data_Iso_Mar15//WD_SingleEleD/res/*.root`
+2013-03-19 15:54:24,025;DEBUG;SingleEleD_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,025;DEBUG;root;Matched in string `WD_SingleEleB` - name:`SingleEleB`, lumi:`5221.0`
+2013-03-19 15:54:24,025;DEBUG;SingleEleB_MainProcess;Opening file: `/scratch/joosep/step2_Data_Iso_Mar15//WD_SingleEleB/res/*.root`
+2013-03-19 15:54:24,036;DEBUG;SingleEleB_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,037;DEBUG;root;Matched in string `WD_SingleEleC1` - name:`SingleEleC1`, lumi:`495.0`
+2013-03-19 15:54:24,037;DEBUG;SingleEleC1_MainProcess;Opening file: `/scratch/joosep/step2_Data_Iso_Mar15//WD_SingleEleC1/res/*.root`
+2013-03-19 15:54:24,038;DEBUG;SingleEleC1_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,038;DEBUG;TTJets_SemiLept_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_TTJets_SemiLept/res/*.root`
+2013-03-19 15:54:24,063;DEBUG;TTJets_SemiLept_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,063;DEBUG;TTJets_FullLept_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_TTJets_FullLept/res/*.root`
+2013-03-19 15:54:24,074;DEBUG;TTJets_FullLept_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,074;DEBUG;T_t_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_T_t/res/*.root`
+2013-03-19 15:54:24,076;DEBUG;T_t_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,077;DEBUG;Tbar_t_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_Tbar_t/res/*.root`
+2013-03-19 15:54:24,078;DEBUG;Tbar_t_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,078;DEBUG;T_s_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_T_s/res/*.root`
+2013-03-19 15:54:24,078;DEBUG;T_s_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,078;DEBUG;Tbar_s_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_Tbar_s/res/*.root`
+2013-03-19 15:54:24,079;DEBUG;Tbar_s_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,079;DEBUG;T_tW_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_T_tW/res/*.root`
+2013-03-19 15:54:24,079;DEBUG;T_tW_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,079;DEBUG;Tbar_tW_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_Tbar_tW/res/*.root`
+2013-03-19 15:54:24,080;DEBUG;Tbar_tW_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,080;DEBUG;W1Jets_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_W1Jets_exclusive/res/*.root`
+2013-03-19 15:54:24,087;DEBUG;W1Jets_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,088;DEBUG;W2Jets_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_W2Jets_exclusive/res/*.root`
+2013-03-19 15:54:24,428;DEBUG;W2Jets_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,428;DEBUG;W3Jets_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_W3Jets_exclusive/res/*.root`
+2013-03-19 15:54:24,434;DEBUG;W3Jets_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,434;DEBUG;W4Jets_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_W4Jets_exclusive/res/*.root`
+2013-03-19 15:54:24,439;DEBUG;W4Jets_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,440;DEBUG;DYJets_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_DYJets/res/*.root`
+2013-03-19 15:54:24,459;DEBUG;DYJets_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,459;DEBUG;WW_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_WW/res/*.root`
+2013-03-19 15:54:24,461;DEBUG;WW_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,461;DEBUG;WZ_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_WZ/res/*.root`
+2013-03-19 15:54:24,464;DEBUG;WZ_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,464;DEBUG;ZZ_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_ZZ/res/*.root`
+2013-03-19 15:54:24,466;DEBUG;ZZ_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,466;DEBUG;QCDMu_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCDMu/res/*.root`
+2013-03-19 15:54:24,468;DEBUG;QCDMu_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,468;DEBUG;GJets1_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_GJets1/res/*.root`
+2013-03-19 15:54:24,470;DEBUG;GJets1_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,470;DEBUG;GJets2_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_GJets2/res/*.root`
+2013-03-19 15:54:24,471;DEBUG;GJets2_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,471;DEBUG;QCD_Pt_20_30_BCtoE_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_20_30_BCtoE/res/*.root`
+2013-03-19 15:54:24,471;DEBUG;QCD_Pt_20_30_BCtoE_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,471;DEBUG;QCD_Pt_30_80_BCtoE_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_30_80_BCtoE/res/*.root`
+2013-03-19 15:54:24,472;DEBUG;QCD_Pt_30_80_BCtoE_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,472;DEBUG;QCD_Pt_80_170_BCtoE_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_80_170_BCtoE/res/*.root`
+2013-03-19 15:54:24,473;DEBUG;QCD_Pt_80_170_BCtoE_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,473;DEBUG;QCD_Pt_170_250_BCtoE_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_170_250_BCtoE/res/*.root`
+2013-03-19 15:54:24,473;DEBUG;QCD_Pt_170_250_BCtoE_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,474;DEBUG;QCD_Pt_250_350_BCtoE_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_250_350_BCtoE/res/*.root`
+2013-03-19 15:54:24,474;DEBUG;QCD_Pt_250_350_BCtoE_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,475;DEBUG;QCD_Pt_350_BCtoE_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_350_BCtoE/res/*.root`
+2013-03-19 15:54:24,475;DEBUG;QCD_Pt_350_BCtoE_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,475;DEBUG;QCD_Pt_20_30_EMEnriched_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_20_30_EMEnriched/res/*.root`
+2013-03-19 15:54:24,477;DEBUG;QCD_Pt_20_30_EMEnriched_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,477;DEBUG;QCD_Pt_30_80_EMEnriched_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_30_80_EMEnriched/res/*.root`
+2013-03-19 15:54:24,480;DEBUG;QCD_Pt_30_80_EMEnriched_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,480;DEBUG;QCD_Pt_80_170_EMEnriched_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_80_170_EMEnriched/res/*.root`
+2013-03-19 15:54:24,485;DEBUG;QCD_Pt_80_170_EMEnriched_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,485;DEBUG;QCD_Pt_170_250_EMEnriched_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_170_250_EMEnriched/res/*.root`
+2013-03-19 15:54:24,491;DEBUG;QCD_Pt_170_250_EMEnriched_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,492;DEBUG;QCD_Pt_250_350_EMEnriched_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_250_350_EMEnriched/res/*.root`
+2013-03-19 15:54:24,499;DEBUG;QCD_Pt_250_350_EMEnriched_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,499;DEBUG;QCD_Pt_350_EMEnriched_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_350_EMEnriched/res/*.root`
+2013-03-19 15:54:24,508;DEBUG;QCD_Pt_350_EMEnriched_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,509;DEBUG;WJets_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_WJets_inclusive/res/*.root`
+2013-03-19 15:54:24,530;DEBUG;WJets_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,530;DEBUG;W1Jets_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_W1Jets_exclusive/res/*.root`
+2013-03-19 15:54:24,536;DEBUG;W1Jets_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,536;DEBUG;W2Jets_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_W2Jets_exclusive/res/*.root`
+2013-03-19 15:54:24,544;DEBUG;W2Jets_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,544;DEBUG;W3Jets_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_W3Jets_exclusive/res/*.root`
+2013-03-19 15:54:24,549;DEBUG;W3Jets_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,549;DEBUG;W4Jets_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_W4Jets_exclusive/res/*.root`
+2013-03-19 15:54:24,554;DEBUG;W4Jets_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,554;DEBUG;TTJets_SemiLept_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_TTJets_SemiLept/res/*.root`
+2013-03-19 15:54:24,570;DEBUG;TTJets_SemiLept_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,570;DEBUG;TTJets_FullLept_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_TTJets_FullLept/res/*.root`
+2013-03-19 15:54:24,580;DEBUG;TTJets_FullLept_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,580;DEBUG;TTbar_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_TTJets_MassiveBinDECAY/res/*.root`
+2013-03-19 15:54:24,582;DEBUG;TTbar_MainProcess;Done opening file and creating caches.
+2013-03-19 15:54:24,582;INFO;plotfw.drawfw;Switching to multicore mode: n_cores=10
+2013-03-19 15:54:24,582;INFO;plotfw.drawfw;Switching to multicore mode: n_cores=10
+2013-03-19 15:54:24,583;INFO;root;Using 5 cores
+2013-03-19 15:54:24,583;INFO;root;Running on 100.00 percent of events
+2013-03-19 15:54:24,583;INFO;plotfw.drawfw;Switching to multicore mode: n_cores=5
+2013-03-19 15:54:24,583;INFO;plotfw.drawfw;Switching to multicore mode: n_cores=5
+2013-03-19 15:54:24,583;INFO;plotfw.drawfw;Plotting samples diboson: (WW, WZ, ZZ), t-channel: (T_t, Tbar_t), data: (SingleMuAB, SingleMuC, SingleMuD), QCD: (QCDMu, GJets1, GJets2, QCD_Pt_20_30_BCtoE, QCD_Pt_30_80_BCtoE, QCD_Pt_80_170_BCtoE, QCD_Pt_170_250_BCtoE, QCD_Pt_250_350_BCtoE, QCD_Pt_350_BCtoE, QCD_Pt_20_30_EMEnriched, QCD_Pt_30_80_EMEnriched, QCD_Pt_80_170_EMEnriched, QCD_Pt_170_250_EMEnriched, QCD_Pt_250_350_EMEnriched, QCD_Pt_350_EMEnriched), WJets: (W1Jets, W2Jets, W3Jets, W4Jets), tW-channel: (T_tW, Tbar_tW), TTbar: (TTJets_SemiLept, TTJets_FullLept), DYJets: (DYJets), s-channel: (T_s, Tbar_s) with Cut(mu & muIso & looseMuVeto & looseEleVeto & None & None & 2J), plots: [PlotParams: M_{t}(W #rightarrow #mu^{#pm} #nu_{#mu})(double__muAndMETMT__STPOLSEL2.obj) in range (0, 150) with weights None, PlotParams: M_{t}(W #rightarrow #mu^{#pm} #nu_{#mu})(double__muAndMETMT__STPOLSEL2.obj) in range (0, 150) with weights [<plotfw.params.Var instance at 0x2d8b368>]]
+2013-03-19 15:54:24,583;DEBUG;plotfw.drawfw;Cut string: ((((int_muonCount__STPOLSEL2.obj==1) && (floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.obj[0]<0.12)) && (int_looseVetoMuCount__STPOLSEL2.obj==0)) && (int_looseVetoEleCount__STPOLSEL2.obj==0)) && (((int_lightJetCount__STPOLSEL2.obj>=0) && (int_bJetCount__STPOLSEL2.obj>=0)) && ((int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj)==2))
+2013-03-19 15:54:24,850;INFO;plotfw.drawfw;Plotting: plot_cut1529902353_doublemuAndMETMTSTPOLSEL2obj
+2013-03-19 15:54:24,850;DEBUG;root;P `Variable`: double__muAndMETMT__STPOLSEL2.obj
+2013-03-19 15:54:24,850;DEBUG;root;P `HT min`: 0
+2013-03-19 15:54:24,851;DEBUG;root;P `HT max`: 150
+2013-03-19 15:54:24,851;DEBUG;root;P `HT bins`: 20
+2013-03-19 15:54:24,851;DEBUG;root;Generated cutstring: "((((int_muonCount__STPOLSEL2.obj==1) && (floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.obj[0]<0.12)) && (int_looseVetoMuCount__STPOLSEL2.obj==0)) && (int_looseVetoEleCount__STPOLSEL2.obj==0)) && (((int_lightJetCount__STPOLSEL2.obj>=0) && (int_bJetCount__STPOLSEL2.obj>=0)) && ((int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj)==2))"
+Namespace(doBDiscriminators=False, doBWeightControl=False, doEtaLJ=False, doFinalSel=False, doLepIso=False, doMET=True, doNBTags=False, doNJets=False, doPVCount=False, doReweighted=True, doTTbarControl=False, doTopMass=False, doWJetsControl=False, doWeights=False, n_cores=5, ofdir='plots_out_7SXT', percent=100.0, useHDFS=False)
+{'frac_entries': 1.0}
+2013-03-19 15:54:27,621;DEBUG;SingleMuAB_PoolWorker-1;Opening file: `/scratch/joosep/step2_Data_Iso_Mar15//WD_SingleMuAB/res/*.root`
+2013-03-19 15:54:27,643;DEBUG;SingleMuAB_PoolWorker-1;Done opening file and creating caches.
+2013-03-19 15:54:27,644;DEBUG;plotfw.methods_PoolWorker-1_SingleMuAB;Started multiprocessing draw on one sample
+2013-03-19 15:54:27,644;INFO;SingleMuAB_PoolWorker-1;Drawing histogram plot_cut1529902353_doublemuAndMETMTSTPOLSEL2obj_hist_data_data_SingleMuAB
+2013-03-19 15:54:27,644;DEBUG;SingleMuAB_PoolWorker-1;Caching count of entries in TTree
+2013-03-19 15:54:28,099;DEBUG;SingleMuC_PoolWorker-2;Opening file: `/scratch/joosep/step2_Data_Iso_Mar15//WD_SingleMuC/res/*.root`
+2013-03-19 15:54:28,113;DEBUG;SingleMuC_PoolWorker-2;Done opening file and creating caches.
+2013-03-19 15:54:28,114;DEBUG;plotfw.methods_PoolWorker-2_SingleMuC;Started multiprocessing draw on one sample
+2013-03-19 15:54:28,114;INFO;SingleMuC_PoolWorker-2;Drawing histogram plot_cut1529902353_doublemuAndMETMTSTPOLSEL2obj_hist_data_data_SingleMuC
+2013-03-19 15:54:28,114;DEBUG;SingleMuC_PoolWorker-2;Caching count of entries in TTree
+2013-03-19 15:54:28,762;DEBUG;SingleMuD_PoolWorker-3;Opening file: `/scratch/joosep/step2_Data_Iso_Mar15//WD_SingleMuD/res/*.root`
+2013-03-19 15:54:28,774;DEBUG;SingleMuD_PoolWorker-3;Done opening file and creating caches.
+2013-03-19 15:54:28,775;DEBUG;plotfw.methods_PoolWorker-3_SingleMuD;Started multiprocessing draw on one sample
+2013-03-19 15:54:28,775;INFO;SingleMuD_PoolWorker-3;Drawing histogram plot_cut1529902353_doublemuAndMETMTSTPOLSEL2obj_hist_data_data_SingleMuD
+2013-03-19 15:54:28,775;DEBUG;SingleMuD_PoolWorker-3;Caching count of entries in TTree
+2013-03-19 15:54:39,358;DEBUG;SingleMuAB_PoolWorker-1;Done caching count of entries
+2013-03-19 15:54:39,360;DEBUG;SingleMuAB_PoolWorker-1;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*']
+2013-03-19 15:54:39,363;INFO;SingleMuAB_PoolWorker-1;Caching entry list with cut mu & muIso & looseMuVeto & looseEleVeto & None & None & 2J over 43358163 entries
+2013-03-19 15:54:39,540;DEBUG;SingleMuD_PoolWorker-3;Done caching count of entries
+2013-03-19 15:54:39,542;DEBUG;SingleMuD_PoolWorker-3;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*']
+2013-03-19 15:54:39,547;INFO;SingleMuD_PoolWorker-3;Caching entry list with cut mu & muIso & looseMuVeto & looseEleVeto & None & None & 2J over 63419108 entries
+2013-03-19 15:54:39,703;DEBUG;SingleMuC_PoolWorker-2;Done caching count of entries
+2013-03-19 15:54:39,705;DEBUG;SingleMuC_PoolWorker-2;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*']
+2013-03-19 15:54:39,710;INFO;SingleMuC_PoolWorker-2;Caching entry list with cut mu & muIso & looseMuVeto & looseEleVeto & None & None & 2J ov******TreeCache statistics for file: /scratch/joosep/step2_Data_Iso_Mar15//WD_SingleMuAB/res/output_534_1_ahP.root ******
+Number of branches in the cache ...: 21
+Cache Efficiency ..................: 0.000506
+Cache Efficiency Rel...............: 0.999938
+Learn entries......................: 100
+Reading............................: 753331 bytes in 98 transactions
+Readahead..........................: 256000 bytes with overhead = 6391152 bytes
+Average transaction................: 7.687051 Kbytes
+Number of block2013-03-19 16:02:54,224;DEBUG;SingleMuAB_PoolWorker-1;Caching entry list took 1133.80 seconds, 38241.60 events/second
+2013-03-19 16:02:54,225;DEBUG;SingleMuAB_PoolWorker-1;Cut result: 2158043 events
+2013-03-19 16:02:54,226;DEBUG;SingleMuAB_PoolWorker-1;Switching variables on: ['int_lightJetCount__STPOLSEL2*']
+2013-03-19 16:02:54,226;DEBUG;SingleMuAB_PoolWorker-1;Calling TChain.Draw(int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj >> plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_data_data_SingleMuAB(6, 1, 6), 1.0)
+******TreeCache statistics for file: /scratch/joosep/step2_Data_Iso_Mar15//WD_SingleMuD/res/output_539_1_mml.root ******
+Number of branches in the cache ...: 21
+Cache Efficiency ..................: 0.000955
+Cache Efficiency Rel...............: 0.999949
+Learn entries......................: 100
+Reading............................: 1209942 bytes in 96 transactions
+Readahead..........................: 256000 bytes with overhead = 5225864 bytes
+Average transaction................: 12.603563 Kbytes
+Number of bloc2013-03-19 16:03:39,105;DEBUG;SingleMuD_PoolWorker-3;Caching entry list took 1179.59 seconds, 53763.48 events/second
+2013-03-19 16:03:39,105;DEBUG;SingleMuD_PoolWorker-3;Cut result: 2997417 events
+2013-03-19 16:03:39,105;DEBUG;SingleMuD_PoolWorker-3;Switching variables on: ['int_lightJetCount__STPOLSEL2*']
+2013-03-19 16:03:39,106;DEBUG;SingleMuD_PoolWorker-3;Calling TChain.Draw(int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj >> plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_data_data_SingleMuD(6, 1, 6), 1.0)
+2013-03-19 16:04:05,883;DEBUG;SingleMuAB_PoolWorker-1;Histogram drawn with 2158043 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 16:04:06,107;INFO;root;Drawing stats: 2158043/43358163.0 in 1237.82872391 sec, all evts: 35027.5948219/sec, drawn evts: 1743.41001975
+2013-03-19 16:04:06,107;DEBUG;plotfw.methods_PoolWorker-1_SingleMuAB;Done multiprocessing draw one sample
+2013-03-19 16:04:06,242;DEBUG;SingleMuAB_MainProcess;Opening file: `/scratch/joosep/step2_Data_Iso_Mar15//WD_SingleMuAB/res/*.root`
+2013-03-19 16:04:06,262;DEBUG;SingleMuAB_MainProcess;Done opening file and creating caches.
+2013-03-19 16:04:39,228;DEBUG;SingleMuD_PoolWorker-3;Histogram drawn with 2997417 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 16:04:39,511;INFO;root;Drawing stats: 2997417/63419108.0 in 1270.99866986 sec, all evts: 49897.0687411/sec, drawn evts: 2358.31639409
+2013-03-19 16:04:39,511;DEBUG;plotfw.methods_PoolWorker-3_SingleMuD;Done multiprocessing draw one sample
+2013-03-19 16:04:39,651;DEBUG;SingleMuD_MainProcess;Opening file: `/scratch/joosep/step2_Data_Iso_Mar15//WD_SingleMuD/res/*.root`
+2013-03-19 16:04:39,661;DEBUG;SingleMuD_MainProcess;Done opening file and creating caches.
+******TreeCache statistics for file: /scratch/joosep/step2_Data_Iso_Mar15//WD_SingleMuC/res/output_303_1_89W.root ******
+Number of branches in the cache ...: 21
+Cache Efficiency ..................: 0.000587
+Cache Efficiency Rel...............: 0.999950
+Learn entries......................: 100
+Reading............................: 967681 bytes in 127 transactions
+Readahead..........................: 256000 bytes with overhead = 6967901 bytes
+Average transaction................: 7.619535 Kbytes
+Number of block2013-03-19 16:07:06,890;DEBUG;SingleMuC_PoolWorker-2;Caching entry list took 1387.81 seconds, 40599.77 events/second
+2013-03-19 16:07:06,890;DEBUG;SingleMuC_PoolWorker-2;Cut result: 2773697 events
+2013-03-19 16:07:06,891;DEBUG;SingleMuC_PoolWorker-2;Switching variables on: ['int_lightJetCount__STPOLSEL2*']
+2013-03-19 16:07:06,891;DEBUG;SingleMuC_PoolWorker-2;Calling TChain.Draw(int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj >> plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_data_data_SingleMuC(6, 1, 6), 1.0)
+2013-03-19 16:08:29,357;DEBUG;SingleMuC_PoolWorker-2;Histogram drawn with 2773697 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 16:08:29,418;INFO;root;Drawing stats: 2773697/56344934.0 in 1501.03519511 sec, all evts: 37537.3836559/sec, drawn evts: 1847.85607228
+2013-03-19 16:08:29,418;DEBUG;plotfw.methods_PoolWorker-2_SingleMuC;Done multiprocessing draw one sample
+2013-03-19 16:08:29,547;DEBUG;SingleMuC_MainProcess;Opening file: `/scratch/joosep/step2_Data_Iso_Mar15//WD_SingleMuC/res/*.root`
+2013-03-19 16:08:29,559;DEBUG;SingleMuC_MainProcess;Done opening file and creating caches.
+2013-03-19 16:08:29,615;INFO;plotfw.drawfw;Total luminosity: 19361.000000
+2013-03-19 16:08:29,689;DEBUG;WW_PoolWorker-13;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_WW/res/*.root`
+2013-03-19 16:08:29,693;DEBUG;WW_PoolWorker-13;Done opening file and creating caches.
+2013-03-19 16:08:29,694;DEBUG;WZ_PoolWorker-13;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_WZ/res/*.root`
+2013-03-19 16:08:29,696;DEBUG;WZ_PoolWorker-13;Done opening file and creating caches.
+2013-03-19 16:08:29,696;DEBUG;ZZ_PoolWorker-13;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_ZZ/res/*.root`
+2013-03-19 16:08:29,697;DEBUG;ZZ_PoolWorker-13;Done opening file and creating caches.
+2013-03-19 16:08:29,698;DEBUG;plotfw.methods_PoolWorker-13_diboson;Started multiprocessing draw on one group
+2013-03-19 16:08:29,698;DEBUG;plotfw.methods_PoolWorker-13_WW;Started multiprocessing draw on one sample
+2013-03-19 16:08:29,698;INFO;WW_PoolWorker-13;Drawing histogram plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_diboson_WW
+2013-03-19 16:08:29,698;DEBUG;WW_PoolWorker-13;Caching count of entries in TTree
+2013-03-19 16:08:29,699;DEBUG;T_t_PoolWorker-14;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_T_t/res/*.root`
+2013-03-19 16:08:29,706;DEBUG;T_t_PoolWorker-14;Done opening file and creating caches.
+2013-03-19 16:08:29,706;DEBUG;Tbar_t_PoolWorker-14;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_Tbar_t/res/*.root`
+2013-03-19 16:08:29,708;DEBUG;Tbar_t_PoolWorker-14;Done opening file and creating caches.
+2013-03-19 16:08:29,709;DEBUG;plotfw.methods_PoolWorker-14_t-channel;Started multiprocessing draw on one group
+2013-03-19 16:08:29,709;DEBUG;plotfw.methods_PoolWorker-14_T_t;Started multiprocessing draw on one sample
+2013-03-19 16:08:29,709;INFO;T_t_PoolWorker-14;Drawing histogram plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_t-channel_T_t
+2013-03-19 16:08:29,709;DEBUG;T_t_PoolWorker-14;Caching count of entries in TTree
+2013-03-19 16:08:29,712;DEBUG;QCDMu_PoolWorker-18;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCDMu/res/*.root`
+2013-03-19 16:08:29,716;DEBUG;QCDMu_PoolWorker-18;Done opening file and creating caches.
+2013-03-19 16:08:29,717;DEBUG;GJets1_PoolWorker-18;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_GJets1/res/*.root`
+2013-03-19 16:08:29,720;DEBUG;GJets1_PoolWorker-18;Done opening file and creating caches.
+2013-03-19 16:08:29,720;DEBUG;GJets2_PoolWorker-18;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_GJets2/res/*.root`
+2013-03-19 16:08:29,721;DEBUG;GJets2_PoolWorker-18;Done opening file and creating caches.
+2013-03-19 16:08:29,721;DEBUG;QCD_Pt_20_30_BCtoE_PoolWorker-18;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_20_30_BCtoE/res/*.root`
+2013-03-19 16:08:29,722;DEBUG;QCD_Pt_20_30_BCtoE_PoolWorker-18;Done opening file and creating caches.
+2013-03-19 16:08:29,722;DEBUG;QCD_Pt_30_80_BCtoE_PoolWorker-18;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_30_80_BCtoE/res/*.root`
+2013-03-19 16:08:29,723;DEBUG;QCD_Pt_30_80_BCtoE_PoolWorker-18;Done opening file and creating caches.
+2013-03-19 16:08:29,723;DEBUG;QCD_Pt_80_170_BCtoE_PoolWorker-18;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_80_170_BCtoE/res/*.root`
+2013-03-19 16:08:29,724;DEBUG;QCD_Pt_80_170_BCtoE_PoolWorker-18;Done opening file and creating caches.
+2013-03-19 16:08:29,724;DEBUG;QCD_Pt_170_250_BCtoE_PoolWorker-18;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_170_250_BCtoE/res/*.root`
+2013-03-19 16:08:29,725;DEBUG;QCD_Pt_170_250_BCtoE_PoolWorker-18;Done opening file and creating caches.
+2013-03-19 16:08:29,725;DEBUG;QCD_Pt_250_350_BCtoE_PoolWorker-18;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_250_350_BCtoE/res/*.root`
+2013-03-19 16:08:29,726;DEBUG;QCD_Pt_250_350_BCtoE_PoolWorker-18;Done opening file and creating caches.
+2013-03-19 16:08:29,726;DEBUG;QCD_Pt_350_BCtoE_PoolWorker-18;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_350_BCtoE/res/*.root`
+2013-03-19 16:08:29,727;DEBUG;QCD_Pt_350_BCtoE_PoolWorker-18;Done opening file and creating caches.
+2013-03-19 16:08:29,727;DEBUG;QCD_Pt_20_30_EMEnriched_PoolWorker-18;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_20_30_EMEnriched/res/*.root`
+2013-03-19 16:08:29,729;DEBUG;QCD_Pt_20_30_EMEnriched_PoolWorker-18;Done opening file and creating caches.
+2013-03-19 16:08:29,729;DEBUG;QCD_Pt_30_80_EMEnriched_PoolWorker-18;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_30_80_EMEnriched/res/*.root`
+2013-03-19 16:08:29,834;DEBUG;QCD_Pt_30_80_EMEnriched_PoolWorker-18;Done opening file and creating caches.
+2013-03-19 16:08:29,835;DEBUG;QCD_Pt_80_170_EMEnriched_PoolWorker-18;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_80_170_EMEnriched/res/*.root`
+2013-03-19 16:08:29,866;DEBUG;QCD_Pt_80_170_EMEnriched_PoolWorker-18;Done opening file and creating caches.
+2013-03-19 16:08:29,867;DEBUG;QCD_Pt_170_250_EMEnriched_PoolWorker-18;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_170_250_EMEnriched/res/*.root`
+2013-03-19 16:08:30,001;DEBUG;QCD_Pt_170_250_EMEnriched_PoolWorker-18;Done opening file and creating caches.
+2013-03-19 16:08:30,003;DEBUG;QCD_Pt_250_350_EMEnriched_PoolWorker-18;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_250_350_EMEnriched/res/*.root`
+2013-03-19 16:08:30,502;DEBUG;QCD_Pt_250_350_EMEnriched_PoolWorker-18;Done opening file and creating caches.
+2013-03-19 16:08:30,504;DEBUG;QCD_Pt_350_EMEnriched_PoolWorker-18;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_350_EMEnriched/res/*.root`
+2013-03-19 16:08:30,516;DEBUG;QCD_Pt_350_EMEnriched_PoolWorker-18;Done opening file and creating caches.
+2013-03-19 16:08:30,519;DEBUG;plotfw.methods_PoolWorker-18_QCD;Started multiprocessing draw on one group
+2013-03-19 16:08:30,519;DEBUG;plotfw.methods_PoolWorker-18_QCDMu;Started multiprocessing draw on one sample
+2013-03-19 16:08:30,519;INFO;QCDMu_PoolWorker-18;Drawing histogram plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_QCD_QCDMu
+2013-03-19 16:08:30,519;DEBUG;QCDMu_PoolWorker-18;Caching count of entries in TTree
+2013-03-19 16:08:30,522;DEBUG;W1Jets_PoolWorker-11;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_W1Jets_exclusive/res/*.root`
+2013-03-19 16:08:30,533;DEBUG;W1Jets_PoolWorker-11;Done opening file and creating caches.
+2013-03-19 16:08:30,535;DEBUG;W2Jets_PoolWorker-11;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_W2Jets_exclusive/res/*.root`
+2013-03-19 16:08:30,547;DEBUG;W2Jets_PoolWorker-11;Done opening file and creating caches.
+2013-03-19 16:08:30,548;DEBUG;W3Jets_PoolWorker-11;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_W3Jets_exclusive/res/*.root`
+2013-03-19 16:08:30,764;DEBUG;W3Jets_PoolWorker-11;Done opening file and creating caches.
+2013-03-19 16:08:30,765;DEBUG;W4Jets_PoolWorker-11;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_W4Jets_exclusive/res/*.root`
+2013-03-19 16:08:30,771;DEBUG;W4Jets_PoolWorker-11;Done opening file and creating caches.
+2013-03-19 16:08:30,772;DEBUG;plotfw.methods_PoolWorker-11_WJets;Started multiprocessing draw on one group
+2013-03-19 16:08:30,772;DEBUG;plotfw.methods_PoolWorker-11_W1Jets;Started multiprocessing draw on one sample
+2013-03-19 16:08:30,772;INFO;W1Jets_PoolWorker-11;Drawing histogram plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_WJets_W1Jets
+2013-03-19 16:08:30,772;DEBUG;W1Jets_PoolWorker-11;Caching count of entries in TTree
+2013-03-19 16:08:30,773;DEBUG;T_tW_PoolWorker-19;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_T_tW/res/*.root`
+2013-03-19 16:08:30,775;DEBUG;T_tW_PoolWorker-19;Done opening file and creating caches.
+2013-03-19 16:08:30,776;DEBUG;Tbar_tW_PoolWorker-19;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_Tbar_tW/res/*.root`
+2013-03-19 16:08:30,776;DEBUG;Tbar_tW_PoolWorker-19;Done opening file and creating caches.
+2013-03-19 16:08:30,776;DEBUG;plotfw.methods_PoolWorker-19_tW-channel;Started multiprocessing draw on one group
+2013-03-19 16:08:30,777;DEBUG;plotfw.methods_PoolWorker-19_T_tW;Started multiprocessing draw on one sample
+2013-03-19 16:08:30,777;INFO;T_tW_PoolWorker-19;Drawing histogram plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_tW-channel_T_tW
+2013-03-19 16:08:30,777;DEBUG;T_tW_PoolWorker-19;Caching count of entries in TTree
+2013-03-19 16:08:30,781;DEBUG;TTJets_SemiLept_PoolWorker-15;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_TTJets_SemiLept/res/*.root`
+2013-03-19 16:08:30,804;DEBUG;TTJets_SemiLept_PoolWorker-15;Done opening file and creating caches.
+2013-03-19 16:08:30,806;DEBUG;TTJets_FullLept_PoolWorker-15;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_TTJets_FullLept/res/*.root`
+2013-03-19 16:08:30,817;DEBUG;TTJets_FullLept_PoolWorker-15;Done opening file and creating caches.
+2013-03-19 16:08:30,818;DEBUG;plotfw.methods_PoolWorker-15_TTbar;Started multiprocessing draw on one group
+2013-03-19 16:08:30,818;DEBUG;plotfw.methods_PoolWorker-15_TTJets_SemiLept;Started multiprocessing draw on one sample
+2013-03-19 16:08:30,818;INFO;TTJets_SemiLept_PoolWorker-15;Drawing histogram plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_TTbar_TTJets_SemiLept
+2013-03-19 16:08:30,819;DEBUG;TTJets_SemiLept_PoolWorker-15;Caching count of entries in TTree
+2013-03-19 16:08:30,821;DEBUG;DYJets_PoolWorker-16;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_DYJets/res/*.root`
+2013-03-19 16:08:30,842;DEBUG;DYJets_PoolWorker-16;Done opening file and creating caches.
+2013-03-19 16:08:30,843;DEBUG;plotfw.methods_PoolWorker-16_DYJets;Started multiprocessing draw on one group
+2013-03-19 16:08:30,843;DEBUG;plotfw.methods_PoolWorker-16_DYJets;Started multiprocessing draw on one sample
+2013-03-19 16:08:30,843;INFO;DYJets_PoolWorker-16;Drawing histogram plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_DYJets_DYJets
+2013-03-19 16:08:30,844;DEBUG;DYJets_PoolWorker-16;Caching count of entries in TTree
+2013-03-19 16:08:30,844;DEBUG;T_s_PoolWorker-12;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_T_s/res/*.root`
+2013-03-19 16:08:30,859;DEBUG;T_s_PoolWorker-12;Done opening file and creating caches.
+2013-03-19 16:08:30,859;DEBUG;Tbar_s_PoolWorker-12;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_Tbar_s/res/*.root`
+2013-03-19 16:08:30,860;DEBUG;Tbar_s_PoolWorker-12;Done opening file and creating caches.
+2013-03-19 16:08:30,860;DEBUG;plotfw.methods_PoolWorker-12_s-channel;Started multiprocessing draw on one group
+2013-03-19 16:08:30,860;DEBUG;plotfw.methods_PoolWorker-12_T_s;Started multiprocessing draw on one sample
+2013-03-19 16:08:30,860;INFO;T_s_PoolWorker-12;Drawing histogram plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_s-channel_T_s
+2013-03-19 16:08:30,860;DEBUG;T_s_PoolWorker-12;Caching count of entries in TTree
+2013-03-19 16:08:38,120;DEBUG;T_s_PoolWorker-12;Done caching count of entries
+2013-03-19 16:08:38,121;DEBUG;T_s_PoolWorker-12;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 16:08:38,125;INFO;T_s_PoolWorker-12;Caching entry list with cut jetsOK & mu & muIso & looseMuVeto & looseEleVeto & MT over 47778 entries
+2013-03-19 16:08:39,134;DEBUG;T_tW_PoolWorker-19;Done caching count of entries
+2013-03-19 16:08:39,136;DEBUG;T_tW_PoolWorker-19;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 16:08:39,140;INFO;T_tW_PoolWorker-19;Caching entry list with cut jetsOK & mu & muIso & looseMuVeto & looseEleVeto & MT over 169406 entries
+2013-03-19 16:08:40,240;DEBUG;W1Jets_PoolWorker-11;Done caching count of entries
+2013-03-19 16:08:40,241;DEBUG;W1Jets_PoolWorker-11;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 16:08:40,246;INFO;W1Jets_PoolWorker-11;Caching entry list with cut jetsOK & mu & muIso & looseMuVeto & looseEleVeto & MT over 9588903 entries
+{'lumi': 19361.0}
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_T_s/res/output_2_1_sDi.root ******
+Number of branches in the cache ...: 21
+Cache Efficiency ..................: 0.000251
+Cache Efficiency Rel...............: 0.952055
+Learn entries......................: 100
+Reading............................: 246482 bytes in 44 transactions
+Readahead..........................: 256000 bytes with overhead = 1501456 bytes
+Average transaction................: 5.601864 Kbytes
+Number o2013-03-19 16:08:42,843;DEBUG;T_s_PoolWorker-12;Caching entry list took 4.72 seconds, 10118.21 events/second
+2013-03-19 16:08:42,843;DEBUG;T_s_PoolWorker-12;Cut result: 3068 events
+2013-03-19 16:08:42,843;DEBUG;T_s_PoolWorker-12;Switching variables on: ['int_lightJetCount__STPOLSEL2*']
+2013-03-19 16:08:42,844;DEBUG;T_s_PoolWorker-12;Calling TChain.Draw(int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj >> plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_s-channel_T_s(6, 1, 6), 1.0)
+2013-03-19 16:08:42,966;DEBUG;T_s_PoolWorker-12;Histogram drawn with 3068 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 16:08:42,978;INFO;root;Drawing stats: 3068/47778.0 in 12.1175208092 sec, all evts: 3942.88573978/sec, drawn evts: 253.18710389
+2013-03-19 16:08:42,978;DEBUG;T_s_PoolWorker-12;Caching total PAT processed event count
+f blocks in current cache..: 37, total size: 99437807
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_T_s/res/output_2_1_sDi.root ******
+Number of branches in the cache ...: 1
+Cache Efficiency ..................: 0.712430
+Cache Efficiency Rel...............: 0.791753
+Learn entries......................: 100
+Reading............................: 101223 bytes in 62 transactions
+Readahead..........................: 256000 bytes with overhead = 11374839 bytes
+Average transaction......2013-03-19 16:08:49,548;DEBUG;T_s_PoolWorker-12;Event count histo drawn, getting array sum
+2013-03-19 16:08:50,621;INFO;T_s_PoolWorker-12;Total events = 142565
+2013-03-19 16:08:50,766;DEBUG;plotfw.methods_PoolWorker-12_T_s;Done multiprocessing draw one sample
+2013-03-19 16:08:50,767;DEBUG;plotfw.methods_PoolWorker-12_Tbar_s;Started multiprocessing draw on one sample
+2013-03-19 16:08:50,767;INFO;Tbar_s_PoolWorker-12;Drawing histogram plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_s-channel_Tbar_s
+2013-03-19 16:08:50,767;DEBUG;Tbar_s_PoolWorker-12;Caching count of entries in TTree
+2013-03-19 16:08:50,892;DEBUG;Tbar_s_PoolWorker-12;Done caching count of entries
+2013-03-19 16:08:50,892;DEBUG;Tbar_s_PoolWorker-12;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 16:08:50,896;INFO;Tbar_s_PoolWorker-12;Caching entry list with cut jetsOK & mu & muIso & looseMuVeto & looseEleVeto & MT over 7086 entries
+..........: 1.632629 Kbytes
+Number of blocks in current cache..: 230, total size: 33580
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_Tbar_s/res/output_1_1_Bzt.root ******
+Number of branches in the cache ...: 21
+Cache Efficiency ..................: 0.000229
+Cache Efficiency Rel...............: 0.695652
+Learn entries......................: 100
+Reading............................: 84364 bytes in 20 transactions
+Readahead..........................: 256000 bytes with overhead = 2312013-03-19 16:08:52,534;DEBUG;Tbar_s_PoolWorker-12;Caching entry list took 1.64 seconds, 4314.82 events/second
+2013-03-19 16:08:52,535;DEBUG;Tbar_s_PoolWorker-12;Cut result: 431 events
+2013-03-19 16:08:52,535;DEBUG;Tbar_s_PoolWorker-12;Switching variables on: ['int_lightJetCount__STPOLSEL2*']
+2013-03-19 16:08:52,536;DEBUG;Tbar_s_PoolWorker-12;Calling TChain.Draw(int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj >> plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_s-channel_Tbar_s(6, 1, 6), 1.0)
+2013-03-19 16:08:52,541;DEBUG;Tbar_s_PoolWorker-12;Histogram drawn with 431 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 16:08:52,550;INFO;root;Drawing stats: 431/7086.0 in 1.78353190422 sec, all evts: 3973.01555595/sec, drawn evts: 241.655335113
+2013-03-19 16:08:52,550;DEBUG;Tbar_s_PoolWorker-12;Caching total PAT processed event count
+2013-03-19 16:08:53,142;DEBUG;QCDMu_PoolWorker-18;Done caching count of entries
+2013-03-19 16:08:53,145;DEBUG;QCDMu_PoolWorker-18;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 16:08:53,149;INFO;QCDMu_PoolWorker-18;Caching entry list with cut jetsOK & mu & muIso & looseMuVeto & looseEleVeto & MT over 2369259 entries
+2013-03-19 16:08:55,462;DEBUG;WW_PoolWorker-13;Done caching count of entries
+2013-03-19 16:08:55,465;DEBUG;WW_PoolWorker-13;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 16:08:55,469;INFO;WW_PoolWorker-13;Caching entry list with cut jetsOK & mu & muIso & looseMuVeto & looseEleVeto & MT over 3245312 entries
+849 bytes
+Average transaction................: 4.218200 Kbytes
+Number of blocks in current cache..: 23, total size: 76322726
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_Tbar_s/res/output_1_1_Bzt.root ******
+Number of branches in the cache ...: 1
+Cache Efficiency ..................: 0.000000
+Cache Efficiency Rel...............: 0.000000
+Learn entries......................: 100
+Reading............................: 43193 bytes in 78 transactions
+Readahead........................2013-03-19 16:08:55,760;DEBUG;Tbar_s_PoolWorker-12;Event count histo drawn, getting array sum
+2013-03-19 16:08:55,760;INFO;Tbar_s_PoolWorker-12;Total events = 21507
+2013-03-19 16:08:55,760;DEBUG;plotfw.methods_PoolWorker-12_Tbar_s;Done multiprocessing draw one sample
+2013-03-19 16:08:55,762;DEBUG;plotfw.methods_PoolWorker-12_s-channel;Done multiprocessing draw on one group
+2013-03-19 16:08:55,764;DEBUG;T_s_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_T_s/res/*.root`
+2013-03-19 16:08:55,766;DEBUG;T_s_MainProcess;Done opening file and creating caches.
+2013-03-19 16:08:55,766;DEBUG;Tbar_s_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_Tbar_s/res/*.root`
+2013-03-19 16:08:55,767;DEBUG;Tbar_s_MainProcess;Done opening file and creating caches.
+{'lumi': 19361.0}
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_T_tW/res/output_6_1_CEK.root ******
+Number of branches in the cache ...: 21
+Cache Efficiency ..................: 0.000245
+Cache Efficiency Rel...............: 0.986692
+Learn entries......................: 100
+Reading............................: 335812 bytes in 47 transactions
+Readahead..........................: 256000 bytes with overhead = 2549919 bytes
+Average transaction................: 7.144936 Kbytes
+Number 2013-03-19 16:08:56,151;DEBUG;T_tW_PoolWorker-19;Caching entry list took 17.01 seconds, 9956.56 events/second
+2013-03-19 16:08:56,151;DEBUG;T_tW_PoolWorker-19;Cut result: 20556 events
+2013-03-19 16:08:56,151;DEBUG;T_tW_PoolWorker-19;Switching variables on: ['int_lightJetCount__STPOLSEL2*']
+2013-03-19 16:08:56,152;DEBUG;T_tW_PoolWorker-19;Calling TChain.Draw(int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj >> plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_tW-channel_T_tW(6, 1, 6), 1.0)
+2013-03-19 16:08:58,054;DEBUG;T_tW_PoolWorker-19;Histogram drawn with 20556 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 16:08:58,066;INFO;root;Drawing stats: 20556/169406.0 in 27.2897298336 sec, all evts: 6207.68329452/sec, drawn evts: 753.250403186
+2013-03-19 16:08:58,067;DEBUG;T_tW_PoolWorker-19;Caching total PAT processed event count
+2013-03-19 16:09:06,746;DEBUG;T_t_PoolWorker-14;Done caching count of entries
+2013-03-19 16:09:06,748;DEBUG;T_t_PoolWorker-14;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 16:09:06,758;INFO;T_t_PoolWorker-14;Caching entry list with cut jetsOK & mu & muIso & looseMuVeto & looseEleVeto & MT over 3753221 entries
+of blocks in current cache..: 18, total size: 42748707
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_T_tW/res/output_6_1_CEK.root ******
+Number of branches in the cache ...: 1
+Cache Efficiency ..................: 0.970988
+Cache Efficiency Rel...............: 0.913823
+Learn entries......................: 100
+Reading............................: 81908 bytes in 66 transactions
+Readahead..........................: 256000 bytes with overhead = 10581221 bytes
+Average transaction.....2013-03-19 16:09:17,333;DEBUG;T_tW_PoolWorker-19;Event count histo drawn, getting array sum
+2013-03-19 16:09:17,360;INFO;T_tW_PoolWorker-19;Total events = 342285
+2013-03-19 16:09:17,361;DEBUG;plotfw.methods_PoolWorker-19_T_tW;Done multiprocessing draw one sample
+2013-03-19 16:09:17,361;DEBUG;plotfw.methods_PoolWorker-19_Tbar_tW;Started multiprocessing draw on one sample
+2013-03-19 16:09:17,361;INFO;Tbar_tW_PoolWorker-19;Drawing histogram plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_tW-channel_Tbar_tW
+2013-03-19 16:09:17,361;DEBUG;Tbar_tW_PoolWorker-19;Caching count of entries in TTree
+2013-03-19 16:09:19,259;DEBUG;Tbar_tW_PoolWorker-19;Done caching count of entries
+2013-03-19 16:09:19,259;DEBUG;Tbar_tW_PoolWorker-19;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 16:09:19,262;INFO;Tbar_tW_PoolWorker-19;Caching entry list with cut jetsOK & mu & muIso & looseMuVeto & looseEleVeto & MT over 187350 entries
+2013-03-19 16:09:35,938;DEBUG;TTJets_SemiLept_PoolWorker-15;Done caching count of entries
+2013-03-19 16:09:35,940;DEBUG;TTJets_SemiLept_PoolWorker-15;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 16:09:35,945;INFO;TTJets_SemiLept_PoolWorker-15;Caching entry list with cut jetsOK & mu & muIso & looseMuVeto & looseEleVeto & MT over 24364860 entries
+...........: 1.241030 Kbytes
+Number of blocks in current cache..: 174, total size: 25404
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_Tbar_tW/res/output_8_1_pHu.root ******
+Number of branches in the cache ...: 21
+Cache Efficiency ..................: 0.000253
+Cache Efficiency Rel...............: 0.988095
+Learn entries......................: 100
+Reading............................: 169886 bytes in 27 transactions
+Readahead..........................: 256000 bytes with overhead = 2013-03-19 16:09:36,236;DEBUG;Tbar_tW_PoolWorker-19;Caching entry list took 16.98 seconds, 11035.19 events/second
+2013-03-19 16:09:36,237;DEBUG;Tbar_tW_PoolWorker-19;Cut result: 22604 events
+2013-03-19 16:09:36,237;DEBUG;Tbar_tW_PoolWorker-19;Switching variables on: ['int_lightJetCount__STPOLSEL2*']
+2013-03-19 16:09:36,238;DEBUG;Tbar_tW_PoolWorker-19;Calling TChain.Draw(int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj >> plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_tW-channel_Tbar_tW(6, 1, 6), 1.0)
+2013-03-19 16:09:37,309;DEBUG;Tbar_tW_PoolWorker-19;Histogram drawn with 22604 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 16:09:37,321;INFO;root;Drawing stats: 22604/187350.0 in 19.9599599838 sec, all evts: 9386.2913629/sec, drawn evts: 1132.46720025
+2013-03-19 16:09:37,321;DEBUG;Tbar_tW_PoolWorker-19;Caching total PAT processed event count
+{'lumi': 19361.0}
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_W1Jets_exclusive/res/output_91_1_HKq.root ******
+Number of branches in the cache ...: 21
+Cache Efficiency ..................: 0.000276
+Cache Efficiency Rel...............: 0.999766
+Learn entries......................: 100
+Reading............................: 279997 bytes in 48 transactions
+Readahead..........................: 256000 bytes with overhead = 1971199 bytes
+Average transaction................: 5.833271 K2013-03-19 16:10:08,090;DEBUG;W1Jets_PoolWorker-11;Caching entry list took 87.85 seconds, 109152.65 events/second
+2013-03-19 16:10:08,090;DEBUG;W1Jets_PoolWorker-11;Cut result: 500418 events
+2013-03-19 16:10:08,090;DEBUG;W1Jets_PoolWorker-11;Switching variables on: ['int_lightJetCount__STPOLSEL2*']
+2013-03-19 16:10:08,091;DEBUG;W1Jets_PoolWorker-11;Calling TChain.Draw(int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj >> plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_WJets_W1Jets(6, 1, 6), 1.0)
+842775 bytes
+Average transaction................: 6.292074 Kbytes
+Number of blocks in current cache..: 15, total size: 18592795
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_Tbar_tW/res/output_8_1_pHu.root ******
+Number of branches in the cache ...: 1
+Cache Efficiency ..................: 0.942429
+Cache Efficiency Rel...............: 0.922068
+Learn entries......................: 100
+Reading............................: 47724 bytes in 35 transactions
+Readahead....................2013-03-19 16:10:13,747;DEBUG;Tbar_tW_PoolWorker-19;Event count histo drawn, getting array sum
+2013-03-19 16:10:13,748;INFO;Tbar_tW_PoolWorker-19;Total events = 378633
+2013-03-19 16:10:13,748;DEBUG;plotfw.methods_PoolWorker-19_Tbar_tW;Done multiprocessing draw one sample
+2013-03-19 16:10:13,750;DEBUG;plotfw.methods_PoolWorker-19_tW-channel;Done multiprocessing draw on one group
+2013-03-19 16:10:13,753;DEBUG;T_tW_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_T_tW/res/*.root`
+2013-03-19 16:10:13,754;DEBUG;T_tW_MainProcess;Done opening file and creating caches.
+2013-03-19 16:10:13,755;DEBUG;Tbar_tW_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_Tbar_tW/res/*.root`
+2013-03-19 16:10:13,755;DEBUG;Tbar_tW_MainProcess;Done opening file and creating caches.
+2013-03-19 16:10:37,565;DEBUG;W1Jets_PoolWorker-11;Histogram drawn with 500418 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 16:10:37,578;INFO;root;Drawing stats: 500418/9588903.0 in 126.80518508 sec, all evts: 75619.1712033/sec, drawn evts: 3946.35282213
+2013-03-19 16:10:37,578;DEBUG;W1Jets_PoolWorker-11;Caching total PAT processed event count
+2013-03-19 16:10:53,677;DEBUG;DYJets_PoolWorker-16;Done caching count of entries
+2013-03-19 16:10:53,677;DEBUG;DYJets_PoolWorker-16;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 16:10:53,682;INFO;DYJets_PoolWorker-16;Caching entry list with cut jetsOK & mu & muIso & looseMuVeto & looseEleVeto & MT over 15935701 entries
+{'lumi': 19361.0}
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_QCDMu/res/output_66_1_L4g.root ******
+Number of branches in the cache ...: 21
+Cache Efficiency ..................: 0.000228
+Cache Efficiency Rel...............: 0.999859
+Learn entries......................: 100
+Reading............................: 139227 bytes in 37 transactions
+Readahead..........................: 256000 bytes with overhead = 2122253 bytes
+Average transaction................: 3.762892 Kbytes
+Numbe2013-03-19 16:11:40,910;DEBUG;QCDMu_PoolWorker-18;Caching entry list took 167.77 seconds, 14122.47 events/second
+2013-03-19 16:11:40,911;DEBUG;QCDMu_PoolWorker-18;Cut result: 289 events
+2013-03-19 16:11:40,911;DEBUG;QCDMu_PoolWorker-18;Switching variables on: ['int_lightJetCount__STPOLSEL2*']
+2013-03-19 16:11:40,912;DEBUG;QCDMu_PoolWorker-18;Calling TChain.Draw(int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj >> plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_QCD_QCDMu(6, 1, 6), 1.0)
+2013-03-19 16:11:47,917;DEBUG;QCDMu_PoolWorker-18;Histogram drawn with 289 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 16:11:47,927;INFO;root;Drawing stats: 289/2369259.0 in 197.408390045 sec, all evts: 12001.8151177/sec, drawn evts: 1.4639701987
+2013-03-19 16:11:47,927;DEBUG;QCDMu_PoolWorker-18;Caching total PAT processed event count
+{'lumi': 19361.0}
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_WW/res/output_18_1_32v.root ******
+Number of branches in the cache ...: 21
+Cache Efficiency ..................: 0.000271
+Cache Efficiency Rel...............: 0.999308
+Learn entries......................: 100
+Reading............................: 307781 bytes in 50 transactions
+Readahead..........................: 256000 bytes with overhead = 1794293 bytes
+Average transaction................: 6.155620 Kbytes
+Number o2013-03-19 16:13:05,792;DEBUG;WW_PoolWorker-13;Caching entry list took 250.33 seconds, 12964.28 events/second
+2013-03-19 16:13:05,792;DEBUG;WW_PoolWorker-13;Cut result: 344441 events
+2013-03-19 16:13:05,792;DEBUG;WW_PoolWorker-13;Switching variables on: ['int_lightJetCount__STPOLSEL2*']
+2013-03-19 16:13:05,793;DEBUG;WW_PoolWorker-13;Calling TChain.Draw(int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj >> plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_diboson_WW(6, 1, 6), 1.0)
+2013-03-19 16:13:29,263;DEBUG;WW_PoolWorker-13;Histogram drawn with 344441 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 16:13:29,274;INFO;root;Drawing stats: 344441/3245312.0 in 299.575409174 sec, all evts: 10833.0386962/sec, drawn evts: 1149.76393072
+2013-03-19 16:13:29,274;DEBUG;WW_PoolWorker-13;Caching total PAT processed event count
+{'lumi': 19361.0}
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_T_t/res/output_126_1_nYM.root ******
+Number of branches in the cache ...: 21
+Cache Efficiency ..................: 0.000235
+Cache Efficiency Rel...............: 0.999392
+Learn entries......................: 100
+Reading............................: 199915 bytes in 40 transactions
+Readahead..........................: 256000 bytes with overhead = 1898082 bytes
+Average transaction................: 4.997875 Kbytes
+Number2013-03-19 16:14:22,202;DEBUG;T_t_PoolWorker-14;Caching entry list took 315.45 seconds, 11897.82 events/second
+2013-03-19 16:14:22,202;DEBUG;T_t_PoolWorker-14;Cut result: 104326 events
+2013-03-19 16:14:22,203;DEBUG;T_t_PoolWorker-14;Switching variables on: ['int_lightJetCount__STPOLSEL2*']
+2013-03-19 16:14:22,203;DEBUG;T_t_PoolWorker-14;Calling TChain.Draw(int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj >> plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_t-channel_T_t(6, 1, 6), 1.0)
+2013-03-19 16:14:37,914;DEBUG;T_t_PoolWorker-14;Histogram drawn with 104326 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 16:14:38,757;INFO;root;Drawing stats: 104326/3753221.0 in 369.047819853 sec, all evts: 10170.0126599/sec, drawn evts: 282.689652635
+2013-03-19 16:14:38,757;DEBUG;T_t_PoolWorker-14;Caching total PAT processed event count
+r of blocks in current cache..: 30, total size: 37489488
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_QCDMu/res/output_66_1_L4g.root ******
+Number of branches in the cache ...: 1
+Cache Efficiency ..................: 0.994663
+Cache Efficiency Rel...............: 0.994766
+Learn entries......................: 100
+Reading............................: 91468 bytes in 59 transactions
+Readahead..........................: 256000 bytes with overhead = 10540598 bytes
+Average transaction.2013-03-19 16:15:54,702;DEBUG;QCDMu_PoolWorker-18;Event count histo drawn, getting array sum
+2013-03-19 16:15:54,844;INFO;QCDMu_PoolWorker-18;Total events = 7242359
+2013-03-19 16:15:54,845;DEBUG;plotfw.methods_PoolWorker-18_QCDMu;Done multiprocessing draw one sample
+2013-03-19 16:15:54,845;DEBUG;plotfw.methods_PoolWorker-18_GJets1;Started multiprocessing draw on one sample
+2013-03-19 16:15:54,845;INFO;GJets1_PoolWorker-18;Drawing histogram plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_QCD_GJets1
+2013-03-19 16:15:54,845;DEBUG;GJets1_PoolWorker-18;Caching count of entries in TTree
+2013-03-19 16:16:20,801;DEBUG;GJets1_PoolWorker-18;Done caching count of entries
+2013-03-19 16:16:20,802;DEBUG;GJets1_PoolWorker-18;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 16:16:20,808;INFO;GJets1_PoolWorker-18;Caching entry list with cut jetsOK & mu & muIso & looseMuVeto & looseEleVeto & MT over 2830696 entries
+...............: 1.550305 Kbytes
+Number of blocks in current cache..: 203, total size: 29638
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_GJets1/res/output_17_1_5Q2.root ******
+Number of branches in the cache ...: 21
+Cache Efficiency ..................: 0.000092
+Cache Efficiency Rel...............: 0.999721
+Learn entries......................: 100
+Reading............................: 141536 bytes in 42 transactions
+Readahead..........................: 256000 bytes with overhea2013-03-19 16:20:01,082;DEBUG;GJets1_PoolWorker-18;Caching entry list took 220.28 seconds, 12850.45 events/second
+2013-03-19 16:20:01,082;DEBUG;GJets1_PoolWorker-18;Cut result: 10 events
+2013-03-19 16:20:01,082;DEBUG;GJets1_PoolWorker-18;Switching variables on: ['int_lightJetCount__STPOLSEL2*']
+2013-03-19 16:20:01,083;DEBUG;GJets1_PoolWorker-18;Calling TChain.Draw(int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj >> plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_QCD_GJets1(6, 1, 6), 1.0)
+2013-03-19 16:20:03,271;DEBUG;GJets1_PoolWorker-18;Histogram drawn with 10 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 16:20:03,282;INFO;root;Drawing stats: 10/2830696.0 in 248.437390089 sec, all evts: 11394.0015188/sec, drawn evts: 0.0402515901347
+2013-03-19 16:20:03,283;DEBUG;GJets1_PoolWorker-18;Caching total PAT processed event count
+f blocks in current cache..: 27, total size: 94313515
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_WW/res/output_18_1_32v.root ******
+Number of branches in the cache ...: 1
+Cache Efficiency ..................: 0.997850
+Cache Efficiency Rel...............: 0.994305
+Learn entries......................: 100
+Reading............................: 67390 bytes in 61 transactions
+Readahead..........................: 256000 bytes with overhead = 8908585 bytes
+Average transaction........2013-03-19 16:20:03,862;DEBUG;WW_PoolWorker-13;Event count histo drawn, getting array sum
+2013-03-19 16:20:04,214;INFO;WW_PoolWorker-13;Total events = 9192781
+2013-03-19 16:20:04,214;DEBUG;plotfw.methods_PoolWorker-13_WW;Done multiprocessing draw one sample
+2013-03-19 16:20:04,214;DEBUG;plotfw.methods_PoolWorker-13_WZ;Started multiprocessing draw on one sample
+2013-03-19 16:20:04,215;INFO;WZ_PoolWorker-13;Drawing histogram plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_diboson_WZ
+2013-03-19 16:20:04,215;DEBUG;WZ_PoolWorker-13;Caching count of entries in TTree
+2013-03-19 16:20:23,404;DEBUG;WZ_PoolWorker-13;Done caching count of entries
+2013-03-19 16:20:23,405;DEBUG;WZ_PoolWorker-13;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 16:20:23,408;INFO;WZ_PoolWorker-13;Caching entry list with cut jetsOK & mu & muIso & looseMuVeto & looseEleVeto & MT over 2514753 entries
+ of blocks in current cache..: 45, total size: 93623797
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_T_t/res/output_126_1_nYM.root ******
+Number of branches in the cache ...: 1
+Cache Efficiency ..................: 1.000000
+Cache Efficiency Rel...............: 0.993272
+Learn entries......................: 100
+Reading............................: 45173 bytes in 54 transactions
+Readahead..........................: 256000 bytes with overhead = 6369135 bytes
+Average transaction....2013-03-19 16:20:29,575;DEBUG;T_t_PoolWorker-14;Event count histo drawn, getting array sum
+2013-03-19 16:20:29,965;INFO;T_t_PoolWorker-14;Total events = 3989125
+2013-03-19 16:20:29,965;DEBUG;plotfw.methods_PoolWorker-14_T_t;Done multiprocessing draw one sample
+2013-03-19 16:20:29,965;DEBUG;plotfw.methods_PoolWorker-14_Tbar_t;Started multiprocessing draw on one sample
+2013-03-19 16:20:29,965;INFO;Tbar_t_PoolWorker-14;Drawing histogram plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_t-channel_Tbar_t
+2013-03-19 16:20:29,966;DEBUG;Tbar_t_PoolWorker-14;Caching count of entries in TTree
+2013-03-19 16:20:40,599;DEBUG;Tbar_t_PoolWorker-14;Done caching count of entries
+2013-03-19 16:20:40,599;DEBUG;Tbar_t_PoolWorker-14;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 16:20:40,606;INFO;Tbar_t_PoolWorker-14;Caching entry list with cut jetsOK & mu & muIso & looseMuVeto & looseEleVeto & MT over 1555066 entries
+............: 0.836537 Kbytes
+Number of blocks in current cache..: 90, total size: 13140
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_Tbar_t/res/output_28_1_TSY.root ******
+Number of branches in the cache ...: 21
+Cache Efficiency ..................: 0.000239
+Cache Efficiency Rel...............: 0.998540
+Learn entries......................: 100
+Reading............................: 203120 bytes in 39 transactions
+Readahead..........................: 256000 bytes with overhead = 2013-03-19 16:22:02,358;DEBUG;Tbar_t_PoolWorker-14;Caching entry list took 81.76 seconds, 19020.28 events/second
+2013-03-19 16:22:02,358;DEBUG;Tbar_t_PoolWorker-14;Cut result: 44116 events
+2013-03-19 16:22:02,358;DEBUG;Tbar_t_PoolWorker-14;Switching variables on: ['int_lightJetCount__STPOLSEL2*']
+2013-03-19 16:22:02,359;DEBUG;Tbar_t_PoolWorker-14;Calling TChain.Draw(int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj >> plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_t-channel_Tbar_t(6, 1, 6), 1.0)
+2013-03-19 16:22:09,508;DEBUG;Tbar_t_PoolWorker-14;Histogram drawn with 44116 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 16:22:10,431;INFO;root;Drawing stats: 44116/1555066.0 in 100.465425968 sec, all evts: 15478.61849/sec, drawn evts: 439.116238993
+2013-03-19 16:22:10,431;DEBUG;Tbar_t_PoolWorker-14;Caching total PAT processed event count
+........: 1.104754 Kbytes
+Number of blocks in current cache..: 135, total size: 19710
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_WZ/res/output_36_1_uqK.root ******
+Number of branches in the cache ...: 21
+Cache Efficiency ..................: 0.000275
+Cache Efficiency Rel...............: 0.999108
+Learn entries......................: 100
+Reading............................: 300689 bytes in 46 transactions
+Readahead..........................: 256000 bytes with overhead = 25126072013-03-19 16:22:33,916;DEBUG;WZ_PoolWorker-13;Caching entry list took 130.51 seconds, 19268.47 events/second
+2013-03-19 16:22:33,916;DEBUG;WZ_PoolWorker-13;Cut result: 191290 events
+2013-03-19 16:22:33,916;DEBUG;WZ_PoolWorker-13;Switching variables on: ['int_lightJetCount__STPOLSEL2*']
+2013-03-19 16:22:33,917;DEBUG;WZ_PoolWorker-13;Calling TChain.Draw(int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj >> plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_diboson_WZ(6, 1, 6), 1.0)
+2013-03-19 16:22:46,316;DEBUG;WZ_PoolWorker-13;Histogram drawn with 191290 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 16:22:46,327;INFO;root;Drawing stats: 191290/2514753.0 in 162.112672806 sec, all evts: 15512.3776351/sec, drawn evts: 1179.98177866
+2013-03-19 16:22:46,327;DEBUG;WZ_PoolWorker-13;Caching total PAT processed event count
+2145751 bytes
+Average transaction................: 5.208205 Kbytes
+Number of blocks in current cache..: 45, total size: 99259601
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_Tbar_t/res/output_28_1_TSY.root ******
+Number of branches in the cache ...: 1
+Cache Efficiency ..................: 1.000000
+Cache Efficiency Rel...............: 0.984141
+Learn entries......................: 100
+Reading............................: 44884 bytes in 57 transactions
+Readahead...................2013-03-19 16:23:58,720;DEBUG;Tbar_t_PoolWorker-14;Event count histo drawn, getting array sum
+2013-03-19 16:23:58,720;INFO;Tbar_t_PoolWorker-14;Total events = 1588091
+2013-03-19 16:23:58,720;DEBUG;plotfw.methods_PoolWorker-14_Tbar_t;Done multiprocessing draw one sample
+2013-03-19 16:23:58,797;DEBUG;plotfw.methods_PoolWorker-14_t-channel;Done multiprocessing draw on one group
+2013-03-19 16:23:58,813;DEBUG;T_t_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_T_t/res/*.root`
+2013-03-19 16:23:58,818;DEBUG;T_t_MainProcess;Done opening file and creating caches.
+2013-03-19 16:23:58,819;DEBUG;Tbar_t_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_Tbar_t/res/*.root`
+2013-03-19 16:23:58,820;DEBUG;Tbar_t_MainProcess;Done opening file and creating caches.
+{'lumi': 19361.0}
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_TTJets_SemiLept/res/output_407_1_U00.root ******
+Number of branches in the cache ...: 21
+Cache Efficiency ..................: 0.000256
+Cache Efficiency Rel...............: 0.999908
+Learn entries......................: 100
+Reading............................: 355970 bytes in 52 transactions
+Readahead..........................: 256000 bytes with overhead = 1782541 bytes
+Average transaction................: 6.845577 K2013-03-19 16:26:20,267;DEBUG;TTJets_SemiLept_PoolWorker-15;Caching entry list took 1004.33 seconds, 24259.88 events/second
+2013-03-19 16:26:20,267;DEBUG;TTJets_SemiLept_PoolWorker-15;Cut result: 3843163 events
+2013-03-19 16:26:20,268;DEBUG;TTJets_SemiLept_PoolWorker-15;Switching variables on: ['int_lightJetCount__STPOLSEL2*']
+2013-03-19 16:26:20,269;DEBUG;TTJets_SemiLept_PoolWorker-15;Calling TChain.Draw(int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj >> plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_TTbar_TTJets_SemiLept(6, 1, 6), 1.0)
+ bytes
+Average transaction................: 6.536717 Kbytes
+Number of blocks in current cache..: 19, total size: 51000286
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_WZ/res/output_36_1_uqK.root ******
+Number of branches in the cache ...: 1
+Cache Efficiency ..................: 0.995618
+Cache Efficiency Rel...............: 0.994333
+Learn entries......................: 100
+Reading............................: 83145 bytes in 64 transactions
+Readahead..........................: 252013-03-19 16:26:45,999;DEBUG;WZ_PoolWorker-13;Event count histo drawn, getting array sum
+2013-03-19 16:26:45,999;INFO;WZ_PoolWorker-13;Total events = 8923699
+2013-03-19 16:26:45,999;DEBUG;plotfw.methods_PoolWorker-13_WZ;Done multiprocessing draw one sample
+2013-03-19 16:26:45,999;DEBUG;plotfw.methods_PoolWorker-13_ZZ;Started multiprocessing draw on one sample
+2013-03-19 16:26:46,000;INFO;ZZ_PoolWorker-13;Drawing histogram plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_diboson_ZZ
+2013-03-19 16:26:46,000;DEBUG;ZZ_PoolWorker-13;Caching count of entries in TTree
+2013-03-19 16:27:01,744;DEBUG;ZZ_PoolWorker-13;Done caching count of entries
+2013-03-19 16:27:01,744;DEBUG;ZZ_PoolWorker-13;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 16:27:01,751;INFO;ZZ_PoolWorker-13;Caching entry list with cut jetsOK & mu & muIso & looseMuVeto & looseEleVeto & MT over 1953690 entries
+d = 733345 bytes
+Average transaction................: 3.369905 Kbytes
+Number of blocks in current cache..: 49, total size: 48251516
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_GJets1/res/output_17_1_5Q2.root ******
+Number of branches in the cache ...: 1
+Cache Efficiency ..................: 0.991748
+Cache Efficiency Rel...............: 0.999547
+Learn entries......................: 100
+Reading............................: 979130 bytes in 116 transactions
+Readahead..............2013-03-19 16:28:09,120;DEBUG;GJets1_PoolWorker-18;Event count histo drawn, getting array sum
+2013-03-19 16:28:09,122;INFO;GJets1_PoolWorker-18;Total events = 9681923
+2013-03-19 16:28:09,122;DEBUG;plotfw.methods_PoolWorker-18_GJets1;Done multiprocessing draw one sample
+2013-03-19 16:28:09,122;DEBUG;plotfw.methods_PoolWorker-18_GJets2;Started multiprocessing draw on one sample
+2013-03-19 16:28:09,122;INFO;GJets2_PoolWorker-18;Drawing histogram plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_QCD_GJets2
+2013-03-19 16:28:09,122;DEBUG;GJets2_PoolWorker-18;Caching count of entries in TTree
+2013-03-19 16:28:17,309;DEBUG;GJets2_PoolWorker-18;Done caching count of entries
+2013-03-19 16:28:17,310;DEBUG;GJets2_PoolWorker-18;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 16:28:17,316;INFO;GJets2_PoolWorker-18;Caching entry list with cut jetsOK & mu & muIso & looseMuVeto & looseEleVeto & MT over 511480 entries
+............: 256000 bytes with overhead = 27049919 bytes
+Average transaction................: 8.440776 Kbytes
+Number of blocks in current cache..: 1956, total size: 285576
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_GJets2/res/output_16_1_2rc.root ******
+Number of branches in the cache ...: 21
+Cache Efficiency ..................: 0.000084
+Cache Efficiency Rel...............: 0.998308
+Learn entries......................: 100
+Reading............................: 140615 bytes i2013-03-19 16:28:53,217;DEBUG;GJets2_PoolWorker-18;Caching entry list took 35.91 seconds, 14244.29 events/second
+2013-03-19 16:28:53,218;DEBUG;GJets2_PoolWorker-18;Cut result: 1 events
+2013-03-19 16:28:53,218;DEBUG;GJets2_PoolWorker-18;Switching variables on: ['int_lightJetCount__STPOLSEL2*']
+2013-03-19 16:28:53,219;DEBUG;GJets2_PoolWorker-18;Calling TChain.Draw(int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj >> plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_QCD_GJets2(6, 1, 6), 1.0)
+2013-03-19 16:28:53,252;DEBUG;GJets2_PoolWorker-18;Histogram drawn with 1 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 16:28:53,262;INFO;root;Drawing stats: 1/511480.0 in 44.1398389339 sec, all evts: 11587.7178611/sec, drawn evts: 0.0226552707067
+2013-03-19 16:28:53,262;DEBUG;GJets2_PoolWorker-18;Caching total PAT processed event count
+6000 bytes with overhead = 11308793 bytes
+Average transaction................: 1.299141 Kbytes
+Number of blocks in current cache..: 178, total size: 25988
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_ZZ/res/output_44_1_k0f.root ******
+Number of branches in the cache ...: 21
+Cache Efficiency ..................: 0.000258
+Cache Efficiency Rel...............: 0.998852
+Learn entries......................: 100
+Reading............................: 271522 bytes in 46 transactions
+Read2013-03-19 16:28:55,256;DEBUG;ZZ_PoolWorker-13;Caching entry list took 113.51 seconds, 17211.37 events/second
+2013-03-19 16:28:55,256;DEBUG;ZZ_PoolWorker-13;Cut result: 47396 events
+2013-03-19 16:28:55,256;DEBUG;ZZ_PoolWorker-13;Switching variables on: ['int_lightJetCount__STPOLSEL2*']
+2013-03-19 16:28:55,257;DEBUG;ZZ_PoolWorker-13;Calling TChain.Draw(int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj >> plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_diboson_ZZ(6, 1, 6), 1.0)
+2013-03-19 16:29:01,821;DEBUG;ZZ_PoolWorker-13;Histogram drawn with 47396 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 16:29:01,831;INFO;root;Drawing stats: 47396/1953690.0 in 135.83089304 sec, all evts: 14383.2522652/sec, drawn evts: 348.933876082
+2013-03-19 16:29:01,831;DEBUG;ZZ_PoolWorker-13;Caching total PAT processed event count
+n 44 transactions
+Readahead..........................: 256000 bytes with overhead = 851786 bytes
+Average transaction................: 3.195795 Kbytes
+Number of blocks in current cache..: 36, total size: 42079321
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_GJets2/res/output_16_1_2rc.root ******
+Number of branches in the cache ...: 1
+Cache Efficiency ..................: 0.980772
+Cache Efficiency Rel...............: 0.997388
+Learn entries......................: 100
+Reading......2013-03-19 16:31:01,755;DEBUG;GJets2_PoolWorker-18;Event count histo drawn, getting array sum
+2013-03-19 16:31:01,755;INFO;GJets2_PoolWorker-18;Total events = 1395689
+2013-03-19 16:31:01,755;DEBUG;plotfw.methods_PoolWorker-18_GJets2;Done multiprocessing draw one sample
+2013-03-19 16:31:01,755;DEBUG;plotfw.methods_PoolWorker-18_QCD_Pt_20_30_BCtoE;Started multiprocessing draw on one sample
+2013-03-19 16:31:01,756;INFO;QCD_Pt_20_30_BCtoE_PoolWorker-18;Drawing histogram plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_QCD_QCD_Pt_20_30_BCtoE
+2013-03-19 16:31:01,756;DEBUG;QCD_Pt_20_30_BCtoE_PoolWorker-18;Caching count of entries in TTree
+2013-03-19 16:31:02,376;DEBUG;QCD_Pt_20_30_BCtoE_PoolWorker-18;Done caching count of entries
+2013-03-19 16:31:02,376;DEBUG;QCD_Pt_20_30_BCtoE_PoolWorker-18;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 16:31:02,380;INFO;QCD_Pt_20_30_BCtoE_PoolWorker-18;Caching entry list with cut jetsOK & mu & muIso & looseMuVeto & looseEleVeto & MT over 60778 entries
+......................: 953780 bytes in 114 transactions
+Readahead..........................: 256000 bytes with overhead = 26699014 bytes
+Average transaction................: 8.366491 Kbytes
+Number of blocks in current cache..: 1894, total size: 276524
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_20_30_BCtoE/res/output_1_1_LJv.root ******
+Number of branches in the cache ...: 21
+Cache Efficiency ..................: 0.000080
+Cache Efficiency Rel...............: 0.985294
+L2013-03-19 16:31:08,074;WARNING;QCD_Pt_20_30_BCtoE_PoolWorker-18;Entry list was empty
+2013-03-19 16:31:08,075;DEBUG;QCD_Pt_20_30_BCtoE_PoolWorker-18;Caching entry list took 5.70 seconds, 10665.25 events/second
+2013-03-19 16:31:08,075;DEBUG;QCD_Pt_20_30_BCtoE_PoolWorker-18;Cut result: 0 events
+2013-03-19 16:31:08,075;DEBUG;QCD_Pt_20_30_BCtoE_PoolWorker-18;Switching variables on: ['int_lightJetCount__STPOLSEL2*']
+2013-03-19 16:31:08,076;DEBUG;QCD_Pt_20_30_BCtoE_PoolWorker-18;Calling TChain.Draw(int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj >> plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_QCD_QCD_Pt_20_30_BCtoE(6, 1, 6), 1.0)
+2013-03-19 16:31:08,088;DEBUG;QCD_Pt_20_30_BCtoE_PoolWorker-18;Histogram drawn with 0 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 16:31:08,096;WARNING;QCD_Pt_20_30_BCtoE_PoolWorker-18;Histogram was empty
+2013-03-19 16:31:08,097;INFO;root;Drawing stats: 0/60778.0 in 6.34111785889 sec, all evts: 9584.74536391/sec, drawn evts: 0.0
+2013-03-19 16:31:08,097;DEBUG;QCD_Pt_20_30_BCtoE_PoolWorker-18;Caching total PAT processed event count
+earn entries......................: 100
+Reading............................: 125509 bytes in 38 transactions
+Readahead..........................: 256000 bytes with overhead = 1513797 bytes
+Average transaction................: 3.302868 Kbytes
+Number of blocks in current cache..: 90, total size: 104854064
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_20_30_BCtoE/res/output_1_1_LJv.root ******
+Number of branches in the cache ...: 1
+Cache Efficiency ..................: 0.7222013-03-19 16:31:19,024;DEBUG;QCD_Pt_20_30_BCtoE_PoolWorker-18;Event count histo drawn, getting array sum
+2013-03-19 16:31:19,025;INFO;QCD_Pt_20_30_BCtoE_PoolWorker-18;Total events = 1312957
+2013-03-19 16:31:19,025;DEBUG;plotfw.methods_PoolWorker-18_QCD_Pt_20_30_BCtoE;Done multiprocessing draw one sample
+2013-03-19 16:31:19,025;DEBUG;plotfw.methods_PoolWorker-18_QCD_Pt_30_80_BCtoE;Started multiprocessing draw on one sample
+2013-03-19 16:31:19,025;INFO;QCD_Pt_30_80_BCtoE_PoolWorker-18;Drawing histogram plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_QCD_QCD_Pt_30_80_BCtoE
+2013-03-19 16:31:19,025;DEBUG;QCD_Pt_30_80_BCtoE_PoolWorker-18;Caching count of entries in TTree
+2013-03-19 16:31:22,967;DEBUG;QCD_Pt_30_80_BCtoE_PoolWorker-18;Done caching count of entries
+2013-03-19 16:31:22,967;DEBUG;QCD_Pt_30_80_BCtoE_PoolWorker-18;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 16:31:22,971;INFO;QCD_Pt_30_80_BCtoE_PoolWorker-18;Caching entry list with cut jetsOK & mu & muIso & looseMuVeto & looseEleVeto & MT over 378430 entries
+460
+Cache Efficiency Rel...............: 0.963967
+Learn entries......................: 100
+Reading............................: 449872 bytes in 89 transactions
+Readahead..........................: 256000 bytes with overhead = 19619389 bytes
+Average transaction................: 5.054742 Kbytes
+Number of blocks in current cache..: 1163, total size: 169798
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_30_80_BCtoE/res/output_2_1_yrr.root ******
+Number of branches in the cach2013-03-19 16:31:51,390;WARNING;QCD_Pt_30_80_BCtoE_PoolWorker-18;Entry list was empty
+2013-03-19 16:31:51,390;DEBUG;QCD_Pt_30_80_BCtoE_PoolWorker-18;Caching entry list took 28.42 seconds, 13314.43 events/second
+2013-03-19 16:31:51,390;DEBUG;QCD_Pt_30_80_BCtoE_PoolWorker-18;Cut result: 0 events
+2013-03-19 16:31:51,390;DEBUG;QCD_Pt_30_80_BCtoE_PoolWorker-18;Switching variables on: ['int_lightJetCount__STPOLSEL2*']
+2013-03-19 16:31:51,392;DEBUG;QCD_Pt_30_80_BCtoE_PoolWorker-18;Calling TChain.Draw(int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj >> plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_QCD_QCD_Pt_30_80_BCtoE(6, 1, 6), 1.0)
+2013-03-19 16:31:51,411;DEBUG;QCD_Pt_30_80_BCtoE_PoolWorker-18;Histogram drawn with 0 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 16:31:51,421;WARNING;QCD_Pt_30_80_BCtoE_PoolWorker-18;Histogram was empty
+2013-03-19 16:31:51,421;INFO;root;Drawing stats: 0/378430.0 in 32.3961558342 sec, all evts: 11681.3242268/sec, drawn evts: 0.0
+2013-03-19 16:31:51,421;DEBUG;QCD_Pt_30_80_BCtoE_PoolWorker-18;Caching total PAT processed event count
+e ...: 21
+Cache Efficiency ..................: 0.000095
+Cache Efficiency Rel...............: 0.997980
+Learn entries......................: 100
+Reading............................: 129352 bytes in 37 transactions
+Readahead..........................: 256000 bytes with overhead = 2075773 bytes
+Average transaction................: 3.496000 Kbytes
+Number of blocks in current cache..: 20, total size: 2210023
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_30_80_BCtoE/res/output_2013-03-19 16:32:44,636;DEBUG;QCD_Pt_30_80_BCtoE_PoolWorker-18;Event count histo drawn, getting array sum
+2013-03-19 16:32:44,636;INFO;QCD_Pt_30_80_BCtoE_PoolWorker-18;Total events = 1867294
+2013-03-19 16:32:44,636;DEBUG;plotfw.methods_PoolWorker-18_QCD_Pt_30_80_BCtoE;Done multiprocessing draw one sample
+2013-03-19 16:32:44,636;DEBUG;plotfw.methods_PoolWorker-18_QCD_Pt_80_170_BCtoE;Started multiprocessing draw on one sample
+2013-03-19 16:32:44,636;INFO;QCD_Pt_80_170_BCtoE_PoolWorker-18;Drawing histogram plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_QCD_QCD_Pt_80_170_BCtoE
+2013-03-19 16:32:44,636;DEBUG;QCD_Pt_80_170_BCtoE_PoolWorker-18;Caching count of entries in TTree
+2013-03-19 16:32:54,490;DEBUG;QCD_Pt_80_170_BCtoE_PoolWorker-18;Done caching count of entries
+2013-03-19 16:32:54,490;DEBUG;QCD_Pt_80_170_BCtoE_PoolWorker-18;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 16:32:54,494;INFO;QCD_Pt_80_170_BCtoE_PoolWorker-18;Caching entry list with cut jetsOK & mu & muIso & looseMuVeto & looseEleVeto & MT over 778880 entries
+{'lumi': 19361.0}
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_DYJets/res/output_530_1_Ugt.root ******
+Number of branches in the cache ...: 21
+Cache Efficiency ..................: 0.000267
+Cache Efficiency Rel...............: 0.999861
+Learn entries......................: 100
+Reading............................: 273351 bytes in 48 transactions
+Readahead..........................: 256000 bytes with overhead = 1106550 bytes
+Average transaction................: 5.694813 Kbytes
+Num2013-03-19 16:33:24,098;DEBUG;DYJets_PoolWorker-16;Caching entry list took 1350.42 seconds, 11800.55 events/second
+2013-03-19 16:33:24,098;DEBUG;DYJets_PoolWorker-16;Cut result: 138122 events
+2013-03-19 16:33:24,098;DEBUG;DYJets_PoolWorker-16;Switching variables on: ['int_lightJetCount__STPOLSEL2*']
+2013-03-19 16:33:24,099;DEBUG;DYJets_PoolWorker-16;Calling TChain.Draw(int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj >> plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_DYJets_DYJets(6, 1, 6), 1.0)
+ahead..........................: 256000 bytes with overhead = 1738559 bytes
+Average transaction................: 5.902652 Kbytes
+Number of blocks in current cache..: 15, total size: 15655284
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_ZZ/res/output_44_1_k0f.root ******
+Number of branches in the cache ...: 1
+Cache Efficiency ..................: 0.992453
+Cache Efficiency Rel...............: 0.994803
+Learn entries......................: 100
+Reading............................: 12013-03-19 16:33:56,892;DEBUG;ZZ_PoolWorker-13;Event count histo drawn, getting array sum
+2013-03-19 16:33:56,893;INFO;ZZ_PoolWorker-13;Total events = 8650912
+2013-03-19 16:33:56,893;DEBUG;plotfw.methods_PoolWorker-13_ZZ;Done multiprocessing draw one sample
+2013-03-19 16:33:57,024;DEBUG;plotfw.methods_PoolWorker-13_diboson;Done multiprocessing draw on one group
+2013-03-19 16:33:57,053;DEBUG;WW_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_WW/res/*.root`
+2013-03-19 16:33:57,057;DEBUG;WW_MainProcess;Done opening file and creating caches.
+2013-03-19 16:33:57,059;DEBUG;WZ_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_WZ/res/*.root`
+2013-03-19 16:33:57,060;DEBUG;WZ_MainProcess;Done opening file and creating caches.
+2013-03-19 16:33:57,062;DEBUG;ZZ_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_ZZ/res/*.root`
+2013-03-19 16:33:57,064;DEBUG;ZZ_MainProcess;Done opening file and creating caches.
+2_1_yrr.root ******
+Number of branches in the cache ...: 1
+Cache Efficiency ..................: 0.960723
+Cache Efficiency Rel...............: 0.973210
+Learn entries......................: 100
+Reading............................: 107143 bytes in 60 transactions
+Readahead..........................: 256000 bytes with overhead = 9980608 bytes
+Average transaction................: 1.785717 Kbytes
+Number of blocks in current cache..: 248, total size: 36208
+******TreeCache statistics for file: /scratch/joosep/step22013-03-19 16:33:59,113;DEBUG;QCD_Pt_80_170_BCtoE_PoolWorker-18;Caching entry list took 64.62 seconds, 12052.65 events/second
+2013-03-19 16:33:59,114;DEBUG;QCD_Pt_80_170_BCtoE_PoolWorker-18;Cut result: 4 events
+2013-03-19 16:33:59,114;DEBUG;QCD_Pt_80_170_BCtoE_PoolWorker-18;Switching variables on: ['int_lightJetCount__STPOLSEL2*']
+2013-03-19 16:33:59,114;DEBUG;QCD_Pt_80_170_BCtoE_PoolWorker-18;Calling TChain.Draw(int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj >> plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_QCD_QCD_Pt_80_170_BCtoE(6, 1, 6), 1.0)
+2013-03-19 16:33:59,237;DEBUG;QCD_Pt_80_170_BCtoE_PoolWorker-18;Histogram drawn with 4 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 16:33:59,246;INFO;root;Drawing stats: 4/778880.0 in 74.6095759869 sec, all evts: 10439.4106212/sec, drawn evts: 0.0536124210209
+2013-03-19 16:33:59,246;DEBUG;QCD_Pt_80_170_BCtoE_PoolWorker-18;Caching total PAT processed event count
+bytes
+Number of blocks in current cache..: 18, total size: 39062171
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_W1Jets_exclusive/res/output_91_1_HKq.root ******
+Number of branches in the cache ...: 1
+Cache Efficiency ..................: 0.997778
+Cache Efficiency Rel...............: 0.999587
+Learn entries......................: 100
+Reading............................: 258926 bytes in 80 transactions
+Readahead..........................: 256000 bytes with overhead = 17719003 byt2013-03-19 16:34:15,612;DEBUG;W1Jets_PoolWorker-11;Event count histo drawn, getting array sum
+2013-03-19 16:34:15,889;INFO;W1Jets_PoolWorker-11;Total events = 22261073
+2013-03-19 16:34:15,890;DEBUG;plotfw.methods_PoolWorker-11_W1Jets;Done multiprocessing draw one sample
+2013-03-19 16:34:15,890;DEBUG;plotfw.methods_PoolWorker-11_W2Jets;Started multiprocessing draw on one sample
+2013-03-19 16:34:15,890;INFO;W2Jets_PoolWorker-11;Drawing histogram plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_WJets_W2Jets
+2013-03-19 16:34:15,890;DEBUG;W2Jets_PoolWorker-11;Caching count of entries in TTree
+2013-03-19 16:34:16,199;DEBUG;DYJets_PoolWorker-16;Histogram drawn with 138122 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 16:34:16,209;INFO;root;Drawing stats: 138122/15935701.0 in 1545.36574292 sec, all evts: 10311.9284694/sec, drawn evts: 89.3781945359
+2013-03-19 16:34:16,209;DEBUG;DYJets_PoolWorker-16;Caching total PAT processed event count
+2013-03-19 16:34:31,757;DEBUG;W2Jets_PoolWorker-11;Done caching count of entries
+2013-03-19 16:34:31,759;DEBUG;W2Jets_PoolWorker-11;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 16:34:31,762;INFO;W2Jets_PoolWorker-11;Caching entry list with cut jetsOK & mu & muIso & looseMuVeto & looseEleVeto & MT over 12988554 entries
+_MC_Iso_Mar14//WD_QCD_Pt_80_170_BCtoE/res/output_7_1_kk0.root ******
+Number of branches in the cache ...: 21
+Cache Efficiency ..................: 0.000096
+Cache Efficiency Rel...............: 0.999027
+Learn entries......................: 100
+Reading............................: 129080 bytes in 36 transactions
+Readahead..........................: 256000 bytes with overhead = 1988458 bytes
+Average transaction................: 3.585556 Kbytes
+Number of blocks in current cache..: 14, total size: 2178679
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_80_170_BCtoE/res/output_7_1_kk0.root ******
+Number of branches in the cache ...: 1
+Cache Efficiency ..................: 0.992634
+Cache Efficiency Rel...............: 0.974807
+Learn entries......................: 100
+Reading............................: 63529 bytes in 51 transactions
+Readahead..........................: 256000 bytes with overhead = 8743442 bytes
+Average transaction................: 1.245667 Kbytes
+Number of blocks in2013-03-19 16:35:14,150;DEBUG;QCD_Pt_80_170_BCtoE_PoolWorker-18;Event count histo drawn, getting array sum
+2013-03-19 16:35:14,151;INFO;QCD_Pt_80_170_BCtoE_PoolWorker-18;Total events = 1838270
+2013-03-19 16:35:14,151;DEBUG;plotfw.methods_PoolWorker-18_QCD_Pt_80_170_BCtoE;Done multiprocessing draw one sample
+2013-03-19 16:35:14,151;DEBUG;plotfw.methods_PoolWorker-18_QCD_Pt_170_250_BCtoE;Started multiprocessing draw on one sample
+2013-03-19 16:35:14,151;INFO;QCD_Pt_170_250_BCtoE_PoolWorker-18;Drawing histogram plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_QCD_QCD_Pt_170_250_BCtoE
+2013-03-19 16:35:14,151;DEBUG;QCD_Pt_170_250_BCtoE_PoolWorker-18;Caching count of entries in TTree
+2013-03-19 16:35:21,140;DEBUG;QCD_Pt_170_250_BCtoE_PoolWorker-18;Done caching count of entries
+2013-03-19 16:35:21,140;DEBUG;QCD_Pt_170_250_BCtoE_PoolWorker-18;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 16:35:21,146;INFO;QCD_Pt_170_250_BCtoE_PoolWorker-18;Caching entry list with cut jetsOK & mu & muIso & looseMuVeto & looseEleVeto & MT over 816447 entries
+ current cache..: 127, total size: 18542
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_170_250_BCtoE/res/output_4_1_9Dc.root ******
+Number of branches in the cache ...: 21
+Cache Efficiency ..................: 0.000095
+Cache Efficiency Rel...............: 0.999066
+Learn entries......................: 100
+Reading............................: 129340 bytes in 37 transactions
+Readahead..........................: 256000 bytes with overhead = 1988217 bytes
+Average transaction..2013-03-19 16:36:07,445;DEBUG;QCD_Pt_170_250_BCtoE_PoolWorker-18;Caching entry list took 46.30 seconds, 17631.95 events/second
+2013-03-19 16:36:07,445;DEBUG;QCD_Pt_170_250_BCtoE_PoolWorker-18;Cut result: 7 events
+2013-03-19 16:36:07,446;DEBUG;QCD_Pt_170_250_BCtoE_PoolWorker-18;Switching variables on: ['int_lightJetCount__STPOLSEL2*']
+2013-03-19 16:36:07,446;DEBUG;QCD_Pt_170_250_BCtoE_PoolWorker-18;Calling TChain.Draw(int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj >> plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_QCD_QCD_Pt_170_250_BCtoE(6, 1, 6), 1.0)
+2013-03-19 16:36:07,912;DEBUG;QCD_Pt_170_250_BCtoE_PoolWorker-18;Histogram drawn with 7 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 16:36:07,924;INFO;root;Drawing stats: 7/816447.0 in 53.7723059654 sec, all evts: 15183.4105929/sec, drawn evts: 0.130178534737
+2013-03-19 16:36:07,924;DEBUG;QCD_Pt_170_250_BCtoE_PoolWorker-18;Caching total PAT processed event count
+..............: 3.495676 Kbytes
+Number of blocks in current cache..: 20, total size: 2131201
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_170_250_BCtoE/res/output_4_1_9Dc.root ******
+Number of branches in the cache ...: 1
+Cache Efficiency ..................: 0.992637
+Cache Efficiency Rel...............: 0.976402
+Learn entries......................: 100
+Reading............................: 65334 bytes in 50 transactions
+Readahead..........................: 256000 bytes w2013-03-19 16:37:31,706;DEBUG;QCD_Pt_170_250_BCtoE_PoolWorker-18;Event count histo drawn, getting array sum
+2013-03-19 16:37:31,707;INFO;QCD_Pt_170_250_BCtoE_PoolWorker-18;Total events = 1934417
+2013-03-19 16:37:31,707;DEBUG;plotfw.methods_PoolWorker-18_QCD_Pt_170_250_BCtoE;Done multiprocessing draw one sample
+2013-03-19 16:37:31,707;DEBUG;plotfw.methods_PoolWorker-18_QCD_Pt_250_350_BCtoE;Started multiprocessing draw on one sample
+2013-03-19 16:37:31,707;INFO;QCD_Pt_250_350_BCtoE_PoolWorker-18;Drawing histogram plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_QCD_QCD_Pt_250_350_BCtoE
+2013-03-19 16:37:31,707;DEBUG;QCD_Pt_250_350_BCtoE_PoolWorker-18;Caching count of entries in TTree
+2013-03-19 16:37:43,447;DEBUG;QCD_Pt_250_350_BCtoE_PoolWorker-18;Done caching count of entries
+2013-03-19 16:37:43,447;DEBUG;QCD_Pt_250_350_BCtoE_PoolWorker-18;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 16:37:43,450;INFO;QCD_Pt_250_350_BCtoE_PoolWorker-18;Caching entry list with cut jetsOK & mu & muIso & looseMuVeto & looseEleVeto & MT over 821152 entries
+ith overhead = 8740867 bytes
+Average transaction................: 1.306680 Kbytes
+Number of blocks in current cache..: 132, total size: 19272
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_250_350_BCtoE/res/output_29_1_m1Y.root ******
+Number of branches in the cache ...: 21
+Cache Efficiency ..................: 0.000097
+Cache Efficiency Rel...............: 0.999096
+Learn entries......................: 100
+Reading............................: 129632 bytes in 37 transactions2013-03-19 16:38:53,615;DEBUG;QCD_Pt_250_350_BCtoE_PoolWorker-18;Caching entry list took 70.17 seconds, 11702.65 events/second
+2013-03-19 16:38:53,615;DEBUG;QCD_Pt_250_350_BCtoE_PoolWorker-18;Cut result: 6 events
+2013-03-19 16:38:53,615;DEBUG;QCD_Pt_250_350_BCtoE_PoolWorker-18;Switching variables on: ['int_lightJetCount__STPOLSEL2*']
+2013-03-19 16:38:53,617;DEBUG;QCD_Pt_250_350_BCtoE_PoolWorker-18;Calling TChain.Draw(int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj >> plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_QCD_QCD_Pt_250_350_BCtoE(6, 1, 6), 1.0)
+2013-03-19 16:38:54,010;DEBUG;QCD_Pt_250_350_BCtoE_PoolWorker-18;Histogram drawn with 6 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 16:38:54,023;INFO;root;Drawing stats: 6/821152.0 in 82.3161859512 sec, all evts: 9975.58366573/sec, drawn evts: 0.0728896744992
+2013-03-19 16:38:54,023;DEBUG;QCD_Pt_250_350_BCtoE_PoolWorker-18;Caching total PAT processed event count
+
+Readahead..........................: 256000 bytes with overhead = 2017336 bytes
+Average transaction................: 3.503568 Kbytes
+Number of blocks in current cache..: 20, total size: 2133587
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_250_350_BCtoE/res/output_29_1_m1Y.root ******
+Number of branches in the cache ...: 1
+Cache Efficiency ..................: 0.993896
+Cache Efficiency Rel...............: 0.975791
+Learn entries......................: 100
+Reading.........2013-03-19 16:40:23,915;DEBUG;QCD_Pt_250_350_BCtoE_PoolWorker-18;Event count histo drawn, getting array sum
+2013-03-19 16:40:23,915;INFO;QCD_Pt_250_350_BCtoE_PoolWorker-18;Total events = 1964532
+2013-03-19 16:40:23,915;DEBUG;plotfw.methods_PoolWorker-18_QCD_Pt_250_350_BCtoE;Done multiprocessing draw one sample
+2013-03-19 16:40:23,915;DEBUG;plotfw.methods_PoolWorker-18_QCD_Pt_350_BCtoE;Started multiprocessing draw on one sample
+2013-03-19 16:40:23,915;INFO;QCD_Pt_350_BCtoE_PoolWorker-18;Drawing histogram plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_QCD_QCD_Pt_350_BCtoE
+2013-03-19 16:40:23,916;DEBUG;QCD_Pt_350_BCtoE_PoolWorker-18;Caching count of entries in TTree
+2013-03-19 16:40:33,591;DEBUG;QCD_Pt_350_BCtoE_PoolWorker-18;Done caching count of entries
+2013-03-19 16:40:33,591;DEBUG;QCD_Pt_350_BCtoE_PoolWorker-18;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 16:40:33,595;INFO;QCD_Pt_350_BCtoE_PoolWorker-18;Caching entry list with cut jetsOK & mu & muIso & looseMuVeto & looseEleVeto & MT over 801644 entries
+...................: 64719 bytes in 51 transactions
+Readahead..........................: 256000 bytes with overhead = 8864635 bytes
+Average transaction................: 1.269000 Kbytes
+Number of blocks in current cache..: 130, total size: 18980
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_350_BCtoE/res/output_23_1_JX8.root ******
+Number of branches in the cache ...: 21
+Cache Efficiency ..................: 0.000091
+Cache Efficiency Rel...............: 0.999009
+Learn entr2013-03-19 16:41:36,167;DEBUG;QCD_Pt_350_BCtoE_PoolWorker-18;Caching entry list took 62.58 seconds, 12810.92 events/second
+2013-03-19 16:41:36,167;DEBUG;QCD_Pt_350_BCtoE_PoolWorker-18;Cut result: 4 events
+2013-03-19 16:41:36,167;DEBUG;QCD_Pt_350_BCtoE_PoolWorker-18;Switching variables on: ['int_lightJetCount__STPOLSEL2*']
+2013-03-19 16:41:36,168;DEBUG;QCD_Pt_350_BCtoE_PoolWorker-18;Calling TChain.Draw(int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj >> plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_QCD_QCD_Pt_350_BCtoE(6, 1, 6), 1.0)
+2013-03-19 16:41:37,892;DEBUG;QCD_Pt_350_BCtoE_PoolWorker-18;Histogram drawn with 4 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 16:41:38,612;INFO;root;Drawing stats: 4/801644.0 in 74.6960449219 sec, all evts: 10732.08094/sec, drawn evts: 0.0535503587129
+2013-03-19 16:41:38,612;DEBUG;QCD_Pt_350_BCtoE_PoolWorker-18;Caching total PAT processed event count
+ies......................: 100
+Reading............................: 131089 bytes in 37 transactions
+Readahead..........................: 256000 bytes with overhead = 2037117 bytes
+Average transaction................: 3.542946 Kbytes
+Number of blocks in current cache..: 20, total size: 2148882
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_350_BCtoE/res/output_23_1_JX8.root ******
+Number of branches in the cache ...: 1
+Cache Efficiency ..................: 0.994131
+Cache Ef2013-03-19 16:42:37,653;DEBUG;QCD_Pt_350_BCtoE_PoolWorker-18;Event count histo drawn, getting array sum
+2013-03-19 16:42:37,654;INFO;QCD_Pt_350_BCtoE_PoolWorker-18;Total events = 1804416
+2013-03-19 16:42:37,654;DEBUG;plotfw.methods_PoolWorker-18_QCD_Pt_350_BCtoE;Done multiprocessing draw one sample
+2013-03-19 16:42:37,654;DEBUG;plotfw.methods_PoolWorker-18_QCD_Pt_20_30_EMEnriched;Started multiprocessing draw on one sample
+2013-03-19 16:42:37,654;INFO;QCD_Pt_20_30_EMEnriched_PoolWorker-18;Drawing histogram plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_QCD_QCD_Pt_20_30_EMEnriched
+2013-03-19 16:42:37,654;DEBUG;QCD_Pt_20_30_EMEnriched_PoolWorker-18;Caching count of entries in TTree
+2013-03-19 16:42:52,062;DEBUG;QCD_Pt_20_30_EMEnriched_PoolWorker-18;Done caching count of entries
+2013-03-19 16:42:52,062;DEBUG;QCD_Pt_20_30_EMEnriched_PoolWorker-18;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 16:42:52,066;INFO;QCD_Pt_20_30_EMEnriched_PoolWorker-18;Caching entry list with cut jetsOK & mu & muIso & looseMuVeto & looseEleVeto & MT over 1927262 entries
+es
+Average transaction................: 3.236575 Kbytes
+Number of blocks in current cache..: 644, total size: 94024
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_W2Jets_exclusive/res/output_250_1_YnE.root ******
+Number of branches in the cache ...: 21
+Cache Efficiency ..................: 0.000271
+Cache Efficiency Rel...............: 0.999827
+Learn entries......................: 100
+Reading............................: 304514 bytes in 52 transactions
+Readahead...................2013-03-19 16:43:48,887;DEBUG;W2Jets_PoolWorker-11;Caching entry list took 557.13 seconds, 23313.42 events/second
+2013-03-19 16:43:48,887;DEBUG;W2Jets_PoolWorker-11;Cut result: 1336100 events
+2013-03-19 16:43:48,887;DEBUG;W2Jets_PoolWorker-11;Switching variables on: ['int_lightJetCount__STPOLSEL2*']
+2013-03-19 16:43:48,888;DEBUG;W2Jets_PoolWorker-11;Calling TChain.Draw(int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj >> plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_WJets_W2Jets(6, 1, 6), 1.0)
+2013-03-19 16:44:24,036;DEBUG;W2Jets_PoolWorker-11;Histogram drawn with 1336100 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 16:44:24,049;INFO;root;Drawing stats: 1336100/12988554.0 in 608.158666849 sec, all evts: 21357.1798085/sec, drawn evts: 2196.95956472
+2013-03-19 16:44:24,049;DEBUG;W2Jets_PoolWorker-11;Caching total PAT processed event count
+ficiency Rel...............: 0.974731
+Learn entries......................: 100
+Reading............................: 62426 bytes in 52 transactions
+Readahead..........................: 256000 bytes with overhead = 9025572 bytes
+Average transaction................: 1.200500 Kbytes
+Number of blocks in current cache..: 124, total size: 18104
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_20_30_EMEnriched/res/output_25_1_9rP.root ******
+Number of branches in the cache ...: 21
+2013-03-19 16:44:30,078;DEBUG;QCD_Pt_20_30_EMEnriched_PoolWorker-18;Caching entry list took 98.02 seconds, 19662.76 events/second
+2013-03-19 16:44:30,078;DEBUG;QCD_Pt_20_30_EMEnriched_PoolWorker-18;Cut result: 2 events
+2013-03-19 16:44:30,079;DEBUG;QCD_Pt_20_30_EMEnriched_PoolWorker-18;Switching variables on: ['int_lightJetCount__STPOLSEL2*']
+2013-03-19 16:44:30,079;DEBUG;QCD_Pt_20_30_EMEnriched_PoolWorker-18;Calling TChain.Draw(int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj >> plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_QCD_QCD_Pt_20_30_EMEnriched(6, 1, 6), 1.0)
+2013-03-19 16:44:30,119;DEBUG;QCD_Pt_20_30_EMEnriched_PoolWorker-18;Histogram drawn with 2 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 16:44:30,130;INFO;root;Drawing stats: 2/1927262.0 in 112.475442886 sec, all evts: 17134.9580899/sec, drawn evts: 0.0177816592554
+2013-03-19 16:44:30,130;DEBUG;QCD_Pt_20_30_EMEnriched_PoolWorker-18;Caching total PAT processed event count
+2013-03-19 16:45:38,794;DEBUG;TTJets_SemiLept_PoolWorker-15;Histogram drawn with 3843163 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 16:45:39,342;INFO;root;Drawing stats: 3843163/24364860.0 in 2228.52323103 sec, all evts: 10933.1864531/sec, drawn evts: 1724.53351461
+2013-03-19 16:45:39,342;DEBUG;TTJets_SemiLept_PoolWorker-15;Caching total PAT processed event count
+Cache Efficiency ..................: 0.000110
+Cache Efficiency Rel...............: 0.999662
+Learn entries......................: 100
+Reading............................: 125573 bytes in 35 transactions
+Readahead..........................: 256000 bytes with overhead = 2161377 bytes
+Average transaction................: 3.587800 Kbytes
+Number of blocks in current cache..: 90, total size: 104722209
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_20_30_EMEnriched/res/output_25_2013-03-19 16:48:29,113;DEBUG;QCD_Pt_20_30_EMEnriched_PoolWorker-18;Event count histo drawn, getting array sum
+2013-03-19 16:48:29,113;INFO;QCD_Pt_20_30_EMEnriched_PoolWorker-18;Total events = 28600514
+2013-03-19 16:48:29,114;DEBUG;plotfw.methods_PoolWorker-18_QCD_Pt_20_30_EMEnriched;Done multiprocessing draw one sample
+2013-03-19 16:48:29,114;DEBUG;plotfw.methods_PoolWorker-18_QCD_Pt_30_80_EMEnriched;Started multiprocessing draw on one sample
+2013-03-19 16:48:29,114;INFO;QCD_Pt_30_80_EMEnriched_PoolWorker-18;Drawing histogram plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_QCD_QCD_Pt_30_80_EMEnriched
+2013-03-19 16:48:29,114;DEBUG;QCD_Pt_30_80_EMEnriched_PoolWorker-18;Caching count of entries in TTree
+2013-03-19 16:48:47,095;DEBUG;QCD_Pt_30_80_EMEnriched_PoolWorker-18;Done caching count of entries
+2013-03-19 16:48:47,095;DEBUG;QCD_Pt_30_80_EMEnriched_PoolWorker-18;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 16:48:47,099;INFO;QCD_Pt_30_80_EMEnriched_PoolWorker-18;Caching entry list with cut jetsOK & mu & muIso & looseMuVeto & looseEleVeto & MT over 3371762 entries
+1_9rP.root ******
+Number of branches in the cache ...: 1
+Cache Efficiency ..................: 0.988796
+Cache Efficiency Rel...............: 0.998363
+Learn entries......................: 100
+Reading............................: 311596 bytes in 78 transactions
+Readahead..........................: 256000 bytes with overhead = 16850470 bytes
+Average transaction................: 3.994821 Kbytes
+Number of blocks in current cache..: 789, total size: 115194
+******TreeCache statistics for file: /scratch/joosep/step22013-03-19 16:51:53,714;DEBUG;QCD_Pt_30_80_EMEnriched_PoolWorker-18;Caching entry list took 186.62 seconds, 18067.62 events/second
+2013-03-19 16:51:53,714;DEBUG;QCD_Pt_30_80_EMEnriched_PoolWorker-18;Cut result: 11 events
+2013-03-19 16:51:53,714;DEBUG;QCD_Pt_30_80_EMEnriched_PoolWorker-18;Switching variables on: ['int_lightJetCount__STPOLSEL2*']
+2013-03-19 16:51:53,715;DEBUG;QCD_Pt_30_80_EMEnriched_PoolWorker-18;Calling TChain.Draw(int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj >> plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_QCD_QCD_Pt_30_80_EMEnriched(6, 1, 6), 1.0)
+2013-03-19 16:51:54,302;DEBUG;QCD_Pt_30_80_EMEnriched_PoolWorker-18;Histogram drawn with 11 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 16:51:54,308;INFO;root;Drawing stats: 11/3371762.0 in 205.19385004 sec, all evts: 16432.0811727/sec, drawn evts: 0.0536078444741
+2013-03-19 16:51:54,308;DEBUG;QCD_Pt_30_80_EMEnriched_PoolWorker-18;Caching total PAT processed event count
+_MC_Iso_Mar14//WD_QCD_Pt_30_80_EMEnriched/res/output_44_1_VfD.root ******
+Number of branches in the cache ...: 21
+Cache Efficiency ..................: 0.000105
+Cache Efficiency Rel...............: 0.999795
+Learn entries......................: 100
+Reading............................: 126258 bytes in 35 transactions
+Readahead..........................: 256000 bytes with overhead = 2006003 bytes
+Average transaction................: 3.607371 Kbytes
+Number of blocks in current cache..: 90, total size: 104855030
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_30_80_EMEnriched/res/output_44_1_VfD.root ******
+Number of branches in the cache ...: 1
+Cache Efficiency ..................: 0.994218
+Cache Efficiency Rel...............: 0.998348
+Learn entries......................: 100
+Reading............................: 185408 bytes in 61 transactions
+Readahead..........................: 256000 bytes with overhead = 12323099 bytes
+Average transaction................: 3.039475 Kbytes
+Numbe2013-03-19 16:57:53,748;DEBUG;QCD_Pt_30_80_EMEnriched_PoolWorker-18;Event count histo drawn, getting array sum
+2013-03-19 16:57:53,749;INFO;QCD_Pt_30_80_EMEnriched_PoolWorker-18;Total events = 28050281
+2013-03-19 16:57:53,749;DEBUG;plotfw.methods_PoolWorker-18_QCD_Pt_30_80_EMEnriched;Done multiprocessing draw one sample
+2013-03-19 16:57:53,749;DEBUG;plotfw.methods_PoolWorker-18_QCD_Pt_80_170_EMEnriched;Started multiprocessing draw on one sample
+2013-03-19 16:57:53,749;INFO;QCD_Pt_80_170_EMEnriched_PoolWorker-18;Drawing histogram plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_QCD_QCD_Pt_80_170_EMEnriched
+2013-03-19 16:57:53,749;DEBUG;QCD_Pt_80_170_EMEnriched_PoolWorker-18;Caching count of entries in TTree
+2013-03-19 16:58:21,309;DEBUG;QCD_Pt_80_170_EMEnriched_PoolWorker-18;Done caching count of entries
+2013-03-19 16:58:21,309;DEBUG;QCD_Pt_80_170_EMEnriched_PoolWorker-18;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 16:58:21,312;INFO;QCD_Pt_80_170_EMEnriched_PoolWorker-18;Caching entry list with cut jetsOK & mu & muIso & looseMuVeto & looseEleVeto & MT over 6192570 entries
+ber of blocks in current cache..: 15, total size: 15381400
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_DYJets/res/output_530_1_Ugt.root ******
+Number of branches in the cache ...: 1
+Cache Efficiency ..................: 0.999010
+Cache Efficiency Rel...............: 0.999422
+Learn entries......................: 100
+Reading............................: 118231 bytes in 66 transactions
+Readahead..........................: 256000 bytes with overhead = 12606269 bytes
+Average transac2013-03-19 16:58:37,059;DEBUG;DYJets_PoolWorker-16;Event count histo drawn, getting array sum
+2013-03-19 16:58:40,183;INFO;DYJets_PoolWorker-16;Total events = 29555346
+2013-03-19 16:58:40,184;DEBUG;plotfw.methods_PoolWorker-16_DYJets;Done multiprocessing draw one sample
+2013-03-19 16:58:40,349;DEBUG;plotfw.methods_PoolWorker-16_DYJets;Done multiprocessing draw on one group
+2013-03-19 16:58:40,613;DEBUG;DYJets_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_DYJets/res/*.root`
+2013-03-19 16:58:40,701;DEBUG;DYJets_MainProcess;Done opening file and creating caches.
+r of blocks in current cache..: 457, total size: 66722
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_80_170_EMEnriched/res/output_134_1_GC4.root ******
+Number of branches in the cache ...: 21
+Cache Efficiency ..................: 0.000093
+Cache Efficiency Rel...............: 0.999874
+Learn entries......................: 100
+Reading............................: 129629 bytes in 37 transactions
+Readahead..........................: 256000 bytes with overhead = 2059732 bytes
+A2013-03-19 17:03:35,462;DEBUG;QCD_Pt_80_170_EMEnriched_PoolWorker-18;Caching entry list took 314.15 seconds, 19711.95 events/second
+2013-03-19 17:03:35,462;DEBUG;QCD_Pt_80_170_EMEnriched_PoolWorker-18;Cut result: 37 events
+2013-03-19 17:03:35,462;DEBUG;QCD_Pt_80_170_EMEnriched_PoolWorker-18;Switching variables on: ['int_lightJetCount__STPOLSEL2*']
+2013-03-19 17:03:35,463;DEBUG;QCD_Pt_80_170_EMEnriched_PoolWorker-18;Calling TChain.Draw(int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj >> plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_QCD_QCD_Pt_80_170_EMEnriched(6, 1, 6), 1.0)
+2013-03-19 17:03:37,245;DEBUG;QCD_Pt_80_170_EMEnriched_PoolWorker-18;Histogram drawn with 37 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 17:03:37,374;INFO;root;Drawing stats: 37/6192570.0 in 343.624260902 sec, all evts: 18021.3410536/sec, drawn evts: 0.107675749968
+2013-03-19 17:03:37,374;DEBUG;QCD_Pt_80_170_EMEnriched_PoolWorker-18;Caching total PAT processed event count
+verage transaction................: 3.503486 Kbytes
+Number of blocks in current cache..: 20, total size: 2183332
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_80_170_EMEnriched/res/output_134_1_GC4.root ******
+Number of branches in the cache ...: 1
+Cache Efficiency ..................: 0.997442
+Cache Efficiency Rel...............: 0.998478
+Learn entries......................: 100
+Reading............................: 112067 bytes in 60 transactions
+Readahead...............2013-03-19 17:16:54,322;DEBUG;QCD_Pt_80_170_EMEnriched_PoolWorker-18;Event count histo drawn, getting array sum
+2013-03-19 17:16:54,376;INFO;QCD_Pt_80_170_EMEnriched_PoolWorker-18;Total events = 30654601
+2013-03-19 17:16:54,387;DEBUG;plotfw.methods_PoolWorker-18_QCD_Pt_80_170_EMEnriched;Done multiprocessing draw one sample
+2013-03-19 17:16:54,398;DEBUG;plotfw.methods_PoolWorker-18_QCD_Pt_170_250_EMEnriched;Started multiprocessing draw on one sample
+2013-03-19 17:16:54,405;INFO;QCD_Pt_170_250_EMEnriched_PoolWorker-18;Drawing histogram plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_QCD_QCD_Pt_170_250_EMEnriched
+2013-03-19 17:16:54,405;DEBUG;QCD_Pt_170_250_EMEnriched_PoolWorker-18;Caching count of entries in TTree
+2013-03-19 17:17:59,641;DEBUG;QCD_Pt_170_250_EMEnriched_PoolWorker-18;Done caching count of entries
+2013-03-19 17:17:59,641;DEBUG;QCD_Pt_170_250_EMEnriched_PoolWorker-18;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 17:17:59,645;INFO;QCD_Pt_170_250_EMEnriched_PoolWorker-18;Caching entry list with cut jetsOK & mu & muIso & looseMuVeto & looseEleVeto & MT over 8012071 entries
+.......: 256000 bytes with overhead = 1472827 bytes
+Average transaction................: 5.856038 Kbytes
+Number of blocks in current cache..: 27, total size: 92181947
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_W2Jets_exclusive/res/output_250_1_YnE.root ******
+Number of branches in the cache ...: 1
+Cache Efficiency ..................: 0.998263
+Cache Efficiency Rel...............: 0.999822
+Learn entries......................: 100
+Reading............................: 425795 byt2013-03-19 17:23:43,010;DEBUG;W2Jets_PoolWorker-11;Event count histo drawn, getting array sum
+2013-03-19 17:23:43,953;INFO;W2Jets_PoolWorker-11;Total events = 27437998
+2013-03-19 17:23:43,953;DEBUG;plotfw.methods_PoolWorker-11_W2Jets;Done multiprocessing draw one sample
+2013-03-19 17:23:44,189;DEBUG;plotfw.methods_PoolWorker-11_W3Jets;Started multiprocessing draw on one sample
+2013-03-19 17:23:44,189;INFO;W3Jets_PoolWorker-11;Drawing histogram plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_WJets_W3Jets
+2013-03-19 17:23:44,190;DEBUG;W3Jets_PoolWorker-11;Caching count of entries in TTree
+2013-03-19 17:24:22,203;DEBUG;W3Jets_PoolWorker-11;Done caching count of entries
+2013-03-19 17:24:22,368;DEBUG;W3Jets_PoolWorker-11;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 17:24:22,375;INFO;W3Jets_PoolWorker-11;Caching entry list with cut jetsOK & mu & muIso & looseMuVeto & looseEleVeto & MT over 7763814 entries
+...........: 256000 bytes with overhead = 10528249 bytes
+Average transaction................: 1.867783 Kbytes
+Number of blocks in current cache..: 262, total size: 38252
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_170_250_EMEnriched/res/output_281_1_BNf.root ******
+Number of branches in the cache ...: 21
+Cache Efficiency ..................: 0.000092
+Cache Efficiency Rel...............: 0.999901
+Learn entries......................: 100
+Reading...........................2013-03-19 17:27:16,576;DEBUG;QCD_Pt_170_250_EMEnriched_PoolWorker-18;Caching entry list took 556.93 seconds, 14386.01 events/second
+2013-03-19 17:27:16,577;DEBUG;QCD_Pt_170_250_EMEnriched_PoolWorker-18;Cut result: 46 events
+2013-03-19 17:27:16,577;DEBUG;QCD_Pt_170_250_EMEnriched_PoolWorker-18;Switching variables on: ['int_lightJetCount__STPOLSEL2*']
+2013-03-19 17:27:16,577;DEBUG;QCD_Pt_170_250_EMEnriched_PoolWorker-18;Calling TChain.Draw(int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj >> plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_QCD_QCD_Pt_170_250_EMEnriched(6, 1, 6), 1.0)
+2013-03-19 17:27:19,488;DEBUG;QCD_Pt_170_250_EMEnriched_PoolWorker-18;Histogram drawn with 46 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 17:27:19,502;INFO;root;Drawing stats: 46/8012071.0 in 625.096953869 sec, all evts: 12817.3252972/sec, drawn evts: 0.0735885844832
+2013-03-19 17:27:19,502;DEBUG;QCD_Pt_170_250_EMEnriched_PoolWorker-18;Caching total PAT processed event count
+es in 99 transactions
+Readahead..........................: 256000 bytes with overhead = 22217029 bytes
+Average transaction................: 4.300960 Kbytes
+Number of blocks in current cache..: 1097, total size: 160162
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_W3Jets_exclusive/res/output_194_1_8Bn.root ******
+Number of branches in the cache ...: 21
+Cache Efficiency ..................: 0.000243
+Cache Efficiency Rel...............: 0.999711
+Learn entries......................:2013-03-19 17:27:29,030;DEBUG;W3Jets_PoolWorker-11;Caching entry list took 186.79 seconds, 41564.20 events/second
+2013-03-19 17:27:29,030;DEBUG;W3Jets_PoolWorker-11;Cut result: 1031230 events
+2013-03-19 17:27:29,031;DEBUG;W3Jets_PoolWorker-11;Switching variables on: ['int_lightJetCount__STPOLSEL2*']
+2013-03-19 17:27:29,031;DEBUG;W3Jets_PoolWorker-11;Calling TChain.Draw(int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj >> plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_WJets_W3Jets(6, 1, 6), 1.0)
+2013-03-19 17:27:54,513;DEBUG;W3Jets_PoolWorker-11;Histogram drawn with 1031230 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 17:27:55,539;INFO;root;Drawing stats: 1031230/7763814.0 in 251.349515915 sec, all evts: 30888.5178145/sec, drawn evts: 4102.77297033
+2013-03-19 17:27:55,539;DEBUG;W3Jets_PoolWorker-11;Caching total PAT processed event count
+bytes
+Number of blocks in current cache..: 19, total size: 56010403
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_TTJets_SemiLept/res/output_407_1_U00.root ******
+Number of branches in the cache ...: 1
+Cache Efficiency ..................: 0.999206
+Cache Efficiency Rel...............: 0.999767
+Learn entries......................: 100
+Reading............................: 183396 bytes in 84 transactions
+Readahead..........................: 256000 bytes with overhead = 17105317 byt2013-03-19 17:40:33,002;DEBUG;TTJets_SemiLept_PoolWorker-15;Event count histo drawn, getting array sum
+2013-03-19 17:40:33,659;INFO;TTJets_SemiLept_PoolWorker-15;Total events = 35593167
+2013-03-19 17:40:33,754;DEBUG;plotfw.methods_PoolWorker-15_TTJets_SemiLept;Done multiprocessing draw one sample
+2013-03-19 17:40:33,794;DEBUG;plotfw.methods_PoolWorker-15_TTJets_FullLept;Started multiprocessing draw on one sample
+2013-03-19 17:40:33,794;INFO;TTJets_FullLept_PoolWorker-15;Drawing histogram plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_TTbar_TTJets_FullLept
+2013-03-19 17:40:33,794;DEBUG;TTJets_FullLept_PoolWorker-15;Caching count of entries in TTree
+.: 132241 bytes in 37 transactions
+Readahead..........................: 256000 bytes with overhead = 2021347 bytes
+Average transaction................: 3.574081 Kbytes
+Number of blocks in current cache..: 21, total size: 6201999
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_170_250_EMEnriched/res/output_281_1_BNf.root ******
+Number of branches in the cache ...: 1
+Cache Efficiency ..................: 0.998509
+Cache Efficiency Rel...............: 0.998398
+Learn entries....2013-03-19 17:40:34,040;DEBUG;QCD_Pt_170_250_EMEnriched_PoolWorker-18;Event count histo drawn, getting array sum
+2013-03-19 17:40:34,040;INFO;QCD_Pt_170_250_EMEnriched_PoolWorker-18;Total events = 29687031
+2013-03-19 17:40:34,040;DEBUG;plotfw.methods_PoolWorker-18_QCD_Pt_170_250_EMEnriched;Done multiprocessing draw one sample
+2013-03-19 17:40:34,041;DEBUG;plotfw.methods_PoolWorker-18_QCD_Pt_250_350_EMEnriched;Started multiprocessing draw on one sample
+2013-03-19 17:40:34,041;INFO;QCD_Pt_250_350_EMEnriched_PoolWorker-18;Drawing histogram plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_QCD_QCD_Pt_250_350_EMEnriched
+2013-03-19 17:40:34,041;DEBUG;QCD_Pt_250_350_EMEnriched_PoolWorker-18;Caching count of entries in TTree
+2013-03-19 17:41:20,015;DEBUG;TTJets_FullLept_PoolWorker-15;Done caching count of entries
+2013-03-19 17:41:20,016;DEBUG;TTJets_FullLept_PoolWorker-15;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 17:41:20,020;INFO;TTJets_FullLept_PoolWorker-15;Caching entry list with cut jetsOK & mu & muIso & looseMuVeto & looseEleVeto & MT over 13554231 entries
+2013-03-19 17:41:49,496;DEBUG;QCD_Pt_250_350_EMEnriched_PoolWorker-18;Done caching count of entries
+2013-03-19 17:41:49,497;DEBUG;QCD_Pt_250_350_EMEnriched_PoolWorker-18;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 17:41:49,503;INFO;QCD_Pt_250_350_EMEnriched_PoolWorker-18;Caching entry list with cut jetsOK & mu & muIso & looseMuVeto & looseEleVeto & MT over 10924088 entries
+es
+Average transaction................: 2.183286 Kbytes
+Number of blocks in current cache..: 446, total size: 65116
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_TTJets_FullLept/res/output_332_1_d94.root ******
+Number of branches in the cache ...: 21
+Cache Efficiency ..................: 0.000262
+Cache Efficiency Rel...............: 0.999837
+Learn entries......................: 100
+Reading............................: 359310 bytes in 48 transactions
+Readahead....................2013-03-19 17:50:54,304;DEBUG;TTJets_FullLept_PoolWorker-15;Caching entry list took 574.29 seconds, 23601.79 events/second
+2013-03-19 17:50:54,304;DEBUG;TTJets_FullLept_PoolWorker-15;Cut result: 2078346 events
+2013-03-19 17:50:54,305;DEBUG;TTJets_FullLept_PoolWorker-15;Switching variables on: ['int_lightJetCount__STPOLSEL2*']
+2013-03-19 17:50:54,305;DEBUG;TTJets_FullLept_PoolWorker-15;Calling TChain.Draw(int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj >> plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_TTbar_TTJets_FullLept(6, 1, 6), 1.0)
+2013-03-19 17:52:02,154;DEBUG;TTJets_FullLept_PoolWorker-15;Histogram drawn with 2078346 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 17:52:03,209;INFO;root;Drawing stats: 2078346/13554231.0 in 689.414412022 sec, all evts: 19660.4984805/sec, drawn evts: 3014.6541235
+2013-03-19 17:52:03,209;DEBUG;TTJets_FullLept_PoolWorker-15;Caching total PAT processed event count
+..................: 100
+Reading............................: 88248 bytes in 59 transactions
+Readahead..........................: 256000 bytes with overhead = 10393727 bytes
+Average transaction................: 1.495729 Kbytes
+Number of blocks in current cache..: 195, total size: 28470
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_250_350_EMEnriched/res/output_414_1_ki4.root ******
+Number of branches in the cache ...: 21
+Cache Efficiency ..................: 0.000089
+Cache2013-03-19 17:52:10,179;DEBUG;QCD_Pt_250_350_EMEnriched_PoolWorker-18;Caching entry list took 620.68 seconds, 17600.12 events/second
+2013-03-19 17:52:10,179;DEBUG;QCD_Pt_250_350_EMEnriched_PoolWorker-18;Cut result: 59 events
+2013-03-19 17:52:10,179;DEBUG;QCD_Pt_250_350_EMEnriched_PoolWorker-18;Switching variables on: ['int_lightJetCount__STPOLSEL2*']
+2013-03-19 17:52:10,180;DEBUG;QCD_Pt_250_350_EMEnriched_PoolWorker-18;Calling TChain.Draw(int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj >> plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_QCD_QCD_Pt_250_350_EMEnriched(6, 1, 6), 1.0)
+2013-03-19 17:52:13,377;DEBUG;QCD_Pt_250_350_EMEnriched_PoolWorker-18;Histogram drawn with 59 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 17:52:13,391;INFO;root;Drawing stats: 59/10924088.0 in 699.350278854 sec, all evts: 15620.3383774/sec, drawn evts: 0.0843640186955
+2013-03-19 17:52:13,391;DEBUG;QCD_Pt_250_350_EMEnriched_PoolWorker-18;Caching total PAT processed event count
+ 100
+Reading............................: 339685 bytes in 51 transactions
+Readahead..........................: 256000 bytes with overhead = 1903721 bytes
+Average transaction................: 6.660490 Kbytes
+Number of blocks in current cache..: 18, total size: 43696073
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_W3Jets_exclusive/res/output_194_1_8Bn.root ******
+Number of branches in the cache ...: 1
+Cache Efficiency ..................: 0.996975
+Cache Efficiency Rel............2013-03-19 18:08:31,085;DEBUG;W3Jets_PoolWorker-11;Event count histo drawn, getting array sum
+2013-03-19 18:08:31,095;INFO;W3Jets_PoolWorker-11;Total events = 15470056
+2013-03-19 18:08:31,096;DEBUG;plotfw.methods_PoolWorker-11_W3Jets;Done multiprocessing draw one sample
+2013-03-19 18:08:31,096;DEBUG;plotfw.methods_PoolWorker-11_W4Jets;Started multiprocessing draw on one sample
+2013-03-19 18:08:31,096;INFO;W4Jets_PoolWorker-11;Drawing histogram plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_WJets_W4Jets
+2013-03-19 18:08:31,096;DEBUG;W4Jets_PoolWorker-11;Caching count of entries in TTree
+ Efficiency Rel...............: 0.999925
+Learn entries......................: 100
+Reading............................: 130884 bytes in 37 transactions
+Readahead..........................: 256000 bytes with overhead = 1995048 bytes
+Average transaction................: 3.537405 Kbytes
+Number of blocks in current cache..: 16, total size: 5499035
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_250_350_EMEnriched/res/output_414_1_ki4.root ******
+Number of branches in the cache 2013-03-19 18:08:47,344;DEBUG;QCD_Pt_250_350_EMEnriched_PoolWorker-18;Event count histo drawn, getting array sum
+2013-03-19 18:08:47,345;INFO;QCD_Pt_250_350_EMEnriched_PoolWorker-18;Total events = 33679484
+2013-03-19 18:08:47,345;DEBUG;plotfw.methods_PoolWorker-18_QCD_Pt_250_350_EMEnriched;Done multiprocessing draw one sample
+2013-03-19 18:08:47,345;DEBUG;plotfw.methods_PoolWorker-18_QCD_Pt_350_EMEnriched;Started multiprocessing draw on one sample
+2013-03-19 18:08:47,345;INFO;QCD_Pt_350_EMEnriched_PoolWorker-18;Drawing histogram plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_QCD_QCD_Pt_350_EMEnriched
+2013-03-19 18:08:47,345;DEBUG;QCD_Pt_350_EMEnriched_PoolWorker-18;Caching count of entries in TTree
+2013-03-19 18:09:14,298;DEBUG;W4Jets_PoolWorker-11;Done caching count of entries
+2013-03-19 18:09:14,299;DEBUG;W4Jets_PoolWorker-11;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 18:09:14,306;INFO;W4Jets_PoolWorker-11;Caching entry list with cut jetsOK & mu & muIso & looseMuVeto & looseEleVeto & MT over 7159352 entries
+2013-03-19 18:10:12,495;DEBUG;QCD_Pt_350_EMEnriched_PoolWorker-18;Done caching count of entries
+2013-03-19 18:10:12,495;DEBUG;QCD_Pt_350_EMEnriched_PoolWorker-18;Switching variables on: ['floats_goodSignalMuonsNTupleProducer_relIso_STPOLSEL2.*', 'int_looseVetoMuCount__STPOLSEL2.*', 'int_looseVetoEleCount__STPOLSEL2.*', 'int_lightJetCount__STPOLSEL2.*', 'int_muonCount__STPOLSEL2.*', 'int_bJetCount__STPOLSEL2.*', 'double_muAndMETMT__STPOLSEL2.*']
+2013-03-19 18:10:12,502;INFO;QCD_Pt_350_EMEnriched_PoolWorker-18;Caching entry list with cut jetsOK & mu & muIso & looseMuVeto & looseEleVeto & MT over 13184890 entries
+...: 0.999893
+Learn entries......................: 100
+Reading............................: 1509336 bytes in 162 transactions
+Readahead..........................: 256000 bytes with overhead = 38006712 bytes
+Average transaction................: 9.316889 Kbytes
+Number of blocks in current cache..: 3027, total size: 441942
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_W4Jets_exclusive/res/output_141_1_UMs.root ******
+Number of branches in the cache ...: 21
+Cache Efficiency .......2013-03-19 18:16:06,346;DEBUG;W4Jets_PoolWorker-11;Caching entry list took 412.05 seconds, 17375.08 events/second
+2013-03-19 18:16:06,346;DEBUG;W4Jets_PoolWorker-11;Cut result: 1053295 events
+2013-03-19 18:16:06,346;DEBUG;W4Jets_PoolWorker-11;Switching variables on: ['int_lightJetCount__STPOLSEL2*']
+2013-03-19 18:16:06,347;DEBUG;W4Jets_PoolWorker-11;Calling TChain.Draw(int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj >> plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_WJets_W4Jets(6, 1, 6), 1.0)
+2013-03-19 18:16:32,431;DEBUG;W4Jets_PoolWorker-11;Histogram drawn with 1053295 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 18:16:32,443;INFO;root;Drawing stats: 1053295/7159352.0 in 481.3469069 sec, all evts: 14873.580566/sec, drawn evts: 2188.2243033
+2013-03-19 18:16:32,443;DEBUG;W4Jets_PoolWorker-11;Caching total PAT processed event count
+......: 256000 bytes with overhead = 2110754 bytes
+Average transaction................: 7.485625 Kbytes
+Number of blocks in current cache..: 19, total size: 55999199
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_TTJets_FullLept/res/output_332_1_d94.root ******
+Number of branches in the cache ...: 1
+Cache Efficiency ..................: 0.998672
+Cache Efficiency Rel...............: 0.999482
+Learn entries......................: 100
+Reading............................: 149843 bytes2013-03-19 18:20:29,845;DEBUG;TTJets_FullLept_PoolWorker-15;Event count histo drawn, getting array sum
+2013-03-19 18:20:29,848;INFO;TTJets_FullLept_PoolWorker-15;Total events = 15952066
+2013-03-19 18:20:29,848;DEBUG;plotfw.methods_PoolWorker-15_TTJets_FullLept;Done multiprocessing draw one sample
+2013-03-19 18:20:30,160;DEBUG;plotfw.methods_PoolWorker-15_TTbar;Done multiprocessing draw on one group
+2013-03-19 18:20:30,918;DEBUG;TTJets_SemiLept_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_TTJets_SemiLept/res/*.root`
+2013-03-19 18:20:31,511;DEBUG;TTJets_SemiLept_MainProcess;Done opening file and creating caches.
+2013-03-19 18:20:31,532;DEBUG;TTJets_FullLept_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_TTJets_FullLept/res/*.root`
+2013-03-19 18:20:31,549;DEBUG;TTJets_FullLept_MainProcess;Done opening file and creating caches.
+...: 1
+Cache Efficiency ..................: 0.999114
+Cache Efficiency Rel...............: 0.998602
+Learn entries......................: 100
+Reading............................: 77032 bytes in 59 transactions
+Readahead..........................: 256000 bytes with overhead = 9672675 bytes
+Average transaction................: 1.305627 Kbytes
+Number of blocks in current cache..: 164, total size: 23944
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_350_EMEnriched/res/output_322013-03-19 18:20:40,513;DEBUG;QCD_Pt_350_EMEnriched_PoolWorker-18;Caching entry list took 628.02 seconds, 20994.43 events/second
+2013-03-19 18:20:40,514;DEBUG;QCD_Pt_350_EMEnriched_PoolWorker-18;Cut result: 69 events
+2013-03-19 18:20:40,514;DEBUG;QCD_Pt_350_EMEnriched_PoolWorker-18;Switching variables on: ['int_lightJetCount__STPOLSEL2*']
+2013-03-19 18:20:40,515;DEBUG;QCD_Pt_350_EMEnriched_PoolWorker-18;Calling TChain.Draw(int_lightJetCount__STPOLSEL2.obj + int_bJetCount__STPOLSEL2.obj >> plot_cut2355325421_intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_hist_mc_QCD_QCD_Pt_350_EMEnriched(6, 1, 6), 1.0)
+2013-03-19 18:20:43,920;DEBUG;QCD_Pt_350_EMEnriched_PoolWorker-18;Histogram drawn with 69 entries
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+2013-03-19 18:20:43,929;INFO;root;Drawing stats: 69/13184890.0 in 716.583438873 sec, all evts: 18399.6577157/sec, drawn evts: 0.0962902521282
+2013-03-19 18:20:43,929;DEBUG;QCD_Pt_350_EMEnriched_PoolWorker-18;Caching total PAT processed event count
+0_1_KPB.root ******
+Number of branches in the cache ...: 21
+Cache Efficiency ..................: 0.000089
+Cache Efficiency Rel...............: 0.999937
+Learn entries......................: 100
+Reading............................: 132795 bytes in 37 transactions
+Readahead..........................: 256000 bytes with overhead = 2027120 bytes
+Average transaction................: 3.589054 Kbytes
+Number of blocks in current cache..: 22, total size: 10542365
+******TreeCache statistics for file: /scratch/joosep/st2013-03-19 18:29:29,807;DEBUG;QCD_Pt_350_EMEnriched_PoolWorker-18;Event count histo drawn, getting array sum
+2013-03-19 18:29:29,940;INFO;QCD_Pt_350_EMEnriched_PoolWorker-18;Total events = 33972410
+2013-03-19 18:29:30,017;DEBUG;plotfw.methods_PoolWorker-18_QCD_Pt_350_EMEnriched;Done multiprocessing draw one sample
+2013-03-19 18:29:32,927;DEBUG;plotfw.methods_PoolWorker-18_QCD;Done multiprocessing draw on one group
+2013-03-19 18:29:34,809;DEBUG;QCDMu_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCDMu/res/*.root`
+2013-03-19 18:29:34,908;DEBUG;QCDMu_MainProcess;Done opening file and creating caches.
+2013-03-19 18:29:34,909;DEBUG;GJets1_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_GJets1/res/*.root`
+2013-03-19 18:29:34,911;DEBUG;GJets1_MainProcess;Done opening file and creating caches.
+2013-03-19 18:29:34,911;DEBUG;GJets2_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_GJets2/res/*.root`
+2013-03-19 18:29:34,912;DEBUG;GJets2_MainProcess;Done opening file and creating caches.
+2013-03-19 18:29:34,950;DEBUG;QCD_Pt_20_30_BCtoE_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_20_30_BCtoE/res/*.root`
+2013-03-19 18:29:34,950;DEBUG;QCD_Pt_20_30_BCtoE_MainProcess;Done opening file and creating caches.
+2013-03-19 18:29:34,951;DEBUG;QCD_Pt_30_80_BCtoE_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_30_80_BCtoE/res/*.root`
+2013-03-19 18:29:34,951;DEBUG;QCD_Pt_30_80_BCtoE_MainProcess;Done opening file and creating caches.
+2013-03-19 18:29:35,034;DEBUG;QCD_Pt_80_170_BCtoE_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_80_170_BCtoE/res/*.root`
+2013-03-19 18:29:35,035;DEBUG;QCD_Pt_80_170_BCtoE_MainProcess;Done opening file and creating caches.
+2013-03-19 18:29:35,036;DEBUG;QCD_Pt_170_250_BCtoE_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_170_250_BCtoE/res/*.root`
+2013-03-19 18:29:35,036;DEBUG;QCD_Pt_170_250_BCtoE_MainProcess;Done opening file and creating caches.
+2013-03-19 18:29:35,037;DEBUG;QCD_Pt_250_350_BCtoE_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_250_350_BCtoE/res/*.root`
+2013-03-19 18:29:35,038;DEBUG;QCD_Pt_250_350_BCtoE_MainProcess;Done opening file and creating caches.
+2013-03-19 18:29:35,038;DEBUG;QCD_Pt_350_BCtoE_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_350_BCtoE/res/*.root`
+2013-03-19 18:29:35,039;DEBUG;QCD_Pt_350_BCtoE_MainProcess;Done opening file and creating caches.
+2013-03-19 18:29:35,039;DEBUG;QCD_Pt_20_30_EMEnriched_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_20_30_EMEnriched/res/*.root`
+2013-03-19 18:29:35,041;DEBUG;QCD_Pt_20_30_EMEnriched_MainProcess;Done opening file and creating caches.
+2013-03-19 18:29:35,088;DEBUG;QCD_Pt_30_80_EMEnriched_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_30_80_EMEnriched/res/*.root`
+2013-03-19 18:29:35,090;DEBUG;QCD_Pt_30_80_EMEnriched_MainProcess;Done opening file and creating caches.
+2013-03-19 18:29:35,092;DEBUG;QCD_Pt_80_170_EMEnriched_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_80_170_EMEnriched/res/*.root`
+2013-03-19 18:29:35,096;DEBUG;QCD_Pt_80_170_EMEnriched_MainProcess;Done opening file and creating caches.
+2013-03-19 18:29:35,098;DEBUG;QCD_Pt_170_250_EMEnriched_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_170_250_EMEnriched/res/*.root`
+2013-03-19 18:29:35,104;DEBUG;QCD_Pt_170_250_EMEnriched_MainProcess;Done opening file and creating caches.
+2013-03-19 18:29:35,106;DEBUG;QCD_Pt_250_350_EMEnriched_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_250_350_EMEnriched/res/*.root`
+2013-03-19 18:29:35,113;DEBUG;QCD_Pt_250_350_EMEnriched_MainProcess;Done opening file and creating caches.
+2013-03-19 18:29:35,117;DEBUG;QCD_Pt_350_EMEnriched_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_QCD_Pt_350_EMEnriched/res/*.root`
+2013-03-19 18:29:35,551;DEBUG;QCD_Pt_350_EMEnriched_MainProcess;Done opening file and creating caches.
+...........: 0.000245
+Cache Efficiency Rel...............: 0.999687
+Learn entries......................: 100
+Reading............................: 346551 bytes in 54 transactions
+Readahead..........................: 256000 bytes with overhead = 1666969 bytes
+Average transaction................: 6.417611 Kbytes
+Number of blocks in current cache..: 19, total size: 53767080
+******TreeCache statistics for file: /scratch/joosep/step2_MC_Iso_Mar14//WD_W4Jets_exclusive/res/output_141_1_UMs.root ******
+Number of bra2013-03-19 18:32:37,827;DEBUG;W4Jets_PoolWorker-11;Event count histo drawn, getting array sum
+2013-03-19 18:32:37,905;INFO;W4Jets_PoolWorker-11;Total events = 13392984
+2013-03-19 18:32:37,909;DEBUG;plotfw.methods_PoolWorker-11_W4Jets;Done multiprocessing draw one sample
+2013-03-19 18:32:38,748;DEBUG;plotfw.methods_PoolWorker-11_WJets;Done multiprocessing draw on one group
+2013-03-19 18:32:39,855;DEBUG;W1Jets_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_W1Jets_exclusive/res/*.root`
+2013-03-19 18:32:39,862;DEBUG;W1Jets_MainProcess;Done opening file and creating caches.
+2013-03-19 18:32:39,873;DEBUG;W2Jets_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_W2Jets_exclusive/res/*.root`
+2013-03-19 18:32:39,881;DEBUG;W2Jets_MainProcess;Done opening file and creating caches.
+2013-03-19 18:32:39,886;DEBUG;W3Jets_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_W3Jets_exclusive/res/*.root`
+2013-03-19 18:32:39,891;DEBUG;W3Jets_MainProcess;Done opening file and creating caches.
+2013-03-19 18:32:39,898;DEBUG;W4Jets_MainProcess;Opening file: `/scratch/joosep/step2_MC_Iso_Mar14//WD_W4Jets_exclusive/res/*.root`
+2013-03-19 18:32:39,902;DEBUG;W4Jets_MainProcess;Done opening file and creating caches.
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+TH1F::Sumw2:0: RuntimeWarning: Sum of squares of weights structure already created
+07330 bytes in 65 transactions
+Readahead..........................: 256000 bytes with overhead = 12901535 bytes
+Average transaction................: 1.651231 Kbytes
+Number of blocks in current cache..: 245, total size: 35770
+.......: 256000 bytes with overhead = 5954094 bytes
+Average transaction................: 0.787439 Kbytes
+Number of blocks in current cache..: 89, total size: 12994
+......: 256000 bytes with overhead = 5467512 bytes
+Average transaction................: 1.363543 Kbytes
+Number of blocks in current cache..: 86, total size: 12556
+2013-03-19 18:32:44,904;DEBUG;root;P `MC binmax`: 5277196.0
+2013-03-19 18:32:45,180;DEBUG;root;P `Kolmogorov test`: 2.54595726718e-05
+2013-03-19 18:32:45,215;DEBUG;root;P `Chi2/ndf`: 641.321476008
+2013-03-19 18:32:55,674;INFO;plotfw.drawfw;Plotting took 10169.6 seconds
+2013-03-19 18:32:55,785;INFO;plotfw.drawfw;Saving as: plots_out_86R9/intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_2355325421.pdf
+Info in <TCanvas::Print>: pdf file plots_out_86R9/intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_2355325421.pdf has been created
+2013-03-19 18:33:29,568;DEBUG;root;Pickling log to `plots_out_86R9/intlightJetCountSTPOLSEL2objintbJetCountSTPOLSEL2obj_2355325421.pylog`

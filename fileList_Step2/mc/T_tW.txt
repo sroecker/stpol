@@ -1,7 +1,0 @@
-file:/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14/WD_T_tW/res/output_1_1_1iN.root
-file:/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14/WD_T_tW/res/output_2_1_0c5.root
-file:/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14/WD_T_tW/res/output_3_1_Lo2.root
-file:/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14/WD_T_tW/res/output_4_1_X21.root
-file:/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14/WD_T_tW/res/output_5_1_gcZ.root
-file:/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14/WD_T_tW/res/output_6_1_CEK.root
-file:/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14/WD_T_tW/res/output_7_1_O38.root
