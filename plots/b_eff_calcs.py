@@ -10,11 +10,12 @@ def getBTaggingEff(sample, flavour, cut):
 
     N_tagged = numpy.sum(sample.getColumn("true_%s_tagged_count" % flavour, cut))
     N = numpy.sum(sample.getColumn("true_%s_count" % flavour, cut))
+    print N_tagged, N
     return N_tagged/N
 
 if __name__=="__main__":
 
-    sample_dir = "out_step3_05_06_15_53/iso/mc/"
+    sample_dir = "/scratch/joosep/out_step3_05_07_14_19/iso/mc/"
     samples = []
     #samples.append(project_histos.Sample.fromFile(sample_dir + "TTJets_FullLept.root"))
     samples.append(project_histos.Sample.fromFile(sample_dir + "TTJets_MassiveBinDECAY.root"))
@@ -22,7 +23,7 @@ if __name__=="__main__":
     samples.append(project_histos.Sample.fromFile(sample_dir + "T_t.root"))
     samples.append(project_histos.Sample.fromFile(sample_dir + "WJets_inclusive.root"))
     logging.info("Doing b-tagging efficiency calculations")
-    cuts = [Cuts.hlt_isomu * Cuts.n_jets(3) * Cuts.eta_lj * Cuts.top_mass_sig]
+    cuts = [Cuts.mu * Cuts.n_jets(2) * Cuts.eta_lj * Cuts.top_mass_sig]
 #    cuts.append("n_jets==2 && !(top_mass>130 && top_mass<220) && mt_mu>50")
 #    cuts.append("n_jets==3 && !(top_mass>130 && top_mass<220) && mt_mu>50")
     for cut in cuts:
@@ -31,4 +32,4 @@ if __name__=="__main__":
                 entries = sample.getEntries(str(cut))
                 total = sample.getTotalEventCount()
                 eff = getBTaggingEff(sample, flavour, str(cut))
-                print "%s | %s | %.3E/%.3E | %.3E" % (sample, flavour, entries, total, eff)
+                print "%s | %s | %.3E/%.3E | %.6f" % (sample, flavour, entries, total, eff)
