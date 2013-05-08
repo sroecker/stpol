@@ -63,8 +63,8 @@ class Cuts:
     def n_tags(n):
         return Cut("n_tags == %.1f" % float(n))
 
-Cuts.final = Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig
-
+Cuts.final = Cuts.rms_lj*Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig
+Cuts.mu = Cuts.hlt_isomu*Cuts.one_muon*Cuts.lepton_veto
 
 class Histogram(Base):
     __tablename__ = "histograms"
@@ -405,78 +405,78 @@ if __name__=="__main__":
     with Cleanup(metadata, hdraw, histos):
         n_bins = 20
         try:
-            histos += hdraw.drawHistogram("mt_mu", cut=Cuts.no_cut, plot_range=[n_bins, 0, 200])
-            histos += hdraw.drawHistogram("mt_mu", cut=Cuts.no_cut, plot_range=[n_bins, 0, 200], weight="pu_weight")
+            histos += hdraw.drawHistogram("mt_mu", cut=Cuts.mu, plot_range=[n_bins, 0, 200])
+            histos += hdraw.drawHistogram("mt_mu", cut=Cuts.mu, plot_range=[n_bins, 0, 200], weight="pu_weight")
 
-            histos += hdraw.drawHistogram("n_jets", cut=Cuts.mt_mu, plot_range=[5, 1, 5])
-            histos += hdraw.drawHistogram("n_tags", cut=Cuts.mt_mu*Cuts.n_jets(2), plot_range=[3, 0, 2])
-            histos += hdraw.drawHistogram("n_tags", cut=Cuts.mt_mu*Cuts.n_jets(3), plot_range=[3, 0, 2])
+            histos += hdraw.drawHistogram("n_jets", cut=Cuts.mu*Cuts.mt_mu, plot_range=[5, 1, 5])
+            histos += hdraw.drawHistogram("n_tags", cut=Cuts.mu*Cuts.mt_mu*Cuts.n_jets(2), plot_range=[3, 0, 2])
+            histos += hdraw.drawHistogram("n_tags", cut=Cuts.mu*Cuts.mt_mu*Cuts.n_jets(3), plot_range=[3, 0, 2])
 
-            histos += hdraw.drawHistogram("n_jets", cut=Cuts.mt_mu, plot_range=[9, 1, 10], weight="pu_weight")
-            histos += hdraw.drawHistogram("n_tags", cut=Cuts.mt_mu*Cuts.n_jets(2), plot_range=[5, 0, 5], weight="pu_weight")
-            histos += hdraw.drawHistogram("n_tags", cut=Cuts.mt_mu*Cuts.n_jets(3), plot_range=[5, 0, 5], weight="pu_weight")
+            histos += hdraw.drawHistogram("n_jets", cut=Cuts.mu*Cuts.mt_mu, plot_range=[9, 1, 10], weight="pu_weight")
+            histos += hdraw.drawHistogram("n_tags", cut=Cuts.mu*Cuts.mt_mu*Cuts.n_jets(2), plot_range=[5, 0, 5], weight="pu_weight")
+            histos += hdraw.drawHistogram("n_tags", cut=Cuts.mu*Cuts.mt_mu*Cuts.n_jets(3), plot_range=[5, 0, 5], weight="pu_weight")
 
 
             histos += hdraw.drawHistogram("top_mass",
-                cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj, plot_range=[n_bins, 100, 350],
+                cut=Cuts.mu*Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj, plot_range=[n_bins, 100, 350],
             )
             histos += hdraw.drawHistogram("top_mass",
-                cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj, plot_range=[n_bins, 100, 350],
+                cut=Cuts.mu*Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj, plot_range=[n_bins, 100, 350],
                 weight="pu_weight"
             )
             histos += hdraw.drawHistogram("top_mass",
-                cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj, plot_range=[n_bins, 100, 350],
+                cut=Cuts.mu*Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj, plot_range=[n_bins, 100, 350],
                 weight="pu_weight*b_weight_nominal"
             )
-            histos += hdraw.drawHistogram("cos_theta", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig, plot_range=[n_bins, -1, 1])
+            histos += hdraw.drawHistogram("cos_theta", cut=Cuts.mu*Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig, plot_range=[n_bins, -1, 1])
 
-            histos += hdraw.drawHistogram("cos_theta", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig,
+            histos += hdraw.drawHistogram("cos_theta", cut=Cuts.mu*Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig,
                 plot_range=[n_bins, -1, 1], weight="pu_weight", skip_weights=["SingleMu*"]
             )
-            histos += hdraw.drawHistogram("cos_theta", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig,
+            histos += hdraw.drawHistogram("cos_theta", cut=Cuts.mu*Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig,
                 plot_range=[n_bins, -1, 1], weight="pu_weight*b_weight_nominal", skip_weights=["SingleMu*"]
             )
-            histos += hdraw.drawHistogram("cos_theta", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig,
+            histos += hdraw.drawHistogram("cos_theta", cut=Cuts.mu*Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig,
                 plot_range=[n_bins, -1, 1], weight="pu_weight*b_weight_nominal*muon_IDWeight*muon_IsoWeight", skip_weights=["SingleMu*"]
             )
-            histos += hdraw.drawHistogram("cos_theta", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(0)*Cuts.eta_lj*Cuts.top_mass_sig,
+            histos += hdraw.drawHistogram("cos_theta", cut=Cuts.mu*Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(0)*Cuts.eta_lj*Cuts.top_mass_sig,
                 plot_range=[n_bins, -1, 1], weight="pu_weight", skip_weights=["SingleMu*"]
             )
-            histos += hdraw.drawHistogram("cos_theta", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(0)*Cuts.eta_lj*Cuts.top_mass_sig,
+            histos += hdraw.drawHistogram("cos_theta", cut=Cuts.mu*Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(0)*Cuts.eta_lj*Cuts.top_mass_sig,
                 plot_range=[n_bins, -1, 1], weight="pu_weight*b_weight_nominal", skip_weights=["SingleMu*"]
             )
-            histos += hdraw.drawHistogram("cos_theta", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(0)*Cuts.eta_lj*Cuts.top_mass_sig,
+            histos += hdraw.drawHistogram("cos_theta", cut=Cuts.mu*Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(0)*Cuts.eta_lj*Cuts.top_mass_sig,
                 plot_range=[n_bins, -1, 1], weight="pu_weight*b_weight_nominal*muon_IDWeight*muon_IsoWeight", skip_weights=["SingleMu*"]
             )
 
 
-            histos += hdraw.drawHistogram("n_vertices", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig,
+            histos += hdraw.drawHistogram("n_vertices", cut=Cuts.mu*Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig,
                 plot_range=[50, 0, 50], weight="pu_weight", skip_weights=["SingleMu*"]
             )
 
-            histos += hdraw.drawHistogram("n_vertices", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig,
+            histos += hdraw.drawHistogram("n_vertices", cut=Cuts.mu*Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig,
                 plot_range=[50, 0, 50], skip_weights=["SingleMu*"]
             )
 
-            histos += hdraw.drawHistogram("rms_lj", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig,
+            histos += hdraw.drawHistogram("rms_lj", cut=Cuts.mu*Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig,
                 plot_range=[n_bins, 0, 0.1], skip_weights=["SingleMu*"]
             )
 
-            histos += hdraw.drawHistogram("rms_lj", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(0), plot_range=[n_bins, 0, 0.1], weight="pu_weight")
-            histos += hdraw.drawHistogram("rms_lj", cut=Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1), plot_range=[n_bins, 0, 0.1], weight="pu_weight")
-            histos += hdraw.drawHistogram("rms_lj", cut=Cuts.mt_mu*Cuts.n_jets(3)*Cuts.n_tags(0), plot_range=[n_bins, 0, 0.1], weight="pu_weight")
-            histos += hdraw.drawHistogram("rms_lj", cut=Cuts.mt_mu*Cuts.n_jets(3)*Cuts.n_tags(1), plot_range=[n_bins, 0, 0.1], weight="pu_weight")
-            histos += hdraw.drawHistogram("rms_lj", cut=Cuts.mt_mu*Cuts.n_jets(3)*Cuts.n_tags(2), plot_range=[n_bins, 0, 0.1], weight="pu_weight")
+            histos += hdraw.drawHistogram("rms_lj", cut=Cuts.mu*Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(0), plot_range=[n_bins, 0, 0.1], weight="pu_weight")
+            histos += hdraw.drawHistogram("rms_lj", cut=Cuts.mu*Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1), plot_range=[n_bins, 0, 0.1], weight="pu_weight")
+            histos += hdraw.drawHistogram("rms_lj", cut=Cuts.mu*Cuts.mt_mu*Cuts.n_jets(3)*Cuts.n_tags(0), plot_range=[n_bins, 0, 0.1], weight="pu_weight")
+            histos += hdraw.drawHistogram("rms_lj", cut=Cuts.mu*Cuts.mt_mu*Cuts.n_jets(3)*Cuts.n_tags(1), plot_range=[n_bins, 0, 0.1], weight="pu_weight")
+            histos += hdraw.drawHistogram("rms_lj", cut=Cuts.mu*Cuts.mt_mu*Cuts.n_jets(3)*Cuts.n_tags(2), plot_range=[n_bins, 0, 0.1], weight="pu_weight")
 
             n_jets = [2,3]
             n_tags = [0,1,2]
             weights = [None, "pu_weight", "pu_weight*b_weight_nominal", "pu_weight*b_weight_nominal*muon_IDWeight*muon_IsoWeight"]
             for nj, nt, weight in itertools.product(n_jets, n_tags, weights):
-                histos += hdraw.drawHistogram("eta_lj", cut=Cuts.rms_lj*Cuts.mt_mu*Cuts.n_jets(nj)*Cuts.n_tags(nt), plot_range=[n_bins, -5, 5],
+                histos += hdraw.drawHistogram("eta_lj", cut=Cuts.mu*Cuts.rms_lj*Cuts.mt_mu*Cuts.n_jets(nj)*Cuts.n_tags(nt), plot_range=[n_bins, -5, 5],
                     weight=weight,
                     skip_weight=["QCD*", "SingleMu*"]
                 )
-                histos += hdraw.drawHistogram("abs(eta_lj)", cut=Cuts.rms_lj*Cuts.mt_mu*Cuts.n_jets(nj)*Cuts.n_tags(nt), plot_range=[n_bins, 0, 5],
+                histos += hdraw.drawHistogram("abs(eta_lj)", cut=Cuts.mu*Cuts.rms_lj*Cuts.mt_mu*Cuts.n_jets(nj)*Cuts.n_tags(nt), plot_range=[n_bins, 0, 5],
                     weight=weight,
                     skip_weight=["QCD*", "SingleMu*"]
                 )
