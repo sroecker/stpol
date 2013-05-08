@@ -5,13 +5,6 @@ import sys,os
 from theta_auto import *
 from ROOT import *
 
-#Add theta to path
-sys.path.insert(1,"/home/andres/theta_testing/utils2/theta_auto/")   
-sys.path.insert(2,"/home/andres/theta_testing/utils2/")
-sys.path.insert(3,"/home/andres/theta_testing/utils/theta_auto/")
-sys.path.insert(4,"/home/andres/single_top/stpol/qcd_estimation/")
-
-
 from make_input_histos import *
 from fit_with_theta import fit_qcd
 from plot_fit import plot_fit

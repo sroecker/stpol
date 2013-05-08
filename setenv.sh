@@ -21,5 +21,13 @@ eval `scramv1 runtime -sh`
 #PYTHONPATH=$PYTHONPATH:${SCRIPT_DIR}/newplots
 PYTHONPATH=$PYTHONPATH:`readlink -f runconfs`:$SCRIPT_DIR/plots:$STPOL_DIR/local/lib/python2.6/site-packages/
 
+#Add QCD estimation stuff
+PYTHONPATH=$PYTHONPATH:$STPOL_DIR/qcd_estimation
+PYTHONPATH=$PYTHONPATH:"/home/andres/theta_testing/utils2/theta_auto"
+echo $PYTHONPATH
+#sys.path.insert(1,)   
+#sys.path.insert(2,"/home/andres/theta_testing/utils2/")
+#sys.path.insert(3,"/home/andres/theta_testing/utils/theta_auto/")
 # Return to original directory
 cd $CURRENT_DIR
+
