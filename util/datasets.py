@@ -229,9 +229,9 @@ step1_MC = [
     , DS("DYJets", "/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM")
 
     #From https://indico.cern.ch/getFile.py/access?contribId=1&resId=0&materialId=slides&confId=228739
-    , DS("TTbar_SemiLept1", "/TTJets_SemiLeptMGDecays_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM") #??
+#    , DS("TTbar_SemiLept1", "/TTJets_SemiLeptMGDecays_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM") #??
     , DS("TTbar_SemiLept2", "/TTJets_SemiLeptMGDecays_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A_ext-v1/AODSIM") #25M
-    , DS("TTbar_FullLept1", "/TTJets_FullLeptMGDecays_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM") #4.2M
+#    , DS("TTbar_FullLept1", "/TTJets_FullLeptMGDecays_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM") #4.2M
     , DS("TTbar_FullLept2", "/TTJets_FullLeptMGDecays_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A-v2/AODSIM") #12M
 
     #https://cmsweb.cern.ch/das/request?view=list&limit=10&instance=cms_dbs_prod_global&input=dataset+dataset%3D%2FTToLeptons_t-channel_*AODSIM
@@ -259,12 +259,22 @@ step1_MC_systematic = [
     DS("WJets_scaledown", "/WJetsToLNu_scaledown_8TeV-madgraph-tauola/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM"),
     DS("WJets_matchingup", "/WJetsToLNu_matchingup_8TeV-madgraph-tauola/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM"),
     DS("WJets_matchingdown", "/WJetsToLNu_matchingdown_8TeV-madgraph-tauola/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM"),
-    DS("TTJets_mass161_5", "/TTJets_mass161_5_TuneZ2star_8TeV-madgraph-tauola/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM"),
-    DS("TTJets_mass184_5", "/TTJets_mass184_5_TuneZ2star_8TeV-madgraph-tauola/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM"),
+    #DS("TTJets_mass161_5", "/TTJets_mass161_5_TuneZ2star_8TeV-madgraph-tauola/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM"),
+    DS("TTJets_mass166_5", "/TTJets_mass166_5_TuneZ2star_8TeV-madgraph-tauola/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM"),
+    #DS("TTJets_mass184_5", "/TTJets_mass184_5_TuneZ2star_8TeV-madgraph-tauola/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM"),
+    DS("TTJets_mass178_5", "/TTJets_mass178_5_TuneZ2star_8TeV-madgraph-tauola/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM"),
     DS("TTJets_matchingup", "/TTJets_matchingup_TuneZ2star_8TeV-madgraph-tauola/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM"),
     DS("TTJets_matchingdown", "/TTJets_matchingdown_TuneZ2star_8TeV-madgraph-tauola/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM"),
     DS("TTJets_scaleup", "/TTJets_scaleup_TuneZ2star_8TeV-madgraph-tauola/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM"),
     DS("TTJets_scaledown", "/TTJets_scaledown_TuneZ2star_8TeV-madgraph-tauola/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM"),
+
+    DS("TToBENu_anomWtb-unphys", "/TToBENu_anomWtb-unphys_t-channel_TuneZ2star_8TeV-comphep/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM"),
+    DS("TToBMuNu_anomWtb-unphys", "/TToBMuNu_anomWtb-unphys_t-channel_TuneZ2star_8TeV-comphep/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM"),
+    DS("TToBTauNu_anomWtb-unphys", "/TToBTauNu_anomWtb-unphys_t-channel_TuneZ2star_8TeV-comphep/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM"),
+
+    DS("TToBENu_anomWtb-0100", "/TToBENu_anomWtb-0100_t-channel_TuneZ2star_8TeV-comphep/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM"),
+    DS("TToBMuNu_anomWtb-0100", "/TToBMuNu_anomWtb-0100_t-channel_TuneZ2star_8TeV-comphep/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM"),
+    DS("TToBTauNu_anomWtb-0100", "/TToBTauNu_anomWtb-0100_t-channel_TuneZ2star_8TeV-comphep/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM"),
 ]
 
 step1_FSIM_Valid = [
