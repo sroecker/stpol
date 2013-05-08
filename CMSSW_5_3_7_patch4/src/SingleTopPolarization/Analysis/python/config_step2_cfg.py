@@ -73,7 +73,7 @@ class Config(C):
         nJets = 2
         nBTags = 1
         ptCut = 40
-        etaCut = 4.7
+        etaCut = 4.5
 
         source = "selectedPatJets"
         #source = "selectedPatJetsForMETtype1p2CorrEnDown"
