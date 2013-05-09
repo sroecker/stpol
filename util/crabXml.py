@@ -50,8 +50,10 @@ class JobStats:
         self.name = task.name
 
     def summary(self):
-        return "%s: (%d|%d|%d) | %.2f %%" % (self.name, self.jobs_total, self.jobs_completed, self.jobs_pending, 100.0*(float(self.jobs_completed) / float(self.jobs_total)))
-
+        s = "%s: (%d|%d|%d) | %.2f %%" % (self.name, self.jobs_total, self.jobs_completed, self.jobs_pending, 100.0*(float(self.jobs_completed) / float(self.jobs_total)))
+        if self.jobs_total != (self.jobs_pending + self.jobs_completed):
+            s = ">>>" + s
+        return s
     def __str__(self):
         s = self.name
         s += "\nJobs: tot %d, comp %d , get %d, resub %d, pending %d\n" % (
