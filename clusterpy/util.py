@@ -14,8 +14,8 @@ def to_png(filename):
     get_ipython().system('gs -q -dNOPAUSE -dBATCH -sDEVICE=pngalpha -dEPSCrop -sOutputFile="$filename".png "$filename".pdf')
 
 def show_canv(canv):
-    canv.SaveAs("test.pdf")
-    to_png("test")
+    canv.SaveAs("test.png")
+    #to_png("test")
     return Image(filename='test.png')
 
 def hostnames():
