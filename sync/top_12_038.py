@@ -8,6 +8,7 @@ import plots.common
 from plots.project_histos import Sample, Cuts
 from plots.common.utils import merge_cmds, merge_hists
 
+lumi_total=12210
 sample_dir = "/scratch/joosep/out_step3_05_07_14_19/iso/mc"
 
 samples = []
@@ -17,6 +18,10 @@ samples.append(Sample.fromFile(sample_dir + "/T_t.root"))
 samples.append(Sample.fromFile(sample_dir + "/Tbar_t.root"))
 samples.append(Sample.fromFile(sample_dir + "/QCDMu.root"))
 samples.append(Sample.fromFile(sample_dir + "/WJets_inclusive.root"))
+samples.append(Sample.fromFile(sample_dir + "/W1Jets_exclusive.root"))
+samples.append(Sample.fromFile(sample_dir + "/W2Jets_exclusive.root"))
+samples.append(Sample.fromFile(sample_dir + "/W3Jets_exclusive.root"))
+samples.append(Sample.fromFile(sample_dir + "/W4Jets_exclusive.root"))
 
 def mc_amount(cut, weight, lumi=12210, ref=None):
     histsD = dict()
@@ -32,6 +37,7 @@ def mc_amount(cut, weight, lumi=12210, ref=None):
     merge_cmd["QCD (MC)"] = ["QCDMu"]
     merge_cmd["t#bar{t} incl."] = ["TTJets_MassiveBinDECAY"]
     merge_cmd["WJets incl"] = ["WJets_inclusive"]
+    merge_cmd["WJets excl"] = ["W1Jets_exclusive", "W2Jets_exclusive", "W3Jets_inclusive", "W4Jets_inclusive"]
     merged_hists = merge_hists(histsD, merge_cmd)
 
     normd = dict()
@@ -43,3 +49,4 @@ def mc_amount(cut, weight, lumi=12210, ref=None):
 if __name__=="__main__":
     cut = Cuts.mu * Cuts.n_jets(2) * Cuts.mt_mu * Cuts.top_mass_sig * Cuts.eta_lj
     hists, norms = mc_amount(cut, "1.0")
+    print norms
