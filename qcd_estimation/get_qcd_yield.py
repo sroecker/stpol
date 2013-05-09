@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+#run as ~andres/theta_testing/utils2/theta-auto.py get_qcd_yield.y
 import sys,os
 from theta_auto import *
 from ROOT import *
@@ -35,12 +36,12 @@ def get_qcd_yield(n_jets, n_tags, cutMT, other_cuts):
 
 if __name__=="__main__":
    n_jets = 2
-   n_tags = 1
+   n_tags = 0
    cutMT = True
    other_cuts = "pt_lj>40 && pt_bj>40"
-   other_cuts += " && abs(eta_lj)>2.5"
-   other_cuts += " && (top_mass < 220 && top_mass > 130)"
-   other_cuts += " && rms_lj<0.025"
+   #other_cuts += " && abs(eta_lj)>2.5"
+   #other_cuts += " && (top_mass < 220 && top_mass > 130)"
+   #other_cuts += " && rms_lj<0.025"
    (y, error) = get_qcd_yield(n_jets, n_tags, cutMT, other_cuts)
    print "Final QCD yield with selection: %s" % other_cuts
    print y, "+-", error
