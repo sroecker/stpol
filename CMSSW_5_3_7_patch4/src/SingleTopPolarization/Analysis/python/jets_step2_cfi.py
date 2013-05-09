@@ -18,14 +18,14 @@ def JetSetup(process, conf):
     jetCut += ' && (chargedHadronEnergyFraction > 0. || abs(eta) >= 2.4)'
     jetCut += ' && (chargedMultiplicity > 0 || abs(eta) >= 2.4)'
 
-#    process.skimJets = cms.EDFilter("CandViewSelector",
-#        src=cms.InputTag(conf.Jets.source),
-#        cut=cms.string('pt>15')
-#    )
+    process.skimJets = cms.EDFilter("CandViewSelector",
+        src=cms.InputTag(conf.Jets.source),
+        cut=cms.string('pt>15')
+    )
 
     if(conf.Jets.source == "selectedPatJets"):
         process.noPUJets = cms.EDProducer('CleanNoPUJetProducer',
-            jetSrc = cms.InputTag(conf.Jets.source),
+            jetSrc = cms.InputTag("skimJets"),
             PUidMVA = cms.InputTag("puJetMva", "fullDiscriminant", "PAT"),
             PUidFlag = cms.InputTag("puJetMva", "fullId", "PAT"),
             PUidVars = cms.InputTag("puJetId", "", "PAT"),
@@ -33,7 +33,7 @@ def JetSetup(process, conf):
         )
     else:
         process.noPUJets = cms.EDProducer('CleanNoPUJetProducer',
-            jetSrc = cms.InputTag(conf.Jets.source),
+            jetSrc = cms.InputTag("skimJets"),
             PUidMVA = cms.InputTag("puJetMva", "fullDiscriminant", "PAT"),
             PUidFlag = cms.InputTag("puJetMva", "fullId", "PAT"),
             PUidVars = cms.InputTag("puJetId", "", "PAT"),
@@ -204,14 +204,14 @@ def JetSetup(process, conf):
     process.nJets = cms.EDFilter(
         "PATCandViewCountFilter",
         src=cms.InputTag("goodJetsRMSCleaned"),
-        minNumber=cms.uint32(conf.Jets.nJets if conf.Jets.cutJets else 0),
-        maxNumber=cms.uint32(conf.Jets.nJets if conf.Jets.cutJets else 7),
+        minNumber=cms.uint32(conf.Jets.nJets if conf.Jets.cutJets else 2),
+        maxNumber=cms.uint32(conf.Jets.nJets if conf.Jets.cutJets else 9999),
     )
     process.mBTags = cms.EDFilter(
         "PATCandViewCountFilter",
         src=cms.InputTag("btaggedJets"),
         minNumber=cms.uint32(conf.Jets.nBTags if conf.Jets.cutJets else 0),
-        maxNumber=cms.uint32(conf.Jets.nBTags if conf.Jets.cutJets else 5),
+        maxNumber=cms.uint32(conf.Jets.nBTags if conf.Jets.cutJets else 9999),
     )
 
     #Require at least 1 untagged jet
@@ -224,7 +224,7 @@ def JetSetup(process, conf):
 
     if conf.isMC:
         effs_2J = Calibrations.getEfficiencies(2, conf.subChannel)
-        effs_3J = Calibrations.getEfficiencies(2, conf.subChannel)
+        effs_3J = Calibrations.getEfficiencies(3, conf.subChannel)
         #if conf.subChannel in (Calibrations.bTaggingEfficiencies_2J.keys()+Calibrations.bTaggingEfficiencies_3J.keys()):
         #    sampleBEffs_2J = Calibrations.bTaggingEfficiencies_2J[conf.subChannel]
         #    sampleBEffs_3J = Calibrations.bTaggingEfficiencies_3J[conf.subChannel]
@@ -271,7 +271,7 @@ def JetSetup(process, conf):
     process.jetSequence = cms.Sequence()
 
     process.jetSequence +=(
-      #process.skimJets *
+      process.skimJets *
       process.noPUJets *
       process.deltaRJets *
       process.goodJets *
@@ -282,16 +282,17 @@ def JetSetup(process, conf):
       process.btaggedJets *
       process.bJetCount *
       process.untaggedJets *
-      process.lightJetCount *
-
-      process.oneUntaggedJet *
-      process.fwdMostLightJet *
-      process.highestBTagJet *
-      process.lowestBTagJet
+      process.lightJetCount
     )
+
     if conf.isMC:
         process.jetSequence += process.bEffSequence
 
+    process.jetSequence += cms.Sequence(
+        process.fwdMostLightJet *
+        process.highestBTagJet *
+        process.lowestBTagJet
+    )
 
     print "goodJets cut = %s" % process.goodJetsRMSCleaned.cut
     print "btaggedJets cut = %s" % process.btaggedJets.cut
