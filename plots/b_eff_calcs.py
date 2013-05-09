@@ -15,15 +15,16 @@ def getBTaggingEff(sample, flavour, cut):
 
 if __name__=="__main__":
 
-    sample_dir = "/scratch/joosep/out_step3_05_07_14_19/iso/mc/"
+    ##sample_dir = "/scratch/joosep/out_step3_05_07_14_19/iso/mc/"
+    sample_dir = "out_step3_May8/"
     samples = []
     #samples.append(project_histos.Sample.fromFile(sample_dir + "TTJets_FullLept.root"))
     samples.append(project_histos.Sample.fromFile(sample_dir + "TTJets_MassiveBinDECAY.root"))
     #samples.append(project_histos.Sample.fromFile(sample_dir + "TTJets_SemiLept.root"))
-    samples.append(project_histos.Sample.fromFile(sample_dir + "T_t.root"))
-    samples.append(project_histos.Sample.fromFile(sample_dir + "WJets_inclusive.root"))
+    #samples.append(project_histos.Sample.fromFile(sample_dir + "T_t.root"))
+    #samples.append(project_histos.Sample.fromFile(sample_dir + "WJets_inclusive.root"))
     logging.info("Doing b-tagging efficiency calculations")
-    cuts = [Cuts.mu * Cuts.n_jets(2) * Cuts.eta_lj * Cuts.top_mass_sig]
+    cuts = [Cuts.mu * Cuts.n_jets(2) * Cuts.eta_lj * Cuts.top_mass_sig * Cuts.mt_mu]
 #    cuts.append("n_jets==2 && !(top_mass>130 && top_mass<220) && mt_mu>50")
 #    cuts.append("n_jets==3 && !(top_mass>130 && top_mass<220) && mt_mu>50")
     for cut in cuts:
