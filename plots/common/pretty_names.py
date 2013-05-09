@@ -8,6 +8,7 @@ for (name, items) in merge_cmds.items():
 variable_names = dict()
 variable_names["eta_lj"] = "#eta_{lj}"
 variable_names["abs_eta_lj"] = "|#eta_{lj}|"
+variable_names["pt_lj"] = "light jet p_{T}"
 variable_names["top_mass"] = "m(l #nu j)"
 variable_names["cos_theta"] = "cos#theta*"
 variable_names["met"] = "MET"
