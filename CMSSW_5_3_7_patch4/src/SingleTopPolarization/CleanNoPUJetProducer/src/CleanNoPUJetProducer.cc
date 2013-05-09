@@ -104,7 +104,7 @@ void
 CleanNoPUJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
    using namespace edm;
-   Handle<View<pat::Jet> > jets;
+   Handle<View<reco::Candidate> > jets;
    Handle<ValueMap<float> > mvaIDs;
    Handle<ValueMap<int> > flags;
    Handle<ValueMap<StoredPileupJetIdentifier> > jetIDs;
@@ -116,7 +116,7 @@ CleanNoPUJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
    std::auto_ptr<std::vector<pat::Jet> > outJets(new std::vector<pat::Jet>());
    for ( uint i = 0; i < jets->size(); ++i ) {
-    const pat::Jet& jet = jets->at(i);
+    const pat::Jet& jet = dynamic_cast<const pat::Jet&>(jets->at(i));
     float mva = 0;
     int idflag = 0;
     const StoredPileupJetIdentifier* id = 0;
