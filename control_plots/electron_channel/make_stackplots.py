@@ -21,8 +21,18 @@ from plots.common.pretty_names import variable_names
 from file_names import dataLumi
 Lumi = sum(dataLumi.values())
 
-mode = "final"
-#mode = "2j1t_nomet"
+# choose cut region
+#mode1 = "final"
+mode1 = "2j1t"
+#mode1 = "2j0t"
+
+mode1a = ""
+#mode1a = "_nomet"
+
+#choose whether inclusive or leptonic ttbar and signal samples are used
+mode2 = "_incl" 
+#mode2 = "_lep"
+mode = mode1 + mode1a + mode2
 
 apply_PUw = True
 apply_Bw = True
@@ -35,15 +45,18 @@ if apply_Bw:
     weight += "_Bw"
 if apply_Elw:
     weight += "_Elw_ElTrw"
-    
-filename = mode + weight + ".root"
-histograms = "Histograms/" + mode + "/" + filename
-print "Opening input file: " + histograms
-h = ROOT.TFile(histograms)
 
 from plots.common.utils import merge_cmds
 process_names = merge_cmds.keys()
 process_names.insert(1,"QCD")
+
+#--------------------open file ------------------------
+filename = mode1 + mode1a + weight + mode2 +".root"
+histograms = "Histograms/" + mode + "/" + filename
+print "Opening input file: " + histograms
+h = ROOT.TFile(histograms)
+
+#------------------------------------------------------
 
 for hist_name in hist_def:
     hist_to_plot = hist_def[hist_name][0]
@@ -59,27 +72,27 @@ for hist_name in hist_def:
     mc_to_plot["T_tW"] = h.Get("tW/" + hist_to_plot)
     mc_to_plot["T_s"] = h.Get("sch/" + hist_to_plot)
     mc_to_plot["signal"] = h.Get("signal/" + hist_to_plot)
-
-    if hist_name == "cos_theta" or hist_name == "eta_lj":
-        nrebin = 4
-    elif hist_name == "met" or hist_name == "el_pt" or hist_name == "top_mass":
-        nrebin = 2
-    else:
-        nrebin =1    
-    
+        
     data = h.Get("data/" + hist_to_plot)
-
     qcd = h.Get("data_anti/" + hist_to_plot)
-    
-    if mode == "final": 
-        qcd_norm = 1103.55*84./1808
-    if mode == "2j0t_nomet":
-        qcd_norm = 38990
-    if mode == "2j1t_nomet":
-        qcd_norm = 982.7
+
+#----------calculate QCD yield from data--------
+    qcd_mode = mode1 + mode2 #omit possible "_nomet" extension as it is always used for the fit
+
+    from qcd_yields import getQCDYield
+    qcd_norm = getQCDYield( qcd, qcd_mode, True)
+    print "QCD estimated from data = " + str(qcd_norm)
+
     qcd.Scale(qcd_norm/qcd.Integral()) #rescale qcd template according to the best-fit value
 
 #--------------Rebin----------------
+    if hist_name == "cos_theta" or hist_name == "pt_lj" or hist_name == "eta_lj": #<--sometimes need to change rebin to 1, if plots are weird (QCD not shown)
+        nrebin = 1
+    elif hist_name == "met" or hist_name == "el_pt" or hist_name == "top_mass":
+        nrebin = 2
+    else:
+        nrebin =1
+
     for key in mc_to_plot:
         mc_to_plot[key].Rebin(nrebin)
         Styling.mc_style(mc_to_plot[key],key)
@@ -118,7 +131,7 @@ for hist_name in hist_def:
     h_sumMC.Draw("histsame")
     data.Draw("epsame")
 #--------------- lumi box and legend-----------------
-    if hist_name == "cos_theta" or hist_name == "eta_lj":
+    if hist_name == "cos_theta":
         legend_pos = "top-left"
     else:
         legend_pos = "top-right"
@@ -146,14 +159,12 @@ for hist_name in hist_def:
     c.Close()
  #------------------------------print cut flow--------------------------
 print("CUT FLOW:")
-print("signal: "+ str(mc_to_plot["signal"].Integral()) + " +- " + str( mc_to_plot["signal"].Integral()/(mc_to_plot["signal"].GetEntries()**0.5) ) )
-print("ttbar: " + str(mc_to_plot["TTJets"].Integral()) + " +- " + str( mc_to_plot["TTJets"].Integral()/(mc_to_plot["TTJets"].GetEntries()**0.5) ) ) 
-print("W + jets: " + str(mc_to_plot["WJets_inclusive"].Integral()) + " +- " + str( mc_to_plot["WJets_inclusive"].Integral()/(mc_to_plot["WJets_inclusive"].GetEntries()**0.5) ) )
-print("Z + jets: " + str(mc_to_plot["DYJets"].Integral()) + " +- " + str( mc_to_plot["DYJets"].Integral()/(mc_to_plot["DYJets"].GetEntries()**0.5) ) )
-print("stop: " + str(mc_to_plot["T_s"].Integral()) + " +- " + str( mc_to_plot["T_s"].Integral()/(mc_to_plot["T_s"].GetEntries()**0.5) ) )
-print("diboson: " + str(mc_to_plot["diboson"].Integral()) + " +- " + str( mc_to_plot["diboson"].Integral()/(mc_to_plot["diboson"].GetEntries()**0.5) ) )
-print("QCD: " + str(qcd.Integral()) + " +- " + str( qcd.Integral()/(qcd.GetEntries()**0.5) ) )
-#print("----------------------")
-print("sum MC: " + str(h_sumMC.Integral()))
-print("Data: " + str(data.Integral()) + " +- " + str( data.Integral()**0.5 ) )
+print("----------------------")
+for key in mc_to_plot:
+    print key + ": " + str( mc_to_plot[key].Integral() ) + " +- " + str( mc_to_plot[key].Integral()/(mc_to_plot[key].GetEntries()**0.5) )
 
+print("QCD: " + str(qcd.Integral()) + " +- " + str( qcd.Integral()/(qcd.GetEntries()**0.5) ) )
+print("----------------------")
+print("sum MC: " + str(h_sumMC.Integral()) )
+print("Data: " + str(data.Integral()) + " +- " + str( data.Integral()**0.5 ) )
+print("----------------------")
