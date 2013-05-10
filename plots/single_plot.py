@@ -80,10 +80,10 @@ if __name__=="__main__":
         ref = dict()
         ref["t#bar{t}"] = 261429
         ref["t#bar{t} incl."] = ref["t#bar{t}"]
-        ref["W+jets"] = 47758738
+        ref["W(#rightarrow l #nu) + jets"] = 47758738
         ref["QCD (MC)"] = 1873957
         ref["t-channel"] = 54769
-        previous = Cuts.hlt_isomu*Cuts.one_muon
+        previous = Cuts.hlt_isomu * Cuts.one_muon * Cuts.lepton_veto
         mc_amount(previous, weight, 12210, ref=ref)
         print
 
@@ -91,7 +91,7 @@ if __name__=="__main__":
         ref = dict()
         ref["t#bar{t}"] = 78201
         ref["t#bar{t} incl."] = ref["t#bar{t}"]
-        ref["W+jets"] = 921051
+        ref["W(#rightarrow l #nu) + jets"] = 921051
         ref["QCD (MC)"] = 67463
         ref["t-channel"] = 20274
         previous = previous*Cuts.n_jets(2)*Cuts.eta_jet*Cuts.pt_jet
@@ -102,7 +102,7 @@ if __name__=="__main__":
         ref = dict()
         ref["t#bar{t}"] = 50158
         ref["t#bar{t} incl."] = ref["t#bar{t}"]
-        ref["W+jets"] = 418873
+        ref["W(#rightarrow l #nu) + jets"] = 418873
         ref["QCD (MC)"] = 8090
         ref["t-channel"] = 10828
         previous = previous * Cut("met > 45")
@@ -113,7 +113,7 @@ if __name__=="__main__":
         ref = dict()
         ref["t#bar{t}"] = 18779
         ref["t#bar{t} incl."] = ref["t#bar{t}"]
-        ref["W+jets"] = 6304
+        ref["W(#rightarrow l #nu) + jets"] = 6304
         ref["QCD (MC)"] = 601
         ref["t-channel"] = 4060
         previous = previous * Cuts.n_tags(1)
@@ -124,7 +124,7 @@ if __name__=="__main__":
         ref = dict()
         ref["t#bar{t}"] = 14960
         ref["t#bar{t} incl."] = ref["t#bar{t}"]
-        ref["W+jets"] = 5134
+        ref["W(#rightarrow l #nu) + jets"] = 5134
         ref["QCD (MC)"] = 447
         ref["t-channel"] = 4412
         previous = previous * Cuts.rms_lj
@@ -135,29 +135,29 @@ if __name__=="__main__":
     #A = compare_plot("abs(eta_lj)", [10, 0, 5], "1.0", cut, "mt>50, 2J1T, no weight")
     #B = compare_plot("abs(eta_lj)", [10, 0, 5], "pu_weight", cut, "mt>50, 2J1T, pu weight")
 
-    n_bins = 20
-    do_log_y=False
-    weight
+    #n_bins = 20
+    #do_log_y=False
+    #weight
 
-    A = compare_plot("top_mass", [n_bins, 100, 300], weight, Cut("mu_iso<0.12")*Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.rms_lj,
-        title="M_{t}>50 GeV, 2J1T, |#eta_{lj}| > 2.5, rms_{lj}<0.025", do_log_y=do_log_y, x_label="M_{bl#nu} [GeV]"
-    )
-    A[0].SaveAs("top_mass_2J1T.png")
+    #A = compare_plot("top_mass", [n_bins, 100, 300], weight, Cut("mu_iso<0.12")*Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.rms_lj,
+    #    title="M_{t}>50 GeV, 2J1T, |#eta_{lj}| > 2.5, rms_{lj}<0.025", do_log_y=do_log_y, x_label="M_{bl#nu} [GeV]"
+    #)
+    #A[0].SaveAs("top_mass_2J1T.png")
 
-    B = compare_plot("top_mass", [n_bins, 100, 300], weight, Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(0)*Cuts.eta_lj*Cuts.rms_lj,
-        title="M_{t}>50 GeV, 2J0T, |#eta_{lj}| > 2.5, rms_{lj}<0.025", do_log_y=do_log_y, x_label="M_{bl#nu} [GeV]"
-    )
-    B[0].SaveAs("top_mass_2J0T.png")
+    #B = compare_plot("top_mass", [n_bins, 100, 300], weight, Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(0)*Cuts.eta_lj*Cuts.rms_lj,
+    #    title="M_{t}>50 GeV, 2J0T, |#eta_{lj}| > 2.5, rms_{lj}<0.025", do_log_y=do_log_y, x_label="M_{bl#nu} [GeV]"
+    #)
+    #B[0].SaveAs("top_mass_2J0T.png")
 
-    C = compare_plot("top_mass", [n_bins, 100, 300], weight, Cuts.mt_mu*Cuts.n_jets(3)*Cuts.n_tags(0)*Cuts.eta_lj*Cuts.rms_lj,
-        title="M_{t}>50 GeV, 3J0T, |#eta_{lj}| > 2.5, rms_{lj}<0.025", do_log_y=do_log_y, x_label="M_{bl#nu} [GeV]"
-    )
-    C[0].SaveAs("top_mass_3J0T.png")
+    #C = compare_plot("top_mass", [n_bins, 100, 300], weight, Cuts.mt_mu*Cuts.n_jets(3)*Cuts.n_tags(0)*Cuts.eta_lj*Cuts.rms_lj,
+    #    title="M_{t}>50 GeV, 3J0T, |#eta_{lj}| > 2.5, rms_{lj}<0.025", do_log_y=do_log_y, x_label="M_{bl#nu} [GeV]"
+    #)
+    #C[0].SaveAs("top_mass_3J0T.png")
 
-    D = compare_plot("top_mass", [n_bins, 100, 300], weight, Cuts.mt_mu*Cuts.n_jets(3)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.rms_lj,
-        title="M_{t}>50 GeV, 3J1T, |#eta_{lj}| > 2.5, rms_{lj}<0.025", do_log_y=do_log_y, x_label="M_{bl#nu} [GeV]"
-    )
-    D[0].SaveAs("top_mass_3J1T.png")
+    #D = compare_plot("top_mass", [n_bins, 100, 300], weight, Cuts.mt_mu*Cuts.n_jets(3)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.rms_lj,
+    #    title="M_{t}>50 GeV, 3J1T, |#eta_{lj}| > 2.5, rms_{lj}<0.025", do_log_y=do_log_y, x_label="M_{bl#nu} [GeV]"
+    #)
+    #D[0].SaveAs("top_mass_3J1T.png")
 
 #    B = compare_plot("abs(eta_lj)", [n_bins, 0, 5], "1.0", Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.rms_lj, "mu")
 #    C = compare_plot("pt_lj", [n_bins, 0, 300], "1.0", Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.rms_lj, "mu")

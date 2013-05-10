@@ -6,17 +6,7 @@ logger = logging.getLogger("JetSetup")
 
 def JetSetup(process, conf):
 
-#    if cutJets:
-#        print "CUT\tJets: Using %d jets, %d tags" % (nJets, nBTags)
-#    else:
-#        print "CUT\tJets: keeping all events with >=1 jet and >=0 btag"
-#
-#    if conf.isMC:
-#        jetCut = 'userFloat("pt_smear") > %f' % conf.Jets.ptCut
-#    else:
-
     jetCut = 'pt > %f' % conf.Jets.ptCut
-
     jetCut += ' && abs(eta) < %f' % conf.Jets.etaCut
     jetCut += ' && numberOfDaughters > 1'
     #jetCut += ' && neutralHadronEnergyFraction < 0.99'
@@ -28,14 +18,14 @@ def JetSetup(process, conf):
     jetCut += ' && (chargedHadronEnergyFraction > 0. || abs(eta) >= 2.4)'
     jetCut += ' && (chargedMultiplicity > 0 || abs(eta) >= 2.4)'
 
-#    process.skimJets = cms.EDFilter("CandViewSelector",
-#        src=cms.InputTag(conf.Jets.source),
-#        cut=cms.string('pt>15')
-#    )
+    process.skimJets = cms.EDFilter("CandViewSelector",
+        src=cms.InputTag(conf.Jets.source),
+        cut=cms.string('pt>15')
+    )
 
     if(conf.Jets.source == "selectedPatJets"):
         process.noPUJets = cms.EDProducer('CleanNoPUJetProducer',
-            jetSrc = cms.InputTag(conf.Jets.source),
+            jetSrc = cms.InputTag("skimJets"),
             PUidMVA = cms.InputTag("puJetMva", "fullDiscriminant", "PAT"),
             PUidFlag = cms.InputTag("puJetMva", "fullId", "PAT"),
             PUidVars = cms.InputTag("puJetId", "", "PAT"),
@@ -43,7 +33,7 @@ def JetSetup(process, conf):
         )
     else:
         process.noPUJets = cms.EDProducer('CleanNoPUJetProducer',
-            jetSrc = cms.InputTag(conf.Jets.source),
+            jetSrc = cms.InputTag("skimJets"),
             PUidMVA = cms.InputTag("puJetMva", "fullDiscriminant", "PAT"),
             PUidFlag = cms.InputTag("puJetMva", "fullId", "PAT"),
             PUidVars = cms.InputTag("puJetId", "", "PAT"),
@@ -68,6 +58,11 @@ def JetSetup(process, conf):
     process.goodJets = cms.EDFilter("CandViewSelector",
         src=cms.InputTag("deltaRJets"),
         cut=cms.string(jetCut)
+    )
+
+    process.goodJetsRMSCleaned = cms.EDFilter("CandViewSelector",
+        src=cms.InputTag("goodJets"),
+        cut=cms.string(bTagCutStr + " || (!(%s) && userFloat('rms')<0.025)" % bTagCutStr)
     )
 
     #B-tagging efficiencies
@@ -156,13 +151,13 @@ def JetSetup(process, conf):
 
     process.goodJetCount = cms.EDProducer(
         "CollectionSizeProducer<reco::Candidate>",
-        src = cms.InputTag("goodJets")
+        src = cms.InputTag("goodJetsRMSCleaned")
     )
 
 
     process.btaggedJets = cms.EDFilter(
         "CandViewSelector",
-        src=cms.InputTag("goodJets"),
+        src=cms.InputTag("goodJetsRMSCleaned"),
         cut=cms.string(bTagCutStr)
     )
 
@@ -174,7 +169,7 @@ def JetSetup(process, conf):
     #invert the b-tag cut
     process.untaggedJets = cms.EDFilter(
         "CandViewSelector",
-        src=cms.InputTag("goodJets"),
+        src=cms.InputTag("goodJetsRMSCleaned"),
         cut=cms.string(bTagCutStr.replace(">=", "<"))
     )
 
@@ -186,14 +181,14 @@ def JetSetup(process, conf):
     #Select the most forward untagged jet by absolute eta
     process.fwdMostLightJet = cms.EDFilter(
         'LargestAbsEtaCandViewProducer',
-        src = cms.InputTag("goodJets"),
+        src = cms.InputTag("goodJetsRMSCleaned"),
         maxNumber = cms.uint32(1)
     )
 
     #Gets the b-tagged jet with the highest b discriminator value
     process.highestBTagJet = cms.EDFilter(
         'LargestBDiscriminatorJetViewProducer',
-        src = cms.InputTag("goodJets"),
+        src = cms.InputTag("goodJetsRMSCleaned"),
         maxNumber = cms.uint32(1),
         bDiscriminator = cms.string(conf.Jets.bTagDiscriminant),
         reverse = cms.bool(False)
@@ -201,22 +196,22 @@ def JetSetup(process, conf):
 
     #Take the jet with the lowest overall b-discriminator value as the light jet
     process.lowestBTagJet = process.highestBTagJet.clone(
-        src = cms.InputTag("goodJets"),
+        src = cms.InputTag("goodJetsRMSCleaned"),
         reverse = cms.bool(True)
     )
 
     #Events failing the following jet cuts are not processed further (deliberately loose)
     process.nJets = cms.EDFilter(
         "PATCandViewCountFilter",
-        src=cms.InputTag("goodJets"),
-        minNumber=cms.uint32(conf.Jets.nJets if conf.Jets.cutJets else 0),
-        maxNumber=cms.uint32(conf.Jets.nJets if conf.Jets.cutJets else 7),
+        src=cms.InputTag("goodJetsRMSCleaned"),
+        minNumber=cms.uint32(conf.Jets.nJets if conf.Jets.cutJets else 2),
+        maxNumber=cms.uint32(conf.Jets.nJets if conf.Jets.cutJets else 9999),
     )
     process.mBTags = cms.EDFilter(
         "PATCandViewCountFilter",
         src=cms.InputTag("btaggedJets"),
         minNumber=cms.uint32(conf.Jets.nBTags if conf.Jets.cutJets else 0),
-        maxNumber=cms.uint32(conf.Jets.nBTags if conf.Jets.cutJets else 5),
+        maxNumber=cms.uint32(conf.Jets.nBTags if conf.Jets.cutJets else 9999),
     )
 
     #Require at least 1 untagged jet
@@ -229,7 +224,7 @@ def JetSetup(process, conf):
 
     if conf.isMC:
         effs_2J = Calibrations.getEfficiencies(2, conf.subChannel)
-        effs_3J = Calibrations.getEfficiencies(2, conf.subChannel)
+        effs_3J = Calibrations.getEfficiencies(3, conf.subChannel)
         #if conf.subChannel in (Calibrations.bTaggingEfficiencies_2J.keys()+Calibrations.bTaggingEfficiencies_3J.keys()):
         #    sampleBEffs_2J = Calibrations.bTaggingEfficiencies_2J[conf.subChannel]
         #    sampleBEffs_3J = Calibrations.bTaggingEfficiencies_3J[conf.subChannel]
@@ -243,7 +238,7 @@ def JetSetup(process, conf):
 
         #The b-tag weight calculation is different for each required n-jet/m-btag bin
         process.bTagWeightProducerNJMT = cms.EDProducer('BTagSystematicsWeightProducer',
-            src=cms.InputTag("goodJets"),
+            src=cms.InputTag("goodJetsRMSCleaned"),
             nJets=cms.uint32(0),
             nTags=cms.uint32(0),
             nJetSrc=cms.InputTag("goodJetCount"),
@@ -276,28 +271,30 @@ def JetSetup(process, conf):
     process.jetSequence = cms.Sequence()
 
     process.jetSequence +=(
-      #process.skimJets *
+      process.skimJets *
       process.noPUJets *
       process.deltaRJets *
       process.goodJets *
+      process.goodJetsRMSCleaned *
 
       process.goodJetCount *
 
       process.btaggedJets *
       process.bJetCount *
       process.untaggedJets *
-      process.lightJetCount *
-
-      process.oneUntaggedJet *
-      process.fwdMostLightJet *
-      process.highestBTagJet *
-      process.lowestBTagJet
+      process.lightJetCount
     )
+
     if conf.isMC:
         process.jetSequence += process.bEffSequence
 
+    process.jetSequence += cms.Sequence(
+        process.fwdMostLightJet *
+        process.highestBTagJet *
+        process.lowestBTagJet
+    )
 
-    print "goodJets cut = %s" % process.goodJets.cut
+    print "goodJets cut = %s" % process.goodJetsRMSCleaned.cut
     print "btaggedJets cut = %s" % process.btaggedJets.cut
 
     #if conf.isMC:
@@ -305,7 +302,7 @@ def JetSetup(process, conf):
     if conf.doDebug:
         #process.sourceJetAnalyzer = cms.EDAnalyzer("SimpleJetAnalyzer", interestingCollections=cms.untracked.VInputTag(conf.Jets.source))
         #process.jetSequence.insert(0, process.sourceJetAnalyzer)
-        process.jetAnalyzer = cms.EDAnalyzer("SimpleJetAnalyzer", interestingCollections=cms.untracked.VInputTag(conf.Jets.source, "goodJets"))
+        process.jetAnalyzer = cms.EDAnalyzer("SimpleJetAnalyzer", interestingCollections=cms.untracked.VInputTag(conf.Jets.source, "goodJetsRMSCleaned"))
         process.jetSequence += process.jetAnalyzer
 
     print process.jetSequence

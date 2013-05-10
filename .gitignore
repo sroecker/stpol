@@ -37,4 +37,6 @@ pres
 
 #vim temps
 *.un~
+*~
+
 

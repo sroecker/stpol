@@ -1,4 +1,0 @@
-file:/hdfs/local/joosep/stpol/step2_MC_Iso_04_01/WD_Tbar_tW/res/output_1_1_WeJ.root
-file:/hdfs/local/joosep/stpol/step2_MC_Iso_04_01/WD_Tbar_tW/res/output_2_1_GmN.root
-file:/hdfs/local/joosep/stpol/step2_MC_Iso_04_01/WD_Tbar_tW/res/output_3_1_gII.root
-file:/hdfs/local/joosep/stpol/step2_MC_Iso_04_01/WD_Tbar_tW/res/output_4_1_8qY.root

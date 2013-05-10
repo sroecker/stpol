@@ -1,2 +1,0 @@
-file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_01/WD_QCD_Pt_20_30_BCtoE/res/output_1_1_vhL.root
-file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_01/WD_QCD_Pt_20_30_BCtoE/res/output_2_1_Toj.root

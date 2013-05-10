@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "runValid.py", line 76, in <module>
+    unittest.main()
+  File "/cvmfs/cms.cern.ch/slc5_amd64_gcc462/external/python/2.6.4/lib/python2.6/unittest.py", line 816, in __init__
+    self.parseArgs(argv)
+  File "/cvmfs/cms.cern.ch/slc5_amd64_gcc462/external/python/2.6.4/lib/python2.6/unittest.py", line 843, in parseArgs
+    self.createTests()
+  File "/cvmfs/cms.cern.ch/slc5_amd64_gcc462/external/python/2.6.4/lib/python2.6/unittest.py", line 849, in createTests
+    self.module)
+  File "/cvmfs/cms.cern.ch/slc5_amd64_gcc462/external/python/2.6.4/lib/python2.6/unittest.py", line 613, in loadTestsFromNames
+    suites = [self.loadTestsFromName(name, module) for name in names]
+  File "/cvmfs/cms.cern.ch/slc5_amd64_gcc462/external/python/2.6.4/lib/python2.6/unittest.py", line 584, in loadTestsFromName
+    parent, obj = obj, getattr(obj, part)
+AttributeError: 'module' object has no attribute '2'

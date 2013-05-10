@@ -1,2 +1,0 @@
-file:/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14/WD_T_s/res/output_1_1_mRE.root
-file:/hdfs/local/joosep/stpol/step2_MC_Iso_Mar14/WD_T_s/res/output_2_1_sDi.root
