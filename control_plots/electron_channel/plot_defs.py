@@ -31,10 +31,16 @@ cuts = {
     
     "2j0t": "(" + sel_2j0t + "&" + sel_met + ")",
 
-    "2j1t_nomet": "(" + sel_2j1t + "&" + muon_veto + "&" + trigger + "&" + sel_ele + "&" + sel_topm + "&" + sel_eta  + ")",
-    "2j1t_nomet_antiiso": "(" + sel_2j1t + "&" + muon_veto + "&" + trigger + "&" + sel_topm + "&" + sel_eta  + ")",
+    "2j1t_nomet_antiiso": "(" + sel_2j1t + "&" + muon_veto + "&" + trigger  + ")",
+    "2j1t_nomet": "(" + sel_2j1t + "&" + muon_veto + "&" + trigger + "&" + sel_ele  + ")",
+   
 
-    "2j1t": "(" + sel_2j1t + "&" + sel_met + "&" + muon_veto + "&" + trigger + ")",
+    "final_nomet": "(" + sel_2j1t + "&" + muon_veto + "&" + trigger + "&" + sel_ele + "&" + sel_topm + "&" + sel_eta  + ")",
+    "final_nomet_antiiso": "(" + sel_2j1t + "&" + muon_veto + "&" + trigger + "&" + sel_topm + "&" + sel_eta  + ")",
+
+    "2j1t": "(" + trigger + "&" + sel_2j1t + "&" + sel_met + "&" + muon_veto + "&" + sel_ele + ")",
+    "2j1t_antiiso": "(" + trigger + "&" + sel_2j1t + "&" + sel_met + "&" + muon_veto + ")",
+
 
     "3j1t": "(" + sel_3j1t + "&" + sel_met + ")",
     "3j2t": "(" + sel_3j2t + "&" + sel_met + ")",

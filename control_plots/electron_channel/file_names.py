@@ -20,10 +20,9 @@ mcFiles = {
     "W3Jets_exclusive": "W3jets.root",
     "W4Jets_exclusive": "W4jets.root",
     
-#    "TTbar": "TTJets_MassiveBinDECAY.root",
-
-    "TTJets_SemiLept": "TTJets_SemiLept.root",
-    "TTJets_FullLept": "TTJets_FullLept.root",
+    "TTJets_MassiveBinDECAY": "TTJets_MassiveBinDECAY.root",
+#    "TTJets_SemiLept": "TTJets_SemiLept.root",
+#    "TTJets_FullLept": "TTJets_FullLept.root",
 
 #    "GJets1": "GJets1.root",
     "GJets2": "GJets2.root",
