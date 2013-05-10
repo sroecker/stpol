@@ -74,7 +74,7 @@ class Config(C):
         nBTags = 1
         ptCut = 40
         etaCut = 4.5
-
+        doLightJetRMSClean = False
         source = "selectedPatJets"
         #source = "selectedPatJetsForMETtype1p2CorrEnDown"
 
