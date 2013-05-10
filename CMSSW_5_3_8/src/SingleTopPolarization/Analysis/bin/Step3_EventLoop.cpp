@@ -22,6 +22,22 @@
 #include <stdio.h>
 #include <time.h>
 
+using namespace std;
+
+namespace LHAPDF
+{
+	void initPDFSet(int nset, const std::string &filename, int member = 0);
+	int numberPDF(int nset);
+	void usePDFMember(int nset, int member);
+	double xfx(int nset, double x, double Q, int fl);
+	double getXmin(int nset, int member);
+	double getXmax(int nset, int member);
+	double getQ2min(int nset, int member);
+	double getQ2max(int nset, int member);
+	void extrapolate(bool extrapolate = true);
+	int	numberPDF();
+}
+
 //Shorthand for getting a value of type T from the event
 template <typename T>
 T get_collection(const edm::EventBase& evt, edm::InputTag src, const T& retval) {
@@ -207,6 +223,7 @@ public:
     int nTagsCutMax;
     
     bool applyEtaLj;
+    float etaMin;
     
     edm::InputTag goodJetsCountSrc;
     edm::InputTag bTagJetsCountSrc;
@@ -218,16 +235,19 @@ public:
     edm::InputTag lightJetBdiscrSrc;
     edm::InputTag lightJetPtSrc;
     edm::InputTag lightJetRmsSrc;
-    
+    edm::InputTag lightJetDeltaRSrc;    
+
     edm::InputTag bJetEtaSrc;
     edm::InputTag bJetBdiscrSrc;
     edm::InputTag bJetPtSrc;
+    edm::InputTag bJetDeltaRSrc;
     
     virtual void initialize_branches() {
         branch_vars["pt_lj"] = def_val;
         branch_vars["eta_lj"] = def_val;
         branch_vars["bdiscr_lj"] = def_val;
         branch_vars["rms_lj"] = def_val;
+        branch_vars["deltaR_lj"] = def_val;
         
         branch_vars["pt_bj"] = def_val;
         branch_vars["eta_bj"] = def_val;
@@ -246,7 +266,8 @@ public:
         applyEtaLj =  pars.getParameter<bool>("applyEtaLj");
         
         rmsMax = pars.getParameter<double>("rmsMax");
-        
+        etaMin = pars.getParameter<double>("etaMin");
+
         nJetsCutMax = pars.getParameter<int>("nJetsMax");
         nJetsCutMin = pars.getParameter<int>("nJetsMin");
         
@@ -259,6 +280,7 @@ public:
         lightJetBdiscrSrc = pars.getParameter<edm::InputTag>("lightJetBdiscrSrc");
         lightJetPtSrc = pars.getParameter<edm::InputTag>("lightJetPtSrc");
         lightJetRmsSrc = pars.getParameter<edm::InputTag>("lightJetRmsSrc");
+        lightJetDeltaRSrc = pars.getParameter<edm::InputTag>("lightJetDeltaRSrc");
         
     }
     
@@ -268,13 +290,16 @@ public:
         branch_vars["eta_lj"] = get_collection_n<float>(event, lightJetEtaSrc, 0);
         branch_vars["bdiscr_lj"] = get_collection_n<float>(event, lightJetBdiscrSrc, 0);
         branch_vars["rms_lj"] = get_collection_n<float>(event, lightJetRmsSrc, 0);
+        branch_vars["deltaR_lj"] = get_collection_n<float>(event, lightJetDeltaRSrc, 0);
         bool passes_rms_lj = (branch_vars["rms_lj"] < rmsMax);
-        
+        bool passes_eta_lj = (abs(branch_vars["eta_lj"]) > etaMin);
+
         branch_vars["n_jets"] = get_collection<int>(event, goodJetsCountSrc, -1);
         
         if (cutOnNJets && (branch_vars["n_jets"] > nJetsCutMax || branch_vars["n_jets"] < nJetsCutMin)) return false;
         if (applyRmsLj && !passes_rms_lj) return false;
-        
+        if (applyEtaLj && !passes_eta_lj) return false;
+
         post_process();
         return true;
     }
@@ -291,12 +316,14 @@ public:
     edm::InputTag bJetBdiscrSrc;
     edm::InputTag bJetPtSrc;
     edm::InputTag bTagJetsCountSrc;
+    edm::InputTag bJetDeltaRSrc;
     
     virtual void initialize_branches() {
         branch_vars["pt_bj"] = def_val;
         branch_vars["eta_bj"] = def_val;
         branch_vars["bdiscr_bj"] = def_val;
         branch_vars["n_tags"] = def_val;
+        branch_vars["deltaR_bj"] = def_val;
     }
     
     TagCuts(const edm::ParameterSet& pars, std::map<std::string, float>& _branch_vars) :
@@ -311,6 +338,7 @@ public:
         bJetBdiscrSrc = pars.getParameter<edm::InputTag>("bJetBdiscrSrc");
         bJetPtSrc = pars.getParameter<edm::InputTag>("bJetPtSrc");
         bTagJetsCountSrc = pars.getParameter<edm::InputTag>("bTagJetsCountSrc");
+        bJetDeltaRSrc = pars.getParameter<edm::InputTag>("bJetDeltaRSrc");
     }
     
     bool process(const edm::EventBase& event) {
@@ -320,7 +348,8 @@ public:
         branch_vars["eta_bj"] = get_collection_n<float>(event, bJetEtaSrc, 0);
         branch_vars["bdiscr_bj"] = get_collection_n<float>(event, bJetBdiscrSrc, 0);
         branch_vars["n_tags"] = get_collection<int>(event, bTagJetsCountSrc, -1);
-        
+        branch_vars["deltaR_bj"] = get_collection_n<float>(event, bJetDeltaRSrc, 0);
+
         if (cutOnNTags && (branch_vars["n_tags"] > nTagsCutMax || branch_vars["n_tags"] < nTagsCutMin)) return false;
         
         post_process();
@@ -468,11 +497,35 @@ public:
     
     std::map<std::string, std::vector<float>>& branch_vars_vec;
     
+    // for PDF uncertanty
+    bool addPDFInfo;
+    edm::InputTag scalePDFSrc;
+    edm::InputTag x1Src;
+    edm::InputTag x2Src;
+    edm::InputTag id1Src;
+    edm::InputTag id2Src;
+
+    float	scalePDF;
+	float	x1,x2;
+	int		id1,id2;
+	
+	std::vector<std::string>	PDFSets;
+	std::vector<std::string>	PDFnames;
+	
     void initialize_branches() {
         branch_vars["cos_theta"] = def_val;
         branch_vars["n_vertices"] = def_val;
         //branch_vars_vec["scale_factors"] = std::vector<float>();
         //branch_vars_vec["scale_factors"].clear();
+    }
+
+    void initialize_branches_PDF(bool addPDFs) {
+        if(!addPDFs) return;		
+    	branch_vars["scalePDF"] = def_val;
+		branch_vars["x1"] = def_val;
+		branch_vars["x2"] = def_val;
+		branch_vars["id1"] = def_val;
+		branch_vars["id2"] = def_val;
     }
     
     
@@ -480,10 +533,50 @@ public:
     CutsBaseF(_branch_vars),
     branch_vars_vec(_branch_vars_vec)
     {
+        addPDFInfo = pars.getParameter<bool>("addPDFInfo");
+        if(addPDFInfo){
+            PDFSets = pars.getParameter<std::vector<std::string>>("PDFSets");
+            std::map<string,int> map_name;
+            //cout << "size " << PDFSets.size() <<endl;
+            for( unsigned int i = 0; i < PDFSets.size(); i++ ){
+                if( i > 2 ) break;	// lhapdf cannot manage with more PDFs 
+
+            	// make names of PDF sets to be saved
+            	string name = PDFSets[i];
+            	size_t pos = name.find_first_not_of("ZXCVBNMASDFGHJKLQWERTYUIOPabcdefghijklmnopqrstuvwxyz1234567890");
+            	if (pos!=std::string::npos) name = name.substr(0,pos);
+            	if( map_name.count(name) == 0 ){
+            		map_name[name]=0;
+            		PDFnames.push_back(name);
+            	}
+            	else {
+            		map_name[name]++;
+            		ostringstream ostr;
+            		ostr << name << "xxx" << map_name[name];
+            		PDFnames.push_back(ostr.str());
+            	}
+            
+                // initialise the PDF set
+            	//cout<<"PDFnames[i]="<<PDFnames[i]<<"\tPDFSets[i]="<<PDFSets[i]<<endl;
+    		    LHAPDF::initPDFSet(i+1, PDFSets[i]);
+                branch_vars[string("w0"+PDFnames[i])] = def_val;
+                branch_vars[string("n"+PDFnames[i])] = def_val;
+                branch_vars_vec[string("weights"+PDFnames[i])] = std::vector<float>();
+                branch_vars_vec[string("weights"+PDFnames[i])].clear();
+    	    }
+        }
         initialize_branches();
         cosThetaSrc = pars.getParameter<edm::InputTag>("cosThetaSrc");
         nVerticesSrc = pars.getParameter<edm::InputTag>("nVerticesSrc");
         //scaleFactorsSrc = pars.getParameter<edm::InputTag>("scaleFactorsSrc");
+
+        if(addPDFInfo){
+    		scalePDFSrc = pars.getParameter<edm::InputTag>("scalePDFSrc");
+    		x1Src = pars.getParameter<edm::InputTag>("x1Src");
+    		x2Src = pars.getParameter<edm::InputTag>("x2Src");
+    		id1Src = pars.getParameter<edm::InputTag>("id1Src");
+    		id2Src = pars.getParameter<edm::InputTag>("id2Src");
+        }
     }
     
     bool process(const edm::EventBase& event) {
@@ -499,7 +592,45 @@ public:
         //        branch_vars_vec["scale_factors"].push_back(sf);
         //    }
         //}
-         
+
+        // for PDF uncertanty
+        if(addPDFInfo){
+            branch_vars["scalePDF"] = get_collection<float>(event, scalePDFSrc, def_val);
+    		branch_vars["x1"] = get_collection<float>(event, x1Src, def_val);
+    		branch_vars["x2"] = get_collection<float>(event, x2Src, def_val);
+    		branch_vars["id1"] = get_collection<int>(event, id1Src, def_val);
+    		branch_vars["id2"] = get_collection<int>(event, id2Src, def_val);
+
+        	
+            for( unsigned int i = 0; i < PDFSets.size(); i++ ){
+        		if( i > 2 ) break;	// lhapdf cannot manage with more PDFs 
+        		
+        		int InitNr = i+1;
+        		
+        		// calculate the PDF weights
+        		std::auto_ptr < std::vector<double> > weights(new std::vector<double>());
+        		LHAPDF::usePDFMember(InitNr, 0);
+                double	xpdf1	= LHAPDF::xfx(InitNr, branch_vars["x1"], branch_vars["scalePDF"], branch_vars["id1"]);
+        		double	xpdf2	= LHAPDF::xfx(InitNr, branch_vars["x2"], branch_vars["scalePDF"], branch_vars["id2"]);
+        		double	w0		= xpdf1 * xpdf2;
+        		int		nPDFSet = LHAPDF::numberPDF(InitNr);
+        		for (int p = 1; p <= nPDFSet; p++)
+        		{
+        			LHAPDF::usePDFMember(InitNr, p);
+        			double xpdf1_new	= LHAPDF::xfx(InitNr, branch_vars["x1"], branch_vars["scalePDF"], branch_vars["id1"]);
+        			double xpdf2_new	= LHAPDF::xfx(InitNr, branch_vars["x2"], branch_vars["scalePDF"], branch_vars["id2"]);
+        			double pweight		= xpdf1_new * xpdf2_new / w0;
+        			weights->push_back(pweight);
+        		}
+        		
+        		// save weights
+                for (auto sf : (*weights)) {
+                    branch_vars_vec[std::string("weights"+PDFnames[i])].push_back(float(sf));
+                }
+                branch_vars[std::string("n"+PDFnames[i])] = nPDFSet;
+                branch_vars[std::string("w0"+PDFnames[i])] = w0;
+        	}
+        }
         post_process();
         return true;
     }
@@ -513,8 +644,11 @@ public:
     edm::InputTag trueBJetTaggedCount;
     edm::InputTag trueCJetTaggedCount;
     edm::InputTag trueLJetTaggedCount;
-    
+    edm::InputTag trueCosTheta;
+    edm::InputTag trueLeptonPdgIdSrc;
+
     bool doGenParticles;
+    bool requireGenMuon;
     
     void initialize_branches() {
         branch_vars["true_b_count"] = def_val;
@@ -524,6 +658,9 @@ public:
         branch_vars["true_b_tagged_count"] = def_val;
         branch_vars["true_c_tagged_count"] = def_val;
         branch_vars["true_l_tagged_count"] = def_val;
+
+        branch_vars["true_cos_theta"] = def_val;
+        branch_vars["true_lepton_pdgId"] = def_val;
     }
     
     GenParticles(const edm::ParameterSet& pars, std::map<std::string, float>& _branch_vars) :
@@ -539,6 +676,10 @@ public:
         trueBJetTaggedCount = pars.getParameter<edm::InputTag>("trueBJetTaggedCountSrc");
         trueCJetTaggedCount = pars.getParameter<edm::InputTag>("trueCJetTaggedCountSrc");
         trueLJetTaggedCount = pars.getParameter<edm::InputTag>("trueLJetTaggedCountSrc");
+        
+        trueCosTheta = pars.getParameter<edm::InputTag>("trueCosThetaSrc");
+        trueLeptonPdgIdSrc = pars.getParameter<edm::InputTag>("trueLeptonPdgIdSrc");
+        requireGenMuon = pars.getParameter<bool>("requireGenMuon");
     }
     
     bool process(const edm::EventBase& event) {
@@ -551,6 +692,11 @@ public:
         branch_vars["true_b_tagged_count"] = get_collection<int>(event, trueBJetTaggedCount, def_val);
         branch_vars["true_c_tagged_count"] = get_collection<int>(event, trueCJetTaggedCount, def_val);
         branch_vars["true_l_tagged_count"] = get_collection<int>(event, trueLJetTaggedCount, def_val);
+
+        branch_vars["true_cos_theta"] = get_collection<double>(event, trueCosTheta, def_val);
+        branch_vars["true_lepton_pdgId"] = get_collection<int>(event, trueLeptonPdgIdSrc, 0);
+		  	
+		if(requireGenMuon && abs(branch_vars["true_lepton_pdgId"])!=13) return false;
 
         post_process();
         return true;
@@ -627,7 +773,8 @@ int main(int argc, char* argv[])
         "total_processed", "pass_hlt_cut",
         "pass_lepton_cuts", "pass_lepton_veto_cuts",
         "pass_mt_cuts", "pass_jet_cuts",
-        "pass_btag_cuts", "pass_top_cuts"
+        "pass_btag_cuts", "pass_top_cuts",
+        "pass_gen_cuts"
     });
    
     for(auto& e : count_map_order) {
@@ -732,8 +879,13 @@ int main(int argc, char* argv[])
                 
                 misc_vars.process(event);
                 if(weights.doWeights) weights.process(event);
-                if (gen_particles.doGenParticles) gen_particles.process(event);
                 
+                bool passes_gen_cuts = true;
+                if (gen_particles.doGenParticles) {
+                     passes_gen_cuts = gen_particles.process(event);
+                }
+                if(!passes_gen_cuts) continue;
+                                
                 event_id_branches["event_id"] = (unsigned int)event.id().event();
                 event_id_branches["run_id"] = (unsigned int)event.id().run();
                 event_id_branches["lumi_id"] = (unsigned int)event.id().luminosityBlock();
@@ -763,6 +915,7 @@ int main(int argc, char* argv[])
     count_map["pass_jet_cuts"] += jet_cuts.n_pass;
     count_map["pass_btag_cuts"] += btag_cuts.n_pass;
     count_map["pass_top_cuts"] += top_cuts.n_pass;
+    count_map["pass_gen_cuts"] += gen_particles.n_pass;
     
     int i = 1;
     for (auto& elem : count_map_order) {
@@ -780,6 +933,7 @@ int main(int argc, char* argv[])
     std::cout << "jet cuts " << jet_cuts.toString() << std::endl;
     std::cout << "tag cuts " << btag_cuts.toString() << std::endl;
     std::cout << "top cuts " << top_cuts.toString() << std::endl;
+    std::cout << "gen cuts " << gen_particles.toString() << std::endl;
     stopwatch->Stop();
     
     double time = stopwatch->RealTime();
