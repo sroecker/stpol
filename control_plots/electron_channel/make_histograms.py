@@ -10,15 +10,23 @@ except KeyError:
 
 from plots.common.cross_sections import xs
 
-cutstring = "final"
-#cutstring_qcd_template = "final_antiiso"
+#cutstring = "final"
+cutstring = "final_nomet"
+
+#cutstring = "2j1t"
 #cutstring = "2j1t_nomet"
+
+#cutstring = "2j0t"
 #cutstring = "2j0t_nomet"
+
 cutstring_qcd_template = cutstring + "_antiiso"
 
 apply_PUw = True
 apply_Elw = True
 apply_Bw = True
+
+#mode = "_lep"     # leptonic samples of signal and ttbar
+mode = "_incl"    # inclusive samples of signal and ttbar
 
 infilePath = "/home/liis/data/Step3_output_0105/"
 
@@ -123,14 +131,19 @@ for hist_name in hist_def:
         histos[hist_name][process] = h
         
     #------------------Join stuff---------------------------
-    hist_final[hist_name]["signal"] = histos[hist_name]["T_t"].Clone("signal")
-    hist_final[hist_name]["signal"].Add(histos[hist_name]["Tbar_t"])
-    
-#    hist_final[hist_name]["signal"] = histos[hist_name]["T_t_ToLeptons"].Clone("signal")
-#    hist_final[hist_name]["signal"].Add(histos[hist_name]["Tbar_t_ToLeptons"])
+    if mode == "_incl":
+        hist_final[hist_name]["signal"] = histos[hist_name]["T_t"].Clone("signal")
+        hist_final[hist_name]["signal"].Add(histos[hist_name]["Tbar_t"])
 
-    hist_final[hist_name]["ttjets"] = histos[hist_name]["TTJets_SemiLept"].Clone("TTJets")
-    hist_final[hist_name]["ttjets"].Add(histos[hist_name]["TTJets_FullLept"])
+        hist_final[hist_name]["ttjets"] = histos[hist_name]["TTJets_MassiveBinDECAY"].Clone("ttjets")
+    elif mode == "_lep":
+        hist_final[hist_name]["signal"] = histos[hist_name]["T_t_ToLeptons"].Clone("signal")
+        hist_final[hist_name]["signal"].Add(histos[hist_name]["Tbar_t_ToLeptons"])
+
+        hist_final[hist_name]["ttjets"] = histos[hist_name]["TTJets_SemiLept"].Clone("ttjets")
+        hist_final[hist_name]["ttjets"].Add(histos[hist_name]["TTJets_FullLept"])
+    else:
+        print "error"
         
     hist_final[hist_name]["wjets"] = histos[hist_name]["W1Jets_exclusive"].Clone("wjets")
     hist_final[hist_name]["wjets"].Add(histos[hist_name]["W2Jets_exclusive"])
@@ -163,7 +176,7 @@ if w_eliso != "1":
 if w_eltr != "1":
     weightstring = weightstring + "_ElTrw"
 
-outfile = "Histograms/" + cutstring + "/" + cutstring + weightstring + ".root"
+outfile = "Histograms/" + cutstring + mode + "/" + cutstring + weightstring + mode + ".root"
 p = ROOT.TFile(outfile,"recreate")
 print "writing output to file: " + outfile
 
@@ -179,23 +192,23 @@ for hist_name in hist_final:
 p.Close()
 
 #---------------------save qcd templates----------------
-if cutstring == "2j1t_nomet" or cutstring == "2j0t_nomet":
-    outfile = "Histograms/" + cutstring + "/" + cutstring + weightstring + "_templates.root"
-    t = ROOT.TFile(outfile,"recreate")
-    print "writing templates for qcd-fit: " + outfile
-    
-    met__ewk = hist_final["met"]["signal"].Clone("met__ewk")
-    for key in hist_final["met"]:
-        if key != "signal" and key != "data" and key != "data_anti" and key != "QCD":
-            met__ewk.Add(hist_final["met"][key])
+#if cutstring == "2j1t_nomet" or cutstring == "2j0t_nomet" or cutstring == "final_nomet_lep":
+outfile = "Histograms/" + cutstring + mode + "/" + cutstring + weightstring + mode + "_templates.root"
+t = ROOT.TFile(outfile,"recreate")
+print "writing templates for qcd-fit: " + outfile
 
-    met__DATA = hist_final["met"]["data"].Clone("met__DATA") #apply the appropriate naming scheme for theta_auto input
-    met__qcd = hist_final["met"]["data_anti"].Clone("met__qcd")
+met__ewk = hist_final["met"]["signal"].Clone("met__ewk")
+for key in hist_final["met"]:
+    if key != "signal" and key != "data" and key != "data_anti" and key != "QCD":
+        met__ewk.Add(hist_final["met"][key])
+        
+met__DATA = hist_final["met"]["data"].Clone("met__DATA") #apply the appropriate naming scheme for theta_auto input
+met__qcd = hist_final["met"]["data_anti"].Clone("met__qcd")
       
-    met__DATA.Write()
-    met__ewk.Write()
-    met__qcd.Write()
-    t.Close()
+met__DATA.Write()
+met__ewk.Write()
+met__qcd.Write()
+t.Close()
 #------------------print event yields-------------------
 sum_mc = 0
 print "Event yields at Lumi = " + str(Lumi)
