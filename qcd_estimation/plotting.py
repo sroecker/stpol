@@ -7,10 +7,13 @@ from Variable import *
 from ROOT import *
 from array import array
 
-def make_stack(var, stackName, MC_groups, data_group, open_files, syst, iso, cutsMC, cutsData, extra = "", qcd=None):
-   make_histograms(var, MC_groups, data_group, open_files, syst, iso, cutsMC, cutsData, extra)
-   stack = THStack("Stack"+var.name+syst+iso, stackName)
-   #print "making stack "+syst
+def make_stack(var, stackName, MC_groups, data_group, open_files, syst, iso, cutsMC, cutsData, cutsQCD, extra = "", qcd=None):
+   make_histograms(var, MC_groups, data_group, open_files, syst, iso, cutsMC, cutsData, cutsQCD,extra)
+   stack = THStack("Stack"+var.shortName+syst+iso, stackName)
+   print "making stack "+syst
+   #print "MC",cutsMC
+   #print "data",cutsData
+   #print "QCD",cutsQCD
    #stack.GetHists().GetSize()
    if qcd is not None:
       #print "QCD"
@@ -29,7 +32,7 @@ def make_stack(var, stackName, MC_groups, data_group, open_files, syst, iso, cut
    return stack
 
 def draw_stack(var, stack, MC_groups, data_group, syst="", iso="iso", name="", maxY=10000, save=True):
-   cst = TCanvas("Histogram_"+var.name,"_"+var.name,10,10,1800,1000)
+   cst = TCanvas("Histogram_"+var.shortName,"_"+var.shortName,10,10,1800,1000)
    gROOT.SetStyle("Plain")
    gStyle.SetOptStat(1000000000)
    cst.SetLeftMargin(1)
@@ -75,7 +78,7 @@ def draw_stack(var, stack, MC_groups, data_group, syst="", iso="iso", name="", m
    return cst
 
 def draw_final(var, stack, MC_groups, data_group, syst="", iso="iso", name="", maxY=10000, save=True, qcd=None):
-   cst = TCanvas("Histogram_"+var.name,"_"+var.name,10,10,1000,1000)
+   cst = TCanvas("Histogram_"+var.shortName,"_"+var.shortName,10,10,1000,1000)
    gROOT.SetStyle("Plain")
    gStyle.SetOptStat(1000000000)
    cst.SetLeftMargin(1)
@@ -127,7 +130,7 @@ def draw_final(var, stack, MC_groups, data_group, syst="", iso="iso", name="", m
    return cst
 
 
-def make_histograms(var, MC_groups, data_group, open_files, syst, iso, cutsMC, cutsData, extra = ""):
+def make_histograms(var, MC_groups, data_group, open_files, syst, iso, cutsMC, cutsData, cutsQCD, extra = ""):
    all_groups = []
    all_groups.extend(MC_groups)
    total = TH1D("total", "total", var.bins, var.lbound, var.ubound)
@@ -135,6 +138,7 @@ def make_histograms(var, MC_groups, data_group, open_files, syst, iso, cutsMC, c
       all_groups.append(data_group)
    for group in all_groups:
       name = group.getName()
+      #print name,var.name,syst,iso,extra
       histo_name = name+"_"+var.name+"_"+syst+"_"+iso+"_"+extra
       #print "name",histo_name
       h = TH1D(histo_name, group.getTitle(), var.bins, var.lbound, var.ubound)
@@ -148,9 +152,11 @@ def make_histograms(var, MC_groups, data_group, open_files, syst, iso, cutsMC, c
             his.Sumw2()
             f = ds.getFile(syst, iso)
             tdir = f.Get("trees")
-            #print ds.getName()+" "+ds.getTree()+"_"+syst+"_"+branch.name
+            #print ds.getName()+" "+ds.getTree()+"_"+syst
             mytree = tdir.Get("Events")
-            if group.isMC():
+            if group.getName()=="QCD":
+                weight = cutsQCD            
+            elif group.isMC():
                weight = cutsMC               
             else:
                weight = cutsData
@@ -163,7 +169,7 @@ def make_histograms(var, MC_groups, data_group, open_files, syst, iso, cutsMC, c
                his.Scale(ds.preScale())
             h.Add(his)
       error = array('d',[0.])
-      #print group.getName(), var.name, syst, iso, h.GetEntries(), h.IntegralAndError(0,100,error), error
+      print group.getName(), var.name, syst, iso, h.GetEntries(), h.IntegralAndError(0,100,error), error
       #print(str(h.Integral()) + " +- " + str( h.Integral()/(h.GetEntries()**0.5) ) )
       group.addHistogram(h, var, syst, iso, extra)
       if group.isMC():

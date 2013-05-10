@@ -120,8 +120,8 @@ def SingleTopStep2():
              logging.info("Changing MET source from %s to patType1CorrectedPFMetJet%s" % (Config.metSource, Config.systematic))
              Config.metSource = "patType1CorrectedPFMetJet"+Config.systematic
         elif Config.systematic in ["UnclusteredEnUp", "UnclusteredEnDown"]:
-             logging.info("Changing MET source from %s to patType1CorrectedPFMetJet%s" % (Config.metSource, Config.systematic))
-             Config.metSource = "patType1CorrectedPFMetJet"+Config.systematic
+             logging.info("Changing MET source from %s to patType1CorrectedPFMet%s" % (Config.metSource, Config.systematic))
+             Config.metSource = "patType1CorrectedPFMet"+Config.systematic
 
     print "Configuration"
     print Config._toStr()

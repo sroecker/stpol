@@ -11,7 +11,7 @@ from DatasetGroup import *
 from Fit import *
 #from fitresults_costheta import *
 from plot_settings import *
-from plotting import make_histogram
+from plotting import make_histogram, make_stack
 from cuts import *
 from copy import deepcopy
 
@@ -41,7 +41,7 @@ def plot_fit(var, fit_result, open_files):
    cuts_antiiso = get_cuts_antiiso_data(fit_result_all_mtw)
    region = "2J_"+str(fit_result.tags)+"T"
    print "cuts " +cuts
-   
+   print "antiiso",cuts_antiiso
    make_histogram(var, dgData, "Data", open_files, "", "iso", cuts, "plot")
    make_histogram(var, dgData, "QCD", open_files, "", "antiiso", cuts_antiiso)
       
@@ -132,6 +132,15 @@ def plot_fit(var, fit_result, open_files):
    print hNonQCD.Integral(), hData.Integral(), hQCD.Integral(), hTotal.Integral(), hQCDp.Integral(), hQCDm.Integral()
    cst.Update()
    hQCDShape = dgData.getHistogram(var,  "", "antiiso")
+   stack = make_stack(var, fit_result.getLabel(), MC_groups_noQCD, dgData, 
+                        open_files, "", "antiiso", get_cuts_antiiso_mc(fit_result), get_cuts_antiiso_data(fit_result), "", fit_result.getLabel())
+   for h in stack.GetHists():
+      hQCDShape.Add(h,-1)
+   for i in range(50):
+      events = hQCDShape.GetBinContent(i)
+      if events < 0:
+         hQCDShape.SetBinContent(i, 0)  
+
    if fit_result.extra == "mtwMass50":
       integral = hQCDShape.Integral(0,5)
    elif fit_result.extra == "mtwMass70":
@@ -146,10 +155,9 @@ def plot_fit(var, fit_result, open_files):
    if hQCD.Integral()>0:
       print "uncert= ", (hQCD.Integral(6,20)/hQCD.Integral())*(QCDRATE_UP-QCDRATE)
    print "QCD yield mtwMass>50 from original shape: ",hQCDShape.Integral(6,20)
-   print "FIXME"
+   print hQCDShape.Integral(), hQCDShape.Integral(6,20), hQCDShape.Integral(0,5)
    print "uncert= ", (hQCDShape.Integral(6,20)/hQCDShape.Integral())*(QCDRATE_UP-QCDRATE)
    #print "QCD yield mtwMass<50: ",hQCD.Integral(0,5)#,hQCD.Integral(0,6)
-         
    pv = hData.Chi2Test(hTotal,"UW P")
    #hData.Chi2Test(hTotal,"WU P")
    #hTotal.Chi2Test(hData,"UW P")

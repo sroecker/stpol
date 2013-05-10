@@ -4,13 +4,6 @@
 import sys,os
 from theta_auto import *
 
-#Add theta to path
-sys.path.insert(1,"/home/andres/theta_testing/utils2/theta_auto/")   
-sys.path.insert(2,"/home/andres/theta_testing/utils2/")
-sys.path.insert(3,"/home/andres/theta_testing/utils/theta_auto/")
-sys.path.insert(4,"/home/andres/single_top/stpol/qcd_estimation/")
-
-
 from make_input_histos import *
 from fit_with_theta import fit_qcd
 from plot_fit import plot_fit
@@ -22,16 +15,16 @@ def select_fits():
    #fits.append(res_2J_0T)
    #fits.append(res_2J_1T)
    #fits.append(res_2J_1T_SB)
-   #fits.append(res_2J_1T_SR)
+   fits.append(res_2J_1T_SR)
    #fits.append(res_2J_1T_SR_Mu)
    #fits.append(res_2J_0T_MC)
    #fits.append(res_2J_1T_MC)
    #fits.append(res_2J_1T_SR_MC)
    #fits.append(res_2J_1T_SB_MC)
 
-   fits.append(res_2J_1T_SR_mtwMass50)
-   fits.append(res_2J_1T_SR_mtwMass20plus)
-   fits.append(res_2J_1T_SR_mtwMass70)
+   #fits.append(res_2J_1T_SR_mtwMass50)
+   #fits.append(res_2J_1T_SR_mtwMass20plus)
+   #fits.append(res_2J_1T_SR_mtwMass70)
    """fits.append(res_2J_1T_SR_iso_0_3_plus)
    fits.append(res_2J_1T_SR_iso_0_5_plus)"""
    return fits

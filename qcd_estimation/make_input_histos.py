@@ -13,7 +13,7 @@ from plotting import *
 #from init_data_53_v3 import *
 
 
-def make_histos_with_cuts(var, n_jets, n_tags, other_cuts, fit, systematics, open_files, filename):
+def make_histos_with_cuts(var, n_jets, n_tags, other_cuts, anti_iso_cuts, fit, systematics, open_files, filename):
    QCD_FACTOR = 10000.
     
    syst_type = ["Up", "Down"]
@@ -22,38 +22,38 @@ def make_histos_with_cuts(var, n_jets, n_tags, other_cuts, fit, systematics, ope
    #Iso region
    for s in systematics:
       if s == "":
-         stack = make_stack(var, fit.getLabel(), MC_groups_noQCD, data_group, open_files, s, "iso", get_cuts_iso_mc_manual(other_cuts, n_jets, n_tags), get_cuts_iso_data_manual(other_cuts, n_jets, n_tags), fit.getLabel())
+         stack = make_stack(var, fit.getLabel(), MC_groups_noQCD, data_group, open_files, s, "iso", get_cuts_iso_mc_manual(other_cuts, n_jets, n_tags), get_cuts_iso_data_manual(other_cuts, n_jets, n_tags), "", fit.getLabel())
          stacks[var.name+s+"iso"] = stack
       else:
          for st in syst_type:
-            stack = make_stack(var, fit.getLabel(), MC_groups_noQCD, data_group, open_files, s+st, "iso", get_cuts_iso_mc_manual(other_cuts, n_jets, n_tags), get_cuts_iso_data_manual(other_cuts, n_jets, n_tags), fit.getLabel())
+            stack = make_stack(var, fit.getLabel(), MC_groups_noQCD, data_group, open_files, s+st, "iso", get_cuts_iso_mc_manual(other_cuts, n_jets, n_tags), get_cuts_iso_data_manual(other_cuts, n_jets, n_tags), "", fit.getLabel())
             stacks[var.name+s+st+"iso"] = stack
          
    #print "Y"
    #Anti-iso region
    for s in systematics:
       if s == "":
-         make_histogram(var, dgQCD, fit.getLabel(), open_files, s, "antiiso", get_cuts_antiiso_qcd_manual(other_cuts, n_jets, n_tags))                    
-         make_histogram(var, dgData, fit.getLabel(), open_files, s, "antiiso", get_cuts_antiiso_data_manual(other_cuts, n_jets, n_tags))
+         make_histogram(var, dgQCD, fit.getLabel(), open_files, s, "antiiso", get_cuts_antiiso_qcd_manual(other_cuts, anti_iso_cuts, n_jets, n_tags))                    
+         make_histogram(var, dgData, fit.getLabel(), open_files, s, "antiiso", get_cuts_antiiso_data_manual(other_cuts, anti_iso_cuts, n_jets, n_tags))
 
          #make_histogram(var, branch, dgData, "50plus_stuff", open_files, s, "antiiso", cutsOrig+" && "+cutRelIso +" && mt_mu>50", "50plus")
          #make_histogram(var, branch, dgQCD, "50plus_stuff", open_files, s, "antiiso", weightsQCD + "*(" + cutsOrig+" && "+cutRelIso + " && mt_mu>50)", "50plus")
          
          stack = make_stack(var, fit.getLabel()+s, MC_groups_noQCD, dgData, 
-                        open_files, s, "antiiso", get_cuts_antiiso_mc_manual(other_cuts, n_jets, n_tags), get_cuts_antiiso_data_manual(other_cuts, n_jets, n_tags), fit.getLabel())
+                        open_files, s, "antiiso", get_cuts_antiiso_mc_manual(other_cuts, anti_iso_cuts, n_jets, n_tags), get_cuts_antiiso_data_manual(other_cuts, anti_iso_cuts, n_jets, n_tags), "", fit.getLabel())
          stacks[var.name+s+"antiiso"] = stack
          
          #Iso down
-         make_histogram(var, dgQCD, fit.getLabel()+"iso down", open_files, s, "antiiso", get_cuts_antiiso_qcd_manual(other_cuts, n_jets, n_tags, "iso_minus"), "_iso_minus")
+         make_histogram(var, dgQCD, fit.getLabel()+"iso down", open_files, s, "antiiso", get_cuts_antiiso_qcd_manual(other_cuts, anti_iso_cuts, n_jets, n_tags, "iso_minus"), "_iso_minus")
          stack = make_stack(var, fit.getLabel()+s+"iso down", MC_groups_noQCD, dgData, open_files, s, "antiiso", 
-                        get_cuts_antiiso_mc_manual(other_cuts, n_jets, n_tags, "iso_minus"), get_cuts_antiiso_data_manual(other_cuts, n_jets, n_tags, "iso_minus"), "_iso_minus"+fit.getLabel())
+                        get_cuts_antiiso_mc_manual(other_cuts, anti_iso_cuts, n_jets, n_tags, "iso_minus"), get_cuts_antiiso_data_manual(other_cuts, anti_iso_cuts, n_jets, n_tags, "iso_minus"), "", "_iso_minus"+fit.getLabel())
          stacks[var.name+s+"antiiso"+"_iso_minus"] = stack
          #make_histogram(var, branch, dgData, fit.getLabel()+"iso down", open_files, s, "antiiso", cutsData+" && "+cutRelIsoDown, "_iso_minus")
 
          #Iso Up
-         make_histogram(var, dgQCD, fit.getLabel()+"iso up", open_files, s, "antiiso", get_cuts_antiiso_qcd_manual(other_cuts, n_jets, n_tags, "iso_plus"), "_iso_plus")   
+         make_histogram(var, dgQCD, fit.getLabel()+"iso up", open_files, s, "antiiso", get_cuts_antiiso_qcd_manual(other_cuts, anti_iso_cuts, n_jets, n_tags, "iso_plus"), "_iso_plus")   
          stack = make_stack(var, fit.getLabel()+s+"iso up", MC_groups_noQCD, dgData, open_files, s, "antiiso", 
-                        get_cuts_antiiso_mc_manual(other_cuts, n_jets, n_tags, "iso_plus"), get_cuts_antiiso_data_manual(other_cuts, n_jets, n_tags, "iso_plus"), "_iso_plus"+fit.getLabel())
+                        get_cuts_antiiso_mc_manual(other_cuts, anti_iso_cuts, n_jets, n_tags, "iso_plus"), get_cuts_antiiso_data_manual(other_cuts, anti_iso_cuts, n_jets, n_tags, "iso_plus"), "", "_iso_plus"+fit.getLabel())
          stacks[var.name+s+"antiiso"+"_iso_plus"] = stack
          #make_histogram(var, dgData, fit.getLabel()+"iso up", open_files, s, "antiiso", cutsData+" && "+cutRelIsoUp,"_iso_plus")           
                     
@@ -82,6 +82,7 @@ def make_histos_with_cuts(var, n_jets, n_tags, other_cuts, fit, systematics, ope
                h1.Add(h)
             h1.Write()
    #Data
+   print dgData._histograms
    hData = dgData.getHistogram(var, "", "iso", fit.getLabel())
    hData.SetName(var.shortName+"__DATA")
    print "data integral", hData.Integral()
@@ -178,11 +179,11 @@ def make_histos(var, fit, systematics, open_files):
    #Iso region
    for s in systematics:
       if s == "":
-         stack = make_stack(var, fit.getLabel(), MC_groups_noQCD, data_group, open_files, s, "iso", get_cuts_iso_mc(fit), get_cuts_iso_data(fit), fit.getLabel())
+         stack = make_stack(var, fit.getLabel(), MC_groups_noQCD, data_group, open_files, s, "iso", get_cuts_iso_mc(fit), get_cuts_iso_data(fit), "", fit.getLabel())
          stacks[var.name+s+"iso"] = stack
       else:
          for st in syst_type:
-            stack = make_stack(var, fit.getLabel(), MC_groups_noQCD, data_group, open_files, s+st, "iso", get_cuts_iso_mc(fit), get_cuts_iso_data(fit), fit.getLabel())
+            stack = make_stack(var, fit.getLabel(), MC_groups_noQCD, data_group, open_files, s+st, "iso", get_cuts_iso_mc(fit), get_cuts_iso_data(fit), "", fit.getLabel())
             stacks[var.name+s+st+"iso"] = stack
          
    #print "Y"
@@ -196,20 +197,20 @@ def make_histos(var, fit, systematics, open_files):
          #make_histogram(var, branch, dgQCD, "50plus_stuff", open_files, s, "antiiso", weightsQCD + "*(" + cutsOrig+" && "+cutRelIso + " && mt_mu>50)", "50plus")
          
          stack = make_stack(var, fit.getLabel()+s, MC_groups_noQCD, dgData, 
-                        open_files, s, "antiiso", get_cuts_antiiso_mc(fit), get_cuts_antiiso_data(fit), fit.getLabel())
+                        open_files, s, "antiiso", get_cuts_antiiso_mc(fit), get_cuts_antiiso_data(fit), "", fit.getLabel())
          stacks[var.name+s+"antiiso"] = stack
          
          #Iso down
          make_histogram(var, dgQCD, fit.getLabel()+"iso down", open_files, s, "antiiso", get_cuts_antiiso_qcd(fit, "iso_minus"), "_iso_minus")
          stack = make_stack(var, fit.getLabel()+s+"iso down", MC_groups_noQCD, dgData, open_files, s, "antiiso", 
-                        get_cuts_antiiso_mc(fit, "iso_minus"), get_cuts_antiiso_data(fit, "iso_minus"), "_iso_minus"+fit.getLabel())
+                        get_cuts_antiiso_mc(fit, "iso_minus"), get_cuts_antiiso_data(fit, "iso_minus"), "", "_iso_minus"+fit.getLabel())
          stacks[var.name+s+"antiiso"+"_iso_minus"] = stack
          #make_histogram(var, branch, dgData, fit.getLabel()+"iso down", open_files, s, "antiiso", cutsData+" && "+cutRelIsoDown, "_iso_minus")
 
          #Iso Up
          make_histogram(var, dgQCD, fit.getLabel()+"iso up", open_files, s, "antiiso", get_cuts_antiiso_qcd(fit, "iso_plus"), "_iso_plus")   
          stack = make_stack(var, fit.getLabel()+s+"iso up", MC_groups_noQCD, dgData, open_files, s, "antiiso", 
-                        get_cuts_antiiso_mc(fit, "iso_plus"), get_cuts_antiiso_data(fit, "iso_plus"), "_iso_plus"+fit.getLabel())
+                        get_cuts_antiiso_mc(fit, "iso_plus"), get_cuts_antiiso_data(fit, "iso_plus"), "", "_iso_plus"+fit.getLabel())
          stacks[var.name+s+"antiiso"+"_iso_plus"] = stack
          #make_histogram(var, dgData, fit.getLabel()+"iso up", open_files, s, "antiiso", cutsData+" && "+cutRelIsoUp,"_iso_plus")           
                     

@@ -1,8 +1,8 @@
 from Fit import Fit
 
-triggers="(HLT_IsoMu24_eta2p1_v2==1 || HLT_IsoMu24_eta2p1_v3==1 || HLT_IsoMu24_eta2p1_v4==1 || HLT_IsoMu24_eta2p1_v5==1 || HLT_IsoMu24_eta2p1_v6==1 || HLT_IsoMu24_eta2p1_v7==1 || HLT_IsoMu24_eta2p1_v8==1 || HLT_IsoMu24_eta2p1_v9==1 || HLT_IsoMu24_eta2p1_v10==1 || HLT_IsoMu24_eta2p1_v11==1 || HLT_IsoMu24_eta2p1_v12==1 || HLT_IsoMu24_eta2p1_v13==1 || HLT_IsoMu24_eta2p1_v14==1 || HLT_IsoMu24_eta2p1_v15==1 || HLT_IsoMu24_eta2p1_v16==1 || HLT_IsoMu24_eta2p1_v17==1 || HLT_IsoMu24_eta2p1_v18==1 || HLT_IsoMu24_eta2p1_v19==1 || HLT_IsoMu24_eta2p1_v20==1 || HLT_IsoMu24_eta2p1_v21==1)"
+triggers="(HLT_IsoMu24_eta2p1_v11==1 || HLT_IsoMu24_eta2p1_v12==1 || HLT_IsoMu24_eta2p1_v13==1 || HLT_IsoMu24_eta2p1_v14==1 || HLT_IsoMu24_eta2p1_v15==1 || HLT_IsoMu24_eta2p1_v16==1 || HLT_IsoMu24_eta2p1_v17==1)"
 weightsQCD = triggers+"*pu_weight*muon_IDWeight*muon_IsoWeight"
-weightsMC = weightsQCD + "*b_weight_nominal"
+weightsMC = weightsQCD# + "*b_weight_nominal"
 weightsData = triggers
 
 base_cuts = "pt_lj>40 && pt_bj>40"
@@ -84,7 +84,7 @@ def get_cuts_antiiso_mc(fit, iso_var=""):
    return weightsMC+"*("+get_cuts_antiiso(fit, iso_var)+")"
 
 def get_cuts_antiiso(fit, iso_var="", isQCD=False):
-   antiiso_cuts = base_cuts + " && " +get_isolation_cut(iso_var, fit)
+   antiiso_cuts = base_cuts +" && (deltaR_lj > 0.3 && deltaR_bj > 0.3) && " +get_isolation_cut(iso_var, fit)
    antiiso_cuts += " && " + get_mtw_cut(fit)
    if fit.isSR:
       antiiso_cuts += " && "+cutsSR
@@ -115,19 +115,19 @@ def get_jet_cuts_manual(n_jets, n_tags):
 
 ###
 
-def get_cuts_antiiso_data_manual(cuts, n_jets, n_tags, iso_var=""):
-   return weightsData+"*("+get_cuts_antiiso_manual(cuts, n_jets, n_tags, iso_var)+")"
+def get_cuts_antiiso_data_manual(cuts, anti_iso_cuts, n_jets, n_tags, iso_var=""):
+   return weightsData+"*("+get_cuts_antiiso_manual(cuts, anti_iso_cuts, n_jets, n_tags, iso_var)+")"
 
-def get_cuts_antiiso_mc_manual(cuts, n_jets, n_tags, iso_var=""):
-   return weightsMC+"*("+get_cuts_antiiso_manual(cuts, n_jets, n_tags, iso_var)+")"
+def get_cuts_antiiso_mc_manual(cuts, anti_iso_cuts, n_jets, n_tags, iso_var=""):
+   return weightsMC+"*("+get_cuts_antiiso_manual(cuts, anti_iso_cuts, n_jets, n_tags, iso_var)+")"
 
-def get_cuts_antiiso_manual(cuts, n_jets, n_tags, iso_var=""):
-   antiiso_cuts = cuts + " && " + get_isolation_cut(iso_var)
+def get_cuts_antiiso_manual(cuts, anti_iso_cuts, n_jets, n_tags, iso_var=""):
+   antiiso_cuts = cuts + " && " + anti_iso_cuts + " && " + get_isolation_cut(iso_var)
    antiiso_cuts += get_jet_cuts_manual(n_jets, n_tags)
    return antiiso_cuts
    
-def get_cuts_antiiso_qcd_manual(cuts, n_jets, n_tags, iso_var=""):
-   return weightsQCD+"*("+get_cuts_antiiso_manual(cuts, n_jets, n_tags, iso_var)+")"
+def get_cuts_antiiso_qcd_manual(cuts, anti_iso_cuts, n_jets, n_tags, iso_var=""):
+   return weightsQCD+"*("+get_cuts_antiiso_manual(cuts, anti_iso_cuts, n_jets, n_tags, iso_var)+")"
 
 
 

@@ -21,7 +21,7 @@ def get_yield(var, fit_result, cutMT, filename):
    else:
       return (hQCD.Integral(), hQCD.Integral()*(fit_result.qcd_uncert/fit_result.qcd))
 
-def get_qcd_yield(n_jets, n_tags, cutMT, other_cuts):
+def get_qcd_yield(n_jets, n_tags, cutMT, other_cuts, anti_iso_cuts):
    isos = ["iso", "antiiso"]
    systematics = [""]
    path = input_path 
@@ -30,7 +30,7 @@ def get_qcd_yield(n_jets, n_tags, cutMT, other_cuts):
    var = Variable("mt_mu", 0, 200, 20, "mtwMass", "m_{T }")
    filename = "temp_for_yield"
    fit = Fit()
-   make_histos_with_cuts(var, n_jets, n_tags, other_cuts, fit, systematics, open_files, filename)
+   make_histos_with_cuts(var, n_jets, n_tags, other_cuts, anti_iso_cuts, fit, systematics, open_files, filename)
    fit_qcd(fit, filename)
    return get_yield(var, fit, cutMT, filename)
 
@@ -42,5 +42,7 @@ if __name__=="__main__":
    other_cuts += " && abs(eta_lj)>2.5" 
    other_cuts += " && (top_mass < 220 && top_mass > 130)"
    other_cuts += " && rms_lj<0.025"
-   (y, error) = get_qcd_yield(n_jets, n_tags, cutMT, other_cuts)
+   anti_iso_cuts = "deltaR_lj > 0.3"
+   anti_iso_cuts += " && deltaR_bj > 0.3"
+   (y, error) = get_qcd_yield(n_jets, n_tags, cutMT, other_cuts, anti_iso_cuts)
    print y, "+-", error
