@@ -1,0 +1,2 @@
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_05_07_newbw/WD_T_tW/res/output_1_1_Xkc.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_05_07_newbw/WD_T_tW/res/output_2_1_rfp.root

@@ -1,0 +1,12 @@
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_05_07_newbw/WD_Tbar_t_ToLeptons/res/output_10_1_VhH.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_05_07_newbw/WD_Tbar_t_ToLeptons/res/output_11_1_Q68.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_05_07_newbw/WD_Tbar_t_ToLeptons/res/output_12_1_Xo2.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_05_07_newbw/WD_Tbar_t_ToLeptons/res/output_1_1_2No.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_05_07_newbw/WD_Tbar_t_ToLeptons/res/output_2_1_lFg.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_05_07_newbw/WD_Tbar_t_ToLeptons/res/output_3_1_a1w.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_05_07_newbw/WD_Tbar_t_ToLeptons/res/output_4_1_nOz.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_05_07_newbw/WD_Tbar_t_ToLeptons/res/output_5_1_e09.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_05_07_newbw/WD_Tbar_t_ToLeptons/res/output_6_1_ecI.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_05_07_newbw/WD_Tbar_t_ToLeptons/res/output_7_1_TKT.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_05_07_newbw/WD_Tbar_t_ToLeptons/res/output_8_1_Eon.root
+file:/hdfs/local/joosep/stpol/step2_MC_antiIso_05_07_newbw/WD_Tbar_t_ToLeptons/res/output_9_1_dnG.root

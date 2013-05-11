@@ -1,0 +1,5 @@
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_05_07_newbw/WD_QCD_Pt_250_350_BCtoE/res/output_1_1_EVn.root
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_05_07_newbw/WD_QCD_Pt_250_350_BCtoE/res/output_2_1_P5v.root
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_05_07_newbw/WD_QCD_Pt_250_350_BCtoE/res/output_3_1_K5Z.root
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_05_07_newbw/WD_QCD_Pt_250_350_BCtoE/res/output_4_1_uYw.root
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_05_07_newbw/WD_QCD_Pt_250_350_BCtoE/res/output_5_1_u3z.root

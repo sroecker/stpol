@@ -1,0 +1,6 @@
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_05_07_newbw/WD_T_t_ToLeptons/res/output_1_1_seW.root
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_05_07_newbw/WD_T_t_ToLeptons/res/output_2_1_HQ4.root
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_05_07_newbw/WD_T_t_ToLeptons/res/output_3_1_4KY.root
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_05_07_newbw/WD_T_t_ToLeptons/res/output_4_1_Lsz.root
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_05_07_newbw/WD_T_t_ToLeptons/res/output_5_1_gcj.root
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_05_07_newbw/WD_T_t_ToLeptons/res/output_6_1_WIx.root
