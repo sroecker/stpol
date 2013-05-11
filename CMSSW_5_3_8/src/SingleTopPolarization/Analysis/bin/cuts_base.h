@@ -3,13 +3,27 @@
 #ifndef CUTS_BASE_H
 #define CUTS_BASE_H
 
+#include <climits>
+#include <TMath.h>
+
+class BranchVars {
+public:
+    std::map<std::string, int> vars_int;
+    std::map<std::string, float> vars_float;
+    std::map<std::string, std::vector<float>> vars_vfloat;
+
+    //the default values for TTree entries
+    static const float def_val;
+    static const int def_val_int;
+
+};
+
 //Base class for all work that is done inside the loop
-template <typename T>
 class CutsBase {
 public:
 
     //Map of the branch variables
-    std::map<std::string, T>& branch_vars;
+    BranchVars& branch_vars;
 
     //Counter for the number of processed events
     unsigned long n_processed;
@@ -25,12 +39,10 @@ public:
     
     std::string toString();
 
-    CutsBase(std::map<std::string, T>& _branch_vars);
+    CutsBase(BranchVars& _branch_vars);
 
     void pre_process();
     void post_process();
 };
 
 #endif
-typedef CutsBase<float> CutsBaseF;
-typedef CutsBase<int> CutsBaseI;

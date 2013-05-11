@@ -8,7 +8,7 @@
 #define HLT_CUTS_H
 
 
-class HLTCuts : public CutsBaseI {
+class HLTCuts : public CutsBase {
 public:
     edm::InputTag hlt_src;
     std::vector<std::string> hlt_names;
@@ -18,7 +18,7 @@ public:
     edm::Handle<edm::TriggerResults> trig_results;
     void initialize_branches();
      
-    HLTCuts(const edm::ParameterSet& pars, std::map<std::string, int>& _branch_vars);
+    HLTCuts(const edm::ParameterSet& pars, BranchVars& _branch_vars);
 
     bool process(const edm::EventBase& event);
 };
