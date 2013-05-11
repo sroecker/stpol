@@ -81,6 +81,8 @@ process.muonCuts = cms.PSet(
     muonITrackHitsSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "innerTrackhitPatternnumberOfValidPixelHits"),
     muonStationsSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "numberOfMatchedStations"),
     muonLayersSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "trackhitPatterntrackerLayersWithMeasurement"),
+    muonMotherPdgIdSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "motherGenPdgId"),
+
 )
 
 process.eleCuts = cms.PSet(
@@ -95,6 +97,7 @@ process.jetCuts = cms.PSet(
     bTagJetsCountSrc = cms.InputTag("bJetCount"),
 
     rmsMax = cms.double(0.025),
+    etaMin = cms.double(0.0),
 
     nJetsMin = cms.int32(0),
     nJetsMax = cms.int32(4),
@@ -106,10 +109,11 @@ process.jetCuts = cms.PSet(
     lightJetBdiscrSrc = cms.InputTag("lowestBTagJetNTupleProducer", "bDiscriminatorTCHP"),
     lightJetPtSrc = cms.InputTag("lowestBTagJetNTupleProducer", "Pt"),
     lightJetRmsSrc = cms.InputTag("lowestBTagJetNTupleProducer", "rms"),
+	lightJetDeltaRSrc = cms.InputTag("lowestBTagJetNTupleProducer", "deltaR"),
 
-    bJetEtaSrc = cms.InputTag("highestBTagJetNTupleProducer", "Eta"),
-    bJetBdiscrSrc = cms.InputTag("highestBTagJetNTupleProducer", "bDiscriminatorTCHP"),
-    bJetPtSrc = cms.InputTag("highestBTagJetNTupleProducer", "Pt"),
+    #bJetEtaSrc = cms.InputTag("highestBTagJetNTupleProducer", "Eta"),
+    #bJetBdiscrSrc = cms.InputTag("highestBTagJetNTupleProducer", "bDiscriminatorTCHP"),
+    #bJetPtSrc = cms.InputTag("highestBTagJetNTupleProducer", "Pt"),
 )
 
 process.bTagCuts = cms.PSet(
@@ -123,6 +127,7 @@ process.bTagCuts = cms.PSet(
     bJetEtaSrc = cms.InputTag("highestBTagJetNTupleProducer", "Eta"),
     bJetBdiscrSrc = cms.InputTag("highestBTagJetNTupleProducer", "bDiscriminatorTCHP"),
     bJetPtSrc = cms.InputTag("highestBTagJetNTupleProducer", "Pt"),
+    bJetDeltaRSrc = cms.InputTag("highestBTagJetNTupleProducer", "deltaR")
 )
 
 process.topCuts = cms.PSet(
@@ -160,13 +165,14 @@ process.HLT = cms.PSet(
         "HLT_IsoMu24_eta2p1_v14",
         "HLT_IsoMu24_eta2p1_v15",
     ]),
-    doCutOnHLT = cms.bool(False)
+    doCutOnHLT = cms.bool(True)
 )
 
 process.finalVars = cms.PSet(
     cosThetaSrc = cms.InputTag("cosTheta", "cosThetaLightJet"),
     nVerticesSrc = cms.InputTag("offlinePVCount"),
-    scaleFactorsSrc = cms.InputTag("bTagWeightProducerNJMT", "scaleFactors")
+    #scaleFactorsSrc = cms.InputTag("bTagWeightProducerNJMT", "scaleFactors")
+    addPDFInfo = cms.bool(False)
 )
 
 process.lumiBlockCounters = cms.PSet(
@@ -181,6 +187,9 @@ process.genParticles = cms.PSet(
     trueBJetTaggedCountSrc = cms.InputTag("btaggedTrueBJetCount"),
     trueCJetTaggedCountSrc = cms.InputTag("btaggedTrueCJetCount"),
     trueLJetTaggedCountSrc = cms.InputTag("btaggedTrueLJetCount"),
+    trueCosThetaSrc = cms.InputTag("cosThetaProducerTrueAll", "cosThetaLightJet"),
+    trueLeptonPdgIdSrc = cms.InputTag("genParticleSelector", "trueLeptonPdgId"),
+	requireGenMuon  = cms.bool(False)
 )
 
 doSync = False
