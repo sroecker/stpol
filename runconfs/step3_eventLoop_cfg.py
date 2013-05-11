@@ -179,7 +179,7 @@ process.finalVars = cms.PSet(
     #scaleFactorsSrc = cms.InputTag("bTagWeightProducerNJMT", "scaleFactors")
 
     #PDF stuff
-    addPDFInfo = cms.bool(True),
+    addPDFInfo = cms.bool(False),
     scalePDFSrc = cms.InputTag("PDFweights", "scalePDF"),
 	x1Src = cms.InputTag("PDFweights", "x1"),
 	x2Src = cms.InputTag("PDFweights", "x2"),
