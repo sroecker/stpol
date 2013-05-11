@@ -641,24 +641,25 @@ public:
     bool requireGenMuon;
     
     void initialize_branches() {
-        branch_vars.vars_int["true_b_count"] = BranchVars::def_val_int;
-        branch_vars.vars_int["true_c_count"] = BranchVars::def_val_int;
-        branch_vars.vars_int["true_l_count"] = BranchVars::def_val_int;
-        
-        branch_vars.vars_int["true_b_tagged_count"] = BranchVars::def_val_int;
-        branch_vars.vars_int["true_c_tagged_count"] = BranchVars::def_val_int;
-        branch_vars.vars_int["true_l_tagged_count"] = BranchVars::def_val_int;
+        if (doGenParticles) {
+            branch_vars.vars_int["true_b_count"] = BranchVars::def_val_int;
+            branch_vars.vars_int["true_c_count"] = BranchVars::def_val_int;
+            branch_vars.vars_int["true_l_count"] = BranchVars::def_val_int;
+            
+            branch_vars.vars_int["true_b_tagged_count"] = BranchVars::def_val_int;
+            branch_vars.vars_int["true_c_tagged_count"] = BranchVars::def_val_int;
+            branch_vars.vars_int["true_l_tagged_count"] = BranchVars::def_val_int;
 
-        branch_vars.vars_float["true_cos_theta"] = BranchVars::def_val;
-        branch_vars.vars_int["true_lepton_pdgId"] = BranchVars::def_val_int;
+            branch_vars.vars_float["true_cos_theta"] = BranchVars::def_val;
+            branch_vars.vars_int["true_lepton_pdgId"] = BranchVars::def_val_int;
+        } 
     }
     
     GenParticles(const edm::ParameterSet& pars, BranchVars& _branch_vars) :
     CutsBase(_branch_vars)
     {
-        initialize_branches();
-        
         doGenParticles = pars.getParameter<bool>("doGenParticles");
+        initialize_branches();
 
         trueBJetCount = pars.getParameter<edm::InputTag>("trueBJetCountSrc");
         trueCJetCount = pars.getParameter<edm::InputTag>("trueCJetCountSrc");
