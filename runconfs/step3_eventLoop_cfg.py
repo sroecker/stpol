@@ -52,13 +52,15 @@ for fi in input_files:
     print "\t",fi
 print "Output file: %s" %  outfile
 
+
+doControlVars = False
 process.fwliteOutput = cms.PSet(
     fileName  = cms.string(outfile),
 )
 
 process.muonCuts = cms.PSet(
     cutOnIso  = cms.bool(False),
-    doControlVars  = cms.bool(True),
+    doControlVars  = cms.bool(doControlVars),
     reverseIsoCut  = cms.bool(False),
     requireOneMuon  = cms.bool(True),
     isoCut  = cms.double(0.12),
@@ -68,7 +70,7 @@ process.muonCuts = cms.PSet(
     muonCountSrc  = cms.InputTag("muonCount"),
     eleCountSrc  = cms.InputTag("electronCount"),
 
-    doVetoLeptonCut = cms.bool(False),
+    doVetoLeptonCut = cms.bool(True),
     vetoMuCountSrc = cms.InputTag("looseVetoMuCount"),
     vetoEleCountSrc = cms.InputTag("looseVetoEleCount"),
 
@@ -153,17 +155,20 @@ process.mtMuCuts = cms.PSet(
     minVal = cms.double(40)
 )
 
+#The versions should be specified explicitly at the moment
 process.HLT = cms.PSet(
     hltSrc = cms.InputTag("TriggerResults", "", "HLT"),
     hltNames = cms.vstring([
-        "HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet50_40_30_v1",
-        "HLT_Ele25_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_TriCentralPFNoPUJet50_40_30_v5",
-        "HLT_Ele25_CaloIdVT_CaloIsoVL_TrkIdVL_TrkIsoT_TriCentralPFNoPUJet50_40_30_v1",
+        #"HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet50_40_30_v1",
+        #"HLT_Ele25_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_TriCentralPFNoPUJet50_40_30_v5",
+        #"HLT_Ele25_CaloIdVT_CaloIsoVL_TrkIdVL_TrkIsoT_TriCentralPFNoPUJet50_40_30_v1",
         "HLT_IsoMu24_eta2p1_v11",
         "HLT_IsoMu24_eta2p1_v12",
         "HLT_IsoMu24_eta2p1_v13",
         "HLT_IsoMu24_eta2p1_v14",
         "HLT_IsoMu24_eta2p1_v15",
+        "HLT_IsoMu24_eta2p1_v17",
+        "HLT_IsoMu24_eta2p1_v16"
     ]),
     doCutOnHLT = cms.bool(True)
 )
@@ -180,7 +185,7 @@ process.lumiBlockCounters = cms.PSet(
 )
 
 process.genParticles = cms.PSet(
-    doGenParticles = cms.bool(isMC),
+    doGenParticles = cms.bool(isMC and doControlVars),
     trueBJetCountSrc = cms.InputTag("trueBJetCount"),
     trueCJetCountSrc = cms.InputTag("trueCJetCount"),
     trueLJetCountSrc = cms.InputTag("trueLJetCount"),
