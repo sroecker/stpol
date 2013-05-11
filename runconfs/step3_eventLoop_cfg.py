@@ -53,7 +53,7 @@ for fi in input_files:
 print "Output file: %s" %  outfile
 
 
-doControlVars = False
+doControlVars = True
 process.fwliteOutput = cms.PSet(
     fileName  = cms.string(outfile),
 )
@@ -177,7 +177,17 @@ process.finalVars = cms.PSet(
     cosThetaSrc = cms.InputTag("cosTheta", "cosThetaLightJet"),
     nVerticesSrc = cms.InputTag("offlinePVCount"),
     #scaleFactorsSrc = cms.InputTag("bTagWeightProducerNJMT", "scaleFactors")
-    addPDFInfo = cms.bool(False)
+
+    #PDF stuff
+    addPDFInfo = cms.bool(True),
+    scalePDFSrc = cms.InputTag("PDFweights", "scalePDF"),
+	x1Src = cms.InputTag("PDFweights", "x1"),
+	x2Src = cms.InputTag("PDFweights", "x2"),
+	id1Src = cms.InputTag("PDFweights", "id1"),
+	id2Src = cms.InputTag("PDFweights", "id2"),
+
+    #PDFSets = cms.vstring('cteq66.LHgrid','MSTW2008nlo68cl.LHgrid') #ok
+	PDFSets	= cms.vstring('NNPDF21_100.LHgrid','CT10.LHgrid','MSTW2008nlo68cl.LHgrid'),
 )
 
 process.lumiBlockCounters = cms.PSet(
