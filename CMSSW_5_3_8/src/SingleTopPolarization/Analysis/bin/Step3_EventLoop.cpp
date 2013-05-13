@@ -179,6 +179,63 @@ public:
     }
 };
 
+class ElectronCuts : public CutsBase {
+public:
+  bool requireOneElectron;
+  float isoCut;
+
+  edm::InputTag eleCountSrc;
+  edm::InputTag muonCountSrc;
+  edm::InputTag electronRelIsoSrc;
+  edm::InputTag electronMvaSrc;
+  edm::InputTag electronPtSrc;
+  edm::InputTag electronMotherPdgIdSrc;
+  edm::InputTag electronChargeSrc;
+
+  virtual void initialize_branches() {
+    branch_vars.vars_int["n_muons"] = BranchVars::def_val;
+    branch_vars.vars_int["n_eles"] = BranchVars::def_val;
+    branch_vars.vars_float["el_mva"] = BranchVars::def_val;
+    branch_vars.vars_float["el_reliso"] = BranchVars::def_val;
+    branch_vars.vars_float["el_pt"] = BranchVars::def_val;
+    branch_vars.vars_int["el_mother_id"] = BranchVars::def_val_int;
+    branch_vars.vars_int["el_charge"] = BranchVars::def_val_int;
+  }
+  
+  ElectronCuts(const edm::ParameterSet& pars, BranchVars& _branch_vars) :
+    CutsBase(_branch_vars)
+  {
+    initialize_branches();
+    requireOneElectron = pars.getParameter<bool>("requireOneElectron");
+    eleCountSrc = pars.getParameter<edm::InputTag>("eleCountSrc");
+    muonCountSrc = pars.getParameter<edm::InputTag>("muonCountSrc");
+    electronRelIsoSrc = pars.getParameter<edm::InputTag>("electronRelIsoSrc");
+    electronMvaSrc = pars.getParameter<edm::InputTag>("electronMvaSrc");
+    electronPtSrc = pars.getParameter<edm::InputTag>("electronPtSrc");  
+    electronMotherPdgIdSrc = pars.getParameter<edm::InputTag>("electronMotherPdgIdSrc");
+    electronChargeSrc = pars.getParameter<edm::InputTag>("electronChargeSrc");
+  }
+  
+  bool process(const edm::EventBase& event){
+    pre_process();
+
+    int n_muons = get_collection<int>(event, muonCountSrc, -1);
+    int n_eles = get_collection<int>(event, eleCountSrc, -1);
+
+    branch_vars.vars_int["n_muons"] = n_muons;
+    branch_vars.vars_int["n_eles"] = n_eles;
+    if(requireOneElectron && (n_eles!=1 || n_muons !=0)) return false;
+
+    branch_vars.vars_float["el_reliso"] = get_collection_n<float>(event, electronRelIsoSrc, 0);
+    branch_vars.vars_float["el_mva"] = get_collection_n<float>(event, electronMvaSrc, 0);
+    branch_vars.vars_float["el_pt"] = get_collection_n<float>(event, electronPtSrc, 0);
+    branch_vars.vars_int["el_mother_id"] = (int)get_collection_n<float>(event, electronMotherPdgIdSrc, 0);
+    branch_vars.vars_int["el_charge"] = (int)get_collection_n<float>(event, electronChargeSrc, 0);
+    post_process();
+    return true;
+  }
+};
+
 class VetoLeptonCuts : public CutsBase {
 public:
     bool doVetoLeptonCut;
@@ -401,6 +458,8 @@ public:
     edm::InputTag puWeightSrc;
     edm::InputTag muonIDWeightSrc;
     edm::InputTag muonIsoWeightSrc;
+    edm::InputTag electronIDWeightSrc;
+    edm::InputTag electronTriggerWeightSrc;
     
     bool doWeights;
     void initialize_branches() {
@@ -408,6 +467,8 @@ public:
         branch_vars.vars_float["pu_weight"] = 1.0;
         branch_vars.vars_float["muon_IDWeight"] = 1.0;
         branch_vars.vars_float["muon_IsoWeight"] = 1.0;
+	branch_vars.vars_float["electron_IDWeight"] = 1.0;
+	branch_vars.vars_float["electron_triggerWeight"] = 1.0;
     }
     
     Weights(const edm::ParameterSet& pars, BranchVars& _branch_vars) :
@@ -420,7 +481,8 @@ public:
         puWeightSrc = pars.getParameter<edm::InputTag>("puWeightSrc");
         muonIDWeightSrc = pars.getParameter<edm::InputTag>("muonIDWeightSrc");
         muonIsoWeightSrc = pars.getParameter<edm::InputTag>("muonIsoWeightSrc");
-        
+	electronIDWeightSrc = pars.getParameter<edm::InputTag>("electronIDWeightSrc");
+	electronTriggerWeightSrc = pars.getParameter<edm::InputTag>("electronTriggerWeightSrc");
     }
     
     bool process(const edm::EventBase& event) {
@@ -430,7 +492,9 @@ public:
         branch_vars.vars_float["pu_weight"] = get_collection<double>(event, puWeightSrc, BranchVars::def_val);
         branch_vars.vars_float["muon_IDWeight"] = get_collection<double>(event, muonIDWeightSrc, BranchVars::def_val);
         branch_vars.vars_float["muon_IsoWeight"] = get_collection<double>(event, muonIsoWeightSrc, BranchVars::def_val);
-       
+	branch_vars.vars_float["electron_IDWeight"] = get_collection<double>(event, electronIDWeightSrc, BranchVars::def_val);
+	branch_vars.vars_float["electron_triggerWeight"] = get_collection<double>(event, electronTriggerWeightSrc, BranchVars::def_val);
+
         //Remove NaN weights
         auto not_nan = [&branch_vars] (const std::string& key) {
             if (branch_vars.vars_float[key] != branch_vars.vars_float[key]) {
@@ -442,7 +506,9 @@ public:
         not_nan("pu_weight");
         not_nan("muon_IDWeight");
         not_nan("muon_IsoWeight");
-        
+	not_nan("electron_IDWeight");
+	not_nan("electron_triggerWeight");
+
         post_process();
         return true;
     }
@@ -487,7 +553,7 @@ public:
     edm::InputTag cosThetaSrc;
     edm::InputTag nVerticesSrc;
     edm::InputTag scaleFactorsSrc;
-    
+
     // for PDF uncertanty
     bool addPDFInfo;
     edm::InputTag scalePDFSrc;
@@ -506,7 +572,7 @@ public:
     void initialize_branches() {
         branch_vars.vars_float["cos_theta"] = BranchVars::def_val;
         branch_vars.vars_int["n_vertices"] = BranchVars::def_val;
-        //branch_vars_vec["scale_factors"] = std::vector<float>();
+	//branch_vars_vec["scale_factors"] = std::vector<float>();
         //branch_vars_vec["scale_factors"].clear();
     }
 
@@ -728,11 +794,10 @@ int main(int argc, char* argv[])
     std::string outputFile_( out.getParameter<std::string>("fileName" ) );
     std::vector<std::string> inputFiles_( in.getParameter<std::vector<std::string> >("fileNames") );
     
-    const edm::ParameterSet& mu_cuts_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("muonCuts");
-    
+    const edm::ParameterSet& mu_cuts_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("muonCuts");    
     const edm::ParameterSet& ele_cuts_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("eleCuts");
-    const edm::ParameterSet& jet_cuts_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("jetCuts");
 
+    const edm::ParameterSet& jet_cuts_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("jetCuts");
     const edm::ParameterSet& btag_cuts_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("bTagCuts");
 
     const edm::ParameterSet& top_cuts_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("topCuts");
@@ -741,6 +806,7 @@ int main(int argc, char* argv[])
     const edm::ParameterSet& miscvars_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("finalVars");
     const edm::ParameterSet& gen_particle_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("genParticles");
     const edm::ParameterSet& hlt_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("HLT");
+    const edm::ParameterSet& hlt_pars_ele = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("HLTele");
     
     const edm::ParameterSet& lumiblock_counter_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("lumiBlockCounters");
     edm::InputTag totalPATProcessedCountSrc = lumiblock_counter_pars.getParameter<edm::InputTag>("totalPATProcessedCountSrc");
@@ -752,18 +818,19 @@ int main(int argc, char* argv[])
 
     //Give the order of the map keys that will end up as the count histogram bins
     std::vector<std::string> count_map_order({
-        "total_processed", "pass_hlt_cuts",
-        "pass_lepton_cuts", "pass_lepton_veto_cuts",
-        "pass_mt_cuts", "pass_jet_cuts",
-        "pass_btag_cuts", "pass_top_cuts",
+        "total_processed", "pass_hlt_cuts", "pass_hlt_ele_cuts",
+	"pass_muon_cuts", "pass_electron_cuts", "pass_lepton_veto_cuts",
+	"pass_mt_cuts", "pass_jet_cuts",
+	"pass_btag_cuts", "pass_top_cuts",
         "pass_gen_cuts"
-    });
+	  });
    
     for(auto& e : count_map_order) {
         count_map[e] = 0; 
     }
 
     MuonCuts muon_cuts(mu_cuts_pars, branch_vars);
+    ElectronCuts electron_cuts(ele_cuts_pars, branch_vars);
     VetoLeptonCuts veto_lepton_cuts(mu_cuts_pars, branch_vars);
     JetCuts jet_cuts(jet_cuts_pars, branch_vars);
     TagCuts btag_cuts(btag_cuts_pars, branch_vars);
@@ -773,7 +840,8 @@ int main(int argc, char* argv[])
     MiscVars misc_vars(miscvars_pars, branch_vars);
     GenParticles gen_particles(gen_particle_pars, branch_vars);
     HLTCuts hlt_cuts(hlt_pars, branch_vars);
-    
+    HLTCuts hlt_ele_cuts(hlt_pars_ele, branch_vars);
+
     fwlite::TFileService fs = fwlite::TFileService(outputFile_.c_str());
     
     // now get each parameter
@@ -833,6 +901,7 @@ int main(int argc, char* argv[])
                 edm::EventBase const & event = ev;
                 
                 muon_cuts.initialize_branches();
+		electron_cuts.initialize_branches();
                 jet_cuts.initialize_branches();
                 // break loop if maximal number of events is reached
                 if(maxEvents_>0 ? ievt+1>maxEvents_ : false) break;
@@ -842,10 +911,16 @@ int main(int argc, char* argv[])
                 
                 bool passes_hlt_cuts = hlt_cuts.process(event);
                 if(!passes_hlt_cuts) continue;
-                
+
+		bool passes_hlt_ele_cuts = hlt_ele_cuts.process(event);
+		if(!passes_hlt_ele_cuts) continue;
+
                 bool passes_muon_cuts = muon_cuts.process(event);
                 if(!passes_muon_cuts) continue;
                 
+		bool passes_electron_cuts = electron_cuts.process(event);
+		if(!passes_electron_cuts) continue;
+
                 bool passes_veto_lepton_cuts = veto_lepton_cuts.process(event);
                 if(!passes_veto_lepton_cuts) continue;
                 
@@ -895,7 +970,9 @@ int main(int argc, char* argv[])
     }
     
     count_map["pass_hlt_cuts"] += hlt_cuts.n_pass;
-    count_map["pass_lepton_cuts"] += muon_cuts.n_pass;
+    count_map["pass_hlt_ele_cuts"] += hlt_ele_cuts.n_pass;
+    count_map["pass_muon_cuts"] += muon_cuts.n_pass;
+    count_map["pass_electron_cuts"] += electron_cuts.n_pass;
     count_map["pass_lepton_veto_cuts"] += veto_lepton_cuts.n_pass;
     count_map["pass_mt_cuts"] += mt_mu_cuts.n_pass;
     count_map["pass_jet_cuts"] += jet_cuts.n_pass;
@@ -912,8 +989,10 @@ int main(int argc, char* argv[])
     
     std::cout << "total processed step1 " << count_map["total_processed"] << std::endl;
     std::cout << "total processed step3 " << ievt << std::endl;
-    std::cout << "hlt cuts " << hlt_cuts.toString() << std::endl;
+    std::cout << "hlt muon cuts " << hlt_cuts.toString() << std::endl;
+    std::cout << "hlt electron cuts " << hlt_ele_cuts.toString() << std::endl;
     std::cout << "muon cuts " << muon_cuts.toString() << std::endl;
+    std::cout << "electron cuts " << electron_cuts.toString() << std::endl;
     std::cout << "veto lepton cuts " << veto_lepton_cuts.toString() << std::endl;
     std::cout << "mt_mu cuts " << mt_mu_cuts.toString() << std::endl;
     std::cout << "jet cuts " << jet_cuts.toString() << std::endl;
