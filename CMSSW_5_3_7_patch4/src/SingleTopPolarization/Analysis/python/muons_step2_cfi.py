@@ -92,7 +92,8 @@ def MuonSetup(process, conf = None):
     )
 
     process.muonWeightsProducer = cms.EDProducer("MuonEfficiencyProducer",
-        src=cms.InputTag("goodSignalMuons")
+        src=cms.InputTag("goodSignalMuons"),
+        dataRun=cms.string("RunD")#FIXME
     )
 
 #    #Either use MET cut or MtW cut
@@ -205,7 +206,7 @@ def MuonPath(process, conf):
 
     if conf.isMC:
         process.decayTreeProducerMu = cms.EDProducer(
-            'GenParticleDecayTreeProducer',
+            'GenParticleDecayTreeProducer<pat::Muon>',
             src=cms.untracked.InputTag("singleIsoMu")
         )
         process.muPath.insert(
