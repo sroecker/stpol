@@ -22,6 +22,9 @@ class Lumi:
 
 lumis = {
 
+    "rereco_golden": Lumi("rereco_golden",
+    "/Cert_190456-208686_8TeV_22Jan2013ReReco_Collisions12_JSON.txt")
+
     "Run2012A-13Jul2012": Lumi("Run2012A-13Jul2012",
     "/Cert_190456-196531_8TeV_13Jul2012ReReco_Collisions12_JSON_v2.txt")
 
@@ -283,12 +286,12 @@ step1_FSIM_Valid = [
 ]
 
 step1B_out_MC_noQCD_new = [
-    DS_S2MC("T_t_ToLeptons", "/TBarToLeptons_t-channel_8TeV-powheg-tauola/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "T_t"),
+    DS_S2MC("T_t_ToLeptons", "/TToLeptons_t-channel_8TeV-powheg-tauola/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "T_t"),
     DS_S2MC("T_t", "/T_t-channel_TuneZ2star_8TeV-powheg-tauola/joosep-stpol_step1B_04_10-c9249c44a215ffeb8c9ba40f59092334/USER", "T_t"),
     DS_S2MC("T_s", "/T_s-channel_TuneZ2star_8TeV-powheg-tauola/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "T_s"),
     DS_S2MC("T_tW", "/T_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "T_tW"),
 
-    DS_S2MC("Tbar_t_ToLeptons", "/TToLeptons_t-channel_8TeV-powheg-tauola/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "Tbar_t"),
+    DS_S2MC("Tbar_t_ToLeptons", "/TbarToLeptons_t-channel_8TeV-powheg-tauola/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "Tbar_t"),
     DS_S2MC("Tbar_t", "/Tbar_t-channel_TuneZ2star_8TeV-powheg-tauola/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "Tbar_t"),
     DS_S2MC("Tbar_s", "/Tbar_s-channel_TuneZ2star_8TeV-powheg-tauola/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "Tbar_s"),
     DS_S2MC("Tbar_tW", "/Tbar_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "Tbar_tW"),
@@ -456,6 +459,12 @@ step1_out_Data = [
     DS_Data("SingleEleD", "/SingleElectron/joosep-step1_Data_Feb6-4ad4eefaf926ac722f9a48104acbb5cc/USER", "total", "FT_53_V6_AN3::All"),
 ]
 
+step1_out_newData = [
+    DS_Data("SingleElectron", "/SingleElectron/jpata-stpol_step1_04_09-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All"),
+    DS_Data("SingleMu1", "/SingleMu/jpata-stpol_step1_04_15-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All"),
+    DS_Data("SingleMu2", "/SingleMu/joosep-stpol_step1_04_15-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All"),
+]
+
 step2_FastSimValid = [
     DS_S2MC("TTJets_FSIM_Valid_FullSim", "/TTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola/jpata-stpol_Feb8_FastSimValidation-243fe90abe1b1cf7bc2119dc7c0b2e28/USER#c66d2181-df08-407f-ae2e-0185b67e17cf"),
 
@@ -474,7 +483,7 @@ possible_ds = {
     "S1B_MC": step1_out_MC_new,
 
     #step2
-    "S2_D": step1_out_Data,
+    "S2_D": step1_out_Data+step1_out_newData,
     "S2_MC": step1B_out_MC_new,
     "S2_MC_noQCD": step1B_out_MC_noQCD_new,
     "S2_MC_QCD": step1B_out_MC_QCD_new,
