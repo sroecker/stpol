@@ -23,7 +23,7 @@ class Lumi:
 lumis = {
 
     "rereco_golden": Lumi("rereco_golden",
-    "/Cert_190456-208686_8TeV_22Jan2013ReReco_Collisions12_JSON.txt")
+    "/Cert_190456-208686_8TeV_22Jan2013ReReco_Collisions12_JSON.txt"),
 
     "Run2012A-13Jul2012": Lumi("Run2012A-13Jul2012",
     "/Cert_190456-196531_8TeV_13Jul2012ReReco_Collisions12_JSON_v2.txt")
@@ -76,14 +76,13 @@ class DS_Data(DS):
         DS.__init__(self, name, ds)
         self.lumi = lumi
         self.globalTag = globalTag
-        self.runrange = runrange
         self.dataperiod = dataperiod
 
     #FIXME: how to take into account the run range in the crab cfg?
     def parseTemplate(self, template, tag):
         out = template
         out = out.replace("LUMIFILE", lumis[self.lumi].fname)
-        out = out.replace("DATAPERIOD", dataPeriod)
+        out = out.replace("DATAPERIOD", self.dataperiod)
         out = out.replace("GLOBALTAG", self.globalTag)
         out = DS.parseTemplate(self, out, tag)
         return out
