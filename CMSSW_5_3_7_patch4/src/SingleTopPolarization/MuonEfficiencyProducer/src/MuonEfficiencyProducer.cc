@@ -284,15 +284,15 @@ MuonEfficiencyProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
    1.2<abs(eta)<2.1 -> 1.0023+-0.0001
 
    */
-   iEvent.put(std::auto_ptr<double>(new double(weightID)), "muonIDWeight");
-   iEvent.put(std::auto_ptr<double>(new double(weightIDUp)), "muonIDWeightUp");
-   iEvent.put(std::auto_ptr<double>(new double(weightIDDown)), "muonIDWeightDown");
-   iEvent.put(std::auto_ptr<double>(new double(weightIso)), "muonIsoWeight");
-   iEvent.put(std::auto_ptr<double>(new double(weightIsoUp)), "muonIsoWeightUp");
-   iEvent.put(std::auto_ptr<double>(new double(weightIsoDown)), "muonIsoWeightDown");
-   iEvent.put(std::auto_ptr<double>(new double(weightTrig)), "muonTrigWeight");
-   iEvent.put(std::auto_ptr<double>(new double(weightTrigUp)), "muonTrigWeightUp");
-   iEvent.put(std::auto_ptr<double>(new double(weightTrigDown)), "muonTrigWeightDown");
+   iEvent.put(std::auto_ptr<float>(new float(weightID)), "muonIDWeight");
+   iEvent.put(std::auto_ptr<float>(new float(weightIDUp)), "muonIDWeightUp");
+   iEvent.put(std::auto_ptr<float>(new float(weightIDDown)), "muonIDWeightDown");
+   iEvent.put(std::auto_ptr<float>(new float(weightIso)), "muonIsoWeight");
+   iEvent.put(std::auto_ptr<float>(new float(weightIsoUp)), "muonIsoWeightUp");
+   iEvent.put(std::auto_ptr<float>(new float(weightIsoDown)), "muonIsoWeightDown");
+   iEvent.put(std::auto_ptr<float>(new float(weightTrig)), "muonTriggerWeight");
+   iEvent.put(std::auto_ptr<float>(new float(weightTrigUp)), "muonTriggerWeightUp");
+   iEvent.put(std::auto_ptr<float>(new float(weightTrigDown)), "muonTriggerWeightDown");
 }
 
 // ------------ method called once each job just before starting event loop  ------------
