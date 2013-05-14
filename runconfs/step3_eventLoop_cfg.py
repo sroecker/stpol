@@ -1,6 +1,8 @@
 #Compile with
 #$ scram b -f SingleTopPolarization/Analysis
 #Output will be in $CMSSW_DIR/bin/
+
+#Note - this is a generic example file, rather than changing it, make your own based on it, using the cuts you need
 import FWCore.ParameterSet.Config as cms
 import sys
 import pdb
@@ -44,8 +46,8 @@ process.options = cms.untracked.PSet(wantSummary=cms.untracked.bool(True))
 
 process.fwliteInput = cms.PSet(
     fileNames   = cms.vstring(input_files),
-    maxEvents   = cms.int32(30000),
-    outputEvery = cms.uint32(100),
+    maxEvents   = cms.int32(-1),
+    outputEvery = cms.uint32(10000),
 )
 print "Input files:"
 for fi in input_files:
