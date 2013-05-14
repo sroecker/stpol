@@ -56,6 +56,7 @@ class MuonEfficiencyProducer : public edm::EDProducer {
 
       // ----------member data ---------------------------
       const edm::InputTag src;
+      const std::string dataRun;
 };
 
 //
@@ -72,13 +73,17 @@ class MuonEfficiencyProducer : public edm::EDProducer {
 //
 MuonEfficiencyProducer::MuonEfficiencyProducer(const edm::ParameterSet& iConfig)
 : src(iConfig.getParameter<edm::InputTag>("src"))
+, dataRun(iConfig.getParameter<std::string>("dataRun"))
 {
-   produces<double>("muonIDWeight");
-   produces<double>("muonIDWeightUp");
-   produces<double>("muonIDWeightDown");
-   produces<double>("muonIsoWeight");
-   produces<double>("muonIsoWeightUp");
-   produces<double>("muonIsoWeightDown");   
+   produces<float>("muonIDWeight");
+   produces<float>("muonIDWeightUp");
+   produces<float>("muonIDWeightDown");
+   produces<float>("muonIsoWeight");
+   produces<float>("muonIsoWeightUp");
+   produces<float>("muonIsoWeightDown");   
+   produces<float>("muonTriggerWeight");
+   produces<float>("muonTriggerWeightUp");
+   produces<float>("muonTriggerWeightDown");   
 }
 
 
@@ -100,23 +105,28 @@ void
 MuonEfficiencyProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
    using namespace edm;
-   double weightID = TMath::QuietNaN();
-   double weightIDUp = TMath::QuietNaN();
-   double weightIDDown = TMath::QuietNaN();
-   double weightIso = TMath::QuietNaN();
-   double weightIsoUp = TMath::QuietNaN();
-   double weightIsoDown = TMath::QuietNaN();
+   float weightID = TMath::QuietNaN();
+   float weightIDUp = TMath::QuietNaN();
+   float weightIDDown = TMath::QuietNaN();
+   float weightIso = TMath::QuietNaN();
+   float weightIsoUp = TMath::QuietNaN();
+   float weightIsoDown = TMath::QuietNaN();
+   float weightTrig = TMath::QuietNaN();
+   float weightTrigUp = TMath::QuietNaN();
+   float weightTrigDown = TMath::QuietNaN();
 
    Handle<View<reco::Candidate> > muons;
    iEvent.getByLabel(src, muons);
+   if (muons->size()>1)
+       LogError("muon weights") << "Muon weights are only defined for a single-muon event, but you have " << muons->size();
 
-   for ( uint i = 0; i < muons->size(); ++i ) {
+   for ( uint i = 0; i < 1; ++i ) {
       const pat::Muon& muon = (pat::Muon&)muons->at(i);
    
       LogDebug("eta ") << muon.eta() << std::endl;
       LogDebug("iso ") << muon.userFloat("deltaBetaCorrRelIso") << std::endl;
       
-      if(abs(muon.eta())<0.9){
+      if(fabs(muon.eta())<0.9){
          weightID = 0.9939;
          weightIDUp = weightID + 0.0002;
          weightIDDown = weightID - 0.0002;
@@ -129,8 +139,35 @@ MuonEfficiencyProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
             weightIsoUp = weightIso + 0.0001;
             weightIsoDown = weightIso - 0.0001;
          }
+
+         //https://indico.cern.ch/getFile.py/access?contribId=2&resId=0&materialId=slides&confId=228197
+         if (dataRun == "RunA") {
+             weightTrig = 0.9560;
+             float err = 0.0008;
+             weightTrigUp = weightTrig + err;
+             weightTrigDown = weightTrig - err; 
+         }
+         else if(dataRun == "RunB") {
+             weightTrig = 0.9798;
+             float err = 0.0004;
+             weightTrigUp = weightTrig + err;
+             weightTrigDown = weightTrig - err; 
+         }
+         else if(dataRun == "RunC") {
+             weightTrig = 0.9841;
+             float err = 0.0003;
+             weightTrigUp = weightTrig + err;
+             weightTrigDown = weightTrig - err; 
+         }
+         //https://indico.cern.ch/getFile.py/access?contribId=2&resId=0&materialId=slides&confId=228197
+         else if(dataRun == "RunD") {
+             weightTrig = 0.98151;
+             float err = 0.00032;
+             weightTrigUp = weightTrig + err;
+             weightTrigDown = weightTrig - err; 
+         }
       }
-      else if (abs(muon.eta()) < 1.2){
+      else if (fabs(muon.eta()) < 1.2){
          weightID = 0.9902;
          weightIDUp = weightID + 0.0003;
          weightIDDown = weightID - 0.0003;
@@ -143,8 +180,35 @@ MuonEfficiencyProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
             weightIsoUp = weightIso + 0.0002;
             weightIsoDown = weightIso - 0.0002;
          }
+         
+         //https://indico.cern.ch/getFile.py/access?contribId=2&resId=0&materialId=slides&confId=228197
+         if (dataRun == "RunA") {
+             weightTrig = 0.9528;  
+             float err = 0.0021;
+             weightTrigUp = weightTrig + err;
+             weightTrigDown = weightTrig - err; 
+         }
+         else if(dataRun == "RunB") {
+             weightTrig = 0.9618;
+             float err = 0.0010;
+             weightTrigUp = weightTrig + err;
+             weightTrigDown = weightTrig - err; 
+         }
+         else if(dataRun == "RunC") {
+             weightTrig = 0.9688;
+             float err = 0.0009;
+             weightTrigUp = weightTrig + err;
+             weightTrigDown = weightTrig - err; 
+         }
+         //https://indico.cern.ch/getFile.py/access?contribId=2&resId=0&materialId=slides&confId=228197
+         else if(dataRun == "RunD") {
+             weightTrig = 0.96156;
+             float err = 0.00091;
+             weightTrigUp = weightTrig + err;
+             weightTrigDown = weightTrig - err; 
+         }
       }
-      else if(abs(muon.eta())<2.1){
+      else if(fabs(muon.eta())<2.1){
          weightID = 0.9970;
          weightIDUp = weightID + 0.0003;
          weightIDDown = weightID - 0.0003;
@@ -156,6 +220,33 @@ MuonEfficiencyProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
             weightIso = 1.0023;
             weightIsoUp = weightIso + 0.0001;
             weightIsoDown = weightIso - 0.0001;
+         }
+         
+         //https://indico.cern.ch/getFile.py/access?contribId=2&resId=0&materialId=slides&confId=228197
+         if (dataRun == "RunA") {
+             weightTrig = 0.9809; 
+             float err = 0.0016;
+             weightTrigUp = weightTrig + err;
+             weightTrigDown = weightTrig - err; 
+         }
+         else if(dataRun == "RunB") {
+             weightTrig = 0.9814;
+             float err = 0.0008;
+             weightTrigUp = weightTrig + err;
+             weightTrigDown = weightTrig - err; 
+         }
+         else if(dataRun == "RunC") {
+             weightTrig = 1.0021;
+             float err = 0.0007;
+             weightTrigUp = weightTrig + err;
+             weightTrigDown = weightTrig - err; 
+         }
+         //https://indico.cern.ch/getFile.py/access?contribId=2&resId=0&materialId=slides&confId=228197
+         else if(dataRun == "RunD") {
+             weightTrig = 0.99721;
+             float err = 0.00069;
+             weightTrigUp = weightTrig + err;
+             weightTrigDown = weightTrig - err; 
          }
       }
 
@@ -199,6 +290,9 @@ MuonEfficiencyProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
    iEvent.put(std::auto_ptr<double>(new double(weightIso)), "muonIsoWeight");
    iEvent.put(std::auto_ptr<double>(new double(weightIsoUp)), "muonIsoWeightUp");
    iEvent.put(std::auto_ptr<double>(new double(weightIsoDown)), "muonIsoWeightDown");
+   iEvent.put(std::auto_ptr<double>(new double(weightTrig)), "muonTrigWeight");
+   iEvent.put(std::auto_ptr<double>(new double(weightTrigUp)), "muonTrigWeightUp");
+   iEvent.put(std::auto_ptr<double>(new double(weightTrigDown)), "muonTrigWeightDown");
 }
 
 // ------------ method called once each job just before starting event loop  ------------
