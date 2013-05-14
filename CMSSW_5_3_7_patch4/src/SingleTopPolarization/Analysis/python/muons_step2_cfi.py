@@ -78,9 +78,6 @@ def MuonSetup(process, conf = None):
         maxNumber=cms.uint32(0),
     )
 
-    #####################
-    # MET/MtW cutting   #
-    #####################
     #produce the muon and MET invariant transverse mass
     process.muAndMETMT = cms.EDProducer('CandTransverseMassProducer',
         collections=cms.untracked.vstring([conf.metSource, "goodSignalMuons"])
@@ -98,21 +95,21 @@ def MuonSetup(process, conf = None):
         src=cms.InputTag("goodSignalMuons")
     )
 
-    #Either use MET cut or MtW cut
-    if conf.Muons.transverseMassType == conf.Leptons.WTransverseMassType.MET:
-        if conf.Leptons.cutOnTransverseMass:
-            process.hasMET = cms.EDFilter("PATCandViewCountFilter",
-                src = cms.InputTag("goodMETs"),
-                minNumber = cms.uint32(1),
-                maxNumber = cms.uint32(1)
-            )
-    elif conf.Muons.transverseMassType == conf.Leptons.WTransverseMassType.MtW:
-        if conf.Leptons.cutOnTransverseMass:
-            process.hasMuMETMT = cms.EDFilter('EventDoubleFilter',
-                src=cms.InputTag("muAndMETMT"),
-                min=cms.double(conf.Muons.transverseMassCut),
-                max=cms.double(9999999)
-            )
+#    #Either use MET cut or MtW cut
+#    if conf.Muons.transverseMassType == conf.Leptons.WTransverseMassType.MET:
+#        if conf.Leptons.cutOnTransverseMass:
+#            process.hasMET = cms.EDFilter("PATCandViewCountFilter",
+#                src = cms.InputTag("goodMETs"),
+#                minNumber = cms.uint32(1),
+#                maxNumber = cms.uint32(1)
+#            )
+#    elif conf.Muons.transverseMassType == conf.Leptons.WTransverseMassType.MtW:
+#        if conf.Leptons.cutOnTransverseMass:
+#            process.hasMuMETMT = cms.EDFilter('EventDoubleFilter',
+#                src=cms.InputTag("muAndMETMT"),
+#                min=cms.double(conf.Muons.transverseMassCut),
+#                max=cms.double(9999999)
+#            )
 
     process.recoNuProducerMu = cms.EDProducer('ClassicReconstructedNeutrinoProducer',
         leptonSrc=cms.InputTag("singleIsoMu"),
@@ -158,9 +155,9 @@ def MuonPath(process, conf):
         process.oneIsoMu *
         process.singleIsoMu *
 
-        process.looseMuVetoMu *
+        #process.looseMuVetoMu *
         process.looseVetoElectrons *
-        process.looseEleVetoMu *
+        #process.looseEleVetoMu *
 
         #Do general jet cleaning, PU-jet cleaning and select 2 good jets
         process.jetSequence *
@@ -213,9 +210,9 @@ def MuonPath(process, conf):
         [
         "stepHLTsyncMu",
         "oneIsoMu",
-        "looseMuVetoMu",
-        "looseEleVetoMu",
-        "metMuSequence",
+        #"looseMuVetoMu",
+        #"looseEleVetoMu",
+        #"metMuSequence",
         "nJets",
         "mBTags"
         ]
