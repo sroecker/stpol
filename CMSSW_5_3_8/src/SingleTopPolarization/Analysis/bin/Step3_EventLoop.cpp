@@ -912,14 +912,14 @@ int main(int argc, char* argv[])
                 bool passes_hlt_cuts = hlt_cuts.process(event);
                 if(!passes_hlt_cuts) continue;
 
-		bool passes_hlt_ele_cuts = hlt_ele_cuts.process(event);
-		if(!passes_hlt_ele_cuts) continue;
+                bool passes_hlt_ele_cuts = hlt_ele_cuts.process(event);
+                if(!passes_hlt_ele_cuts) continue;
 
                 bool passes_muon_cuts = muon_cuts.process(event);
                 if(!passes_muon_cuts) continue;
                 
-		bool passes_electron_cuts = electron_cuts.process(event);
-		if(!passes_electron_cuts) continue;
+                bool passes_electron_cuts = electron_cuts.process(event);
+                if(!passes_electron_cuts) continue;
 
                 bool passes_veto_lepton_cuts = veto_lepton_cuts.process(event);
                 if(!passes_veto_lepton_cuts) continue;
