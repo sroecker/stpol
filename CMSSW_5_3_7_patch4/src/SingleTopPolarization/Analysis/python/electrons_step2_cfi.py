@@ -250,6 +250,17 @@ def ElectronPath(process, conf):
             process.electronWeightsProducer
             )
 
+    #Produce the electron parentage decay tree string
+    if conf.isMC:
+        process.decayTreeProducerEle = cms.EDProducer(
+            'GenParticleDecayTreeProducer',
+            src=cms.untracked.InputTag("singleIsoEle")
+        )
+        process.elePath.insert(
+            process.elePath.index(process.singleIsoEle)+1,
+            process.decayTreeProducerEle
+        )
+
     if conf.isMC and conf.channel == conf.Channel.signal:
         #Put the parton level study after the top reco sequence.
         process.elePath.insert(
