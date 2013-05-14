@@ -1,4 +1,0 @@
-file:/hdfs/local/joosep/stpol/step2_MC_Iso_04_25_withPDFw/WD_QCD_Pt_30_80_BCtoE/res/output_1_1_w0P.root
-file:/hdfs/local/joosep/stpol/step2_MC_Iso_04_25_withPDFw/WD_QCD_Pt_30_80_BCtoE/res/output_2_1_576.root
-file:/hdfs/local/joosep/stpol/step2_MC_Iso_04_25_withPDFw/WD_QCD_Pt_30_80_BCtoE/res/output_3_2_MH4.root
-file:/hdfs/local/joosep/stpol/step2_MC_Iso_04_25_withPDFw/WD_QCD_Pt_30_80_BCtoE/res/output_4_1_5xk.root

@@ -45,23 +45,23 @@ class Cut:
         return self.cut_str
 
 class Cuts:
-    hlt_isomu = Cut("HLT_IsoMu24_eta2p1_v11 == 1.0 || HLT_IsoMu24_eta2p1_v12 == 1.0 || HLT_IsoMu24_eta2p1_v13 == 1.0 || HLT_IsoMu24_eta2p1_v14 == 1.0 || HLT_IsoMu24_eta2p1_v15 == 1.0")
+    hlt_isomu = Cut("HLT_IsoMu24_eta2p1_v11 == 1.0 || HLT_IsoMu24_eta2p1_v12 == 1.0 || HLT_IsoMu24_eta2p1_v13 == 1.0 || HLT_IsoMu24_eta2p1_v14 == 1.0 || HLT_IsoMu24_eta2p1_v15 == 1.0 || HLT_IsoMu24_eta2p1_v16 == 1.0  || HLT_IsoMu24_eta2p1_v17 == 1.0")
     eta_lj = Cut("abs(eta_lj) > 2.5")
     mt_mu = Cut("mt_mu > 50")
     rms_lj = Cut("rms_lj < 0.025")
     eta_jet = Cut("abs(eta_lj) < 4.5")*Cut("abs(eta_bj) < 4.5")
     pt_jet = Cut("pt_lj > 40")*Cut("pt_bj > 40")
     top_mass_sig = Cut("top_mass >130 && top_mass<220")
-    one_muon = Cut("n_muons==1.0 && n_eles==0.0")
-    lepton_veto = Cut("n_veto_mu==0.0 && n_veto_ele==0.0")
+    one_muon = Cut("n_muons==1 && n_eles==0")
+    lepton_veto = Cut("n_veto_mu==0 && n_veto_ele==0")
     no_cut = Cut("1")
 
     @staticmethod
     def n_jets(n):
-        return Cut("n_jets == %.1f" % float(n))
+        return Cut("n_jets == %d" % int(n))
     @staticmethod
     def n_tags(n):
-        return Cut("n_tags == %.1f" % float(n))
+        return Cut("n_tags == %d" % int(n))
 
 Cuts.final = Cuts.rms_lj*Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig
 Cuts.mu = Cuts.hlt_isomu*Cuts.one_muon*Cuts.lepton_veto
@@ -170,7 +170,7 @@ class Sample:
         if not self.tree:
             raise TObjectOpenException("Could not open tree Events from file %s: %s" % (self.tfile.GetName(), self.tree))
         self.tree.SetCacheSize(100*1024*1024)
-        self.tree.AddBranchToCache("*", 1)
+        #self.tree.AddBranchToCache("*", 1)
 
         self.event_count = None
         self.event_count = self.getEventCount()
@@ -207,15 +207,12 @@ class Sample:
         weight_str = kwargs.get("weight", None)
 
         ROOT.gROOT.cd()
-#        ROOT.TH1.AddDirectory(False)
         if dtype=="float":
             hist = ROOT.TH1F("htemp", "htemp", plot_range[0], plot_range[1], plot_range[2])
         elif dtype=="int":
             hist = ROOT.TH1I("htemp", "htemp", plot_range[0], plot_range[1], plot_range[2])
 
         hist.Sumw2()
-
-#        hist.SetDirectory(ROOT.gROOT)
 
         draw_cmd = var + ">>htemp"
 
@@ -234,7 +231,6 @@ class Sample:
 
         if hist.Integral() != hist.Integral():
             raise HistogramException("Histogram had 'nan' Integral(), probably weight was 'nan'")
-        #hist.SetDirectory(0)
         if not hist:
             raise TObjectOpenException("Could not get histogram: %s" % hist)
         if hist.GetEntries() != n_entries:
