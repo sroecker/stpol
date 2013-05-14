@@ -45,7 +45,7 @@ class Cut:
         return self.cut_str
 
 class Cuts:
-    hlt_isomu = Cut("HLT_IsoMu24_eta2p1_v11 == 1.0 || HLT_IsoMu24_eta2p1_v12 == 1.0 || HLT_IsoMu24_eta2p1_v13 == 1.0 || HLT_IsoMu24_eta2p1_v14 == 1.0 || HLT_IsoMu24_eta2p1_v15 == 1.0 || HLT_IsoMu24_eta2p1_v16 == 1.0  || HLT_IsoMu24_eta2p1_v17 == 1.0")
+    hlt_isomu = Cut("HLT_IsoMu24_eta2p1_v11 == 1 || HLT_IsoMu24_eta2p1_v12 == 1 || HLT_IsoMu24_eta2p1_v13 == 1 || HLT_IsoMu24_eta2p1_v14 == 1 || HLT_IsoMu24_eta2p1_v15 == 1 || HLT_IsoMu24_eta2p1_v16 == 1  || HLT_IsoMu24_eta2p1_v17 == 1")
     eta_lj = Cut("abs(eta_lj) > 2.5")
     mt_mu = Cut("mt_mu > 50")
     rms_lj = Cut("rms_lj < 0.025")
