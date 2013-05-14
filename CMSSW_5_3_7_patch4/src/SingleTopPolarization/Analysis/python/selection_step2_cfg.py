@@ -228,6 +228,15 @@ def SingleTopStep2():
              minOut=cms.untracked.uint32(1)
     )
 
+    process.decayTreeProducerMu = cms.EDProducer(
+        'GenParticleDecayTreeProducer',
+        src=cms.untracked.InputTag("singleIsoMu")
+    )
+    process.decayTreeProducerEle = cms.EDProducer(
+        'GenParticleDecayTreeProducer',
+        src=cms.untracked.InputTag("singleIsoEle")
+    )
+
     #-----------------------------------------------
     # Top reco and cosine calcs
     #-----------------------------------------------
@@ -947,6 +956,7 @@ def SingleTopStep2():
                 'keep int_*__STPOLSEL2',
                 'keep int_*_*_STPOLSEL2',
                 'keep int_*_*_*',
+                'keep String_*_*_*', #the decay trees
                 'keep *_pdfInfo1_*_STPOLSEL2',
                 'keep *_pdfInfo2_*_STPOLSEL2',
                 'keep *_pdfInfo3_*_STPOLSEL2',
