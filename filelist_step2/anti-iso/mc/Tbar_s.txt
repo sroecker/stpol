@@ -1,1 +1,0 @@
-file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_25_withPDFw/WD_Tbar_s/res/output_1_1_zVN.root

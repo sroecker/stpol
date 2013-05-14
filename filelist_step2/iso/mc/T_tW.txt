@@ -1,2 +1,0 @@
-file:/hdfs/local/joosep/stpol/step2_MC_Iso_04_25_withPDFw/WD_T_tW/res/output_1_10_Asn.root
-file:/hdfs/local/joosep/stpol/step2_MC_Iso_04_25_withPDFw/WD_T_tW/res/output_2_1_4vg.root

@@ -1,4 +1,0 @@
-file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_25_withPDFw/WD_T_t_ToLeptons/res/output_1_1_V4T.root
-file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_25_withPDFw/WD_T_t_ToLeptons/res/output_3_1_e9N.root
-file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_25_withPDFw/WD_T_t_ToLeptons/res/output_5_1_0WB.root
-file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_25_withPDFw/WD_T_t_ToLeptons/res/output_6_1_Wb2.root

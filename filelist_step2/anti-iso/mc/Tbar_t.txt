@@ -1,6 +1,0 @@
-file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_25_withPDFw/WD_Tbar_t/res/output_1_1_zkM.root
-file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_25_withPDFw/WD_Tbar_t/res/output_2_1_tF0.root
-file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_25_withPDFw/WD_Tbar_t/res/output_4_1_zB2.root
-file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_25_withPDFw/WD_Tbar_t/res/output_5_1_4VD.root
-file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_25_withPDFw/WD_Tbar_t/res/output_6_1_w5T.root
-file:/hdfs/local/joosep/stpol/step2_MC_antiIso_04_25_withPDFw/WD_Tbar_t/res/output_7_2_JEo.root
