@@ -888,16 +888,16 @@ def SingleTopStep2():
              process.elePath.insert(0, process.puWeightProducer)
 
 
-    process.offlinePVCount = cms.EDProducer(
-        "CollectionSizeProducer<reco::Vertex>",
-        src = cms.InputTag("offlinePrimaryVertices")
-    )
+#    process.offlinePVCount = cms.EDProducer(
+#        "CollectionSizeProducer<reco::Vertex>",
+#        src = cms.InputTag("offlinePrimaryVertices")
+#    )
 
     process.eventIDProducer = cms.EDProducer('EventIDProducer'
     )
     process.treePath = cms.Path(
         process.eventIDProducer *
-        process.offlinePVCount *
+        #process.offlinePVCount *
        # process.treeSequence *
         process.treeSequenceNew
     )
@@ -946,6 +946,7 @@ def SingleTopStep2():
                 'keep *_bTagWeightProducerNJMT_*_STPOLSEL2',
                 'keep int_*__STPOLSEL2',
                 'keep int_*_*_STPOLSEL2',
+                'keep int_*_*_*',
                 'keep *_pdfInfo1_*_STPOLSEL2',
                 'keep *_pdfInfo2_*_STPOLSEL2',
                 'keep *_pdfInfo3_*_STPOLSEL2',
