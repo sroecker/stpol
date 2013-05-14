@@ -203,6 +203,15 @@ def MuonPath(process, conf):
             process.muonWeightsProducer
         )
 
+    if conf.isMC:
+        process.decayTreeProducerMu = cms.EDProducer(
+            'GenParticleDecayTreeProducer',
+            src=cms.untracked.InputTag("singleIsoMu")
+        )
+        process.muPath.insert(
+            process.muPath.index(process.singleIsoMu)+1,
+            process.decayTreeProducerMu
+        )
 
 
     #Count number of events passing the selection filters
