@@ -72,16 +72,18 @@ class DS(object):
 Represents a Real Data dataset
 """
 class DS_Data(DS):
-    def __init__(self, name, ds, lumi, globalTag, runrange=None):
+    def __init__(self, name, ds, lumi, globalTag, dataperiod):
         DS.__init__(self, name, ds)
         self.lumi = lumi
         self.globalTag = globalTag
         self.runrange = runrange
+        self.dataperiod = dataperiod
 
     #FIXME: how to take into account the run range in the crab cfg?
     def parseTemplate(self, template, tag):
         out = template
         out = out.replace("LUMIFILE", lumis[self.lumi].fname)
+        out = out.replace("DATAPERIOD", dataPeriod)
         out = out.replace("GLOBALTAG", self.globalTag)
         out = DS.parseTemplate(self, out, tag)
         return out
@@ -125,68 +127,68 @@ global_tag_Data_ABCD = "FT_53_V21_AN3::All"
 step1_data = [
 
       DS_Data("SingleMu_Run2012A_13Jul2012_v1",
-      "/SingleMu/Run2012A-13Jul2012-v1/AOD", "Run2012A-13Jul2012", global_tag_Data_ABCD, [190456,193621])
+      "/SingleMu/Run2012A-13Jul2012-v1/AOD", "Run2012A-13Jul2012", global_tag_Data_ABCD, "RunA")
 
     , DS_Data("SingleMu_Run2012A_recover_06Aug2012_v1",
-      "/SingleMu/Run2012A-recover-06Aug2012-v1/AOD", "Run2012A-recover-06Aug2012", global_tag_Data_ABCD, [193833, 196531])
+      "/SingleMu/Run2012A-recover-06Aug2012-v1/AOD", "Run2012A-recover-06Aug2012", global_tag_Data_ABCD, "RunA")
 
     , DS_Data("SingleMu_Run2012B",
-      "/SingleMu/Run2012B-13Jul2012-v1/AOD", "Run2012B-13Jul2012", global_tag_Data_ABCD, [193833, 196531])
+      "/SingleMu/Run2012B-13Jul2012-v1/AOD", "Run2012B-13Jul2012", global_tag_Data_ABCD, "RunB")
 
       #RunC
 #    , DS_Data("SingleMu_Run2012C_v1",
 #      "/SingleMu/Run2012C-PromptReco-v1/AOD", "PromptReco", "FT_P_V42C_AN3::All", [-1, -1])
 
     , DS_Data("SingleMu_Run2012C-24Aug2012-v1",
-      "/SingleMu/Run2012C-24Aug2012-v1/AOD", "Run2012C-24Aug", global_tag_Data_ABCD, [198934, 203746])
+      "/SingleMu/Run2012C-24Aug2012-v1/AOD", "Run2012C-24Aug", global_tag_Data_ABCD, "RunC")
 
     , DS_Data("SingleMu_Run2012C_v2",
-      "/SingleMu/Run2012C-PromptReco-v2/AOD", "Run2012C-PromptReco-v2", global_tag_Data_ABCD, [198934, 203746])
+      "/SingleMu/Run2012C-PromptReco-v2/AOD", "Run2012C-PromptReco-v2", global_tag_Data_ABCD, "RunC")
 
     , DS_Data("SingleMu_Run2012C-EcalRecover_11Dec2012",
-      "/SingleMu/Run2012C-EcalRecover_11Dec2012-v1/AOD", "Run2012C-EcalRecover_11Dec2012", global_tag_Data_ABCD, [201191, 201191])
+      "/SingleMu/Run2012C-EcalRecover_11Dec2012-v1/AOD", "Run2012C-EcalRecover_11Dec2012", global_tag_Data_ABCD, "RunC")
 
       #RunD
     , DS_Data("SingleMu_Run2012D-PromptReco-v1",
-      "/SingleMu/Run2012D-PromptReco-v1/AOD", "Run2012D-PromptReco-v1", global_tag_Data_ABCD, [203768, 208686])
+      "/SingleMu/Run2012D-PromptReco-v1/AOD", "Run2012D-PromptReco-v1", global_tag_Data_ABCD, "RunD")
 
 ##########
       #Electron
     , DS_Data("SingleElectron_Run2012A",
-      "/SingleElectron/Run2012A-13Jul2012-v1/AOD", "Run2012A-13Jul2012", global_tag_Data_ABCD,[-1, -1])
+      "/SingleElectron/Run2012A-13Jul2012-v1/AOD", "Run2012A-13Jul2012", global_tag_Data_ABCD, "RunA")
 
     , DS_Data("SingleElectron_Run2012A_06AugReReco",
-      "/SingleElectron/Run2012A-recover-06Aug2012-v1/AOD", "Run2012A-recover-06Aug2012", global_tag_Data_ABCD, [190782, 190949])
+      "/SingleElectron/Run2012A-recover-06Aug2012-v1/AOD", "Run2012A-recover-06Aug2012", global_tag_Data_ABCD, "RunA")
 
     , DS_Data("SingleElectron_Run2012B",
-      "/SingleElectron/Run2012B-13Jul2012-v1/AOD", "Run2012B-13Jul2012", global_tag_Data_ABCD, [-1, -1])
+      "/SingleElectron/Run2012B-13Jul2012-v1/AOD", "Run2012B-13Jul2012", global_tag_Data_ABCD, "RunB")
 
 #    , DS_Data("SingleElectron_Run2012C_v1",
 #      "/SingleElectron/Run2012C-PromptReco-v1/AOD", "PromptReco", "FT_P_V42C_AN3::All", [-1, -1])
 
     , DS_Data("SingleElectron_Run2012C_24AugReReco",
-      "/SingleElectron/Run2012C-24Aug2012-v1/AOD", "Run2012C-24Aug", global_tag_Data_ABCD, [198022, 198913])
+      "/SingleElectron/Run2012C-24Aug2012-v1/AOD", "Run2012C-24Aug", global_tag_Data_ABCD, "RunC")
 
     , DS_Data("SingleElectron_Run2012C_v2",
-      "/SingleElectron/Run2012C-PromptReco-v2/AOD", "Run2012C-PromptReco-v2", global_tag_Data_ABCD, [-1, -1])
+      "/SingleElectron/Run2012C-PromptReco-v2/AOD", "Run2012C-PromptReco-v2", global_tag_Data_ABCD, "RunC")
 
     , DS_Data("SingleElectron_Run2012C-EcalRecover_11Dec2012",
-      "/SingleElectron/Run2012C-EcalRecover_11Dec2012-v1/AOD", "Run2012C-EcalRecover_11Dec2012", global_tag_Data_ABCD, [201191, 201191])
+      "/SingleElectron/Run2012C-EcalRecover_11Dec2012-v1/AOD", "Run2012C-EcalRecover_11Dec2012", global_tag_Data_ABCD, "RunC")
 
     , DS_Data("SingleElectron_Run2012D-PromptReco-v1",
-      "/SingleElectron/Run2012D-PromptReco-v1/AOD", "Run2012D-PromptReco-v1", global_tag_Data_ABCD, [-1, -1])
+      "/SingleElectron/Run2012D-PromptReco-v1/AOD", "Run2012D-PromptReco-v1", global_tag_Data_ABCD, "RunD")
 ]
 
 step1_data_rereco_2013Jan = [
 
-    DS_Data("SingleMu_RunA", "/SingleMu/Run2012A-22Jan2013-v1/AOD", "22jan_dcsonly", global_tag_Data_ABCD),
-    DS_Data("SingleMu_RunB", "/SingleMu/Run2012B-22Jan2013-v1/AOD", "22jan_dcsonly", global_tag_Data_ABCD),
-    DS_Data("SingleMu_RunC", "/SingleMu/Run2012C-22Jan2013-v1/AOD", "22jan_dcsonly", global_tag_Data_ABCD),
-    DS_Data("SingleMu_RunD", "/SingleMu/Run2012D-22Jan2013-v1/AOD", "22jan_dcsonly", global_tag_Data_ABCD),
-    DS_Data("SingleElectron_RunA", "/SingleElectron/Run2012A-22Jan2013-v1/AOD", "22jan_dcsonly", global_tag_Data_ABCD),
-    DS_Data("SingleElectron_RunB", "/SingleElectron/Run2012B-22Jan2013-v1/AOD", "22jan_dcsonly", global_tag_Data_ABCD),
-    DS_Data("SingleElectron_RunC", "/SingleElectron/Run2012C-22Jan2013-v1/AOD", "22jan_dcsonly", global_tag_Data_ABCD),
-    DS_Data("SingleElectron_RunD", "/SingleElectron/Run2012D-22Jan2013-v1/AOD", "22jan_dcsonly", global_tag_Data_ABCD)
+    DS_Data("SingleMu_RunA", "/SingleMu/Run2012A-22Jan2013-v1/AOD", "22jan_dcsonly", global_tag_Data_ABCD, "RunA"),
+    DS_Data("SingleMu_RunB", "/SingleMu/Run2012B-22Jan2013-v1/AOD", "22jan_dcsonly", global_tag_Data_ABCD, "RunB"),
+    DS_Data("SingleMu_RunC", "/SingleMu/Run2012C-22Jan2013-v1/AOD", "22jan_dcsonly", global_tag_Data_ABCD, "RunC"),
+    DS_Data("SingleMu_RunD", "/SingleMu/Run2012D-22Jan2013-v1/AOD", "22jan_dcsonly", global_tag_Data_ABCD, "RunD"),
+    DS_Data("SingleElectron_RunA", "/SingleElectron/Run2012A-22Jan2013-v1/AOD", "22jan_dcsonly", global_tag_Data_ABCD, "RunA"),
+    DS_Data("SingleElectron_RunB", "/SingleElectron/Run2012B-22Jan2013-v1/AOD", "22jan_dcsonly", global_tag_Data_ABCD, "RunB"),
+    DS_Data("SingleElectron_RunC", "/SingleElectron/Run2012C-22Jan2013-v1/AOD", "22jan_dcsonly", global_tag_Data_ABCD, "RunC"),
+    DS_Data("SingleElectron_RunD", "/SingleElectron/Run2012D-22Jan2013-v1/AOD", "22jan_dcsonly", global_tag_Data_ABCD, "RunD")
 
 
 ]
@@ -448,21 +450,21 @@ step1_out_MC_new = [
 ]
 
 step1_out_Data = [
-    DS_Data("SingleMuC", "/SingleMu/joosep-step1_Data_Feb6-14d3879a0dccd7e6c1fb317f2674eaf1/USER", "total", "FT_53_V6_AN3::All"),
-    DS_Data("SingleMuAB", "/SingleMu/joosep-step1_Data_Feb6-2cdd420c4c725097a4330835f90d1ada/USER", "total", "FT_53_V6_AN3::All"),
-    DS_Data("SingleMuD", "/SingleMu/joosep-step1_Data_Feb6-4ad4eefaf926ac722f9a48104acbb5cc/USER", "total", "FT_53_V6_AN3::All"),
+    DS_Data("SingleMuC", "/SingleMu/joosep-step1_Data_Feb6-14d3879a0dccd7e6c1fb317f2674eaf1/USER", "total", "FT_53_V6_AN3::All", "RunA"),
+    DS_Data("SingleMuAB", "/SingleMu/joosep-step1_Data_Feb6-2cdd420c4c725097a4330835f90d1ada/USER", "total", "FT_53_V6_AN3::All", "RunB"), #FIXME: separate runs
+    DS_Data("SingleMuD", "/SingleMu/joosep-step1_Data_Feb6-4ad4eefaf926ac722f9a48104acbb5cc/USER", "total", "FT_53_V6_AN3::All", "RunC"),
 
-    DS_Data("SingleEleA1", "/SingleElectron/joosep-step1_Data_Feb6-a67a46c387bb052b77f0782979d2cf48/USER", "total", "FT_53_V6_AN3::All"),
-    DS_Data("SingleEleB", "/SingleElectron/joosep-step1_Data_Feb6-2cdd420c4c725097a4330835f90d1ada/USER", "total", "FT_53_V6_AN3::All"),
-    DS_Data("SingleEleC1", "/SingleElectron/joosep-step1_Data_Feb6-2d70b925c06acab65b2731ef9f08c3c1/USER", "total", "FT_53_V6_AN3::All"),
-    DS_Data("SingleEleC2", "/SingleElectron/joosep-step1_Data_Feb6-14d3879a0dccd7e6c1fb317f2674eaf1/USER", "total", "FT_53_V6_AN3::All"),
-    DS_Data("SingleEleD", "/SingleElectron/joosep-step1_Data_Feb6-4ad4eefaf926ac722f9a48104acbb5cc/USER", "total", "FT_53_V6_AN3::All"),
+    DS_Data("SingleEleA1", "/SingleElectron/joosep-step1_Data_Feb6-a67a46c387bb052b77f0782979d2cf48/USER", "total", "FT_53_V6_AN3::All", "RunA"),
+    DS_Data("SingleEleB", "/SingleElectron/joosep-step1_Data_Feb6-2cdd420c4c725097a4330835f90d1ada/USER", "total", "FT_53_V6_AN3::All", "RunB"),
+    DS_Data("SingleEleC1", "/SingleElectron/joosep-step1_Data_Feb6-2d70b925c06acab65b2731ef9f08c3c1/USER", "total", "FT_53_V6_AN3::All", "RunC"),
+    DS_Data("SingleEleC2", "/SingleElectron/joosep-step1_Data_Feb6-14d3879a0dccd7e6c1fb317f2674eaf1/USER", "total", "FT_53_V6_AN3::All", "RunC"),
+    DS_Data("SingleEleD", "/SingleElectron/joosep-step1_Data_Feb6-4ad4eefaf926ac722f9a48104acbb5cc/USER", "total", "FT_53_V6_AN3::All", "RUnD"),
 ]
 
 step1_out_newData = [
-    DS_Data("SingleElectron", "/SingleElectron/jpata-stpol_step1_04_09-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All"),
-    DS_Data("SingleMu1", "/SingleMu/jpata-stpol_step1_04_15-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All"),
-    DS_Data("SingleMu2", "/SingleMu/joosep-stpol_step1_04_15-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All"),
+    DS_Data("SingleElectron", "/SingleElectron/jpata-stpol_step1_04_09-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All", "RunA"), #FIXME disambiguate by run
+    DS_Data("SingleMu1", "/SingleMu/jpata-stpol_step1_04_15-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All", "RunB"),
+    DS_Data("SingleMu2", "/SingleMu/joosep-stpol_step1_04_15-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All", "RunC"),
 ]
 
 step2_FastSimValid = [
