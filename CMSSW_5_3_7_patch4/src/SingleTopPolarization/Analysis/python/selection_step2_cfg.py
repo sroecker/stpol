@@ -72,7 +72,7 @@ def SingleTopStep2():
                   VarParsing.varType.bool,
                   "Use CompHep-specific processing")
 
-        options.register ('systematic', None,
+        options.register ('systematic', "",
                   VarParsing.multiplicity.singleton,
                   VarParsing.varType.string,
                   "Apply Systematic variation")
@@ -81,6 +81,11 @@ def SingleTopStep2():
                   VarParsing.multiplicity.singleton,
                   VarParsing.varType.bool,
                   "Run the PDF weight generation module")
+
+        options.register ('dataRun', "",
+                  VarParsing.multiplicity.singleton,
+                  VarParsing.varType.string,
+                  "A string Run{A,B,C,D} to specify the data period")
 
         options.parseArguments()
 
@@ -103,6 +108,7 @@ def SingleTopStep2():
         Config.isMC = options.isMC
         Config.isCompHep = options.compHep
         Config.systematic = options.systematic
+        Config.dataRun = options.dataRun
         print "Systematic! ",Config.systematic
 
     if Config.isMC:
