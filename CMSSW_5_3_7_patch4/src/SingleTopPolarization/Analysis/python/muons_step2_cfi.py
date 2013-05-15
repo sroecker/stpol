@@ -93,7 +93,7 @@ def MuonSetup(process, conf = None):
 
     process.muonWeightsProducer = cms.EDProducer("MuonEfficiencyProducer",
         src=cms.InputTag("goodSignalMuons"),
-        dataRun=cms.string("RunD")#FIXME
+        dataRun=cms.string(conf.dataRun)
     )
 
 #    #Either use MET cut or MtW cut
