@@ -54,8 +54,8 @@ lumis = {
 
 runRanges = dict()
 runRanges["RunA"] = [190456, 193621]
-runRanges["RunB"] = [193834, 196452]
-runRanges["RunC"] = [198022, 201657]
+runRanges["RunB"] = [193834, 196531]
+runRanges["RunC"] = [198022, 203742]
 runRanges["RunD"] = [203777, 208686]
 
 """
