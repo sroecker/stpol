@@ -75,6 +75,7 @@ MuonEfficiencyProducer::MuonEfficiencyProducer(const edm::ParameterSet& iConfig)
 : src(iConfig.getParameter<edm::InputTag>("src"))
 , dataRun(iConfig.getParameter<std::string>("dataRun"))
 {
+   edm::LogInfo("constructor") << "dataRun=" << dataRun;
    produces<float>("muonIDWeight");
    produces<float>("muonIDWeightUp");
    produces<float>("muonIDWeightDown");
