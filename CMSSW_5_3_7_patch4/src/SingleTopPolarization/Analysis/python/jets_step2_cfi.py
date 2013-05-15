@@ -18,27 +18,13 @@ def JetSetup(process, conf):
     jetCut += ' && (chargedHadronEnergyFraction > 0. || abs(eta) >= 2.4)'
     jetCut += ' && (chargedMultiplicity > 0 || abs(eta) >= 2.4)'
 
-    process.skimJets = cms.EDFilter("CandViewSelector",
-        src=cms.InputTag(conf.Jets.source),
-        cut=cms.string('pt>15')
+    process.noPUJets = cms.EDProducer('CleanNoPUJetProducer',
+        jetSrc = cms.InputTag(conf.Jets.source),
+        PUidMVA = cms.InputTag("puJetMva", "fullDiscriminant", "PAT"),
+        PUidFlag = cms.InputTag("puJetMva", "fullId", "PAT"),
+        PUidVars = cms.InputTag("puJetId", "", "PAT"),
+        isOriginal=cms.bool(conf.Jets.source == "selectedPatJets")
     )
-
-    if(conf.Jets.source == "selectedPatJets"):
-        process.noPUJets = cms.EDProducer('CleanNoPUJetProducer',
-            jetSrc = cms.InputTag("skimJets"),
-            PUidMVA = cms.InputTag("puJetMva", "fullDiscriminant", "PAT"),
-            PUidFlag = cms.InputTag("puJetMva", "fullId", "PAT"),
-            PUidVars = cms.InputTag("puJetId", "", "PAT"),
-            isOriginal=cms.bool(True)
-        )
-    else:
-        process.noPUJets = cms.EDProducer('CleanNoPUJetProducer',
-            jetSrc = cms.InputTag("skimJets"),
-            PUidMVA = cms.InputTag("puJetMva", "fullDiscriminant", "PAT"),
-            PUidFlag = cms.InputTag("puJetMva", "fullId", "PAT"),
-            PUidVars = cms.InputTag("puJetId", "", "PAT"),
-            isOriginal=cms.bool(False)
-        )
 
 #    if conf.isMC:
 #        process.smearedJets = cms.EDProducer('JetMCSmearProducer',
@@ -273,7 +259,6 @@ def JetSetup(process, conf):
     process.jetSequence = cms.Sequence()
 
     process.jetSequence +=(
-      process.skimJets *
       process.noPUJets *
       process.deltaRJets
     )
