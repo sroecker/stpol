@@ -157,8 +157,11 @@ process.weights = cms.PSet(
     doWeights = cms.bool(isMC),
     bWeightNominalSrc = cms.InputTag("bTagWeightProducerNJMT", "bTagWeight"),
     puWeightSrc = cms.InputTag("puWeightProducer", "PUWeightNtrue"),
+
     muonIDWeightSrc = cms.InputTag("muonWeightsProducer", "muonIDWeight"),
     muonIsoWeightSrc = cms.InputTag("muonWeightsProducer", "muonIsoWeight"),
+    muonTriggerWeightSrc = cms.InputTag("muonWeightsProducer", "muonTriggerWeight"),
+
     electronIDWeightSrc = cms.InputTag("electronWeightsProducer","electronIdIsoWeight"),
     electronTriggerWeightSrc = cms.InputTag("electronWeightsProducer","electronTriggerWeight")
 )
