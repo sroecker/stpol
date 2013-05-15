@@ -210,11 +210,11 @@ def SingleTopStep1(
   # MET uncertainty step
   #-------------------------------------------------
   #Embed the reference to the original jet in the jets, which is constant during the propagation
-  if options.isMC:
-    process.patJetsWithOwnRef = cms.EDProducer('PatObjectOwnRefProducer<pat::Jet>',
-        src=cms.InputTag("selectedPatJets")
-    )
+  process.patJetsWithOwnRef = cms.EDProducer('PatObjectOwnRefProducer<pat::Jet>',
+      src=cms.InputTag("selectedPatJets")
+  )
 
+  if options.isMC:
     #Note: this module causes a large memory increase when crossing the file boundary
     #Reason - unknown, solution: limit processing to ~1 file.
     from PhysicsTools.PatUtils.tools.metUncertaintyTools import runMEtUncertainties
@@ -228,7 +228,6 @@ def SingleTopStep1(
          addToPatDefaultSequence=False
     )
     process.stpolMetUncertaintySequence = cms.Sequence(
-        process.patJetsWithOwnRef *
         process.metUncertaintySequence
     )
 
@@ -310,6 +309,7 @@ def SingleTopStep1(
   )
 
   process.preCalcSequences = cms.Sequence(
+    process.patJetsWithOwnRef *
     process.goodOfflinePVCount
   )
 
@@ -344,6 +344,7 @@ def SingleTopStep1(
     process.out.SelectEvents.SelectEvents.append("singleTopPathStep1Ele")
 
   process.GlobalTag.globaltag = cms.string(options.globalTag)
+
   if options.isMC:
     if options.doMuon:
       process.singleTopPathStep1Mu.insert(-1, process.stpolMetUncertaintySequence)
