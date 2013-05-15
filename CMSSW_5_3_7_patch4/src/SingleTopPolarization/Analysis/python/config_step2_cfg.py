@@ -65,6 +65,9 @@ class Config(C):
     #Which systematic to use
     systematic = None
 
+    #A string to specify the dta period (RunA, RunB, RunC, RunD)
+    dataRun = None
+
     """
     Specifies the jet configuration.
     """
