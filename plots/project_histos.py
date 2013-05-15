@@ -51,7 +51,7 @@ class Cuts:
     rms_lj = Cut("rms_lj < 0.025")
     eta_jet = Cut("abs(eta_lj) < 4.5")*Cut("abs(eta_bj) < 4.5")
     pt_jet = Cut("pt_lj > 40")*Cut("pt_bj > 40")
-    top_mass_sig = Cut("top_mass >130 && top_mass<220")
+    top_mass_sig = Cut("top_mass > 130 && top_mass < 220")
     one_muon = Cut("n_muons==1 && n_eles==0")
     lepton_veto = Cut("n_veto_mu==0 && n_veto_ele==0")
     no_cut = Cut("1")
@@ -224,7 +224,7 @@ class Sample:
         self.logger.debug("Calling TTree.Draw('%s', '%s')" % (draw_cmd, cutweight_cmd))
 
         n_entries = self.tree.Draw(draw_cmd, cutweight_cmd, "goff")
-        self.logger.debug("Histogram drawn with %d entries" % n_entries)
+        self.logger.debug("Histogram drawn with %d entries, integral=%.2f" % (n_entries, hist.Integral()))
 
         if n_entries<0:
             raise HistogramException("Could not draw histogram")
