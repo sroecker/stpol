@@ -456,8 +456,11 @@ class Weights : public CutsBase {
 public:
     edm::InputTag bWeightNominalSrc;
     edm::InputTag puWeightSrc;
+    
     edm::InputTag muonIDWeightSrc;
     edm::InputTag muonIsoWeightSrc;
+    edm::InputTag muonTriggerWeightSrc;
+
     edm::InputTag electronIDWeightSrc;
     edm::InputTag electronTriggerWeightSrc;
     
@@ -467,6 +470,7 @@ public:
         branch_vars.vars_float["pu_weight"] = 1.0;
         branch_vars.vars_float["muon_IDWeight"] = 1.0;
         branch_vars.vars_float["muon_IsoWeight"] = 1.0;
+        branch_vars.vars_float["muon_TriggerWeight"] = 1.0;
 	branch_vars.vars_float["electron_IDWeight"] = 1.0;
 	branch_vars.vars_float["electron_triggerWeight"] = 1.0;
     }
@@ -479,21 +483,27 @@ public:
         
         bWeightNominalSrc = pars.getParameter<edm::InputTag>("bWeightNominalSrc");
         puWeightSrc = pars.getParameter<edm::InputTag>("puWeightSrc");
+        
         muonIDWeightSrc = pars.getParameter<edm::InputTag>("muonIDWeightSrc");
         muonIsoWeightSrc = pars.getParameter<edm::InputTag>("muonIsoWeightSrc");
-	electronIDWeightSrc = pars.getParameter<edm::InputTag>("electronIDWeightSrc");
-	electronTriggerWeightSrc = pars.getParameter<edm::InputTag>("electronTriggerWeightSrc");
+        muonTriggerWeightSrc = pars.getParameter<edm::InputTag>("muonTriggerWeightSrc");
+        
+        electronIDWeightSrc = pars.getParameter<edm::InputTag>("electronIDWeightSrc");
+        electronTriggerWeightSrc = pars.getParameter<edm::InputTag>("electronTriggerWeightSrc");
     }
     
     bool process(const edm::EventBase& event) {
         pre_process();
         
-        branch_vars.vars_float["b_weight_nominal"] = get_collection<double>(event, bWeightNominalSrc, BranchVars::def_val);
-        branch_vars.vars_float["pu_weight"] = get_collection<double>(event, puWeightSrc, BranchVars::def_val);
-        branch_vars.vars_float["muon_IDWeight"] = get_collection<double>(event, muonIDWeightSrc, BranchVars::def_val);
-        branch_vars.vars_float["muon_IsoWeight"] = get_collection<double>(event, muonIsoWeightSrc, BranchVars::def_val);
-	branch_vars.vars_float["electron_IDWeight"] = get_collection<double>(event, electronIDWeightSrc, BranchVars::def_val);
-	branch_vars.vars_float["electron_triggerWeight"] = get_collection<double>(event, electronTriggerWeightSrc, BranchVars::def_val);
+        branch_vars.vars_float["b_weight_nominal"] = get_collection<double>(event, bWeightNominalSrc, 0.0);
+        branch_vars.vars_float["pu_weight"] = get_collection<double>(event, puWeightSrc, 0.0);
+        
+        branch_vars.vars_float["muon_IDWeight"] = get_collection<float>(event, muonIDWeightSrc, 0.0);
+        branch_vars.vars_float["muon_IsoWeight"] = get_collection<float>(event, muonIsoWeightSrc, 0.0);
+        branch_vars.vars_float["muon_TriggerWeight"] = get_collection<float>(event, muonTriggerWeightSrc, 0.0);
+        
+        branch_vars.vars_float["electron_IDWeight"] = get_collection<double>(event, electronIDWeightSrc, 0.0);
+        branch_vars.vars_float["electron_triggerWeight"] = get_collection<double>(event, electronTriggerWeightSrc, 0.0);
 
         //Remove NaN weights
         auto not_nan = [&branch_vars] (const std::string& key) {
@@ -504,12 +514,16 @@ public:
 
         not_nan("b_weight_nominal");
         not_nan("pu_weight");
+
         not_nan("muon_IDWeight");
         not_nan("muon_IsoWeight");
-	not_nan("electron_IDWeight");
-	not_nan("electron_triggerWeight");
+        not_nan("muon_TriggerWeight");
+	    
+        not_nan("electron_IDWeight");
+	    not_nan("electron_triggerWeight");
 
         post_process();
+        
         return true;
     }
 };
