@@ -193,8 +193,8 @@ public:
   edm::InputTag electronChargeSrc;
 
   virtual void initialize_branches() {
-    branch_vars.vars_int["n_muons"] = BranchVars::def_val;
-    branch_vars.vars_int["n_eles"] = BranchVars::def_val;
+    branch_vars.vars_int["n_muons"] = BranchVars::def_val_int;
+    branch_vars.vars_int["n_eles"] = BranchVars::def_val_int;
     branch_vars.vars_float["el_mva"] = BranchVars::def_val;
     branch_vars.vars_float["el_reliso"] = BranchVars::def_val;
     branch_vars.vars_float["el_pt"] = BranchVars::def_val;
@@ -224,7 +224,7 @@ public:
 
     branch_vars.vars_int["n_muons"] = n_muons;
     branch_vars.vars_int["n_eles"] = n_eles;
-    if(requireOneElectron && (n_eles!=1 || n_muons !=0)) return false;
+    if(requireOneElectron && (n_eles!=1 && n_muons !=0)) return false;
 
     branch_vars.vars_float["el_reliso"] = get_collection_n<float>(event, electronRelIsoSrc, 0);
     branch_vars.vars_float["el_mva"] = get_collection_n<float>(event, electronMvaSrc, 0);
