@@ -1,8 +1,8 @@
-def cluster_setup():
+def cluster_setup(path="ipcontroller-client.json"):
     from IPython.parallel import Client
     import IPython.parallel
     try:
-        c = Client("/home/joosep/.ipython/profile_default/security/ipcontroller-client.json")
+        c = Client(path)
         dview = c[:]
         print "Got %d engines" % len(c.ids)
         return dview
