@@ -52,6 +52,12 @@ lumis = {
 }
 
 
+runRanges = dict()
+runRanges["RunA"] = [190456, 193621]
+runRanges["RunB"] = [193834, 196452]
+runRanges["RunC"] = [198022, 201657]
+runRanges["RunD"] = [203777, 208686]
+
 """
 Represents a generic datasets.
 """
@@ -68,6 +74,9 @@ class DS(object):
         out = out.replace("WORKDIR", workdir)
         return out
 
+    def __str__(self):
+        return self.ds
+
 """
 Represents a Real Data dataset
 """
@@ -77,6 +86,7 @@ class DS_Data(DS):
         self.lumi = lumi
         self.globalTag = globalTag
         self.dataperiod = dataperiod
+        self.run_range = runRanges[dataperiod]
 
     #FIXME: how to take into account the run range in the crab cfg?
     def parseTemplate(self, template, tag):
@@ -84,6 +94,7 @@ class DS_Data(DS):
         out = out.replace("LUMIFILE", lumis[self.lumi].fname)
         out = out.replace("DATAPERIOD", self.dataperiod)
         out = out.replace("GLOBALTAG", self.globalTag)
+        out = out.replace("RUNRANGE", "%d-%d"%(self.run_range[0], self.run_range[1]))
         out = DS.parseTemplate(self, out, tag)
         return out
 
@@ -450,20 +461,33 @@ step1_out_MC_new = [
 
 step1_out_Data = [
     DS_Data("SingleMuC", "/SingleMu/joosep-step1_Data_Feb6-14d3879a0dccd7e6c1fb317f2674eaf1/USER", "total", "FT_53_V6_AN3::All", "RunA"),
-    DS_Data("SingleMuAB", "/SingleMu/joosep-step1_Data_Feb6-2cdd420c4c725097a4330835f90d1ada/USER", "total", "FT_53_V6_AN3::All", "RunB"), #FIXME: separate runs
+    DS_Data("SingleMuAB", "/SingleMu/joosep-step1_Data_Feb6-2cdd420c4c725097a4330835f90d1ada/USER", "total", "FT_53_V6_AN3::All", "RunA"),
+    DS_Data("SingleMuAB", "/SingleMu/joosep-step1_Data_Feb6-2cdd420c4c725097a4330835f90d1ada/USER", "total", "FT_53_V6_AN3::All", "RunB"),
+    DS_Data("SingleMuB", "/SingleMu/joosep-step1_Data_Feb6-2cdd420c4c725097a4330835f90d1ada/USER", "total", "FT_53_V6_AN3::All", "RunB"),
     DS_Data("SingleMuD", "/SingleMu/joosep-step1_Data_Feb6-4ad4eefaf926ac722f9a48104acbb5cc/USER", "total", "FT_53_V6_AN3::All", "RunC"),
 
     DS_Data("SingleEleA1", "/SingleElectron/joosep-step1_Data_Feb6-a67a46c387bb052b77f0782979d2cf48/USER", "total", "FT_53_V6_AN3::All", "RunA"),
     DS_Data("SingleEleB", "/SingleElectron/joosep-step1_Data_Feb6-2cdd420c4c725097a4330835f90d1ada/USER", "total", "FT_53_V6_AN3::All", "RunB"),
     DS_Data("SingleEleC1", "/SingleElectron/joosep-step1_Data_Feb6-2d70b925c06acab65b2731ef9f08c3c1/USER", "total", "FT_53_V6_AN3::All", "RunC"),
     DS_Data("SingleEleC2", "/SingleElectron/joosep-step1_Data_Feb6-14d3879a0dccd7e6c1fb317f2674eaf1/USER", "total", "FT_53_V6_AN3::All", "RunC"),
-    DS_Data("SingleEleD", "/SingleElectron/joosep-step1_Data_Feb6-4ad4eefaf926ac722f9a48104acbb5cc/USER", "total", "FT_53_V6_AN3::All", "RUnD"),
+    DS_Data("SingleEleD", "/SingleElectron/joosep-step1_Data_Feb6-4ad4eefaf926ac722f9a48104acbb5cc/USER", "total", "FT_53_V6_AN3::All", "RunD"),
 ]
 
 step1_out_newData = [
-    DS_Data("SingleElectron", "/SingleElectron/jpata-stpol_step1_04_09-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All", "RunA"), #FIXME disambiguate by run
-    DS_Data("SingleMu1", "/SingleMu/jpata-stpol_step1_04_15-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All", "RunB"),
-    DS_Data("SingleMu2", "/SingleMu/joosep-stpol_step1_04_15-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All", "RunC"),
+    DS_Data("SingleElectronA", "/SingleElectron/jpata-stpol_step1_04_09-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All", "RunA"),
+    DS_Data("SingleElectronB", "/SingleElectron/jpata-stpol_step1_04_09-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All", "RunB"),
+    DS_Data("SingleElectronC", "/SingleElectron/jpata-stpol_step1_04_09-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All", "RunC"),
+    DS_Data("SingleElectronD", "/SingleElectron/jpata-stpol_step1_04_09-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All", "RunD"),
+
+    DS_Data("SingleMuA1", "/SingleMu/jpata-stpol_step1_04_15-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All", "RunA"),
+    DS_Data("SingleMuB1", "/SingleMu/jpata-stpol_step1_04_15-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All", "RunB"),
+    DS_Data("SingleMuC1", "/SingleMu/jpata-stpol_step1_04_15-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All", "RunC"),
+    DS_Data("SingleMuD1", "/SingleMu/jpata-stpol_step1_04_15-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All", "RunD"),
+
+    DS_Data("SingleMuA2", "/SingleMu/joosep-stpol_step1_04_15-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All", "RunA"),
+    DS_Data("SingleMuA2", "/SingleMu/joosep-stpol_step1_04_15-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All", "RunB"),
+    DS_Data("SingleMuA2", "/SingleMu/joosep-stpol_step1_04_15-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All", "RunC"),
+    DS_Data("SingleMuA2", "/SingleMu/joosep-stpol_step1_04_15-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All", "RunD"),
 ]
 
 step2_FastSimValid = [
