@@ -1,5 +1,6 @@
 import ROOT
 from odict import OrderedDict as dict
+import string
 
 #Here the latter items will become topmost in stacks
 merge_cmds = dict()
@@ -49,3 +50,22 @@ def merge_hists(hists_d, merge_groups):
         out_d[merge_name] = hist
         out_d[merge_name].SetTitle("%s" % merge_name)
     return out_d
+
+
+def filter_alnum(s):
+    """Filter out everything except ascii letters and digits"""
+    return filter(lambda x: x in string.ascii_letters+string.digits + "_", s)
+
+def get_hist_int_err(hist):
+    """
+    Returns (integral, err) of the TH1 hist.
+    """
+    err = ROOT.Double()
+    integral = hist.IntegralAndError(1, hist.GetNbinsX(), err)
+    return (float(integral), float(err))
+
+def get_max_bin(hists):
+    """
+    Returns the maximum value of the bin heights in the list of TH1 objects
+    """
+    return max([h.GetMaximum() for h in hists])
