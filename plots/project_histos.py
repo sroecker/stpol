@@ -25,133 +25,44 @@ import itertools
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s;%(levelname)s;%(name)s;%(message)s")
 
-class TObjectOpenException(Exception): pass
-class HistogramException(Exception): pass
+#class TObjectOpenException(Exception): pass
+#class HistogramException(Exception): pass
+#
+#
+#class Cut:
+#    def __init__(self, cut_str):
+#        self.cut_str = cut_str
+#    def __mul__(self, other):
+#        cut_str = '('+self.cut_str+') && ('+other.cut_str+')'
+#        return Cut(cut_str)
+#    def __repr__(self):
+#        return "<Cut(%s)>" % self.cut_str
+#
+#    def __str__(self):
+#        return self.cut_str
+#
+#class Cuts:
+#    hlt_isomu = Cut("HLT_IsoMu24_eta2p1_v11 == 1 || HLT_IsoMu24_eta2p1_v12 == 1 || HLT_IsoMu24_eta2p1_v13 == 1 || HLT_IsoMu24_eta2p1_v14 == 1 || HLT_IsoMu24_eta2p1_v15 == 1 || HLT_IsoMu24_eta2p1_v16 == 1  || HLT_IsoMu24_eta2p1_v17 == 1")
+#    eta_lj = Cut("abs(eta_lj) > 2.5")
+#    mt_mu = Cut("mt_mu > 50")
+#    rms_lj = Cut("rms_lj < 0.025")
+#    eta_jet = Cut("abs(eta_lj) < 4.5")*Cut("abs(eta_bj) < 4.5")
+#    pt_jet = Cut("pt_lj > 40")*Cut("pt_bj > 40")
+#    top_mass_sig = Cut("top_mass > 130 && top_mass < 220")
+#    one_muon = Cut("n_muons==1 && n_eles==0")
+#    lepton_veto = Cut("n_veto_mu==0 && n_veto_ele==0")
+#    no_cut = Cut("1")
+#
+#    @staticmethod
+#    def n_jets(n):
+#        return Cut("n_jets == %d" % int(n))
+#    @staticmethod
+#    def n_tags(n):
+#        return Cut("n_tags == %d" % int(n))
+#
+#Cuts.final = Cuts.rms_lj*Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig
+#Cuts.mu = Cuts.hlt_isomu*Cuts.one_muon*Cuts.lepton_veto
 
-def filter_alnum(s):
-    """Filter out everything except ascii letters and digits"""
-    return filter(lambda x: x in string.ascii_letters+string.digits + "_", s)
-
-class Cut:
-    def __init__(self, cut_str):
-        self.cut_str = cut_str
-    def __mul__(self, other):
-        cut_str = '('+self.cut_str+') && ('+other.cut_str+')'
-        return Cut(cut_str)
-    def __repr__(self):
-        return "<Cut(%s)>" % self.cut_str
-
-    def __str__(self):
-        return self.cut_str
-
-class Cuts:
-    hlt_isomu = Cut("HLT_IsoMu24_eta2p1_v11 == 1 || HLT_IsoMu24_eta2p1_v12 == 1 || HLT_IsoMu24_eta2p1_v13 == 1 || HLT_IsoMu24_eta2p1_v14 == 1 || HLT_IsoMu24_eta2p1_v15 == 1 || HLT_IsoMu24_eta2p1_v16 == 1  || HLT_IsoMu24_eta2p1_v17 == 1")
-    eta_lj = Cut("abs(eta_lj) > 2.5")
-    mt_mu = Cut("mt_mu > 50")
-    rms_lj = Cut("rms_lj < 0.025")
-    eta_jet = Cut("abs(eta_lj) < 4.5")*Cut("abs(eta_bj) < 4.5")
-    pt_jet = Cut("pt_lj > 40")*Cut("pt_bj > 40")
-    top_mass_sig = Cut("top_mass > 130 && top_mass < 220")
-    one_muon = Cut("n_muons==1 && n_eles==0")
-    lepton_veto = Cut("n_veto_mu==0 && n_veto_ele==0")
-    no_cut = Cut("1")
-
-    @staticmethod
-    def n_jets(n):
-        return Cut("n_jets == %d" % int(n))
-    @staticmethod
-    def n_tags(n):
-        return Cut("n_tags == %d" % int(n))
-
-Cuts.final = Cuts.rms_lj*Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig
-Cuts.mu = Cuts.hlt_isomu*Cuts.one_muon*Cuts.lepton_veto
-
-class Histogram(Base):
-    __tablename__ = "histograms"
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    histogram_entries = Column(Integer)
-
-    var = Column(String)
-    cut = Column(String)
-    weight = Column(String)
-    sample_name = Column(String)
-    sample_entries_cut = Column(Integer)
-    sample_entries_total = Column(Integer)
-    hist_dir = Column(String)
-    hist_file = Column(String)
-
-    def __init__(self, *args, **kwargs):
-        super(Histogram, self).__init__(*args, **kwargs)
-        self.pretty_name = self.name
-        self.hist = None
-
-    def setHist(self, hist, **kwargs):
-        self.hist = hist
-        self.name = str(self.hist.GetName())
-        self.histogram_entries = int(kwargs.get("histogram_entries", -1))
-        self.var = kwargs.get("var")
-        self.cut = kwargs.get("cut")
-        self.weight = kwargs.get("weight")
-        self.sample_name = kwargs.get("sample_name")
-        self.sample_entries_cut = kwargs.get("sample_entries_cut")
-        self.sample_entries_total = kwargs.get("sample_entries_total")
-        self.integral = None
-        self.err = None
-        self.is_normalized = False
-        self.update()
-
-    def calc_int_err(self):
-        err = ROOT.Double()
-        integral = self.hist.IntegralAndError(1, self.hist.GetNbinsX(), err)
-        self.err = err
-        self.integral = integral
-        return (self.integral, self.err)
-
-    def normalize(self, target=1.0):
-        if self.hist.Integral()>0:
-            self.hist.Scale(target/self.hist.Integral())
-            self.is_normalized = True
-        else:
-            logging.warning("Histogram %s integral=0, not scaling." % str(self))
-
-    def normalize_lumi(self, lumi=1.0):
-        expected_events = sample_xs_map[self.sample_name] * lumi
-        total_events = self.sample_entries_total
-        scale_factor = float(expected_events)/float(total_events)
-        self.hist.Scale(scale_factor)
-
-    def update(self, file=None, dir=None):
-        self.name = str(self.hist.GetName())
-        if file and dir:
-            self.hist_dir = str(dir.GetName())
-            self.hist_file = str(file.GetName())
-        else:
-            try:
-                self.hist_dir = self.hist.GetDirectory().GetName()
-            except ReferenceError as e:
-                self.hist_dir = None
-            try:
-                self.hist_file = self.hist.GetDirectory().GetFile().GetName()
-            except ReferenceError as e:
-                self.hist_file = None
-        self.pretty_name = str(self.hist.GetTitle())
-
-    def loadFile(self):
-        self.fi = ROOT.TFile(self.hist_file)
-        #ROOT.gROOT.cd()
-        self.hist = self.fi.Get(self.hist_dir).Get(self.name)#.Clone()
-        #self.fi.Close()
-        self.update()
-
-    def __repr__(self):
-        return "<Histogram(%s, %s, %s)>" % (self.var, self.cut, self.weight)
-
-    @staticmethod
-    def unique_name(var, cut, weight):
-        cut_str = cut if cut is not None else "NOCUT"
-        weight_str = weight if weight is not None else "NOWEIGHT"
-        return filter_alnum(var + "_" + cut_str + "_" + weight_str)
 
 class Sample:
     def __init__(self, name, file_name):
