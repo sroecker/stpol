@@ -22,19 +22,37 @@
 #include <stdio.h>
 #include <time.h>
 
+// Get current date/time, format is YYYY-MM-DD.HH:mm:ss
+const std::string currentDateTime() {
+    time_t     now = time(0);
+    struct tm  tstruct;
+    char       buf[80];
+    tstruct = *localtime(&now);
+    // Visit http://www.cplusplus.com/reference/clibrary/ctime/strftime/
+    // for more information about date/time format
+    strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
+
+    return buf;
+}
+//A simple logging macro
+#define LogInfo std::cout << currentDateTime() << ":"
+
 using namespace std;
 
 int get_parent(const std::string& decay_tree, int self_pdgid) {
     for(std::string::size_type i = 0; i < decay_tree.size(); ++i) {
         const char s = decay_tree[i];
         if (s == '(') {
-            std::string::size_type j = decay_tree.find(":");
-            const std::string subs = decay_tree.substr(i, j-i);
+            std::string::size_type j = decay_tree.find(":", i);
+            const std::string subs = decay_tree.substr(i+1, j-i-1);
             std::istringstream ss(subs);
             int pdgid = 0;
             ss >> pdgid;
-            if (abs(pdgid) != self_pdgid)
+            //std::cout << subs << "->" << pdgid << std::endl;
+            if (abs(pdgid) != self_pdgid) {
+                //std::cout << "Identified " << pdgid << std::endl;
                 return pdgid;
+            }
         }
     }
     return 0;
@@ -60,7 +78,9 @@ T get_collection(const edm::EventBase& evt, edm::InputTag src, T retval) {
     edm::Handle<T> coll;
     evt.getByLabel(src, coll);
     if(!coll.isValid()) {
-        //std::cerr << "Collection " << src.label() << " is not valid!" << std::endl;
+#ifdef DEBUG
+        std::cerr << "Collection " << src.label() << " is not valid!" << std::endl;
+#endif 
         return retval;
     }
     return *coll;
@@ -794,21 +814,7 @@ public:
     }
 };
 
-// Get current date/time, format is YYYY-MM-DD.HH:mm:ss
-const std::string currentDateTime() {
-    time_t     now = time(0);
-    struct tm  tstruct;
-    char       buf[80];
-    tstruct = *localtime(&now);
-    // Visit http://www.cplusplus.com/reference/clibrary/ctime/strftime/
-    // for more information about date/time format
-    strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
 
-    return buf;
-}
-
-//A simple logging macro
-#define LogInfo std::cout << currentDateTime() << ":"
 
 int main(int argc, char* argv[])
 {    
