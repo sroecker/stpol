@@ -498,9 +498,9 @@ public:
         branch_vars.vars_float["b_weight_nominal"] = get_collection<double>(event, bWeightNominalSrc, 0.0);
         branch_vars.vars_float["pu_weight"] = get_collection<double>(event, puWeightSrc, 0.0);
         
-        branch_vars.vars_float["muon_IDWeight"] = get_collection<float>(event, muonIDWeightSrc, 0.0);
-        branch_vars.vars_float["muon_IsoWeight"] = get_collection<float>(event, muonIsoWeightSrc, 0.0);
-        branch_vars.vars_float["muon_TriggerWeight"] = get_collection<float>(event, muonTriggerWeightSrc, 0.0);
+        branch_vars.vars_float["muon_IDWeight"] = get_collection<double>(event, muonIDWeightSrc, 0.0);
+        branch_vars.vars_float["muon_IsoWeight"] = get_collection<double>(event, muonIsoWeightSrc, 0.0);
+        branch_vars.vars_float["muon_TriggerWeight"] = get_collection<double>(event, muonTriggerWeightSrc, 0.0);
         
         branch_vars.vars_float["electron_IDWeight"] = get_collection<double>(event, electronIDWeightSrc, 0.0);
         branch_vars.vars_float["electron_triggerWeight"] = get_collection<double>(event, electronTriggerWeightSrc, 0.0);
