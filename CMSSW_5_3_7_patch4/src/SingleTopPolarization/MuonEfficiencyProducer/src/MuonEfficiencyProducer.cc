@@ -167,6 +167,14 @@ MuonEfficiencyProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
              weightTrigUp = weightTrig + err;
              weightTrigDown = weightTrig - err; 
          }
+
+         //weighted avg according to lumi
+         else if(dataRun == "RunABCD") {
+             weightTrig = 0.0;
+             float err = 0.0;
+             weightTrigUp = weightTrig + err;
+             weightTrigDown = weightTrig - err; 
+         }
       }
       else if (fabs(muon.eta()) < 1.2){
          weightID = 0.9902;
@@ -208,6 +216,13 @@ MuonEfficiencyProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
              weightTrigUp = weightTrig + err;
              weightTrigDown = weightTrig - err; 
          }
+         //weighted avg according to lumi
+         else if(dataRun == "RunABCD") {
+             weightTrig = 0.0;
+             float err = 0.0;
+             weightTrigUp = weightTrig + err;
+             weightTrigDown = weightTrig - err; 
+         }
       }
       else if(fabs(muon.eta())<2.1){
          weightID = 0.9970;
@@ -246,6 +261,13 @@ MuonEfficiencyProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
          else if(dataRun == "RunD") {
              weightTrig = 0.99721;
              float err = 0.00069;
+             weightTrigUp = weightTrig + err;
+             weightTrigDown = weightTrig - err; 
+         }
+         //weighted avg according to lumi
+         else if(dataRun == "RunABCD") {
+             weightTrig = 0.0
+             float err = 0.0;
              weightTrigUp = weightTrig + err;
              weightTrigDown = weightTrig - err; 
          }
