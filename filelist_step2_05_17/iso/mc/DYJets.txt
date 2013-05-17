@@ -38,6 +38,8 @@ file:/hdfs/local/joosep/stpol/step2_MC_Iso_05_15_0a67b573ddafa52fa738c5e43537ce6
 file:/hdfs/local/joosep/stpol/step2_MC_Iso_05_15_0a67b573ddafa52fa738c5e43537ce603ed03462/WD_DYJets/res/output_35_1_OYh.root
 file:/hdfs/local/joosep/stpol/step2_MC_Iso_05_15_0a67b573ddafa52fa738c5e43537ce603ed03462/WD_DYJets/res/output_36_1_2Hw.root
 file:/hdfs/local/joosep/stpol/step2_MC_Iso_05_15_0a67b573ddafa52fa738c5e43537ce603ed03462/WD_DYJets/res/output_37_1_7TQ.root
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_05_15_0a67b573ddafa52fa738c5e43537ce603ed03462/WD_DYJets/res/output_38_2_e6J.root
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_05_15_0a67b573ddafa52fa738c5e43537ce603ed03462/WD_DYJets/res/output_39_2_rvH.root
 file:/hdfs/local/joosep/stpol/step2_MC_Iso_05_15_0a67b573ddafa52fa738c5e43537ce603ed03462/WD_DYJets/res/output_3_1_qkN.root
 file:/hdfs/local/joosep/stpol/step2_MC_Iso_05_15_0a67b573ddafa52fa738c5e43537ce603ed03462/WD_DYJets/res/output_40_1_gNJ.root
 file:/hdfs/local/joosep/stpol/step2_MC_Iso_05_15_0a67b573ddafa52fa738c5e43537ce603ed03462/WD_DYJets/res/output_41_1_XWX.root

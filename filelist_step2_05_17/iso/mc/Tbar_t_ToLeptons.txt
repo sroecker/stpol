@@ -1,0 +1,6 @@
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_05_15_0a67b573ddafa52fa738c5e43537ce603ed03462/WD_Tbar_t_ToLeptons/res/output_1_1_2hU.root
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_05_15_0a67b573ddafa52fa738c5e43537ce603ed03462/WD_Tbar_t_ToLeptons/res/output_2_1_6yS.root
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_05_15_0a67b573ddafa52fa738c5e43537ce603ed03462/WD_Tbar_t_ToLeptons/res/output_3_1_f3i.root
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_05_15_0a67b573ddafa52fa738c5e43537ce603ed03462/WD_Tbar_t_ToLeptons/res/output_4_1_xqd.root
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_05_15_0a67b573ddafa52fa738c5e43537ce603ed03462/WD_Tbar_t_ToLeptons/res/output_5_1_HZc.root
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_05_15_0a67b573ddafa52fa738c5e43537ce603ed03462/WD_Tbar_t_ToLeptons/res/output_6_1_CBk.root
