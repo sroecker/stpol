@@ -322,7 +322,6 @@ def SingleTopStep1(
     process.singleTopPathStep1Mu = cms.Path(
       process.goodOfflinePrimaryVertices
       * process.patPF2PATSequence
-      * process.preCalcSequences
       #* process.muonClones
       #* process.electronClones
       #* process.jetClones
@@ -332,7 +331,6 @@ def SingleTopStep1(
     process.singleTopPathStep1Ele = cms.Path(
       process.goodOfflinePrimaryVertices
       * process.patPF2PATSequence
-      * process.preCalcSequences
       #* process.muonClones
       #* process.electronClones
       #* process.jetClones
@@ -345,12 +343,17 @@ def SingleTopStep1(
 
   process.GlobalTag.globaltag = cms.string(options.globalTag)
 
+  process.singleTopPathStep1Mu += process.preCalcSequences
+  process.singleTopPathStep1Ele += process.preCalcSequences
+
   if options.isMC:
     if options.doMuon:
-      process.singleTopPathStep1Mu.insert(-1, process.stpolMetUncertaintySequence)
+      process.singleTopPathStep1Mu += process.stpolMetUncertaintySequence
     if options.doElectron:
-      process.singleTopPathStep1Ele.insert(-1, process.stpolMetUncertaintySequence)
+      process.singleTopPathStep1Ele += process.stpolMetUncertaintySequence
 
+
+  if options.isMC:
     #https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideBTagJetProbabilityCalibration?redirectedfrom=CMS.SWGuideBTagJetProbabilityCalibration#Calibration_in_53x_Data_and_MC
     process.GlobalTag.toGet = cms.VPSet(
       cms.PSet(record = cms.string("BTagTrackProbability2DRcd"),
@@ -361,7 +364,6 @@ def SingleTopStep1(
       connect = cms.untracked.string("frontier://FrontierPrep/CMS_COND_BTAU"))
     )
   else:
-
     #https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideBTagJetProbabilityCalibration?redirectedfrom=CMS.SWGuideBTagJetProbabilityCalibration#Calibration_in_53x_Data_and_MC
     process.GlobalTag.toGet = cms.VPSet(
       cms.PSet(record = cms.string("BTagTrackProbability2DRcd"),
