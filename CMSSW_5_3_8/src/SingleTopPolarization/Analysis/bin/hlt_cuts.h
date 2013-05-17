@@ -13,6 +13,7 @@ public:
     edm::InputTag hlt_src;
     std::vector<std::string> hlt_names;
     bool cut_on_HLT;
+    bool save_HLT_vars;
     std::vector<std::string> hlt_cut_names;
 
     edm::Handle<edm::TriggerResults> trig_results;
