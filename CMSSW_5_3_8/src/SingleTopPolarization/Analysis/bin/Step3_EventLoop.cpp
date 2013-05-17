@@ -22,7 +22,41 @@
 #include <stdio.h>
 #include <time.h>
 
+// Get current date/time, format is YYYY-MM-DD.HH:mm:ss
+const std::string currentDateTime() {
+    time_t     now = time(0);
+    struct tm  tstruct;
+    char       buf[80];
+    tstruct = *localtime(&now);
+    // Visit http://www.cplusplus.com/reference/clibrary/ctime/strftime/
+    // for more information about date/time format
+    strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
+
+    return buf;
+}
+//A simple logging macro
+#define LogInfo std::cout << currentDateTime() << ":"
+
 using namespace std;
+
+int get_parent(const std::string& decay_tree, int self_pdgid) {
+    for(std::string::size_type i = 0; i < decay_tree.size(); ++i) {
+        const char s = decay_tree[i];
+        if (s == '(') {
+            std::string::size_type j = decay_tree.find(":", i);
+            const std::string subs = decay_tree.substr(i+1, j-i-1);
+            std::istringstream ss(subs);
+            int pdgid = 0;
+            ss >> pdgid;
+            //std::cout << subs << "->" << pdgid << std::endl;
+            if (abs(pdgid) != self_pdgid) {
+                //std::cout << "Identified " << pdgid << std::endl;
+                return pdgid;
+            }
+        }
+    }
+    return 0;
+}
 
 namespace LHAPDF
 {
@@ -40,11 +74,13 @@ namespace LHAPDF
 
 //Shorthand for getting a value of type T from the event
 template <typename T>
-T get_collection(const edm::EventBase& evt, edm::InputTag src, const T& retval) {
+T get_collection(const edm::EventBase& evt, edm::InputTag src, T retval) {
     edm::Handle<T> coll;
     evt.getByLabel(src, coll);
     if(!coll.isValid()) {
-        //std::cerr << "Collection " << src.label() << " is not valid!" << std::endl;
+#ifdef DEBUG
+        std::cerr << "Collection " << src.label() << " is not valid!" << std::endl;
+#endif 
         return retval;
     }
     return *coll;
@@ -85,7 +121,7 @@ public:
     edm::InputTag muonLayersSrc;
     edm::InputTag muonStationsSrc;
     
-    edm::InputTag muonMotherPdgIdSrc;
+    edm::InputTag muonDecayTreeSrc;
 
     virtual void initialize_branches() {
         branch_vars.vars_float["mu_pt"] = BranchVars::def_val;
@@ -133,7 +169,7 @@ public:
             muonLayersSrc = pars.getParameter<edm::InputTag>("muonLayersSrc");
             muonStationsSrc = pars.getParameter<edm::InputTag>("muonStationsSrc");
             
-            muonMotherPdgIdSrc = pars.getParameter<edm::InputTag>("muonMotherPdgIdSrc");
+            muonDecayTreeSrc = pars.getParameter<edm::InputTag>("muonDecayTreeSrc");
         }
         
         muonCountSrc = pars.getParameter<edm::InputTag>("muonCountSrc"); 
@@ -162,7 +198,11 @@ public:
             branch_vars.vars_int["mu_layers"] = (int)get_collection_n<float>(event, muonLayersSrc, 0);
             branch_vars.vars_int["mu_stations"] = (int)get_collection_n<float>(event, muonStationsSrc, 0);
             
-            branch_vars.vars_int["mu_mother_id"] = (int)get_collection_n<float>(event, muonMotherPdgIdSrc, 0);
+            std::string def("");
+            std::string decay_tree = get_collection<std::string>(event, muonDecayTreeSrc, def);
+            if(decay_tree.size()>0) {
+                branch_vars.vars_int["mu_mother_id"] = get_parent(decay_tree, 13);
+            }
         }
         
         bool passesMuIso = true;
@@ -766,7 +806,7 @@ public:
 
         branch_vars.vars_float["true_cos_theta"] = (float)get_collection<double>(event, trueCosTheta, BranchVars::def_val_int);
         branch_vars.vars_int["true_lepton_pdgId"] = get_collection<int>(event, trueLeptonPdgIdSrc, 0);
-		  	
+        		  	
 		if(requireGenMuon && abs(branch_vars.vars_int["true_lepton_pdgId"])!=13) return false;
 
         post_process();
@@ -774,21 +814,7 @@ public:
     }
 };
 
-// Get current date/time, format is YYYY-MM-DD.HH:mm:ss
-const std::string currentDateTime() {
-    time_t     now = time(0);
-    struct tm  tstruct;
-    char       buf[80];
-    tstruct = *localtime(&now);
-    // Visit http://www.cplusplus.com/reference/clibrary/ctime/strftime/
-    // for more information about date/time format
-    strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
 
-    return buf;
-}
-
-//A simple logging macro
-#define LogInfo std::cout << currentDateTime() << ":"
 
 int main(int argc, char* argv[])
 {    

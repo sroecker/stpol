@@ -1,8 +1,10 @@
 #include "hlt_cuts.h"
 
 void HLTCuts::initialize_branches() {
-    for(auto & name : hlt_names) {
-        branch_vars.vars_int[name] = BranchVars::def_val_int; 
+    if (save_HLT_vars) { 
+        for(auto & name : hlt_names) {
+            branch_vars.vars_int[name] = BranchVars::def_val_int; 
+        }
     }
 }
 
@@ -12,6 +14,7 @@ CutsBase(_branch_vars)
     hlt_src = pars.getParameter<edm::InputTag>("hltSrc");
     hlt_names = pars.getParameter<std::vector<std::string> >("hltNames");
     cut_on_HLT = pars.getParameter<bool>("doCutOnHLT");
+    save_HLT_vars = pars.getParameter<bool>("saveHLTVars");
     initialize_branches();
 }
 
@@ -28,10 +31,12 @@ bool HLTCuts::process(const edm::EventBase& event) {
    
         //trigger was not found
         if(idx >= trig_results->size()) {
-            branch_vars.vars_int[name] = BranchVars::def_val_int;
+            if(save_HLT_vars)
+                branch_vars.vars_int[name] = BranchVars::def_val_int;
         }
         else {
-            branch_vars.vars_int[name] = (int)trig_results->accept(idx);
+            if(save_HLT_vars)
+                branch_vars.vars_int[name] = (int)trig_results->accept(idx);
             
             //Triggers in list are applied with OR
             passes = passes || trig_results->accept(idx);

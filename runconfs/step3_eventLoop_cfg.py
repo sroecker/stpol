@@ -1,8 +1,7 @@
-#Compile with
-#$ scram b -f SingleTopPolarization/Analysis
-#Output will be in $CMSSW_DIR/bin/
+#Note - this is a generic example file. Rather than changing it, make your own based on it, using the cuts you need.
+#You can also import this file to avoid copying all the necessary parameters by doing
+#from runconfs.step3_eventLoop_cfg import *
 
-#Note - this is a generic example file, rather than changing it, make your own based on it, using the cuts you need
 import FWCore.ParameterSet.Config as cms
 import sys
 import pdb
@@ -86,6 +85,7 @@ process.muonCuts = cms.PSet(
     muonStationsSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "numberOfMatchedStations"),
     muonLayersSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "trackhitPatterntrackerLayersWithMeasurement"),
     muonMotherPdgIdSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "motherGenPdgId"),
+    muonDecayTreeSrc = cms.InputTag("decayTreeProducerMu"),
 
 )
 
@@ -188,7 +188,8 @@ process.HLT = cms.PSet(
         "HLT_IsoMu24_eta2p1_v17",
         "HLT_IsoMu24_eta2p1_v16"
     ]),
-    doCutOnHLT = cms.bool(True)
+    doCutOnHLT = cms.bool(True),
+    saveHLTVars = cms.bool(False)
 )
 
 process.HLTele = cms.PSet(
@@ -199,7 +200,8 @@ process.HLTele = cms.PSet(
         "HLT_Ele27_WP80_v10",
         "HLT_Ele27_WP80_v11",
         ]),
-    doCutOnHLT = cms.bool(False)
+    doCutOnHLT = cms.bool(False),
+    saveHLTVars = cms.bool(False)
 )
 
 process.finalVars = cms.PSet(

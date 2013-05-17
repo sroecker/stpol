@@ -6,3 +6,4 @@ rm -Rf $OFDIR
 mkdir $OFDIR
 cmsRun $CMSSW_BASE/../runconfs/step1_newCmdLine_cfg.py inputFiles=$IN outputFile=$OFDIR/out_step1.root maxEvents=100 &> $OFDIR/log_step1.txt
 echo $?
+tail -n10 $OFDIR/log_step1.txt
