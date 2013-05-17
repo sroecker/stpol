@@ -1,7 +1,14 @@
 #!/bin/bash
-IN=`\ls -1 $CMSSW_BASE/../testing_step1/out*.root`
-OFDIR=$CMSSW_BASE/../testing_step2
-rm -Rf $OFDIR
+
+IN=`find $STPOL_DIR/testing_step1 -name "out*.root"`
+OFDIR="$STPOL_DIR"/testing_step2
+
+echo "Runnin step2 test on "$INFILE" with output to "$OFDIR
+if [ -d "$OFDIR" ]; then
+    echo "Removing "$OFDIR 
+    rm -Rf "$OFDIR"
+fi
+
 mkdir $OFDIR
 
 cmsRun $CMSSW_BASE/../runconfs/step2_newCmdLine_cfg.py doDebug=True inputFiles=file:$IN isMC=True channel=background subChannel=TTbar outputFile=$OFDIR/out.root &> $OFDIR/log_step2.txt
