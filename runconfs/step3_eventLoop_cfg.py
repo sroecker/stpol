@@ -101,6 +101,7 @@ process.eleCuts = cms.PSet(
     doVetoLeptonCut = cms.bool(True),
     vetoMuCountSrc = cms.InputTag("looseVetoMuCount"),
     vetoEleCountSrc = cms.InputTag("looseVetoEleCount"),
+    electronDecayTreeSrc = cms.InputTag("decayTreeProducerEle"),
 )
 
 process.jetCuts = cms.PSet(
@@ -174,7 +175,7 @@ process.mtMuCuts = cms.PSet(
 )
 
 #The versions should be specified explicitly at the moment
-process.HLT = cms.PSet(
+process.HLTmu = cms.PSet(
     hltSrc = cms.InputTag("TriggerResults", "", "HLT"),
     hltNames = cms.vstring([
         #"HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet50_40_30_v1",
