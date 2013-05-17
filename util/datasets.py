@@ -297,6 +297,18 @@ step1_FSIM_Valid = [
     DS("TTJets_FSIM_Valid_FullSim", "/TTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola/Summer12_DR53X-PU_S10_START53_V7C-v1/AODSIM"),
 ]
 
+
+step1_FSIM_WJets = [
+    DS("W1Jets_FSIM", "/W1JetsToLNu_TuneZ2Star_8TeV-madgraph/Summer12-START53_V7C_FSIM-v1/AODSIM"),
+    DS("W1Jets_FSIM_matchingdown", "/W1JetsToLNu_matchingdown_TuneZ2Star_8TeV-madgraph/Summer12-START53_V7C_FSIM-v1/AODSIM"),
+    DS("W1Jets_FSIM_matchingup", "/W1JetsToLNu_matchingup_TuneZ2Star_8TeV-madgraph/Summer12-START53_V7C_FSIM-v1/AODSIM"),
+    DS("W1Jets_FSIM_scaledown", "/W1JetsToLNu_scaledown_TuneZ2Star_8TeV-madgraph/Summer12-START53_V7C_FSIM-v1/AODSIM"),
+    DS("W1Jets_FSIM_scaleup", "/W1JetsToLNu_scaleup_TuneZ2Star_8TeV-madgraph/Summer12-START53_V7C_FSIM-v1/AODSIM"),
+    DS("W2Jets_FSIM", "/W2JetsToLNu_TuneZ2Star_8TeV-madgraph/Summer12-START53_V7C_FSIM-v1/AODSIM"),
+    DS("W3Jets_FSIM", "/W3JetsToLNu_TuneZ2Star_8TeV-madgraph/Summer12-START53_V7C_FSIM-v1/AODSIM"),
+    DS("W4Jets_FSIM", "/W4JetsToLNu_TuneZ2Star_8TeV-madgraph/Summer12-START53_V7C_FSIM-v1/AODSIM")
+]
+
 step1B_out_MC_noQCD_new = [
     DS_S2MC("T_t_ToLeptons", "/TToLeptons_t-channel_8TeV-powheg-tauola/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "T_t"),
     DS_S2MC("T_t", "/T_t-channel_TuneZ2star_8TeV-powheg-tauola/joosep-stpol_step1B_04_10-c9249c44a215ffeb8c9ba40f59092334/USER", "T_t"),
@@ -503,6 +515,7 @@ possible_ds = {
     "S1_D": step1_data_rereco_2013Jan, #direct data
     "S1_MC": step1_MC, #direct AODSIM
     "S1_MC_syst": step1_MC_systematic, #direct AODSIM
+    "S1_FSIM_WJ": step1_FSIM_WJets,
 
     #step1B: runMEtUncertainties
     "S1B_MC": step1_out_MC_new,
