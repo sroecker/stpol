@@ -1,0 +1,5 @@
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_05_15_0a67b573ddafa52fa738c5e43537ce603ed03462/WD_QCD_Pt_170_250_BCtoE/res/output_1_1_MvL.root
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_05_15_0a67b573ddafa52fa738c5e43537ce603ed03462/WD_QCD_Pt_170_250_BCtoE/res/output_2_1_A5P.root
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_05_15_0a67b573ddafa52fa738c5e43537ce603ed03462/WD_QCD_Pt_170_250_BCtoE/res/output_3_2_vip.root
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_05_15_0a67b573ddafa52fa738c5e43537ce603ed03462/WD_QCD_Pt_170_250_BCtoE/res/output_4_1_Xmt.root
+file:/hdfs/local/joosep/stpol/step2_MC_Iso_05_15_0a67b573ddafa52fa738c5e43537ce603ed03462/WD_QCD_Pt_170_250_BCtoE/res/output_5_1_Ux9.root
