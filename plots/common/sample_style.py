@@ -1,5 +1,6 @@
 from colors import sample_colors_same as sample_colors
 import ROOT
+import itertools
 
 class Styling:
     @staticmethod
@@ -9,10 +10,32 @@ class Styling:
         hist.SetLineWidth(2)
         hist.SetFillColor(color)
         hist.SetFillStyle(1001)
-    
-    
+
     @staticmethod
     def data_style(hist):
         hist.SetMarkerStyle(20)
         hist.SetMarkerColor(ROOT.kBlack)
         hist.SetFillStyle(4001)
+
+class ColorStyleGen:
+    col_index = 0
+    style_index = 0
+
+    colors = [ROOT.kRed, ROOT.kBlue, ROOT.kGreen, ROOT.kMagenta, ROOT.kYellow, ROOT.kBlack]
+    styles = [1001]#, 3005, 3006]
+
+    def __init__(self):
+        self.colstyles = itertools.product(self.colors, self.styles)
+
+    def next(self):
+        return self.colstyles.next()
+
+    def style_next(self, hist):
+        (color, style) = self.next()
+        hist.SetFillColor(ROOT.kWhite)
+        hist.SetLineColor(color)
+        hist.SetMarkerStyle(0)
+        hist.SetLineStyle(style)
+
+    def reset(self):
+        self.colstyles = itertools.product(colors, styles)

@@ -268,6 +268,10 @@
 		A7EAECC616D266CB004D032C /* methods.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = methods.py; sourceTree = "<group>"; };
 		A7EAECC716D266CB004D032C /* params.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = params.py; sourceTree = "<group>"; };
 		A7EAECC816D266CB004D032C /* plotlog.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = plotlog.py; sourceTree = "<group>"; };
+		A7F046C517453D3700C1CF79 /* BuildFile.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
+		A7F046C617453D3700C1CF79 /* muonefficiencyproducer_cfg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = muonefficiencyproducer_cfg.py; sourceTree = "<group>"; };
+		A7F046C817453D3700C1CF79 /* muonefficiencyproducer_cfi.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = muonefficiencyproducer_cfi.py; sourceTree = "<group>"; };
+		A7F046CA17453D3700C1CF79 /* MuonEfficiencyProducer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MuonEfficiencyProducer.cc; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -508,6 +512,7 @@
 		A76CF92516A6B2BE00DC8250 /* SingleTopPolarization */ = {
 			isa = PBXGroup;
 			children = (
+				A7F046C417453D3700C1CF79 /* MuonEfficiencyProducer */,
 				A78CFD3F16B9348800D54BF6 /* PatObjectOwnRefProducer */,
 				A70C274916B0501C00495932 /* BTagSystematicsWeightProducer */,
 				A76CF92616A6B2BE00DC8250 /* Analysis */,
@@ -1352,6 +1357,33 @@
 				A7EAECC816D266CB004D032C /* plotlog.py */,
 			);
 			path = plotfw;
+			sourceTree = "<group>";
+		};
+		A7F046C417453D3700C1CF79 /* MuonEfficiencyProducer */ = {
+			isa = PBXGroup;
+			children = (
+				A7F046C517453D3700C1CF79 /* BuildFile.xml */,
+				A7F046C617453D3700C1CF79 /* muonefficiencyproducer_cfg.py */,
+				A7F046C717453D3700C1CF79 /* python */,
+				A7F046C917453D3700C1CF79 /* src */,
+			);
+			path = MuonEfficiencyProducer;
+			sourceTree = "<group>";
+		};
+		A7F046C717453D3700C1CF79 /* python */ = {
+			isa = PBXGroup;
+			children = (
+				A7F046C817453D3700C1CF79 /* muonefficiencyproducer_cfi.py */,
+			);
+			path = python;
+			sourceTree = "<group>";
+		};
+		A7F046C917453D3700C1CF79 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A7F046CA17453D3700C1CF79 /* MuonEfficiencyProducer.cc */,
+			);
+			path = src;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
