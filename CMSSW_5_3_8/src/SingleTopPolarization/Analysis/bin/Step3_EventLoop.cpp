@@ -48,6 +48,8 @@ int get_parent(const std::string& decay_tree, int self_pdgid) {
             std::istringstream ss(subs);
             int pdgid = 0;
             ss >> pdgid;
+            if (pdgid == 0)
+                std::cerr << "Couldn't understand parent: " << subs << " <= " << decay_tree << std::endl;
             //std::cout << subs << "->" << pdgid << std::endl;
             if (abs(pdgid) != self_pdgid) {
                 //std::cout << "Identified " << pdgid << std::endl;
@@ -55,6 +57,7 @@ int get_parent(const std::string& decay_tree, int self_pdgid) {
             }
         }
     }
+    std::cerr << "Couldn't parse decay tree: " << decay_tree << std::endl;
     return 0;
 }
 
@@ -98,6 +101,7 @@ float get_collection_n(const edm::EventBase& evt, edm::InputTag src, unsigned in
 }
 
 
+const std::string default_str("");
 class MuonCuts : public CutsBase {
 public:
     bool cutOnIso;
@@ -198,8 +202,7 @@ public:
             branch_vars.vars_int["mu_layers"] = (int)get_collection_n<float>(event, muonLayersSrc, 0);
             branch_vars.vars_int["mu_stations"] = (int)get_collection_n<float>(event, muonStationsSrc, 0);
             
-            std::string def("");
-            std::string decay_tree = get_collection<std::string>(event, muonDecayTreeSrc, def);
+            std::string decay_tree = get_collection<std::string>(event, muonDecayTreeSrc, default_str);
             if(decay_tree.size()>0) {
                 branch_vars.vars_int["mu_mother_id"] = get_parent(decay_tree, 13);
             }
@@ -231,6 +234,7 @@ public:
   edm::InputTag electronPtSrc;
   edm::InputTag electronMotherPdgIdSrc;
   edm::InputTag electronChargeSrc;
+  edm::InputTag electronDecayTreeSrc;
 
   virtual void initialize_branches() {
     branch_vars.vars_int["n_muons"] = BranchVars::def_val_int;
@@ -254,6 +258,7 @@ public:
     electronPtSrc = pars.getParameter<edm::InputTag>("electronPtSrc");  
     electronMotherPdgIdSrc = pars.getParameter<edm::InputTag>("electronMotherPdgIdSrc");
     electronChargeSrc = pars.getParameter<edm::InputTag>("electronChargeSrc");
+    electronDecayTreeSrc = pars.getParameter<edm::InputTag>("electronDecayTreeSrc");
   }
   
   bool process(const edm::EventBase& event){
@@ -269,8 +274,13 @@ public:
     branch_vars.vars_float["el_reliso"] = get_collection_n<float>(event, electronRelIsoSrc, 0);
     branch_vars.vars_float["el_mva"] = get_collection_n<float>(event, electronMvaSrc, 0);
     branch_vars.vars_float["el_pt"] = get_collection_n<float>(event, electronPtSrc, 0);
-    branch_vars.vars_int["el_mother_id"] = (int)get_collection_n<float>(event, electronMotherPdgIdSrc, 0);
     branch_vars.vars_int["el_charge"] = (int)get_collection_n<float>(event, electronChargeSrc, 0);
+    
+    std::string decay_tree = get_collection<std::string>(event, electronDecayTreeSrc, default_str);
+    if(decay_tree.size()>0) {
+        branch_vars.vars_int["el_mother_id"] = get_parent(decay_tree, 11);
+    }
+    
     post_process();
     return true;
   }
@@ -845,23 +855,21 @@ int main(int argc, char* argv[])
     const edm::ParameterSet& weight_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("weights");
     const edm::ParameterSet& miscvars_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("finalVars");
     const edm::ParameterSet& gen_particle_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("genParticles");
-    const edm::ParameterSet& hlt_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("HLT");
+    const edm::ParameterSet& hlt_pars_mu = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("HLTmu");
     const edm::ParameterSet& hlt_pars_ele = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("HLTele");
     
     const edm::ParameterSet& lumiblock_counter_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("lumiBlockCounters");
     edm::InputTag totalPATProcessedCountSrc = lumiblock_counter_pars.getParameter<edm::InputTag>("totalPATProcessedCountSrc");
     
     BranchVars branch_vars; 
-    //std::map<std::string, std::vector<float> > branch_vars_vec;
     std::map<std::string, unsigned int> event_id_branches;
     std::map<std::string, unsigned int> count_map;
 
-    //Give the order of the map keys that will end up as the count histogram bins
     std::vector<std::string> count_map_order({
-        "total_processed", "pass_hlt_cuts", "pass_hlt_ele_cuts",
-	"pass_muon_cuts", "pass_electron_cuts", "pass_lepton_veto_cuts",
-	"pass_mt_cuts", "pass_jet_cuts",
-	"pass_btag_cuts", "pass_top_cuts",
+        "total_processed", "pass_hlt_mu_cuts", "pass_hlt_ele_cuts",
+	    "pass_muon_cuts", "pass_electron_cuts", "pass_lepton_veto_cuts",
+	    "pass_mt_cuts", "pass_jet_cuts",
+	    "pass_btag_cuts", "pass_top_cuts",
         "pass_gen_cuts"
 	  });
    
@@ -879,7 +887,7 @@ int main(int argc, char* argv[])
     MTMuCuts mt_mu_cuts(mt_mu_cuts_pars, branch_vars);
     MiscVars misc_vars(miscvars_pars, branch_vars);
     GenParticles gen_particles(gen_particle_pars, branch_vars);
-    HLTCuts hlt_cuts(hlt_pars, branch_vars);
+    HLTCuts hlt_mu_cuts(hlt_pars_mu, branch_vars);
     HLTCuts hlt_ele_cuts(hlt_pars_ele, branch_vars);
 
     fwlite::TFileService fs = fwlite::TFileService(outputFile_.c_str());
@@ -949,8 +957,8 @@ int main(int argc, char* argv[])
                 if(outputEvery_!=0 ? (ievt>0 && ievt%outputEvery_==0) : false)
                     LogInfo << "processing event: " << ievt << std::endl;
                 
-                bool passes_hlt_cuts = hlt_cuts.process(event);
-                if(!passes_hlt_cuts) continue;
+                bool passes_hlt_mu_cuts = hlt_mu_cuts.process(event);
+                if(!passes_hlt_mu_cuts) continue;
 
                 bool passes_hlt_ele_cuts = hlt_ele_cuts.process(event);
                 if(!passes_hlt_ele_cuts) continue;
@@ -1009,7 +1017,7 @@ int main(int argc, char* argv[])
         }
     }
     
-    count_map["pass_hlt_cuts"] += hlt_cuts.n_pass;
+    count_map["pass_hlt_mu_cuts"] += hlt_mu_cuts.n_pass;
     count_map["pass_hlt_ele_cuts"] += hlt_ele_cuts.n_pass;
     count_map["pass_muon_cuts"] += muon_cuts.n_pass;
     count_map["pass_electron_cuts"] += electron_cuts.n_pass;
@@ -1029,7 +1037,7 @@ int main(int argc, char* argv[])
     
     std::cout << "total processed step1 " << count_map["total_processed"] << std::endl;
     std::cout << "total processed step3 " << ievt << std::endl;
-    std::cout << "hlt muon cuts " << hlt_cuts.toString() << std::endl;
+    std::cout << "hlt muon cuts " << hlt_mu_cuts.toString() << std::endl;
     std::cout << "hlt electron cuts " << hlt_ele_cuts.toString() << std::endl;
     std::cout << "muon cuts " << muon_cuts.toString() << std::endl;
     std::cout << "electron cuts " << electron_cuts.toString() << std::endl;
