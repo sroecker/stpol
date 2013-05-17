@@ -178,9 +178,6 @@ process.mtMuCuts = cms.PSet(
 process.HLTmu = cms.PSet(
     hltSrc = cms.InputTag("TriggerResults", "", "HLT"),
     hltNames = cms.vstring([
-        #"HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet50_40_30_v1",
-        #"HLT_Ele25_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_TriCentralPFNoPUJet50_40_30_v5",
-        #"HLT_Ele25_CaloIdVT_CaloIsoVL_TrkIdVL_TrkIsoT_TriCentralPFNoPUJet50_40_30_v1",
         "HLT_IsoMu24_eta2p1_v11",
         "HLT_IsoMu24_eta2p1_v12",
         "HLT_IsoMu24_eta2p1_v13",
@@ -189,7 +186,7 @@ process.HLTmu = cms.PSet(
         "HLT_IsoMu24_eta2p1_v17",
         "HLT_IsoMu24_eta2p1_v16"
     ]),
-    doCutOnHLT = cms.bool(True),
+    doCutOnHLT = cms.bool(False),
     saveHLTVars = cms.bool(False)
 )
 
