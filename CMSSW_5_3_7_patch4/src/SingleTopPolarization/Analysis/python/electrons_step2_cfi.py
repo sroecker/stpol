@@ -107,8 +107,8 @@ def ElectronSetup(process, conf):
 
     # Scale factors #
     process.electronWeightsProducer = cms.EDProducer("ElectronEfficiencyProducer",
-                                                     src = cms.InputTag("goodSignalElectrons")
-                                                     )
+        src = cms.InputTag("singleIsoEle")
+    )
 
     #####################
     # MET/MtW cutting   #

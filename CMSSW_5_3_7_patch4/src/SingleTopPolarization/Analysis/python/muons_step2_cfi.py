@@ -92,7 +92,7 @@ def MuonSetup(process, conf = None):
     )
 
     process.muonWeightsProducer = cms.EDProducer("MuonEfficiencyProducer",
-        src=cms.InputTag("goodSignalMuons"),
+        src=cms.InputTag("singleIsoMu"),
         dataRun=cms.string(conf.dataRun)
     )
 
