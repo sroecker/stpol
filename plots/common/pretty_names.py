@@ -13,6 +13,10 @@ variable_names["top_mass"] = "m(l #nu j)"
 variable_names["cos_theta"] = "cos#theta*"
 variable_names["met"] = "MET"
 variable_names["el_pt"] = "lepton p_{T}"
+variable_names["el_mva"] = "electron mva ID"
+variable_names["deltaR_bj"] = "dR(l,b-jet)"
+variable_names["deltaR_lj"] = "dR(l,l-jet)"
+variable_names["el_mother_id"] = "lepton mother pdgID"
 
 variable_units = dict()
 variable_units["eta_lj"] = ""

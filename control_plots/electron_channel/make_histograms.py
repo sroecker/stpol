@@ -10,8 +10,8 @@ except KeyError:
 
 from plots.common.cross_sections import xs
 
-#cutstring = "final"
-cutstring = "final_nomet"
+cutstring = "final"
+#cutstring = "final_nomet"
 
 #cutstring = "2j1t"
 #cutstring = "2j1t_nomet"
@@ -23,30 +23,35 @@ cutstring_qcd_template = cutstring + "_antiiso"
 
 apply_PUw = True
 apply_Elw = True
-apply_Bw = True
+apply_Bw = False
 
-#mode = "_lep"     # leptonic samples of signal and ttbar
-mode = "_incl"    # inclusive samples of signal and ttbar
+mode = "_lep"     # leptonic samples of signal and ttbar
+#mode = "_incl"    # inclusive samples of signal and ttbar
 
-infilePath = "/home/liis/data/Step3_output_0105/"
+#infilePath = "/home/liis/data/Step3_output_0105/"
+
+#infilePathMC = "/home/liis/SingleTopJoosep/stpol/step3_trees/step3_mc_05_10/"
+infilePathMC = "/home/liis/SingleTopJoosep/stpol/step3_trees/step3_mc_05_17/"
+infilePathData = "/home/liis/SingleTopJoosep/stpol/step3_trees/step3_data_05_10/"
 
 #----------------------------get files---------------------
-Lumi = sum(dataLumi.values())
+#Lumi = sum(dataLumi.values())
+Lumi = 19400
 
 files_data = {}
 print("Loading files")
 for key in dataFiles:
     filename = dataFiles[key]
-    infile = infilePath + filename
+    infile = infilePathData + filename
     print "Opening file: " + infile
     files_data[key] = ROOT.TFile(infile)
 
-file_data_anti = ROOT.TFile( infilePath + "data_anti.root")
+file_data_anti = ROOT.TFile( infilePathData + "qcd_temp.root")
 
 files_mc = {}
 for key in mcFiles:
     filename = mcFiles[key]
-    infile = infilePath + filename
+    infile = infilePathMC + filename
     print "Opening file: " + infile
     files_mc[key] = ROOT.TFile(infile)
               
@@ -135,16 +140,19 @@ for hist_name in hist_def:
         hist_final[hist_name]["signal"] = histos[hist_name]["T_t"].Clone("signal")
         hist_final[hist_name]["signal"].Add(histos[hist_name]["Tbar_t"])
 
-        hist_final[hist_name]["ttjets"] = histos[hist_name]["TTJets_MassiveBinDECAY"].Clone("ttjets")
+#        hist_final[hist_name]["ttjets"] = histos[hist_name]["TTJets_MassiveBinDECAY"].Clone("ttjets")
     elif mode == "_lep":
         hist_final[hist_name]["signal"] = histos[hist_name]["T_t_ToLeptons"].Clone("signal")
         hist_final[hist_name]["signal"].Add(histos[hist_name]["Tbar_t_ToLeptons"])
 
-        hist_final[hist_name]["ttjets"] = histos[hist_name]["TTJets_SemiLept"].Clone("ttjets")
-        hist_final[hist_name]["ttjets"].Add(histos[hist_name]["TTJets_FullLept"])
+#        hist_final[hist_name]["ttjets"] = histos[hist_name]["TTJets_SemiLept"].Clone("ttjets")
+#        hist_final[hist_name]["ttjets"].Add(histos[hist_name]["TTJets_FullLept"])
     else:
         print "error"
-        
+
+    hist_final[hist_name]["ttjets"] = histos[hist_name]["TTJets_SemiLept"].Clone("ttjets")
+    hist_final[hist_name]["ttjets"].Add(histos[hist_name]["TTJets_FullLept"])
+
     hist_final[hist_name]["wjets"] = histos[hist_name]["W1Jets_exclusive"].Clone("wjets")
     hist_final[hist_name]["wjets"].Add(histos[hist_name]["W2Jets_exclusive"])
     hist_final[hist_name]["wjets"].Add(histos[hist_name]["W3Jets_exclusive"])
@@ -160,11 +168,23 @@ for hist_name in hist_def:
     hist_final[hist_name]["tW"] = histos[hist_name]["T_tW"].Clone("tW")
     hist_final[hist_name]["tW"].Add(histos[hist_name]["Tbar_tW"])
 
-    hist_final[hist_name]["gjets"] = histos[hist_name]["GJets2"].Clone("gjets")
+#    hist_final[hist_name]["gjets"] = histos[hist_name]["GJets2"].Clone("gjets")
 #    hist_final[hist_name]["gjets"].Add(histos[hist_name]["GJets1"])
 
     hist_final[hist_name]["zjets"] = histos[hist_name]["DYJets"].Clone("zjets")
 
+    hist_final[hist_name]["qcd_mc"] = histos[hist_name]["QCD_Pt_20_30_BCtoE"].Clone("qcd_mc")
+    hist_final[hist_name]["qcd_mc"].Add(histos[hist_name]["QCD_Pt_30_80_BCtoE"])
+    hist_final[hist_name]["qcd_mc"].Add(histos[hist_name]["QCD_Pt_80_170_BCtoE"])
+    hist_final[hist_name]["qcd_mc"].Add(histos[hist_name]["QCD_Pt_170_250_BCtoE"])
+    hist_final[hist_name]["qcd_mc"].Add(histos[hist_name]["QCD_Pt_250_350_BCtoE"])
+    hist_final[hist_name]["qcd_mc"].Add(histos[hist_name]["QCD_Pt_350_BCtoE"])
+    hist_final[hist_name]["qcd_mc"].Add(histos[hist_name]["QCD_Pt_20_30_EMEnriched"])
+    hist_final[hist_name]["qcd_mc"].Add(histos[hist_name]["QCD_Pt_30_80_EMEnriched"])
+    hist_final[hist_name]["qcd_mc"].Add(histos[hist_name]["QCD_Pt_80_170_EMEnriched"])
+    hist_final[hist_name]["qcd_mc"].Add(histos[hist_name]["QCD_Pt_170_250_EMEnriched"])
+    hist_final[hist_name]["qcd_mc"].Add(histos[hist_name]["QCD_Pt_250_350_EMEnriched"])
+    hist_final[hist_name]["qcd_mc"].Add(histos[hist_name]["QCD_Pt_350_EMEnriched"])
 #-----------------save histograms for plotting---------------
 weightstring = ""
 if w_PU != "1":
@@ -176,7 +196,7 @@ if w_eliso != "1":
 if w_eltr != "1":
     weightstring = weightstring + "_ElTrw"
 
-outfile = "Histograms/" + cutstring + mode + "/" + cutstring + weightstring + mode + ".root"
+outfile = "Histograms/" + cutstring + "/" + cutstring + weightstring + mode + ".root"
 p = ROOT.TFile(outfile,"recreate")
 print "writing output to file: " + outfile
 
@@ -193,7 +213,7 @@ p.Close()
 
 #---------------------save qcd templates----------------
 #if cutstring == "2j1t_nomet" or cutstring == "2j0t_nomet" or cutstring == "final_nomet_lep":
-outfile = "Histograms/" + cutstring + mode + "/" + cutstring + weightstring + mode + "_templates.root"
+outfile = "Histograms/" + cutstring  + "/" + cutstring + weightstring + mode + "_templates.root"
 t = ROOT.TFile(outfile,"recreate")
 print "writing templates for qcd-fit: " + outfile
 

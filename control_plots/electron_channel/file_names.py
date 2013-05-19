@@ -1,8 +1,8 @@
 mcFiles = {
     "T_t": "T_t.root",
     "Tbar_t": "Tbar_t.root",
-#    "T_t_ToLeptons": "T_t_ToLeptons.root",
-#    "Tbar_t_ToLeptons": "Tbar_t_ToLeptons.root",
+    "T_t_ToLeptons": "T_t_ToLeptons.root",
+    "Tbar_t_ToLeptons": "Tbar_t_ToLeptons.root",
     "T_tW": "T_tW.root",
     "Tbar_tW": "Tbar_tW.root",
     "T_s": "T_s.root",
@@ -15,31 +15,31 @@ mcFiles = {
 
 #    "WJets": "WJets_inclusive.root",
     
-    "W1Jets_exclusive": "W1jets.root",
-    "W2Jets_exclusive": "W2jets.root",
-    "W3Jets_exclusive": "W3jets.root",
-    "W4Jets_exclusive": "W4jets.root",
+    "W1Jets_exclusive": "W1Jets.root",
+    "W2Jets_exclusive": "W2Jets.root",
+    "W3Jets_exclusive": "W3Jets.root",
+    "W4Jets_exclusive": "W4Jets.root",
     
-    "TTJets_MassiveBinDECAY": "TTJets_MassiveBinDECAY.root",
-#    "TTJets_SemiLept": "TTJets_SemiLept.root",
-#    "TTJets_FullLept": "TTJets_FullLept.root",
+#    "TTJets_MassiveBinDECAY": "TTJets_MassiveBinDECAY.root",
+    "TTJets_SemiLept": "TTJets_SemiLept.root",
+    "TTJets_FullLept": "TTJets_FullLept.root",
 
 #    "GJets1": "GJets1.root",
-    "GJets2": "GJets2.root",
+#    "GJets2": "GJets2.root",
     
-#    "QCD_Pt_20_30_BCtoE": "QCD_Pt_20_30_BCtoE.root",
-#    "QCD_Pt_30_80_BCtoE": "QCD_Pt_30_80_BCtoE.root",
-#    "QCD_Pt_80_170_BCtoE": "QCD_Pt_80_170_BCtoE.root",
-#    "QCD_Pt_170_250_BCtoE": "QCD_Pt_170_250_BCtoE.root",
-#    "QCD_Pt_250_350_BCtoE":"QCD_Pt_250_350_BCtoE.root",
-#    "QCD_Pt_350_BCtoE": "QCD_Pt_350_BCtoE.root",
+    "QCD_Pt_20_30_BCtoE": "QCD_20_30.root",
+    "QCD_Pt_30_80_BCtoE": "QCD_30_80.root",
+    "QCD_Pt_80_170_BCtoE": "QCD_80_170.root",
+    "QCD_Pt_170_250_BCtoE": "QCD_170_250.root",
+    "QCD_Pt_250_350_BCtoE":"QCD_250_350.root",
+    "QCD_Pt_350_BCtoE": "QCD_350.root",
     
-#    "QCD_Pt_20_30_EMEnriched": "QCD_Pt_20_30_EMEnriched.root",
-#    "QCD_Pt_30_80_EMEnriched": "QCD_Pt_30_80_EMEnriched.root",
-#    "QCD_Pt_80_170_EMEnriched": "QCD_Pt_80_170_EMEnriched.root",
-#    "QCD_Pt_170_250_EMEnriched": "QCD_Pt_170_250_EMEnriched.root",
-#    "QCD_Pt_250_350_EMEnriched": "QCD_Pt_250_350_EMEnriched.root",
-#    "QCD_Pt_350_EMEnriched": "QCD_Pt_350_EMEnriched.root",
+    "QCD_Pt_20_30_EMEnriched": "QCD_20_30_EM.root",
+    "QCD_Pt_30_80_EMEnriched": "QCD_30_80_EM.root",
+    "QCD_Pt_80_170_EMEnriched": "QCD_80_170_EM.root",
+    "QCD_Pt_170_250_EMEnriched": "QCD_170_250_EM.root",
+    "QCD_Pt_250_350_EMEnriched": "QCD_250_350_EM.root",
+    "QCD_Pt_350_EMEnriched": "QCD_350_EM.root",
     
     }
 
@@ -61,11 +61,11 @@ dataLumi = {
     }
 
 qcdTempFiles = {
-    "Ele_A1": "SingleEleA1__pb.root",
-    "Ele_B" : "SingleEleB_5138_pb.root",
-    "Ele_C1": "SingleEleC1_495_pb.root",
-    "Ele_C2": "SingleEleC2_5948_pb.root",
-    "Ele_D": "SingleEleD_6929_pb.root"
+ #   "Ele_A1": "SingleEleA1__pb.root",
+ #   "Ele_B" : "SingleEleB_5138_pb.root",
+ #   "Ele_C1": "SingleEleC1_495_pb.root",
+ #   "Ele_C2": "SingleEleC2_5948_pb.root",
+ #   "Ele_D": "SingleEleD_6929_pb.root"
     }
 
 invLumi = {

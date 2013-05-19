@@ -1,17 +1,19 @@
 qcd_fitvalue = { # values returned by the theta-auto fit in different control regions without MET requirement
-    "final_lep" :   1343,
-    "final_incl":   1129,
-    "2j1t_lep"  :   16848,
-    "2j1t_incl":    16217,
-    "2j0t"  :       38990,
+    "final_lep" :   2096,
+    "final_incl":   1800,
+    "2j1t_lep"  :   1,
+    "2j1t_incl":    1,
+    "2j0t_lep"  :   1,
+    "2j0t_incl":    52240,
     }
 
 qcd_template_size = { # the size of template in the control region (actually identical for inclusive and lepotnic samples (comes directly from data) )
-    "final_lep" :  1808,
-    "final_incl":  1808,
+    "final_lep" :  642,
+    "final_incl":  642,
     "2j1t_lep"  :  47031,
     "2j1t_incl":   47031,
-    "2j0t":        1, #FIXME
+    "2j0t_lep":    16793,
+    "2j0t_incl":   16793,
     }
 
 
