@@ -1,7 +1,7 @@
 from Fit import Fit
 
 triggers="(HLT_IsoMu24_eta2p1_v11==1 || HLT_IsoMu24_eta2p1_v12==1 || HLT_IsoMu24_eta2p1_v13==1 || HLT_IsoMu24_eta2p1_v14==1 || HLT_IsoMu24_eta2p1_v15==1 || HLT_IsoMu24_eta2p1_v16==1 || HLT_IsoMu24_eta2p1_v17==1)"
-weightsQCD = triggers+"*pu_weight*muon_IDWeight*muon_IsoWeight"
+weightsQCD = triggers+"*pu_weight"#*muon_IDWeight*muon_IsoWeight"
 weightsMC = weightsQCD# + "*b_weight_nominal"
 weightsData = triggers
 

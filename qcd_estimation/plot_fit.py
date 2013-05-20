@@ -14,6 +14,8 @@ from plot_settings import *
 from plotting import make_histogram, make_stack
 from cuts import *
 from copy import deepcopy
+from DataLumiStorage import *
+
 
 def plot_fit(var, fit_result, open_files):
    canvases = []
@@ -42,8 +44,19 @@ def plot_fit(var, fit_result, open_files):
    region = "2J_"+str(fit_result.tags)+"T"
    print "cuts " +cuts
    print "antiiso",cuts_antiiso
-   make_histogram(var, dgData, "Data", open_files, "", "iso", cuts, "plot")
-   make_histogram(var, dgData, "QCD", open_files, "", "antiiso", cuts_antiiso)
+
+   lumiABIso = 5140.
+   lumiCIso = 6451.
+   lumiDIso = 6471.
+   dataLumiIso = lumiABIso + lumiCIso + lumiDIso
+   lumiABAntiIso = 5140.
+   lumiCAntiIso = 6451.
+   lumiDAntiIso = 6471.
+   dataLumiAntiIso = lumiABAntiIso + lumiCAntiIso + lumiDAntiIso   
+   lumis = DataLumiStorage(dataLumiIso, dataLumiAntiIso)
+
+   make_histogram(var, dgDataMuons, "Data", open_files, lumis, "Nominal", "iso", cuts, "plot")
+   make_histogram(var, dgDataMuons, "QCD", open_files, lumis, "Nominal", "antiiso", cuts_antiiso)
       
    cst = TCanvas("Histogram_"+fit_result.getLabel(),fit_result.getLabel(),10,10,1800,1000)
    cst.SetLeftMargin(1)
@@ -67,7 +80,7 @@ def plot_fit(var, fit_result, open_files):
    hNonQCDm.SetLineWidth(2)
    hNonQCDm.SetTitle("non-QCD - 1 sigma")
       
-   hData = dgData.getHistogram(var,  "", "iso", "plot")
+   hData = dgDataMuons.getHistogram(var,  "Nominal", "iso", "plot")
    hData.SetNameTitle(var.shortName+"__DATA", "Data")
    hData.SetMarkerStyle(20)
 
@@ -131,9 +144,9 @@ def plot_fit(var, fit_result, open_files):
           
    print hNonQCD.Integral(), hData.Integral(), hQCD.Integral(), hTotal.Integral(), hQCDp.Integral(), hQCDm.Integral()
    cst.Update()
-   hQCDShape = dgData.getHistogram(var,  "", "antiiso")
-   stack = make_stack(var, fit_result.getLabel(), MC_groups_noQCD, dgData, 
-                        open_files, "", "antiiso", get_cuts_antiiso_mc(fit_result), get_cuts_antiiso_data(fit_result), "", fit_result.getLabel())
+   hQCDShape = dgDataMuons.getHistogram(var,  "Nominal", "antiiso")
+   stack = make_stack(var, fit_result.getLabel(), MC_groups_noQCD, dgDataMuons, 
+                        open_files, "Nominal", "antiiso", lumis, get_cuts_antiiso_mc(fit_result), get_cuts_antiiso_data(fit_result), "", fit_result.getLabel())
    for h in stack.GetHists():
       hQCDShape.Add(h,-1)
    for i in range(50):

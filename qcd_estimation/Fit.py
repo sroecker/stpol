@@ -59,7 +59,7 @@ class Fit:
 results = []
 res_2J_0T = Fit(tags = 0, maxY=6000)
 res_2J_1T = Fit(maxY = 1500)
-res_2J_1T_SR = Fit(isSR = True, maxY = 1200)
+res_2J_1T_SR = Fit(isSR = True, maxY = 1500)
 res_2J_1T_SR_Mu = Fit(isSR = True, maxY = 200, extra="Mu")
 res_2J_1T_SB = Fit(isSB = True, maxY = 400)
 res_2J_0T_MC = Fit(isMC = True, tags = 0)
