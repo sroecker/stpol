@@ -12,7 +12,7 @@ do
     lumiCalc2.py -i $i/res/lumiSummary.json -o lumi.out overview &> /dev/null
     if [ -f lumi.out ]
     then
-        LUMI=`~/singletop/stpol/util/addLumis.py lumi.out`
+        LUMI=`$STPOL_DIR/util/addLumis.py lumi.out`
         rm lumi.out
     fi
     if [ -f $MERGEDOUT ]
