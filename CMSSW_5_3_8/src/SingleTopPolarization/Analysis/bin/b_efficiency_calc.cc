@@ -73,10 +73,9 @@ bool BEffCalcs::process(const edm::EventBase& event) {
             true_tagged_distr = true_l_tagged_distribution; 
         }
 
+        true_distr->Fill(eta, pt); 
         if (bdisc >= b_discriminator_wp) {
-            true_tagged_distr->Fill(eta, pt); 
-        } else {
-            true_distr->Fill(eta, pt); 
+            true_tagged_distr->Fill(eta, pt);
         }
     }
     post_process();
