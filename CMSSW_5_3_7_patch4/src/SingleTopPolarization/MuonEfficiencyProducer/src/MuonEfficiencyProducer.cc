@@ -170,8 +170,8 @@ MuonEfficiencyProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 
          //weighted avg according to lumi
          else if(dataRun == "RunABCD") {
-             weightTrig = 0.0;
-             float err = 0.0;
+             weightTrig = 0.980917;
+             float err = 0.000187267;
              weightTrigUp = weightTrig + err;
              weightTrigDown = weightTrig - err; 
          }
@@ -218,8 +218,8 @@ MuonEfficiencyProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
          }
          //weighted avg according to lumi
          else if(dataRun == "RunABCD") {
-             weightTrig = 0.0;
-             float err = 0.0;
+             weightTrig = 0.963837;
+             float err = 0.00052732;
              weightTrigUp = weightTrig + err;
              weightTrigDown = weightTrig - err; 
          }
@@ -266,8 +266,8 @@ MuonEfficiencyProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
          }
          //weighted avg according to lumi
          else if(dataRun == "RunABCD") {
-             weightTrig = 0.0;
-             float err = 0.0;
+             weightTrig = 0.994706;
+             float err = 0.000407864;
              weightTrigUp = weightTrig + err;
              weightTrigDown = weightTrig - err; 
          }
