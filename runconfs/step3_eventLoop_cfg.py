@@ -236,6 +236,13 @@ process.genParticles = cms.PSet(
 	requireGenMuon  = cms.bool(False)
 )
 
+process.bEfficiencyCalcs = cms.PSet(
+    jetPtSrc = cms.InputTag("goodJetsNTupleProducer", "Pt"),
+    jetEtaSrc = cms.InputTag("goodJetsNTupleProducer", "Eta"),
+    jetBDiscriminatorSrc = cms.InputTag("goodJetsNTupleProducer", "bDiscriminatorTCHP"),
+    jetFlavourSrc = cms.InputTag("goodJetsNTupleProducer", "partonFlavour"),
+)
+
 doSync = False
 if doSync:
     process.muonCuts.requireOneMuon = True
