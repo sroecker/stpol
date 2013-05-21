@@ -25,5 +25,6 @@ cd $OUTDIR
 split $INFILE -a4 -l 50 -d
 for file in x*
 do
-    sbatch --exclude comp-d-[084,093,100] -p prio $CMSSW_BASE/../analysis_step3/run_step3_eventloop.sh `readlink -f $file` $OUTDIR
+    sbatch  -p prio $CMSSW_BASE/../analysis_step3/run_step3_eventloop.sh `readlink -f $file` $OUTDIR $3
 done
+#--exclude comp-d-[084,093,100]

@@ -266,7 +266,7 @@ MuonEfficiencyProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
          }
          //weighted avg according to lumi
          else if(dataRun == "RunABCD") {
-             weightTrig = 0.0
+             weightTrig = 0.0;
              float err = 0.0;
              weightTrigUp = weightTrig + err;
              weightTrigDown = weightTrig - err; 
