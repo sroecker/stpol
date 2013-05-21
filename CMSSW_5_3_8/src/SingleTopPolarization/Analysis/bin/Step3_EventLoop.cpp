@@ -884,10 +884,13 @@ int main(int argc, char* argv[])
     
     // now get each parameter
     int maxEvents_( in.getParameter<int>("maxEvents") );
+    bool make_tree ( in.getParameter<bool>("makeTree") );
     unsigned int outputEvery_( in.getParameter<unsigned int>("outputEvery") );
     
     TFileDirectory dir = fs.mkdir("trees");
-    TTree* out_tree = dir.make<TTree>("Events", "Events");
+    TTree* out_tree = 0;
+    if(make_tree)
+        out_tree = dir.make<TTree>("Events", "Events");
     TH1I* count_hist = dir.make<TH1I>("count_hist", "Event counts", count_map.size(), 0, count_map.size() - 1);
     
     TFileDirectory dir_effs = fs.mkdir("b_eff_hists");
@@ -902,26 +905,28 @@ int main(int argc, char* argv[])
     event_id_branches["run_id"] = -1;
     event_id_branches["lumi_id"] = -1;
    
-    
-    //Create all the requested branches in the TTree
-    LogInfo << "Creating branches: ";
-    for (auto & elem : branch_vars.vars_float) {
-        const std::string& br_name = elem.first;
-        std::cout << br_name << ", ";
-        float* p_branch = &(elem.second);
-        out_tree->Branch(br_name.c_str(), p_branch);
+   
+    if (make_tree) {
+        //Create all the requested branches in the TTree
+        LogInfo << "Creating branches: ";
+        for (auto & elem : branch_vars.vars_float) {
+            const std::string& br_name = elem.first;
+            std::cout << br_name << ", ";
+            float* p_branch = &(elem.second);
+            out_tree->Branch(br_name.c_str(), p_branch);
+        }
+        for (auto & elem : branch_vars.vars_int) {
+            const std::string& br_name = elem.first;
+            std::cout << br_name << ", ";
+            int* p_branch = &(elem.second);
+            out_tree->Branch(br_name.c_str(), p_branch);
+        }
+        for (auto & elem : branch_vars.vars_vfloat) {
+            std::cout << elem.first << ", ";
+            out_tree->Branch(elem.first.c_str(), &(elem.second));
+        }
+        std::cout << std::endl;
     }
-    for (auto & elem : branch_vars.vars_int) {
-        const std::string& br_name = elem.first;
-        std::cout << br_name << ", ";
-        int* p_branch = &(elem.second);
-        out_tree->Branch(br_name.c_str(), p_branch);
-    }
-    for (auto & elem : branch_vars.vars_vfloat) {
-        std::cout << elem.first << ", ";
-        out_tree->Branch(elem.first.c_str(), &(elem.second));
-    }
-    std::cout << std::endl;
     
     // loop the events
     int ievt=0;
@@ -992,7 +997,8 @@ int main(int argc, char* argv[])
                 event_id_branches["run_id"] = (unsigned int)event.id().run();
                 event_id_branches["lumi_id"] = (unsigned int)event.id().luminosityBlock();
                 
-                out_tree->Fill();
+                if(make_tree) 
+                    out_tree->Fill();
             }
             
             fwlite::LuminosityBlock ls(in_file);
