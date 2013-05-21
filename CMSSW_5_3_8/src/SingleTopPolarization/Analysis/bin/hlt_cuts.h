@@ -1,8 +1,5 @@
 #include "cuts_base.h"
 #include <DataFormats/Common/interface/TriggerResults.h>
-#include <FWCore/ParameterSet/interface/ProcessDesc.h>
-#include <FWCore/PythonParameterSet/interface/PythonProcessDesc.h>
-#include <FWCore/PythonParameterSet/interface/PythonProcessDesc.h>
 #include <FWCore/Common/interface/TriggerNames.h>
 #ifndef HLT_CUTS_H
 #define HLT_CUTS_H
