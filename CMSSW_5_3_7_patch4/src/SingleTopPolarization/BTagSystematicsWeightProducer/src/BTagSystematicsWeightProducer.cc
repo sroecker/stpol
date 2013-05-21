@@ -39,6 +39,7 @@
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include <TFormula.h>
 #include <TMath.h>
+#include <TH2D.h>
 #include <TFile.h>
 #include <string.h>
 
@@ -92,6 +93,8 @@ private:
     static const std::vector<double> SFb_CSVM_Err;
     static const std::vector<double> SFb_TCHPT_Err;
     
+    std::map<BTagSystematicsWeightProducer::Flavour, TH2D*> effHists_2J;
+    std::map<BTagSystematicsWeightProducer::Flavour, TH2D*> effHists_3J;
     edm::FileInPath effFile;
     TFile* effTFile;
 
@@ -359,12 +362,20 @@ BTagSystematicsWeightProducer::BTagSystematicsWeightProducer(const edm::Paramete
 
     effTFile = new TFile(effFile.fullPath().c_str());
     
+    effHists_2J[BTagSystematicsWeightProducer::b] = (TH2D*)effTFile->Get("2J/eff_b");
+    effHists_2J[BTagSystematicsWeightProducer::c] = (TH2D*)effTFile->Get("2J/eff_c");
+    effHists_2J[BTagSystematicsWeightProducer::l] = (TH2D*)effTFile->Get("2J/eff_l");
+    
+    effHists_3J[BTagSystematicsWeightProducer::b] = (TH2D*)effTFile->Get("3J/eff_b");
+    effHists_3J[BTagSystematicsWeightProducer::c] = (TH2D*)effTFile->Get("3J/eff_c");
+    effHists_3J[BTagSystematicsWeightProducer::l] = (TH2D*)effTFile->Get("3J/eff_l");
     
     produces<float>("bTagWeight");
     produces<float>("bTagWeightSystBCUp");
     produces<float>("bTagWeightSystBCDown");
     produces<float>("bTagWeightSystLUp");
     produces<float>("bTagWeightSystLDown");
+
     produces<std::vector<float>>("scaleFactors");
 }
 
@@ -501,15 +512,23 @@ BTagSystematicsWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup
                 };
                 
                 //The probability associated with a jet is eff if the jet is in the combination of b-tagged jets, (1-eff) otherwise
-                double eff_val = 0.0; 
+                double eff_val = 0.0;
+
+                auto get_hist_eff = [&jet] (TH2D* hist) {
+                    return hist->GetBinContent(hist->FindBin(jet.eta(), jet.pt())); 
+                };
+
                 if (nJets_ev==2) {
-                    eff_val = (*effs_in2J)[flavour];
+                    eff_val = get_hist_eff(effHists_2J[flavour]);
+                    //eff_val = (*effs_in2J)[flavour];
                 }
                 else if (nJets_ev==3) {
-                    eff_val = (*effs_in3J)[flavour];
+                    eff_val = get_hist_eff(effHists_3J[flavour]);
+                    //eff_val = (*effs_in3J)[flavour];
                 }
                 else {
-                    eff_val = (*effs_in3J)[flavour];
+                    eff_val = get_hist_eff(effHists_3J[flavour]);
+                    //eff_val = (*effs_in3J)[flavour];
                 }
                 LogDebug("jetLoop") << "\t\teff_val=" << eff_val;
                 //double e = eff(eff_val, inComb);
