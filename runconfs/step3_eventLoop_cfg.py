@@ -47,6 +47,7 @@ process.fwliteInput = cms.PSet(
     fileNames   = cms.vstring(input_files),
     maxEvents   = cms.int32(-1),
     outputEvery = cms.uint32(10000),
+    makeTree = cms.bool(True),
 )
 print "Input files:"
 for fi in input_files:
