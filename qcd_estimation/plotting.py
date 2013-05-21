@@ -7,14 +7,12 @@ from Variable import *
 from ROOT import *
 from array import array
 
-def make_stack(var, stackName, MC_groups, data_group, open_files, syst, iso, cutsMC, cutsData, cutsQCD, extra = "", qcd=None):
-   make_histograms(var, MC_groups, data_group, open_files, syst, iso, cutsMC, cutsData, cutsQCD,extra)
+def make_stack(var, stackName, MC_groups, data_group, open_files, syst, iso, lumis, cutsMC, cutsData, cutsQCD, extra = "", qcd=None):
+   print "making stack "+iso + " "+syst + " "+extra
+   #print "MC", cutsMC
+   #print "data", cutsData
+   make_histograms(var, MC_groups, data_group, open_files, syst, iso, lumis, cutsMC, cutsData, cutsQCD,extra)
    stack = THStack("Stack"+var.shortName+syst+iso, stackName)
-   print "making stack "+syst
-   #print "MC",cutsMC
-   #print "data",cutsData
-   #print "QCD",cutsQCD
-   #stack.GetHists().GetSize()
    if qcd is not None:
       #print "QCD"
       qcd.SetFillColor(dgQCD.getColor())
@@ -22,11 +20,8 @@ def make_stack(var, stackName, MC_groups, data_group, open_files, syst, iso, cut
       stack.Add(qcd)
    #stack.GetHists().GetSize()
    for group in reversed(MC_groups):
-      #print "GR: ",group._title, group._name, stack.GetHists().GetSize()
       his = TH1D(group.getHistogram(var, syst, iso, extra))
-      #print str(his.GetFillColor()) +" "+str(group.getColor())
       his.SetFillColor(group.getColor())
-      #print "B "+str(his.GetFillColor()) +" "+str(group.getColor())
       his.SetLineWidth(1)
       stack.Add(his)
    return stack
@@ -130,7 +125,7 @@ def draw_final(var, stack, MC_groups, data_group, syst="", iso="iso", name="", m
    return cst
 
 
-def make_histograms(var, MC_groups, data_group, open_files, syst, iso, cutsMC, cutsData, cutsQCD, extra = ""):
+def make_histograms(var, MC_groups, data_group, open_files, syst, iso, lumis, cutsMC, cutsData, cutsQCD, extra = ""):
    all_groups = []
    all_groups.extend(MC_groups)
    total = TH1D("total", "total", var.bins, var.lbound, var.ubound)
@@ -163,28 +158,25 @@ def make_histograms(var, MC_groups, data_group, open_files, syst, iso, cutsMC, c
             #print "weight", weight
             mytree.Project(his_name, var.name, weight,"same")
             if group.isMC():
-               his.Scale(ds.scaleToData(getDataLumi(iso)))               
+               his.Scale(ds.scaleToData(lumis.getDataLumi(iso, syst)))               
+               #print ds.scaleToData(lumis.getDataLumi(iso, syst))
             else:
                #print group, ds.preScale()
                his.Scale(ds.preScale())
             h.Add(his)
       error = array('d',[0.])
-      print group.getName(), var.name, syst, iso, h.GetEntries(), h.IntegralAndError(0,100,error), error
+      print group.getName(), var.name, syst, iso, h.GetEntries(), h.IntegralAndError(0,100,error), "+-", error[0]
       #print(str(h.Integral()) + " +- " + str( h.Integral()/(h.GetEntries()**0.5) ) )
       group.addHistogram(h, var, syst, iso, extra)
       if group.isMC():
          total.Add(h)
    error = array('d',[0.])
-   print "total MC",total.IntegralAndError(0,100,error),error
+   print "total MC",total.IntegralAndError(0,100,error)," +- ", error[0]
 
-def getDataLumi(iso):
-   if iso == "iso":
-      return dataLumiIso
-   elif iso == "antiiso":
-      return dataLumiAntiIso
 
-def make_histogram(var, group, title, open_files, syst="", iso="iso", weight="1", extra=""):
+def make_histogram(var, group, title, open_files, lumis, syst="", iso="iso", weight="1", extra=""):
    name = group.getName()
+   #print "histo", title, syst, iso, extra, " ___ ", weight
    histo_name = name+"_"+var.name+"_"+syst+"_"+extra
    h = TH1D(histo_name, title, var.bins, var.lbound, var.ubound)
    h.Sumw2()
@@ -197,9 +189,10 @@ def make_histogram(var, group, title, open_files, syst="", iso="iso", weight="1"
          f = ds.getFile(syst, iso)
          tdir = f.Get("trees")
          mytree = tdir.Get("Events")
+         #print his_name, var.name, weight
          mytree.Project(his_name, var.name, weight,"same")
          if group.isMC():
-            his.Scale(ds.scaleToData(getDataLumi(iso)))
+            his.Scale(ds.scaleToData(lumis.getDataLumi(iso, syst)))
             #print his.Integral()
          else:
             #print group, ds.preScale()

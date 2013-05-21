@@ -1,6 +1,6 @@
 import datetime
-from Fit import Fit
 from theta_auto import *
+from Fit import Fit
 
 init_val = 1.3
 step = 0.001
@@ -34,20 +34,14 @@ def get_model(infile, i=0):
     model.add_lognormal_uncertainty('xs', math.log(init_val+i*step), 'nonqcd')    
     return model
 
-def fit_qcd(fit, filename=""):
+def fit_qcd(variable, identifier, fit):
    indir = "templates/"
    outdir = "fits/"
    results_file = open('theta_results.txt', 'a')
    #results_file.write("#FITTING: "+str(datetime.now())+"\n")
    
-   if len(filename)>0:
-      identifier=filename
-   else:
-      identifier = fit.getLabel()
-   infile = indir+"mtwMass_templates_"+identifier+".root"
-   outfile = outdir+"mtwMass_fit_"+identifier+".root"
-
-   #print identifier
+   infile = indir+variable.shortName+"_templates_"+identifier+".root"
+   outfile = outdir+variable.shortName+"_fit_"+identifier+".root"
    results_file.write("# "+identifier+"...")
    
    for i in range(0,1000):
