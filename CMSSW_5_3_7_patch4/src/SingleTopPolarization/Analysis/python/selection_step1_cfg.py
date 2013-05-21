@@ -214,22 +214,23 @@ def SingleTopStep1(
       src=cms.InputTag("selectedPatJets")
   )
 
-  if options.isMC:
-    #Note: this module causes a large memory increase when crossing the file boundary
-    #Reason - unknown, solution: limit processing to ~1 file.
-    from PhysicsTools.PatUtils.tools.metUncertaintyTools import runMEtUncertainties
-    runMEtUncertainties(process,
-         electronCollection=cms.InputTag("electronsWithID"),
-         photonCollection=None,
-         muonCollection=cms.InputTag("muonsWithID"),
-         tauCollection="", # "" means emtpy, None means cleanPatTaus
-         jetCollection=cms.InputTag("patJetsWithOwnRef"),
-    #     jetCollection=cms.InputTag("selectedPatJets"),
-         addToPatDefaultSequence=False
-    )
-    process.stpolMetUncertaintySequence = cms.Sequence(
-        process.metUncertaintySequence
-    )
+  #Note: this module causes a large memory increase when crossing the file boundary
+  #Reason - unknown, solution: limit processing to ~1 file.
+  from PhysicsTools.PatUtils.tools.metUncertaintyTools import runMEtUncertainties
+  runMEtUncertainties(process,
+       electronCollection=cms.InputTag("electronsWithID"),
+       photonCollection=None,
+       muonCollection=cms.InputTag("muonsWithID"),
+       tauCollection="", # "" means emtpy, None means cleanPatTaus
+       jetCollection=cms.InputTag("patJetsWithOwnRef"),
+       jetCorrLabel="L3Absolute" if options.isMC else "L2L3Residual",
+       doSmearJets=options.isMC,
+       jetCorrPayloadName="AK5PFchs",
+       addToPatDefaultSequence=False
+  )
+  process.stpolMetUncertaintySequence = cms.Sequence(
+      process.metUncertaintySequence
+  )
 
   if not options.doSlimming:
       process.out.outputCommands = cms.untracked.vstring('keep *')
@@ -240,7 +241,7 @@ def SingleTopStep1(
           'keep edmMergeableCounter_*_*_*', # Keep the lumi-block counter information
           'keep edmTriggerResults_TriggerResults__*', #Keep the trigger results
           'keep *_genParticles__*', #keep all the genParticles
-          'keep recoVertexs_offlinePrimaryVertices__*', #keep the offline PV-s
+          #'keep recoVertexs_offlinePrimaryVertices__*', #keep the offline PV-s
           'keep recoVertexs_goodOfflinePrimaryVertices__*', #keep the offline PV-s
 
           # Jets
@@ -346,11 +347,10 @@ def SingleTopStep1(
   process.singleTopPathStep1Mu += process.preCalcSequences
   process.singleTopPathStep1Ele += process.preCalcSequences
 
-  if options.isMC:
-    if options.doMuon:
-      process.singleTopPathStep1Mu += process.stpolMetUncertaintySequence
-    if options.doElectron:
-      process.singleTopPathStep1Ele += process.stpolMetUncertaintySequence
+  if options.doMuon:
+    process.singleTopPathStep1Mu += process.stpolMetUncertaintySequence
+  if options.doElectron:
+    process.singleTopPathStep1Ele += process.stpolMetUncertaintySequence
 
 
   if options.isMC:
