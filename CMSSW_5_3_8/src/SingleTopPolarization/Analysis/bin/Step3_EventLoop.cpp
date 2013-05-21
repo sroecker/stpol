@@ -18,6 +18,7 @@
 #include "DataFormats/Common/interface/MergeableCounter.h"
 #include "cuts_base.h"
 #include "hlt_cuts.h"
+#include "b_efficiency_calc.h"
 
 #include <stdio.h>
 #include <time.h>
@@ -73,20 +74,6 @@ namespace LHAPDF
 	double getQ2max(int nset, int member);
 	void extrapolate(bool extrapolate = true);
 	int	numberPDF();
-}
-
-//Shorthand for getting a value of type T from the event
-template <typename T>
-T get_collection(const edm::EventBase& evt, edm::InputTag src, T retval) {
-    edm::Handle<T> coll;
-    evt.getByLabel(src, coll);
-    if(!coll.isValid()) {
-#ifdef DEBUG
-        std::cerr << "Collection " << src.label() << " is not valid!" << std::endl;
-#endif 
-        return retval;
-    }
-    return *coll;
 }
 
 //Shorthand for getting a value of type T from the event, where the original container is vector<T>
@@ -521,8 +508,8 @@ public:
         branch_vars.vars_float["muon_IDWeight"] = 1.0;
         branch_vars.vars_float["muon_IsoWeight"] = 1.0;
         branch_vars.vars_float["muon_TriggerWeight"] = 1.0;
-	branch_vars.vars_float["electron_IDWeight"] = 1.0;
-	branch_vars.vars_float["electron_triggerWeight"] = 1.0;
+        branch_vars.vars_float["electron_IDWeight"] = 1.0;
+        branch_vars.vars_float["electron_triggerWeight"] = 1.0;
     }
     
     Weights(const edm::ParameterSet& pars, BranchVars& _branch_vars) :
@@ -858,6 +845,8 @@ int main(int argc, char* argv[])
     const edm::ParameterSet& hlt_pars_mu = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("HLTmu");
     const edm::ParameterSet& hlt_pars_ele = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("HLTele");
     
+    const edm::ParameterSet& b_eff_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("bEfficiencyCalcs");
+    
     const edm::ParameterSet& lumiblock_counter_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("lumiBlockCounters");
     edm::InputTag totalPATProcessedCountSrc = lumiblock_counter_pars.getParameter<edm::InputTag>("totalPATProcessedCountSrc");
     
@@ -889,6 +878,7 @@ int main(int argc, char* argv[])
     GenParticles gen_particles(gen_particle_pars, branch_vars);
     HLTCuts hlt_mu_cuts(hlt_pars_mu, branch_vars);
     HLTCuts hlt_ele_cuts(hlt_pars_ele, branch_vars);
+    
 
     fwlite::TFileService fs = fwlite::TFileService(outputFile_.c_str());
     
@@ -899,6 +889,9 @@ int main(int argc, char* argv[])
     TFileDirectory dir = fs.mkdir("trees");
     TTree* out_tree = dir.make<TTree>("Events", "Events");
     TH1I* count_hist = dir.make<TH1I>("count_hist", "Event counts", count_map.size(), 0, count_map.size() - 1);
+    
+    TFileDirectory dir_effs = fs.mkdir("b_eff_hists");
+    BEffCalcs b_eff_calcs(b_eff_pars, branch_vars, dir_effs);
     
     TFile::SetOpenTimeout(60000);
     if(!TFile::SetCacheFileDir("/scratch/joosep")) {
@@ -992,7 +985,9 @@ int main(int argc, char* argv[])
                      passes_gen_cuts = gen_particles.process(event);
                 }
                 if(!passes_gen_cuts) continue;
-                                
+
+                b_eff_calcs.process(event);
+
                 event_id_branches["event_id"] = (unsigned int)event.id().event();
                 event_id_branches["run_id"] = (unsigned int)event.id().run();
                 event_id_branches["lumi_id"] = (unsigned int)event.id().luminosityBlock();
