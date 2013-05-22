@@ -79,11 +79,10 @@ private:
     
     void combinations(const unsigned int n, const unsigned int k, Combinations& combs);
     
-    const std::unique_ptr<std::map<BTagSystematicsWeightProducer::Flavour, double>> effs_in2J;
-    const std::unique_ptr<std::map<BTagSystematicsWeightProducer::Flavour, double>> effs_in3J;
+    //const std::unique_ptr<std::map<BTagSystematicsWeightProducer::Flavour, double>> effs_in2J;
+    //const std::unique_ptr<std::map<BTagSystematicsWeightProducer::Flavour, double>> effs_in3J;
     const edm::InputTag jetSrc;
     const edm::InputTag nJetSrc, nTagSrc;
-    const unsigned int nJets, nTags;
     Combinations combs;
     double scaleFactor(BTagSystematicsWeightProducer::Flavour flavour, BTagSystematicsWeightProducer::BTagAlgo algo, double pt, double eta, double& sfUp, double& sfDown);
     double piecewise(double x, const std::vector<double>& bin_low, const std::vector<double>& bin_val);
@@ -324,33 +323,33 @@ double BTagSystematicsWeightProducer::scaleFactor(BTagSystematicsWeightProducer:
 }
 
 BTagSystematicsWeightProducer::BTagSystematicsWeightProducer(const edm::ParameterSet& iConfig)
-: effs_in2J(new std::map<BTagSystematicsWeightProducer::Flavour, double>())
-, effs_in3J(new std::map<BTagSystematicsWeightProducer::Flavour, double>())
-, jetSrc(iConfig.getParameter<edm::InputTag>("src"))
+//: effs_in2J(new std::map<BTagSystematicsWeightProducer::Flavour, double>())
+//, effs_in3J(new std::map<BTagSystematicsWeightProducer::Flavour, double>())
+: jetSrc(iConfig.getParameter<edm::InputTag>("src"))
 , nJetSrc(iConfig.getParameter<edm::InputTag>("nJetSrc"))
 , nTagSrc(iConfig.getParameter<edm::InputTag>("nTagSrc"))
-, nJets(iConfig.getParameter<unsigned int>("nJets"))
-, nTags(iConfig.getParameter<unsigned int>("nTags"))
+//, nJets(iConfig.getParameter<unsigned int>("nJets"))
+//, nTags(iConfig.getParameter<unsigned int>("nTags"))
 , effFile(iConfig.getParameter<edm::FileInPath>("efficiencyFile"))
 {
     
     //The efficiencies are the probabilities of a jet of given flavour to be b-tagged. In general, these are sample-dependent.
-    (*effs_in3J)[BTagSystematicsWeightProducer::b] = iConfig.getParameter<double>("effBin3J");
-    (*effs_in3J)[BTagSystematicsWeightProducer::c] = iConfig.getParameter<double>("effCin3J");
-    (*effs_in3J)[BTagSystematicsWeightProducer::l] = iConfig.getParameter<double>("effLin3J");
+    //(*effs_in3J)[BTagSystematicsWeightProducer::b] = iConfig.getParameter<double>("effBin3J");
+    //(*effs_in3J)[BTagSystematicsWeightProducer::c] = iConfig.getParameter<double>("effCin3J");
+    //(*effs_in3J)[BTagSystematicsWeightProducer::l] = iConfig.getParameter<double>("effLin3J");
+    //
+    //(*effs_in2J)[BTagSystematicsWeightProducer::b] = iConfig.getParameter<double>("effBin2J");
+    //(*effs_in2J)[BTagSystematicsWeightProducer::c] = iConfig.getParameter<double>("effCin2J");
+    //(*effs_in2J)[BTagSystematicsWeightProducer::l] = iConfig.getParameter<double>("effLin2J");
     
-    (*effs_in2J)[BTagSystematicsWeightProducer::b] = iConfig.getParameter<double>("effBin2J");
-    (*effs_in2J)[BTagSystematicsWeightProducer::c] = iConfig.getParameter<double>("effCin2J");
-    (*effs_in2J)[BTagSystematicsWeightProducer::l] = iConfig.getParameter<double>("effLin2J");
-    
-    LogDebug("constructor") <<
-        "efficiencies_2J are: eff_b=" << (*effs_in2J)[BTagSystematicsWeightProducer::b] << 
-                        " eff_c=" << (*effs_in2J)[BTagSystematicsWeightProducer::c] << 
-                        " eff_l=" << (*effs_in2J)[BTagSystematicsWeightProducer::l]; 
-    LogDebug("constructor") <<
-        "efficiencies_3J are: eff_b=" << (*effs_in3J)[BTagSystematicsWeightProducer::b] << 
-                        " eff_c=" << (*effs_in3J)[BTagSystematicsWeightProducer::c] << 
-                        " eff_l=" << (*effs_in3J)[BTagSystematicsWeightProducer::l]; 
+    //LogDebug("constructor") <<
+    //    "efficiencies_2J are: eff_b=" << (*effs_in2J)[BTagSystematicsWeightProducer::b] << 
+    //                    " eff_c=" << (*effs_in2J)[BTagSystematicsWeightProducer::c] << 
+    //                    " eff_l=" << (*effs_in2J)[BTagSystematicsWeightProducer::l]; 
+    //LogDebug("constructor") <<
+    //    "efficiencies_3J are: eff_b=" << (*effs_in3J)[BTagSystematicsWeightProducer::b] << 
+    //                    " eff_c=" << (*effs_in3J)[BTagSystematicsWeightProducer::c] << 
+    //                    " eff_l=" << (*effs_in3J)[BTagSystematicsWeightProducer::l]; 
     const std::string algo = iConfig.getParameter<std::string>("algo");
     if(algo.compare("CSVM") == 0) {
         bTagAlgo = BTagSystematicsWeightProducer::CSVM;
@@ -433,18 +432,13 @@ BTagSystematicsWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup
     unsigned int nJets_ev=0;
     unsigned int nTags_ev=0;
 
-    if (nJets == 0 && nTags == 0) {
-        Handle<int> nJetsIn;
-        iEvent.getByLabel(nJetSrc, nJetsIn);
-        Handle<int> nTagsIn;
-        iEvent.getByLabel(nTagSrc, nTagsIn);
+    Handle<int> nJetsIn;
+    iEvent.getByLabel(nJetSrc, nJetsIn);
+    Handle<int> nTagsIn;
+    iEvent.getByLabel(nTagSrc, nTagsIn);
 
-        nJets_ev = *nJetsIn;
-        nTags_ev = *nTagsIn;
-    } else {
-        nJets_ev = nJets;
-        nTags_ev = nTags;
-    }
+    nJets_ev = *nJetsIn;
+    nTags_ev = *nTagsIn;
     
     //Precalculate the tagging combinations
     combs.clear();
@@ -520,14 +514,12 @@ BTagSystematicsWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup
 
                 if (nJets_ev==2) {
                     eff_val = get_hist_eff(effHists_2J[flavour]);
+                    LogDebug("jetLoop") << "2J eff = " << eff_val;
                     //eff_val = (*effs_in2J)[flavour];
                 }
-                else if (nJets_ev==3) {
+                else if (nJets_ev>2) {
                     eff_val = get_hist_eff(effHists_3J[flavour]);
-                    //eff_val = (*effs_in3J)[flavour];
-                }
-                else {
-                    eff_val = get_hist_eff(effHists_3J[flavour]);
+                    LogDebug("jetLoop") << "2+J eff = " << eff_val;
                     //eff_val = (*effs_in3J)[flavour];
                 }
                 LogDebug("jetLoop") << "\t\teff_val=" << eff_val;
