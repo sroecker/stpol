@@ -227,16 +227,17 @@ def JetSetup(process, conf):
         #The b-tag weight calculation is different for each required n-jet/m-btag bin
         process.bTagWeightProducerNJMT = cms.EDProducer('BTagSystematicsWeightProducer',
             src=cms.InputTag("goodJets"),
-            nJets=cms.uint32(0),
-            nTags=cms.uint32(0),
+            #nJets=cms.uint32(0),
+            #nTags=cms.uint32(0),
             nJetSrc=cms.InputTag("goodJetCount"),
             nTagSrc=cms.InputTag("bJetCount"),
-            effBin2J=cms.double(effs_2J.eff_b),
-            effCin2J=cms.double(effs_2J.eff_c),
-            effLin2J=cms.double(effs_2J.eff_l),
-            effBin3J=cms.double(effs_3J.eff_b),
-            effCin3J=cms.double(effs_3J.eff_c),
-            effLin3J=cms.double(effs_3J.eff_l),
+            effFile=cms.FileInPath("SingleTopPolarization/Analysis/calibrations/%s" % Calibrations.getEffFile(conf.subChannel)),
+            #effBin2J=cms.double(effs_2J.eff_b),
+            #effCin2J=cms.double(effs_2J.eff_c),
+            #effLin2J=cms.double(effs_2J.eff_l),
+            #effBin3J=cms.double(effs_3J.eff_b),
+            #effCin3J=cms.double(effs_3J.eff_c),
+            #effLin3J=cms.double(effs_3J.eff_l),
             algo=cms.string(conf.Jets.bTagWorkingPoint)
         )
         #process.bTagWeightProducer3J1T = process.bTagWeightProducerNJMT.clone(nJets=cms.uint32(3), nTags=cms.uint32(1))

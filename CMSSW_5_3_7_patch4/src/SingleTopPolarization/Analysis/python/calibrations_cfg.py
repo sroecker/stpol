@@ -95,3 +95,7 @@ def getEfficiencies(nJets, sample):
         raise Exception("B-tagging efficiencies not defined for sample %s" % sample)
     logging.info("Matched efficiencies for key %s: %s" % (key, eff[key]))
     return eff[key]
+
+
+def getEffFile(channel):
+    return "b_effs_%s.root" % channel
