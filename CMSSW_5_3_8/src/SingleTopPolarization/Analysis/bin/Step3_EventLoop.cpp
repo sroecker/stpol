@@ -832,7 +832,7 @@ int main(int argc, char* argv[])
         return 0;
     }
     
-    PythonProcessDesc builder(argv[1]);
+    PythonProcessDesc builder(argv[1], argc, argv);
     const edm::ParameterSet& in  = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("fwliteInput" );
     const edm::ParameterSet& out = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("fwliteOutput");
     
