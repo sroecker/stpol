@@ -2,7 +2,7 @@ import ROOT
 import logging
 from plots.common.histogram import Histogram
 from plots.common.utils import filter_alnum
-
+import numpy
 
 class Sample:
     def __init__(self, name, file_name):

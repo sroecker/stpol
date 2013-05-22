@@ -6,7 +6,7 @@
 INFILE=$1
 OUTDIR=$2
 if [ -z "$INFILE" ]; then
-    echo "$0 INFILE JOBNAME"
+    echo "$0 INFILE OUTDIR"
     exit 1
 fi
 if [ -z "$OUTDIR" ]; then
@@ -14,17 +14,17 @@ if [ -z "$OUTDIR" ]; then
     exit 1
 fi
 INFILE=`readlink -f $INFILE`
-OUTDIR=`readlink -f $OUTDIR`
 
 #WD=$CMSSW_BASE/..
 #rm -Rf $WD/$JOBNAME
-mkdir $OUTDIR
+echo $OUTDIR
+mkdir -p $OUTDIR
 cd $OUTDIR
 
 #split input file into N-line pieces
 split $INFILE -a4 -l 50 -d
 for file in x*
 do
-    sbatch --exclude comp-d-[006] -p prio $CMSSW_BASE/../analysis_step3/run_step3_eventloop.sh `readlink -f $file` $OUTDIR $3
+    sbatch -p prio $CMSSW_BASE/../analysis_step3/run_step3_eventloop.sh `readlink -f $file` $OUTDIR $3
 done
 

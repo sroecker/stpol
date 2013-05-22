@@ -753,6 +753,8 @@ public:
     edm::InputTag trueLJetTaggedCount;
     edm::InputTag trueCosTheta;
     edm::InputTag trueLeptonPdgIdSrc;
+    
+    edm::InputTag wJetsClassificationSrc;
 
     bool doGenParticles;
     bool requireGenMuon;
@@ -769,6 +771,7 @@ public:
 
             branch_vars.vars_float["true_cos_theta"] = BranchVars::def_val;
             branch_vars.vars_int["true_lepton_pdgId"] = BranchVars::def_val_int;
+            branch_vars.vars_int["wjets_classification"] = BranchVars::def_val_int;
         } 
     }
     
@@ -787,6 +790,9 @@ public:
         
         trueCosTheta = pars.getParameter<edm::InputTag>("trueCosThetaSrc");
         trueLeptonPdgIdSrc = pars.getParameter<edm::InputTag>("trueLeptonPdgIdSrc");
+        
+        wJetsClassificationSrc = pars.getParameter<edm::InputTag>("wJetsClassificationSrc");
+        
         requireGenMuon = pars.getParameter<bool>("requireGenMuon");
     }
     
@@ -800,6 +806,8 @@ public:
         branch_vars.vars_int["true_b_tagged_count"] = get_collection<int>(event, trueBJetTaggedCount, BranchVars::def_val_int);
         branch_vars.vars_int["true_c_tagged_count"] = get_collection<int>(event, trueCJetTaggedCount, BranchVars::def_val_int);
         branch_vars.vars_int["true_l_tagged_count"] = get_collection<int>(event, trueLJetTaggedCount, BranchVars::def_val_int);
+        
+        branch_vars.vars_int["wjets_classification"] = (int)get_collection<unsigned int>(event, wJetsClassificationSrc, BranchVars::def_val_int);
 
         branch_vars.vars_float["true_cos_theta"] = (float)get_collection<double>(event, trueCosTheta, BranchVars::def_val_int);
         branch_vars.vars_int["true_lepton_pdgId"] = get_collection<int>(event, trueLeptonPdgIdSrc, 0);
@@ -824,7 +832,7 @@ int main(int argc, char* argv[])
         return 0;
     }
     
-    PythonProcessDesc builder(argv[1]);
+    PythonProcessDesc builder(argv[1], argc, argv);
     const edm::ParameterSet& in  = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("fwliteInput" );
     const edm::ParameterSet& out = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("fwliteOutput");
     
@@ -927,6 +935,13 @@ int main(int argc, char* argv[])
         }
         std::cout << std::endl;
     }
+    for (auto & elem : event_id_branches) {
+        const std::string& br_name = elem.first;
+        std::cout << br_name << ", ";
+        unsigned int* p_branch = &(elem.second);
+        out_tree->Branch(br_name.c_str(), p_branch);
+    }
+    std::cout << std::endl;
     
     // loop the events
     int ievt=0;

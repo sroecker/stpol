@@ -1,16 +1,12 @@
 #!/bin/bash
 timestamp=`eval date +%m_%d_%H_%M`
 OFDIR=out_step3_$timestamp
-FLDIR=filelist_step2_latest
-mkdir $OFDIR
-mkdir $OFDIR/iso
-mkdir $OFDIR/iso/mc
-mkdir $OFDIR/iso/data
-mkdir $OFDIR/anti-iso
-mkdir $OFDIR/anti-iso/mc
-mkdir $OFDIR/anti-iso/data
+FLDIR=filelist_step2_05_10
+mkdir -p $OFDIR
+mkdir -p $OFDIR/iso
+mkdir -p $OFDIR/antiiso
 
-STPOL_ISMC=false analysis_step3/suball.sh $OFDIR/iso/data $FLDIR/iso/data/*
-STPOL_ISMC=false analysis_step3/suball.sh $OFDIR/anti-iso/data $FLDIR/antiiso/data/*
-STPOL_ISMC=true analysis_step3/suball.sh $OFDIR/iso/mc $FLDIR/iso/mc/*
-STPOL_ISMC=true analysis_step3/suball.sh $OFDIR/anti-iso/mc $FLDIR/antiiso/mc/*
+STPOL_ISMC=false analysis_step3/suball.sh $OFDIR/iso/nominal $FLDIR/iso/data/*
+STPOL_ISMC=false analysis_step3/suball.sh $OFDIR/antiiso/nominal $FLDIR/antiiso/data/*
+STPOL_ISMC=true analysis_step3/suball.sh $OFDIR/iso/nominal $FLDIR/iso/mc/*
+STPOL_ISMC=true analysis_step3/suball.sh $OFDIR/antiiso/nominal $FLDIR/antiiso/mc/*
