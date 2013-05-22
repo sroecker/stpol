@@ -31,7 +31,6 @@
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
-#include "FWCore/ParameterSet/interface/FileInPath.h"
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
@@ -39,7 +38,6 @@
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include <TFormula.h>
 #include <TMath.h>
-#include <TFile.h>
 #include <string.h>
 
 #include "SingleTopPolarization/Analysis/interface/debug_util.h"
@@ -91,11 +89,9 @@ private:
     static const std::vector<double> SFb_ptBins;
     static const std::vector<double> SFb_CSVM_Err;
     static const std::vector<double> SFb_TCHPT_Err;
-    
-    edm::FileInPath effFile;
-    TFile* effTFile;
 
     BTagSystematicsWeightProducer::BTagAlgo bTagAlgo;
+    // ----------member data ---------------------------
 };
 
 
@@ -328,7 +324,6 @@ BTagSystematicsWeightProducer::BTagSystematicsWeightProducer(const edm::Paramete
 , nTagSrc(iConfig.getParameter<edm::InputTag>("nTagSrc"))
 , nJets(iConfig.getParameter<unsigned int>("nJets"))
 , nTags(iConfig.getParameter<unsigned int>("nTags"))
-, effFile(iConfig.getParameter<edm::FileInPath>("efficiencyFile"))
 {
     
     //The efficiencies are the probabilities of a jet of given flavour to be b-tagged. In general, these are sample-dependent.
@@ -356,15 +351,13 @@ BTagSystematicsWeightProducer::BTagSystematicsWeightProducer(const edm::Paramete
     } else {
         throw cms::Exception("scaleFactor") << "algo " << algo << " not implemented";
     }
-
-    effTFile = new TFile(effFile.fullPath().c_str());
     
     
-    produces<float>("bTagWeight");
-    produces<float>("bTagWeightSystBCUp");
-    produces<float>("bTagWeightSystBCDown");
-    produces<float>("bTagWeightSystLUp");
-    produces<float>("bTagWeightSystLDown");
+    produces<double>("bTagWeight");
+    produces<double>("bTagWeightSystBCUp");
+    produces<double>("bTagWeightSystBCDown");
+    produces<double>("bTagWeightSystLUp");
+    produces<double>("bTagWeightSystLDown");
     produces<std::vector<float>>("scaleFactors");
 }
 
@@ -587,11 +580,11 @@ BTagSystematicsWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup
     double w_lDown = P_data_lDown/P_mc;
     LogDebug("produce") << "event weights w=" << w << " w_bcUp=" << w_bcUp << " w_bcDown=" << w_bcDown << " w_lUp=" << w_lUp << " w_lDown=" << w_lDown;
     
-    iEvent.put(std::auto_ptr<float>(new float(w)), "bTagWeight");
-    iEvent.put(std::auto_ptr<float>(new float(w_bcUp)), "bTagWeightSystBCUp");
-    iEvent.put(std::auto_ptr<float>(new float(w_bcDown)), "bTagWeightSystBCDown");
-    iEvent.put(std::auto_ptr<float>(new float(w_lUp)), "bTagWeightSystLUp");
-    iEvent.put(std::auto_ptr<float>(new float(w_lDown)), "bTagWeightSystLDown");
+    iEvent.put(std::auto_ptr<double>(new double(w)), "bTagWeight");
+    iEvent.put(std::auto_ptr<double>(new double(w_bcUp)), "bTagWeightSystBCUp");
+    iEvent.put(std::auto_ptr<double>(new double(w_bcDown)), "bTagWeightSystBCDown");
+    iEvent.put(std::auto_ptr<double>(new double(w_lUp)), "bTagWeightSystLUp");
+    iEvent.put(std::auto_ptr<double>(new double(w_lDown)), "bTagWeightSystLDown");
     iEvent.put(std::auto_ptr<std::vector<float>>(new std::vector<float>(scale_factors)), "scaleFactors");
     
     
