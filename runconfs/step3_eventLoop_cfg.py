@@ -16,17 +16,6 @@ if "STPOL_STEP3_OUTPUTFILE" in os.environ.keys():
     outfile = os.environ['STPOL_STEP3_OUTPUTFILE']
 else:
     outfile = "out_step3.root"
-if "STPOL_ISMC" in os.environ.keys():
-    isMC_env = os.environ["STPOL_ISMC"]
-    if isMC_env.lower() == "true":
-        isMC = True
-    elif isMC_env.lower() == "false":
-        isMC = False
-    else:
-        raise ValueError("STPOL_ISMC must be true/false")
-else:
-    isMC = True
-print "isMC = %s" % isMC
 
 #read input files from stdin
 input_files = []
@@ -42,6 +31,7 @@ parser.add_option("--nJ", dest="nJ", type="string", default="0,10")
 parser.add_option("--doNTags", dest="doNTags", action="store_true", default=False)
 parser.add_option("--nT", dest="nT", type="string", default="0,10")
 parser.add_option("--mtw", dest="doMtw", action="store_true", default=False)
+parser.add_option("--isMC", dest="doMtw", action="store_true", default=False)
 parser.add_option("--mtop", dest="doMtop", action="store_true", default=False)
 parser.add_option("--doControlVars", dest="doControlVars", action="store_true", default=False)
 parser.add_option("--skipTree", dest="skipTree", action="store_true", default=False)
@@ -67,14 +57,13 @@ for fi in input_files:
     print "\t",fi
 print "Output file: %s" %  outfile
 
-doControlVars = options.doControlVars
 process.fwliteOutput = cms.PSet(
     fileName  = cms.string(outfile),
 )
 
 process.muonCuts = cms.PSet(
     cutOnIso  = cms.bool(False),
-    doControlVars  = cms.bool(doControlVars),
+    doControlVars  = cms.bool(options.doControlVars),
     reverseIsoCut  = cms.bool(False),
     requireOneMuon  = cms.bool(options.lepton=="mu"),
     isoCut  = cms.double(0.12),
@@ -168,7 +157,7 @@ process.topCuts = cms.PSet(
 )
 
 process.weights = cms.PSet(
-    doWeights = cms.bool(isMC),
+    doWeights = cms.bool(options.isMC),
     bWeightNominalSrc = cms.InputTag("bTagWeightProducerNJMT", "bTagWeight"),
     puWeightSrc = cms.InputTag("puWeightProducer", "PUWeightNtrue"),
 
@@ -237,7 +226,7 @@ process.lumiBlockCounters = cms.PSet(
 )
 
 process.genParticles = cms.PSet(
-    doGenParticles = cms.bool(isMC and doControlVars),
+    doGenParticles = cms.bool(options.isMC and options.doControlVars),
     trueBJetCountSrc = cms.InputTag("trueBJetCount"),
     trueCJetCountSrc = cms.InputTag("trueCJetCount"),
     trueLJetCountSrc = cms.InputTag("trueLJetCount"),

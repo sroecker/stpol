@@ -1,23 +1,14 @@
 #!/bin/bash
-#This script will submit step2->step3 jobs to slurm
-#INFILE is the absolute path to a file containing the input files, one per line, prepended with "file:"
-#OUTDIR is the absolute path for the output directory, which must not exist but must be creatable with "mkdir"
 
-INFILE=$1
-OUTDIR=$2
-if [ -z "$INFILE" ]; then
-    echo "$0 INFILE OUTDIR"
+echo "$0: $@"
+usage() {
+    echo "$0 INFILE OUTDIR 'step3_cfg.py args'"
     exit 1
-fi
-if [ -z "$OUTDIR" ]; then
-    echo "$0 INFILE OUTDIR"
-    exit 1
-fi
-INFILE=`readlink -f $INFILE`
+}
+INFILE=`readlink -f $1`
+OUTDIR=`readlink -f $2`
+CONF="${*:3}"
 
-#WD=$CMSSW_BASE/..
-#rm -Rf $WD/$JOBNAME
-echo $OUTDIR
 mkdir -p $OUTDIR
 cd $OUTDIR
 
@@ -25,6 +16,6 @@ cd $OUTDIR
 split $INFILE -a4 -l 50 -d
 for file in x*
 do
-    sbatch -p prio $CMSSW_BASE/../analysis_step3/run_step3_eventloop.sh `readlink -f $file` $OUTDIR $3
+    echo "Submitting step3 job $CONF"
+    echo sbatch -p prio $STPOL_DIR/analysis_step3/run_step3_eventloop.sh `readlink -f $file` $OUTDIR $CONF
 done
-#--exclude comp-d-[084,093,100]
