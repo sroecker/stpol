@@ -2,7 +2,7 @@
 #set -e #Abort if errors
 uname -a
 echo "SLURM job ID="$SLURM_JOBID
-WD=$CMSSW_BASE/..
+WD=$STPOL_DIR
 INFILE=$1
 OUTDIR=$2
 if [ -z $3 ]; then
