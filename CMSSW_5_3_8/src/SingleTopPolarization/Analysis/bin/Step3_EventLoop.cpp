@@ -929,6 +929,12 @@ int main(int argc, char* argv[])
         std::cout << elem.first << ", ";
         out_tree->Branch(elem.first.c_str(), &(elem.second));
     }
+    for (auto & elem : event_id_branches) {
+        const std::string& br_name = elem.first;
+        std::cout << br_name << ", ";
+        unsigned int* p_branch = &(elem.second);
+        out_tree->Branch(br_name.c_str(), p_branch);
+    }
     std::cout << std::endl;
     
     // loop the events
