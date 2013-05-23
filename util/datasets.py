@@ -21,7 +21,6 @@ class Lumi:
         self.fname = url[url.rindex("/")+1:]
 
 lumis = {
-
     "rereco_golden": Lumi("rereco_golden",
     "/Cert_190456-208686_8TeV_22Jan2013ReReco_Collisions12_JSON.txt"),
 
@@ -57,6 +56,7 @@ runRanges["RunA"] = [190456, 193621]
 runRanges["RunB"] = [193834, 196531]
 runRanges["RunC"] = [198022, 203742]
 runRanges["RunD"] = [203777, 208686]
+runRanges["RunABCD"] = [190456, 208686]
 
 """
 Represents a generic datasets.
@@ -310,7 +310,7 @@ step1_FSIM_WJets = [
 ]
 
 step1B_out_MC_noQCD_new = [
-    DS_S2MC("T_t_ToLeptons", "/TToLeptons_t-channel_8TeV-powheg-tauola/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "T_t"),
+    DS_S2MC("T_t_ToLeptons", "/TToLeptons_t-channel_8TeV-powheg-tauola/joosep-stpol_step1_05_20_a2437d6e0ca7eba657ba43c9c2371fff8f88e5ba-d6f3c092e0af235d8b18254ddb07959c/USER", "T_t"),
     DS_S2MC("T_t", "/T_t-channel_TuneZ2star_8TeV-powheg-tauola/joosep-stpol_step1B_04_10-c9249c44a215ffeb8c9ba40f59092334/USER", "T_t"),
     DS_S2MC("T_s", "/T_s-channel_TuneZ2star_8TeV-powheg-tauola/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "T_s"),
     DS_S2MC("T_tW", "/T_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "T_tW"),
@@ -325,8 +325,8 @@ step1B_out_MC_noQCD_new = [
     DS_S2MC("ZZ", "/ZZ_TuneZ2star_8TeV_pythia6_tauola/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "ZZ"),
 
     DS_S2MC("TTJets_MassiveBinDECAY", "/TTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "TTbar"),
-    DS_S2MC("TTJets_FullLept", "/TTJets_FullLeptMGDecays_8TeV-madgraph/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "TTbar"),
-    DS_S2MC("TTJets_SemiLept", "/TTJets_SemiLeptMGDecays_8TeV-madgraph/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "TTbar"),
+    DS_S2MC("TTJets_FullLept", "/TTJets_FullLeptMGDecays_8TeV-madgraph/joosep-stpol_step1_05_20_a2437d6e0ca7eba657ba43c9c2371fff8f88e5ba-d6f3c092e0af235d8b18254ddb07959c/USER", "TTbar"),
+    DS_S2MC("TTJets_SemiLept", "/TTJets_SemiLeptMGDecays_8TeV-madgraph/joosep-stpol_step1_05_20_a2437d6e0ca7eba657ba43c9c2371fff8f88e5ba-d6f3c092e0af235d8b18254ddb07959c/USER", "TTbar"),
 
     DS_S2MC("GJets1", "/GJets_HT-200To400_8TeV-madgraph/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "GJets_HT-200To400"),
     DS_S2MC("GJets2", "/GJets_HT-400ToInf_8TeV-madgraph/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "GJets_HT-400ToInf"),
@@ -471,35 +471,23 @@ step1_out_MC_new = [
 
 ]
 
-step1_out_Data = [
-    DS_Data("SingleMuC", "/SingleMu/joosep-step1_Data_Feb6-14d3879a0dccd7e6c1fb317f2674eaf1/USER", "total", "FT_53_V6_AN3::All", "RunC"),
-    DS_Data("SingleMuAB1", "/SingleMu/joosep-step1_Data_Feb6-2cdd420c4c725097a4330835f90d1ada/USER", "total", "FT_53_V6_AN3::All", "RunA"),
-    DS_Data("SingleMuAB2", "/SingleMu/joosep-step1_Data_Feb6-2cdd420c4c725097a4330835f90d1ada/USER", "total", "FT_53_V6_AN3::All", "RunB"),
-    DS_Data("SingleMuB", "/SingleMu/joosep-step1_Data_Feb6-2cdd420c4c725097a4330835f90d1ada/USER", "total", "FT_53_V6_AN3::All", "RunB"),
-    DS_Data("SingleMuD", "/SingleMu/joosep-step1_Data_Feb6-4ad4eefaf926ac722f9a48104acbb5cc/USER", "total", "FT_53_V6_AN3::All", "RunD"),
-
-    DS_Data("SingleEleA1", "/SingleElectron/joosep-step1_Data_Feb6-a67a46c387bb052b77f0782979d2cf48/USER", "total", "FT_53_V6_AN3::All", "RunA"),
-    DS_Data("SingleEleB", "/SingleElectron/joosep-step1_Data_Feb6-2cdd420c4c725097a4330835f90d1ada/USER", "total", "FT_53_V6_AN3::All", "RunB"),
-    DS_Data("SingleEleC1", "/SingleElectron/joosep-step1_Data_Feb6-2d70b925c06acab65b2731ef9f08c3c1/USER", "total", "FT_53_V6_AN3::All", "RunC"),
-    DS_Data("SingleEleC2", "/SingleElectron/joosep-step1_Data_Feb6-14d3879a0dccd7e6c1fb317f2674eaf1/USER", "total", "FT_53_V6_AN3::All", "RunC"),
-    DS_Data("SingleEleD", "/SingleElectron/joosep-step1_Data_Feb6-4ad4eefaf926ac722f9a48104acbb5cc/USER", "total", "FT_53_V6_AN3::All", "RunD"),
-]
+#step1_out_Data = [
+#    DS_Data("SingleMuC", "/SingleMu/joosep-step1_Data_Feb6-14d3879a0dccd7e6c1fb317f2674eaf1/USER", "total", "FT_53_V6_AN3::All", "RunC"),
+#    DS_Data("SingleMuAB1", "/SingleMu/joosep-step1_Data_Feb6-2cdd420c4c725097a4330835f90d1ada/USER", "total", "FT_53_V6_AN3::All", "RunA"),
+#    DS_Data("SingleMuAB2", "/SingleMu/joosep-step1_Data_Feb6-2cdd420c4c725097a4330835f90d1ada/USER", "total", "FT_53_V6_AN3::All", "RunB"),
+#    DS_Data("SingleMuB", "/SingleMu/joosep-step1_Data_Feb6-2cdd420c4c725097a4330835f90d1ada/USER", "total", "FT_53_V6_AN3::All", "RunB"),
+#    DS_Data("SingleMuD", "/SingleMu/joosep-step1_Data_Feb6-4ad4eefaf926ac722f9a48104acbb5cc/USER", "total", "FT_53_V6_AN3::All", "RunD"),
+#
+#    DS_Data("SingleEleA1", "/SingleElectron/joosep-step1_Data_Feb6-a67a46c387bb052b77f0782979d2cf48/USER", "total", "FT_53_V6_AN3::All", "RunA"),
+#    DS_Data("SingleEleB", "/SingleElectron/joosep-step1_Data_Feb6-2cdd420c4c725097a4330835f90d1ada/USER", "total", "FT_53_V6_AN3::All", "RunB"),
+#    DS_Data("SingleEleC1", "/SingleElectron/joosep-step1_Data_Feb6-2d70b925c06acab65b2731ef9f08c3c1/USER", "total", "FT_53_V6_AN3::All", "RunC"),
+#    DS_Data("SingleEleC2", "/SingleElectron/joosep-step1_Data_Feb6-14d3879a0dccd7e6c1fb317f2674eaf1/USER", "total", "FT_53_V6_AN3::All", "RunC"),
+#    DS_Data("SingleEleD", "/SingleElectron/joosep-step1_Data_Feb6-4ad4eefaf926ac722f9a48104acbb5cc/USER", "total", "FT_53_V6_AN3::All", "RunD"),
+#]
 
 step1_out_newData = [
-    DS_Data("SingleEleA", "/SingleElectron/jpata-stpol_step1_04_09-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All", "RunA"),
-    DS_Data("SingleEleB", "/SingleElectron/jpata-stpol_step1_04_09-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All", "RunB"),
-    DS_Data("SingleEleC", "/SingleElectron/jpata-stpol_step1_04_09-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All", "RunC"),
-    DS_Data("SingleEleD", "/SingleElectron/jpata-stpol_step1_04_09-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All", "RunD"),
-
-    DS_Data("SingleMuA1", "/SingleMu/jpata-stpol_step1_04_15-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All", "RunA"),
-    DS_Data("SingleMuB1", "/SingleMu/jpata-stpol_step1_04_15-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All", "RunB"),
-    #DS_Data("SingleMuC1", "/SingleMu/jpata-stpol_step1_04_15-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All", "RunC"),
-    #DS_Data("SingleMuD1", "/SingleMu/jpata-stpol_step1_04_15-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All", "RunD"),
-
-    #DS_Data("SingleMuA2", "/SingleMu/joosep-stpol_step1_04_15-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All", "RunA"),
-    #DS_Data("SingleMuB2", "/SingleMu/joosep-stpol_step1_04_15-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All", "RunB"),
-    DS_Data("SingleMuC2", "/SingleMu/joosep-stpol_step1_04_15-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All", "RunC"),
-    DS_Data("SingleMuD2", "/SingleMu/joosep-stpol_step1_04_15-c85f3eef16e64fac48d3efe23a68265c/USER", "rereco_golden", "FT_53_V6_AN3::All", "RunD"),
+    DS_Data("SingleEle", "/SingleElectron/jpata-stpol_step1_05_20_a2437d6e0ca7eba657ba43c9c2371fff8f88e5ba-de95748cd8fdda59f3ad9b020ab1169c/USER", "rereco_golden", "RunABCD")
+    DS_Data("SingleMu", "/SingleMu/jpata-stpol_step1_05_20_a2437d6e0ca7eba657ba43c9c2371fff8f88e5ba-de95748cd8fdda59f3ad9b020ab1169c/USER", "rereco_golden", "RunABCD")
 ]
 
 step2_FastSimValid = [
@@ -526,9 +514,7 @@ possible_ds = {
     "S2_MC": step1B_out_MC_new,
     "S2_MC_noQCD": step1B_out_MC_noQCD_new,
     "S2_MC_QCD": step1B_out_MC_QCD_new,
-    }
-
-
+}
 
 if __name__=="__main__":
     parser = argparse.ArgumentParser(description='Creates crab.cfg files based on \
