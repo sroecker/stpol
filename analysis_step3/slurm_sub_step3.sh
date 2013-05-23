@@ -5,6 +5,10 @@ usage() {
     echo "$0 INFILE OUTDIR 'step3_cfg.py args'"
     exit 1
 }
+if [ ! -f $1 ]; then
+    echo "Input file $1 does not exist"
+    exit 1
+fi
 INFILE=`readlink -f $1`
 OUTDIR=`readlink -f $2`
 CONF="${*:3}"
@@ -17,5 +21,5 @@ split $INFILE -a4 -l 50 -d
 for file in x*
 do
     echo "Submitting step3 job $CONF"
-    echo sbatch -p prio $STPOL_DIR/analysis_step3/run_step3_eventloop.sh `readlink -f $file` $OUTDIR $CONF
+    sbatch -p prio $STPOL_DIR/analysis_step3/run_step3_eventloop.sh `readlink -f $file` $OUTDIR $CONF
 done
