@@ -859,7 +859,7 @@ int main(int argc, char* argv[])
     edm::InputTag totalPATProcessedCountSrc = lumiblock_counter_pars.getParameter<edm::InputTag>("totalPATProcessedCountSrc");
     
     BranchVars branch_vars; 
-    std::map<std::string, unsigned int> event_id_branches;
+    std::map<std::string, int> event_id_branches;
     std::map<std::string, unsigned int> count_map;
 
     std::vector<std::string> count_map_order({
@@ -909,9 +909,9 @@ int main(int argc, char* argv[])
         std::cerr << "Cache directory was not writable" << std::endl;
     }
     
-    event_id_branches["event_id"] = -1;
-    event_id_branches["run_id"] = -1;
-    event_id_branches["lumi_id"] = -1;
+    event_id_branches["event_id"] = 0;
+    event_id_branches["run_id"] = 0;
+    event_id_branches["lumi_id"] = 0;
    
    
     if (make_tree) {
@@ -933,15 +933,14 @@ int main(int argc, char* argv[])
             std::cout << elem.first << ", ";
             out_tree->Branch(elem.first.c_str(), &(elem.second));
         }
+        for (auto & elem : event_id_branches) {
+            const std::string& br_name = elem.first;
+            std::cout << br_name << ", ";
+            int* p_branch = &(elem.second);
+            out_tree->Branch(br_name.c_str(), p_branch);
+        }
         std::cout << std::endl;
     }
-    for (auto & elem : event_id_branches) {
-        const std::string& br_name = elem.first;
-        std::cout << br_name << ", ";
-        unsigned int* p_branch = &(elem.second);
-        out_tree->Branch(br_name.c_str(), p_branch);
-    }
-    std::cout << std::endl;
     
     // loop the events
     int ievt=0;
