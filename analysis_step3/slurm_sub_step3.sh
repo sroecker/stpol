@@ -20,6 +20,6 @@ cd $OUTDIR
 split $INFILE -a4 -l 50 -d
 for file in x*
 do
-    echo "Submitting step3 job $CONF"
+    echo "Submitting step3 job $CONF on file $file"
     sbatch -p prio $STPOL_DIR/analysis_step3/run_step3_eventloop.sh `readlink -f $file` $OUTDIR $CONF
 done
