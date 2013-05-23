@@ -8,6 +8,6 @@ if [ -d "$OFDIR" ]; then
     rm -Rf "$OFDIR"
 fi
 mkdir "$OFDIR"
-echo "Calling Step3_EventLoop"
+echo "Calling ""$CMSSW_BASE"/bin/"$SCRAM_ARCH"/Step3_EventLoop
 head -n5 "$STPOL_DIR"/filelist_step2_latest/iso/mc/TTJets_MassiveBinDECAY.txt | STPOL_STEP3_OUTPUTFILE="$OFDIR"/out.root "$CMSSW_BASE"/bin/"$SCRAM_ARCH"/Step3_EventLoop "$STPOL_DIR"/runconfs/step3_eventloop_test.py &> "$OFDIR"/log_step3.txt
 tail -n10 "$OFDIR"/log_step3.txt
