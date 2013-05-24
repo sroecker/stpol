@@ -1,10 +1,27 @@
 #include "DataFormats/FWLite/interface/Event.h"
+#include <FWCore/ParameterSet/interface/ProcessDesc.h>
+#include <FWCore/PythonParameterSet/interface/PythonProcessDesc.h>
+#include <FWCore/PythonParameterSet/interface/PythonProcessDesc.h>
 
 #ifndef CUTS_BASE_H
 #define CUTS_BASE_H
 
 #include <climits>
 #include <TMath.h>
+
+//Shorthand for getting a value of type T from the event
+template <typename T>
+T get_collection(const edm::EventBase& evt, edm::InputTag src, T retval) {
+    edm::Handle<T> coll;
+    evt.getByLabel(src, coll);
+    if(!coll.isValid()) {
+#ifdef DEBUG
+        std::cerr << "Collection " << src.label() << " is not valid!" << std::endl;
+#endif 
+        return retval;
+    }
+    return *coll;
+}
 
 class BranchVars {
 public:

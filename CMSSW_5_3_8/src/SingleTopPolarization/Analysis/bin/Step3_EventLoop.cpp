@@ -18,6 +18,7 @@
 #include "DataFormats/Common/interface/MergeableCounter.h"
 #include "cuts_base.h"
 #include "hlt_cuts.h"
+#include "b_efficiency_calc.h"
 
 #include <stdio.h>
 #include <time.h>
@@ -73,20 +74,6 @@ namespace LHAPDF
 	double getQ2max(int nset, int member);
 	void extrapolate(bool extrapolate = true);
 	int	numberPDF();
-}
-
-//Shorthand for getting a value of type T from the event
-template <typename T>
-T get_collection(const edm::EventBase& evt, edm::InputTag src, T retval) {
-    edm::Handle<T> coll;
-    evt.getByLabel(src, coll);
-    if(!coll.isValid()) {
-#ifdef DEBUG
-        std::cerr << "Collection " << src.label() << " is not valid!" << std::endl;
-#endif 
-        return retval;
-    }
-    return *coll;
 }
 
 //Shorthand for getting a value of type T from the event, where the original container is vector<T>
@@ -521,8 +508,8 @@ public:
         branch_vars.vars_float["muon_IDWeight"] = 1.0;
         branch_vars.vars_float["muon_IsoWeight"] = 1.0;
         branch_vars.vars_float["muon_TriggerWeight"] = 1.0;
-	branch_vars.vars_float["electron_IDWeight"] = 1.0;
-	branch_vars.vars_float["electron_triggerWeight"] = 1.0;
+        branch_vars.vars_float["electron_IDWeight"] = 1.0;
+        branch_vars.vars_float["electron_triggerWeight"] = 1.0;
     }
     
     Weights(const edm::ParameterSet& pars, BranchVars& _branch_vars) :
@@ -766,6 +753,8 @@ public:
     edm::InputTag trueLJetTaggedCount;
     edm::InputTag trueCosTheta;
     edm::InputTag trueLeptonPdgIdSrc;
+    
+    edm::InputTag wJetsClassificationSrc;
 
     bool doGenParticles;
     bool requireGenMuon;
@@ -782,6 +771,7 @@ public:
 
             branch_vars.vars_float["true_cos_theta"] = BranchVars::def_val;
             branch_vars.vars_int["true_lepton_pdgId"] = BranchVars::def_val_int;
+            branch_vars.vars_int["wjets_classification"] = BranchVars::def_val_int;
         } 
     }
     
@@ -800,6 +790,9 @@ public:
         
         trueCosTheta = pars.getParameter<edm::InputTag>("trueCosThetaSrc");
         trueLeptonPdgIdSrc = pars.getParameter<edm::InputTag>("trueLeptonPdgIdSrc");
+        
+        wJetsClassificationSrc = pars.getParameter<edm::InputTag>("wJetsClassificationSrc");
+        
         requireGenMuon = pars.getParameter<bool>("requireGenMuon");
     }
     
@@ -813,6 +806,8 @@ public:
         branch_vars.vars_int["true_b_tagged_count"] = get_collection<int>(event, trueBJetTaggedCount, BranchVars::def_val_int);
         branch_vars.vars_int["true_c_tagged_count"] = get_collection<int>(event, trueCJetTaggedCount, BranchVars::def_val_int);
         branch_vars.vars_int["true_l_tagged_count"] = get_collection<int>(event, trueLJetTaggedCount, BranchVars::def_val_int);
+        
+        branch_vars.vars_int["wjets_classification"] = (int)get_collection<unsigned int>(event, wJetsClassificationSrc, BranchVars::def_val_int);
 
         branch_vars.vars_float["true_cos_theta"] = (float)get_collection<double>(event, trueCosTheta, BranchVars::def_val_int);
         branch_vars.vars_int["true_lepton_pdgId"] = get_collection<int>(event, trueLeptonPdgIdSrc, 0);
@@ -837,7 +832,7 @@ int main(int argc, char* argv[])
         return 0;
     }
     
-    PythonProcessDesc builder(argv[1]);
+    PythonProcessDesc builder(argv[1], argc, argv);
     const edm::ParameterSet& in  = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("fwliteInput" );
     const edm::ParameterSet& out = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("fwliteOutput");
     
@@ -857,6 +852,8 @@ int main(int argc, char* argv[])
     const edm::ParameterSet& gen_particle_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("genParticles");
     const edm::ParameterSet& hlt_pars_mu = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("HLTmu");
     const edm::ParameterSet& hlt_pars_ele = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("HLTele");
+    
+    const edm::ParameterSet& b_eff_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("bEfficiencyCalcs");
     
     const edm::ParameterSet& lumiblock_counter_pars = builder.processDesc()->getProcessPSet()->getParameter<edm::ParameterSet>("lumiBlockCounters");
     edm::InputTag totalPATProcessedCountSrc = lumiblock_counter_pars.getParameter<edm::InputTag>("totalPATProcessedCountSrc");
@@ -889,6 +886,7 @@ int main(int argc, char* argv[])
     GenParticles gen_particles(gen_particle_pars, branch_vars);
     HLTCuts hlt_mu_cuts(hlt_pars_mu, branch_vars);
     HLTCuts hlt_ele_cuts(hlt_pars_ele, branch_vars);
+    
 
     fwlite::TFileService fs = fwlite::TFileService(outputFile_.c_str());
     
@@ -899,6 +897,9 @@ int main(int argc, char* argv[])
     TFileDirectory dir = fs.mkdir("trees");
     TTree* out_tree = dir.make<TTree>("Events", "Events");
     TH1I* count_hist = dir.make<TH1I>("count_hist", "Event counts", count_map.size(), 0, count_map.size() - 1);
+    
+    TFileDirectory dir_effs = fs.mkdir("b_eff_hists");
+    BEffCalcs b_eff_calcs(b_eff_pars, branch_vars, dir_effs);
     
     TFile::SetOpenTimeout(60000);
     if(!TFile::SetCacheFileDir("/scratch/joosep")) {
@@ -927,6 +928,12 @@ int main(int argc, char* argv[])
     for (auto & elem : branch_vars.vars_vfloat) {
         std::cout << elem.first << ", ";
         out_tree->Branch(elem.first.c_str(), &(elem.second));
+    }
+    for (auto & elem : event_id_branches) {
+        const std::string& br_name = elem.first;
+        std::cout << br_name << ", ";
+        unsigned int* p_branch = &(elem.second);
+        out_tree->Branch(br_name.c_str(), p_branch);
     }
     std::cout << std::endl;
     
@@ -992,7 +999,9 @@ int main(int argc, char* argv[])
                      passes_gen_cuts = gen_particles.process(event);
                 }
                 if(!passes_gen_cuts) continue;
-                                
+
+                b_eff_calcs.process(event);
+
                 event_id_branches["event_id"] = (unsigned int)event.id().event();
                 event_id_branches["run_id"] = (unsigned int)event.id().run();
                 event_id_branches["lumi_id"] = (unsigned int)event.id().luminosityBlock();
