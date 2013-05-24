@@ -9,13 +9,13 @@ bool AreSame(float a, float b) {
 
 static const unsigned int n_eta_bins = 4;
 const Double_t eta_bins_low[n_eta_bins] = {
-    0.0,
-    0.8,
-    1.6,
-    2.4
+    (Double_t)0.0,
+    (Double_t)0.8,
+    (Double_t)1.6,
+    (Double_t)2.4
 };
 
-static const unsigned int n_pt_bins = 19;
+static const unsigned int n_pt_bins = 18;
 const Double_t pt_bins_low[n_pt_bins] = {
     0,
     20,
@@ -50,8 +50,9 @@ BEffCalcs::BEffCalcs(const edm::ParameterSet& pars, BranchVars& _branch_vars, TF
 {
     const Double_t* p_pt_bins_low = (const Double_t*)&pt_bins_low;
     const Double_t* p_eta_bins_low = (const Double_t*)&eta_bins_low;
-    Int_t _n_pt_bins = (Int_t)n_pt_bins;
-    Int_t _n_eta_bins = (Int_t)n_eta_bins;
+    Int_t _n_pt_bins = (Int_t)n_pt_bins-1;
+    Int_t _n_eta_bins = (Int_t)n_eta_bins-1;
+
     true_b_distribution = dir.make<TH2D>("true_b", "True b", _n_pt_bins, p_pt_bins_low, _n_eta_bins, p_eta_bins_low);
     true_b_tagged_distribution = dir.make<TH2D>("true_b_tagged", "True b tagged", _n_pt_bins, p_pt_bins_low, _n_eta_bins, p_eta_bins_low); 
     
@@ -101,7 +102,7 @@ bool BEffCalcs::process(const edm::EventBase& event) {
 
         true_distr->Fill(pt, std::fabs(eta)); 
         if (bdisc >= b_discriminator_wp) {
-            true_tagged_distr->Fill(eta, pt);
+            true_tagged_distr->Fill(pt, std::fabs(eta));
         }
     }
     post_process();
