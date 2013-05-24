@@ -11,11 +11,6 @@ import string
 import os
 
 print "argv=",sys.argv
-#outfile = "step3_out_%s.root" % (''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(6)))
-if "STPOL_STEP3_OUTPUTFILE" in os.environ.keys():
-    outfile = os.environ['STPOL_STEP3_OUTPUTFILE']
-else:
-    outfile = "out_step3.root"
 
 #read input files from stdin
 input_files = []
@@ -35,6 +30,8 @@ parser.add_option("--isMC", dest="isMC", action="store_true", default=False)
 parser.add_option("--mtop", dest="doMtop", action="store_true", default=False)
 parser.add_option("--doControlVars", dest="doControlVars", action="store_true", default=False)
 parser.add_option("--skipTree", dest="skipTree", action="store_true", default=False)
+parser.add_option("--outputFile", dest="outputFile", type="string", default="step3.root")
+
 options, args = parser.parse_args()
 
 options.nJMin = int(options.nJ.split(",")[0])
@@ -55,10 +52,10 @@ process.fwliteInput = cms.PSet(
 print "Input files:"
 for fi in input_files:
     print "\t",fi
-print "Output file: %s" %  outfile
+print "Output file: %s" % options.outputFile
 
 process.fwliteOutput = cms.PSet(
-    fileName  = cms.string(outfile),
+    fileName  = cms.string(options.outputFile),
 )
 
 process.muonCuts = cms.PSet(
