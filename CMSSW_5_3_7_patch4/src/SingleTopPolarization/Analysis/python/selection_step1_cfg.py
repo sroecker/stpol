@@ -123,8 +123,10 @@ def SingleTopStep1(
   #    process.pfIsolatedMuons.isolationCut = maxLeptonIso
 
   #Use both isolated and non-isolated muons as a patMuon source
-  process.patMuons.pfMuonSource = cms.InputTag("pfMuons")
-  process.muonMatch.src = cms.InputTag("pfMuons")
+  #process.patMuons.pfMuonSource = cms.InputTag("pfMuons")
+  #process.muonMatch.src = cms.InputTag("pfMuons")
+  process.patMuons.pfMuonSource = cms.InputTag("pfIsolatedMuons")
+  process.muonMatch.src = cms.InputTag("pfIsolatedMuons")
 
   process.selectedPatMuons.cut = "pt>20 && abs(eta)<3.0"
 
