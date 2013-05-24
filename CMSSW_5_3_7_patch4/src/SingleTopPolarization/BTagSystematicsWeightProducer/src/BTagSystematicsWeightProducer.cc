@@ -507,10 +507,10 @@ BTagSystematicsWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup
                 };
                 
                 //The probability associated with a jet is eff if the jet is in the combination of b-tagged jets, (1-eff) otherwise
-                double eff_val = 0.0;
+                double eff_val = TMath::QuietNaN();
 
                 auto get_hist_eff = [&jet] (TH2D* hist) {
-                    return hist->GetBinContent(hist->FindBin(jet.eta(), jet.pt())); 
+                    return hist->GetBinContent(hist->FindBin(jet.pt(), std::fabs(jet.eta()))); 
                 };
 
                 if (nJets_ev==2) {
@@ -522,6 +522,9 @@ BTagSystematicsWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup
                     eff_val = get_hist_eff(effHists_3J[flavour]);
                     LogDebug("jetLoop") << "2+J eff = " << eff_val;
                     //eff_val = (*effs_in3J)[flavour];
+                }
+                else {
+                    edm::LogInfo("jetLoop") << "Don't know what efficiency to take for NJ=" << nJets_ev;
                 }
                 LogDebug("jetLoop") << "\t\teff_val=" << eff_val;
                 //double e = eff(eff_val, inComb);
