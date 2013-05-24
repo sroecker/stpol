@@ -292,6 +292,33 @@ step1_MC_systematic = [
     DS("TToBTauNu_anomWtb-0100", "/TToBTauNu_anomWtb-0100_t-channel_TuneZ2star_8TeV-comphep/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM"),
 ]
 
+step1_MC_systematic_out = [
+    DS("/TBarToLeptons_t-channel_mass166_5_8TeV-powheg-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
+    , DS("/TBarToLeptons_t-channel_mass178_5_8TeV-powheg-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
+    , DS("/TBarToLeptons_t-channel_scaledown_8TeV-powheg-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
+    , DS("/TBarToLeptons_t-channel_scaleup_8TeV-powheg-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
+    , DS("/TTJets_mass166_5_TuneZ2star_8TeV-madgraph-tauola/jpata-stpol_step1_05_20_a2437d6e0ca7eba657ba43c9c2371fff8f88e5ba-d6f3c092e0af235d8b18254ddb07959c/USER")
+    , DS("/TTJets_mass178_5_TuneZ2star_8TeV-madgraph-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
+    , DS("/TTJets_matchingdown_TuneZ2star_8TeV-madgraph-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
+    , DS("/TTJets_matchingup_TuneZ2star_8TeV-madgraph-tauola/jpata-stpol_step1_05_20_a2437d6e0ca7eba657ba43c9c2371fff8f88e5ba-d6f3c092e0af235d8b18254ddb07959c/USER")
+    , DS("/TTJets_scaledown_TuneZ2star_8TeV-madgraph-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
+    , DS("/TTJets_scaleup_TuneZ2star_8TeV-madgraph-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
+    , DS("/TToBENu_anomWtb-0100_t-channel_TuneZ2star_8TeV-comphep/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
+    , DS("/TToBENu_anomWtb-unphys_t-channel_TuneZ2star_8TeV-comphep/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
+    , DS("/TToBMuNu_anomWtb-0100_t-channel_TuneZ2star_8TeV-comphep/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
+    , DS("/TToBMuNu_anomWtb-unphys_t-channel_TuneZ2star_8TeV-comphep/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
+    , DS("/TToBTauNu_anomWtb-0100_t-channel_TuneZ2star_8TeV-comphep/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
+    , DS("/TToLeptons_t-channel_mass166_5_8TeV-powheg-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
+    , DS("/TToLeptons_t-channel_mass178_5_8TeV-powheg-tauola/jpata-stpol_step1_05_20_a2437d6e0ca7eba657ba43c9c2371fff8f88e5ba-d6f3c092e0af235d8b18254ddb07959c/USER")
+    , DS("/TToLeptons_t-channel_scaledown_8TeV-powheg-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
+    , DS("/TToLeptons_t-channel_scaleup_8TeV-powheg-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
+    , DS("/WJetsToLNu_matchingdown_8TeV-madgraph-tauola/jpata-stpol_step1_05_20_a2437d6e0ca7eba657ba43c9c2371fff8f88e5ba-d6f3c092e0af235d8b18254ddb07959c/USER")
+    , DS("/WJetsToLNu_matchingup_8TeV-madgraph-tauola/jpata-stpol_step1_05_20_a2437d6e0ca7eba657ba43c9c2371fff8f88e5ba-d6f3c092e0af235d8b18254ddb07959c/USER")
+    , DS("/WJetsToLNu_scaledown_8TeV-madgraph-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
+    , DS("/WJetsToLNu_scaleup_8TeV-madgraph-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
+]
+
+
 step1_FSIM_Valid = [
     DS("TTJets_FSIM_Valid_FastSim", "/TTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola/Summer12-START53_V7C_FSIM-v1/AODSIM"),
     DS("TTJets_FSIM_Valid_FullSim", "/TTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola/Summer12_DR53X-PU_S10_START53_V7C-v1/AODSIM"),
