@@ -26,14 +26,7 @@ def JetSetup(process, conf):
         isOriginal=cms.bool(conf.Jets.source == "selectedPatJets")
     )
 
-#    if conf.isMC:
-#        process.smearedJets = cms.EDProducer('JetMCSmearProducer',
-#            src=cms.InputTag("noPUJets"),
-#            reportMissingGenJet=cms.untracked.bool(conf.doDebug)
-#        )
-
     bTagCutStr = 'bDiscriminator("%s") >= %f' % (conf.Jets.bTagDiscriminant, conf.Jets.BTagWorkingPointVal())
-
 
     process.deltaRJets = cms.EDProducer("DeltaRProducer",
         leptonSrc=cms.InputTag("goodSignalLeptons"),
@@ -215,14 +208,14 @@ def JetSetup(process, conf):
             src=cms.InputTag("goodJets"),
             nJetSrc=cms.InputTag("goodJetCount"),
             nTagSrc=cms.InputTag("bJetCount"),
-            effFile=cms.FileInPath("SingleTopPolarization/Analysis/bin/b_eff_hists/MtwMtop/%s" % Calibrations.getEffFile(conf.subChannel)),
+            efficiencyFile=cms.FileInPath("SingleTopPolarization/Analysis/bin/b_eff_hists/MtwMtop/%s" % Calibrations.getEffFile(conf.subChannel)),
             algo=cms.string(conf.Jets.bTagWorkingPoint)
         )
         process.bTagWeightProducerNoCut = cms.EDProducer('BTagSystematicsWeightProducer',
             src=cms.InputTag("goodJets"),
             nJetSrc=cms.InputTag("goodJetCount"),
             nTagSrc=cms.InputTag("bJetCount"),
-            effFile=cms.FileInPath("SingleTopPolarization/Analysis/bin/b_eff_hists/nocut/%s" % Calibrations.getEffFile(conf.subChannel)),
+            efficiencyFile=cms.FileInPath("SingleTopPolarization/Analysis/bin/b_eff_hists/nocut/%s" % Calibrations.getEffFile(conf.subChannel)),
             algo=cms.string(conf.Jets.bTagWorkingPoint)
         )
 
@@ -230,7 +223,6 @@ def JetSetup(process, conf):
             process.bTagWeightProducerMtwMtop *
             process.bTagWeightProducerNoCut
         )
-
 
     process.jetSequence = cms.Sequence()
 
