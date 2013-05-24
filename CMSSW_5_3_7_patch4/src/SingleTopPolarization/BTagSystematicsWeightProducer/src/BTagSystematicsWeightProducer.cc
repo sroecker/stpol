@@ -359,6 +359,7 @@ BTagSystematicsWeightProducer::BTagSystematicsWeightProducer(const edm::Paramete
         throw cms::Exception("scaleFactor") << "algo " << algo << " not implemented";
     }
 
+    edm::LogInfo("constructor") << "Using efficency file: " << effFile.fullPath();
     effTFile = new TFile(effFile.fullPath().c_str());
     
     effHists_2J[BTagSystematicsWeightProducer::b] = (TH2D*)effTFile->Get("2J/eff_b");

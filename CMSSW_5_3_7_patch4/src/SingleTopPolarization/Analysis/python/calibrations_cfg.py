@@ -98,4 +98,4 @@ def getEfficiencies(nJets, sample):
 
 
 def getEffFile(channel):
-    return "b_effs_%s.root" % channel
+    return "%s.root" % channel
