@@ -94,8 +94,12 @@ private:
     
     std::map<BTagSystematicsWeightProducer::Flavour, TH2D*> effHists_2J;
     std::map<BTagSystematicsWeightProducer::Flavour, TH2D*> effHists_3J;
-    edm::FileInPath effFile;
-    TFile* effTFile;
+    edm::FileInPath effFileB;
+    edm::FileInPath effFileC;
+    edm::FileInPath effFileL;
+    TFile* effTFileB;
+    TFile* effTFileC;
+    TFile* effTFileL;
 
     BTagSystematicsWeightProducer::BTagAlgo bTagAlgo;
 };
@@ -323,33 +327,13 @@ double BTagSystematicsWeightProducer::scaleFactor(BTagSystematicsWeightProducer:
 }
 
 BTagSystematicsWeightProducer::BTagSystematicsWeightProducer(const edm::ParameterSet& iConfig)
-//: effs_in2J(new std::map<BTagSystematicsWeightProducer::Flavour, double>())
-//, effs_in3J(new std::map<BTagSystematicsWeightProducer::Flavour, double>())
 : jetSrc(iConfig.getParameter<edm::InputTag>("src"))
 , nJetSrc(iConfig.getParameter<edm::InputTag>("nJetSrc"))
 , nTagSrc(iConfig.getParameter<edm::InputTag>("nTagSrc"))
-//, nJets(iConfig.getParameter<unsigned int>("nJets"))
-//, nTags(iConfig.getParameter<unsigned int>("nTags"))
-, effFile(iConfig.getParameter<edm::FileInPath>("efficiencyFile"))
+, effFileB(iConfig.getParameter<edm::FileInPath>("efficiencyFileB"))
+, effFileC(iConfig.getParameter<edm::FileInPath>("efficiencyFileC"))
+, effFileL(iConfig.getParameter<edm::FileInPath>("efficiencyFileL"))
 {
-    
-    //The efficiencies are the probabilities of a jet of given flavour to be b-tagged. In general, these are sample-dependent.
-    //(*effs_in3J)[BTagSystematicsWeightProducer::b] = iConfig.getParameter<double>("effBin3J");
-    //(*effs_in3J)[BTagSystematicsWeightProducer::c] = iConfig.getParameter<double>("effCin3J");
-    //(*effs_in3J)[BTagSystematicsWeightProducer::l] = iConfig.getParameter<double>("effLin3J");
-    //
-    //(*effs_in2J)[BTagSystematicsWeightProducer::b] = iConfig.getParameter<double>("effBin2J");
-    //(*effs_in2J)[BTagSystematicsWeightProducer::c] = iConfig.getParameter<double>("effCin2J");
-    //(*effs_in2J)[BTagSystematicsWeightProducer::l] = iConfig.getParameter<double>("effLin2J");
-    
-    //LogDebug("constructor") <<
-    //    "efficiencies_2J are: eff_b=" << (*effs_in2J)[BTagSystematicsWeightProducer::b] << 
-    //                    " eff_c=" << (*effs_in2J)[BTagSystematicsWeightProducer::c] << 
-    //                    " eff_l=" << (*effs_in2J)[BTagSystematicsWeightProducer::l]; 
-    //LogDebug("constructor") <<
-    //    "efficiencies_3J are: eff_b=" << (*effs_in3J)[BTagSystematicsWeightProducer::b] << 
-    //                    " eff_c=" << (*effs_in3J)[BTagSystematicsWeightProducer::c] << 
-    //                    " eff_l=" << (*effs_in3J)[BTagSystematicsWeightProducer::l]; 
     const std::string algo = iConfig.getParameter<std::string>("algo");
     if(algo.compare("CSVM") == 0) {
         bTagAlgo = BTagSystematicsWeightProducer::CSVM;
@@ -359,16 +343,19 @@ BTagSystematicsWeightProducer::BTagSystematicsWeightProducer(const edm::Paramete
         throw cms::Exception("scaleFactor") << "algo " << algo << " not implemented";
     }
 
-    edm::LogInfo("constructor") << "Using efficency file: " << effFile.fullPath();
-    effTFile = new TFile(effFile.fullPath().c_str());
+    edm::LogInfo("constructor") << "Using efficency files: b=" << effFileB.fullPath()
+        << " c=" << effFileC.fullPath() << " l=" << effFileL.fullPath();
+    effTFileB = new TFile(effFileB.fullPath().c_str());
+    effTFileC = new TFile(effFileC.fullPath().c_str());
+    effTFileL = new TFile(effFileL.fullPath().c_str());
     
-    effHists_2J[BTagSystematicsWeightProducer::b] = (TH2D*)effTFile->Get("2J/eff_b");
-    effHists_2J[BTagSystematicsWeightProducer::c] = (TH2D*)effTFile->Get("2J/eff_c");
-    effHists_2J[BTagSystematicsWeightProducer::l] = (TH2D*)effTFile->Get("2J/eff_l");
+    effHists_2J[BTagSystematicsWeightProducer::b] = (TH2D*)effTFileB->Get("2J/eff_b");
+    effHists_2J[BTagSystematicsWeightProducer::c] = (TH2D*)effTFileC->Get("2J/eff_c");
+    effHists_2J[BTagSystematicsWeightProducer::l] = (TH2D*)effTFileL->Get("2J/eff_l");
     
-    effHists_3J[BTagSystematicsWeightProducer::b] = (TH2D*)effTFile->Get("3J/eff_b");
-    effHists_3J[BTagSystematicsWeightProducer::c] = (TH2D*)effTFile->Get("3J/eff_c");
-    effHists_3J[BTagSystematicsWeightProducer::l] = (TH2D*)effTFile->Get("3J/eff_l");
+    effHists_3J[BTagSystematicsWeightProducer::b] = (TH2D*)effTFileB->Get("3J/eff_b");
+    effHists_3J[BTagSystematicsWeightProducer::c] = (TH2D*)effTFileC->Get("3J/eff_c");
+    effHists_3J[BTagSystematicsWeightProducer::l] = (TH2D*)effTFileL->Get("3J/eff_l");
     
     produces<float>("bTagWeight");
     produces<float>("bTagWeightSystBCUp");

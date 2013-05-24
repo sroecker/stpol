@@ -176,12 +176,13 @@ def JetSetup(process, conf):
     )
 
     #Take the jet with the lowest overall b-discriminator value as the light jet
+    #FIXME: make this sample dependent
     process.lowestBTagJet = process.highestBTagJet.clone(
         src = cms.InputTag("goodJets"),
         reverse = cms.bool(True)
     )
 
-    #Events failing the following jet cuts are not processed further (deliberately loose)
+    #Events failing the following jet cuts are not processed further (deliberately loose to keep as much as possible the events in the output)
     process.nJets = cms.EDFilter(
         "PATCandViewCountFilter",
         src=cms.InputTag("goodJets"),
@@ -195,7 +196,7 @@ def JetSetup(process, conf):
         maxNumber=cms.uint32(conf.Jets.nBTags if conf.Jets.cutJets else 9999),
     )
 
-    #Require at least 1 untagged jet
+    #Require at least 1 untagged jet (unused at the moment)
     process.oneUntaggedJet = cms.EDFilter(
         "PATCandViewCountFilter",
         src=cms.InputTag("untaggedJets"),
@@ -204,18 +205,24 @@ def JetSetup(process, conf):
     )
 
     if conf.isMC:
+        effB, effC, effL = Calibrations.getEffFiles(conf.subChannel)
+        logger.info("using the following efficiency files for channel %s (b, c, l): %s" % (conf.subChannel, str((effB, effC, effL))))
         process.bTagWeightProducerMtwMtop = cms.EDProducer('BTagSystematicsWeightProducer',
             src=cms.InputTag("goodJets"),
             nJetSrc=cms.InputTag("goodJetCount"),
             nTagSrc=cms.InputTag("bJetCount"),
-            efficiencyFile=cms.FileInPath("SingleTopPolarization/Analysis/bin/b_eff_hists/MtwMtop/%s" % Calibrations.getEffFile(conf.subChannel)),
+            efficiencyFileB=cms.FileInPath("data/b_eff_hists/MtwMtop/%s.root" % effB),
+            efficiencyFileC=cms.FileInPath("data/b_eff_hists/MtwMtop/%s.root" % effC),
+            efficiencyFileL=cms.FileInPath("data/b_eff_hists/MtwMtop/%s.root" % effL),
             algo=cms.string(conf.Jets.bTagWorkingPoint)
         )
         process.bTagWeightProducerNoCut = cms.EDProducer('BTagSystematicsWeightProducer',
             src=cms.InputTag("goodJets"),
             nJetSrc=cms.InputTag("goodJetCount"),
             nTagSrc=cms.InputTag("bJetCount"),
-            efficiencyFile=cms.FileInPath("SingleTopPolarization/Analysis/bin/b_eff_hists/nocut/%s" % Calibrations.getEffFile(conf.subChannel)),
+            efficiencyFileB=cms.FileInPath("data/b_eff_hists/nocut/%s.root" % effB),
+            efficiencyFileC=cms.FileInPath("data/b_eff_hists/nocut/%s.root" % effC),
+            efficiencyFileL=cms.FileInPath("data/b_eff_hists/nocut/%s.root" % effL),
             algo=cms.string(conf.Jets.bTagWorkingPoint)
         )
 
