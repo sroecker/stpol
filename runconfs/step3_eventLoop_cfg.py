@@ -155,6 +155,8 @@ process.topCuts = cms.PSet(
 
 process.weights = cms.PSet(
     doWeights = cms.bool(options.isMC),
+    doWeightSys = cms.bool(False),
+    
     bWeightNominalSrc = cms.InputTag("bTagWeightProducerNJMT", "bTagWeight"),
     puWeightSrc = cms.InputTag("puWeightProducer", "PUWeightNtrue"),
 
@@ -163,7 +165,24 @@ process.weights = cms.PSet(
     muonTriggerWeightSrc = cms.InputTag("muonWeightsProducer", "muonTriggerWeight"),
 
     electronIDWeightSrc = cms.InputTag("electronWeightsProducer","electronIdIsoWeight"),
-    electronTriggerWeightSrc = cms.InputTag("electronWeightsProducer","electronTriggerWeight")
+    electronTriggerWeightSrc = cms.InputTag("electronWeightsProducer","electronTriggerWeight"),
+
+    bWeightNominalLUpSrc = cms.InputTag("bTagWeightProducerNJMT", "bTagWeightSystLUp"),
+    bWeightNominalLDownSrc = cms.InputTag("bTagWeightProducerNJMT", "bTagWeightSystLDown"),
+    bWeightNominalBCUpSrc = cms.InputTag("bTagWeightProducerNJMT", "bTagWeightSystBCUp"),
+    bWeightNominalBCDownSrc = cms.InputTag("bTagWeightProducerNJMT", "bTagWeightSystBCDown"),
+
+    muonIDWeightUpSrc = cms.InputTag("muonWeightsProducer", "muonIDWeightUp"),
+    muonIDWeightDownSrc = cms.InputTag("muonWeightsProducer", "muonIDWeightDown"),
+    muonIsoWeightUpSrc = cms.InputTag("muonWeightsProducer", "muonIsoWeightUp"),
+    muonIsoWeightDownSrc = cms.InputTag("muonWeightsProducer", "muonIsoWeightDown"),
+    muonTriggerWeightUpSrc = cms.InputTag("muonWeightsProducer", "muonTriggerWeightUp"),
+    muonTriggerWeightDownSrc = cms.InputTag("muonWeightsProducer", "muonTriggerWeightDpwm"),
+
+    electronIDWeightUpSrc = cms.InputTag("electronWeightsProducer","electronIdIsoWeightUp"),
+    electronIDWeightDownSrc = cms.InputTag("electronWeightsProducer","electronIdIsoWeightDown"),
+    electronTriggerWeightUpSrc = cms.InputTag("electronWeightsProducer","electronTriggerWeightUp"),
+    electronTriggerWeightDownSrc = cms.InputTag("electronWeightsProducer","electronTriggerWeightDown"),
 )
 
 process.mtMuCuts = cms.PSet(
