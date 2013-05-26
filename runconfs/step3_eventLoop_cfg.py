@@ -156,8 +156,8 @@ process.topCuts = cms.PSet(
 process.weights = cms.PSet(
     doWeights = cms.bool(options.isMC),
     doWeightSys = cms.bool(False),
-    
-    bWeightNominalSrc = cms.InputTag("bTagWeightProducerNJMT", "bTagWeight"),
+
+    bWeightNominalSrc = cms.InputTag("bTagWeightProducerNoCut", "bTagWeight"),
     puWeightSrc = cms.InputTag("puWeightProducer", "PUWeightNtrue"),
 
     muonIDWeightSrc = cms.InputTag("muonWeightsProducer", "muonIDWeight"),
