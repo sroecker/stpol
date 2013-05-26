@@ -602,10 +602,10 @@ public:
         branch_vars.vars_float["electron_triggerWeight"] = get_collection<double>(event, electronTriggerWeightSrc, 0.0);
 
 	if( doWeights && doWeightSys ) {
-	  branch_vars.vars_float["b_weight_nominal_Lup"] = get_collection<double>(event, bWeightNominalLUpSrc, 0.0);
-	  branch_vars.vars_float["b_weight_nominal_Ldown"] = get_collection<double>(event, bWeightNominalLDownSrc, 0.0);
-	  branch_vars.vars_float["b_weight_nominal_BCup"] = get_collection<double>(event, bWeightNominalBCUpSrc, 0.0);
-	  branch_vars.vars_float["b_weight_nominal_BCdown"] = get_collection<double>(event, bWeightNominalBCDownSrc, 0.0);
+	  branch_vars.vars_float["b_weight_nominal_Lup"] = get_collection<float>(event, bWeightNominalLUpSrc, 0.0);
+	  branch_vars.vars_float["b_weight_nominal_Ldown"] = get_collection<float>(event, bWeightNominalLDownSrc, 0.0);
+	  branch_vars.vars_float["b_weight_nominal_BCup"] = get_collection<float>(event, bWeightNominalBCUpSrc, 0.0);
+	  branch_vars.vars_float["b_weight_nominal_BCdown"] = get_collection<float>(event, bWeightNominalBCDownSrc, 0.0);
 
 	  branch_vars.vars_float["muon_IDWeight_up"] = get_collection<double>(event, muonIDWeightUpSrc, 0.0);
 	  branch_vars.vars_float["muon_IDWeight_down"] = get_collection<double>(event, muonIDWeightDownSrc, 0.0);
