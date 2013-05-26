@@ -338,7 +338,7 @@ step1_FSIM_WJets = [
 
 step1B_out_MC_noQCD_new = [
     DS_S2MC("T_t_ToLeptons", "/TToLeptons_t-channel_8TeV-powheg-tauola/joosep-stpol_step1_05_20_a2437d6e0ca7eba657ba43c9c2371fff8f88e5ba-d6f3c092e0af235d8b18254ddb07959c/USER", "T_t"),
-    DS_S2MC("T_t", "/T_t-channel_TuneZ2star_8TeV-powheg-tauola/joosep-stpol_step1B_04_10-c9249c44a215ffeb8c9ba40f59092334/USER", "T_t"),
+    DS_S2MC("T_t", "/T_t-channel_TuneZ2star_8TeV-powheg-tauola/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "T_t"),
     DS_S2MC("T_s", "/T_s-channel_TuneZ2star_8TeV-powheg-tauola/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "T_s"),
     DS_S2MC("T_tW", "/T_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "T_tW"),
 
