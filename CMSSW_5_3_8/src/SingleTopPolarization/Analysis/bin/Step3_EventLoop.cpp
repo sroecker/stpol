@@ -1103,8 +1103,9 @@ for (auto & elem : event_id_branches) {
                     passes_gen_cuts = gen_particles.process(event);
                 }
                 if(!passes_gen_cuts) continue;
-
-                b_eff_calcs.process(event);
+                
+                if(b_eff_calcs.doBEffCalcs)
+                    b_eff_calcs.process(event);
 
                 event_id_branches["event_id"] = (unsigned int)event.id().event();
                 event_id_branches["run_id"] = (unsigned int)event.id().run();

@@ -256,6 +256,7 @@ process.genParticles = cms.PSet(
 )
 
 process.bEfficiencyCalcs = cms.PSet(
+    doBEffCalcs = cms.bool(options.isMC),
     jetPtSrc = cms.InputTag("goodJetsNTupleProducer", "Pt"),
     jetEtaSrc = cms.InputTag("goodJetsNTupleProducer", "Eta"),
     jetBDiscriminatorSrc = cms.InputTag("goodJetsNTupleProducer", "bDiscriminatorTCHP"),
