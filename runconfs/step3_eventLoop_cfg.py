@@ -85,7 +85,6 @@ process.muonCuts = cms.PSet(
     muonLayersSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "trackhitPatterntrackerLayersWithMeasurement"),
     muonMotherPdgIdSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "motherGenPdgId"),
     muonDecayTreeSrc = cms.InputTag("decayTreeProducerMu"),
-
 )
 
 process.eleCuts = cms.PSet(
@@ -177,7 +176,7 @@ process.weights = cms.PSet(
     muonIsoWeightUpSrc = cms.InputTag("muonWeightsProducer", "muonIsoWeightUp"),
     muonIsoWeightDownSrc = cms.InputTag("muonWeightsProducer", "muonIsoWeightDown"),
     muonTriggerWeightUpSrc = cms.InputTag("muonWeightsProducer", "muonTriggerWeightUp"),
-    muonTriggerWeightDownSrc = cms.InputTag("muonWeightsProducer", "muonTriggerWeightDpwm"),
+    muonTriggerWeightDownSrc = cms.InputTag("muonWeightsProducer", "muonTriggerWeightDown"),
 
     electronIDWeightUpSrc = cms.InputTag("electronWeightsProducer","electronIdIsoWeightUp"),
     electronIDWeightDownSrc = cms.InputTag("electronWeightsProducer","electronIdIsoWeightDown"),
@@ -204,7 +203,7 @@ process.HLTmu = cms.PSet(
         "HLT_IsoMu24_eta2p1_v17",
         "HLT_IsoMu24_eta2p1_v16"
     ]),
-    doCutOnHLT = cms.bool(False),
+    doCutOnHLT = cms.bool(options.lepton=="mu"),
     saveHLTVars = cms.bool(False)
 )
 
@@ -216,7 +215,7 @@ process.HLTele = cms.PSet(
         "HLT_Ele27_WP80_v10",
         "HLT_Ele27_WP80_v11",
         ]),
-    doCutOnHLT = cms.bool(False),
+    doCutOnHLT = cms.bool(options.lepton=="ele"),
     saveHLTVars = cms.bool(False)
 )
 
@@ -256,6 +255,7 @@ process.genParticles = cms.PSet(
 )
 
 process.bEfficiencyCalcs = cms.PSet(
+    doBEffCalcs = cms.bool(options.isMC),
     jetPtSrc = cms.InputTag("goodJetsNTupleProducer", "Pt"),
     jetEtaSrc = cms.InputTag("goodJetsNTupleProducer", "Eta"),
     jetBDiscriminatorSrc = cms.InputTag("goodJetsNTupleProducer", "bDiscriminatorTCHP"),

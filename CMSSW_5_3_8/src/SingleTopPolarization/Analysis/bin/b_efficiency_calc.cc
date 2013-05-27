@@ -46,6 +46,7 @@ BEffCalcs::BEffCalcs(const edm::ParameterSet& pars, BranchVars& _branch_vars, TF
 , jet_eta_src(pars.getParameter<edm::InputTag>("jetEtaSrc"))
 , jet_bdisc_src(pars.getParameter<edm::InputTag>("jetBDiscriminatorSrc"))
 , jet_flavour_src(pars.getParameter<edm::InputTag>("jetFlavourSrc"))
+, doBEffCalcs (pars.getParameter<bool>("doBEffCalcs"))
 , b_discriminator_wp(3.41)
 {
     const Double_t* p_pt_bins_low = (const Double_t*)&pt_bins_low;
