@@ -568,7 +568,7 @@ public:
         electronIDWeightSrc = pars.getParameter<edm::InputTag>("electronIDWeightSrc");
         electronTriggerWeightSrc = pars.getParameter<edm::InputTag>("electronTriggerWeightSrc");
 
-	if( doWeights && doWeightSys ) {
+        if( doWeights && doWeightSys ) {
 	  bWeightNominalLUpSrc = pars.getParameter<edm::InputTag>("bWeightNominalLUpSrc");
 	  bWeightNominalLDownSrc = pars.getParameter<edm::InputTag>("bWeightNominalLDownSrc");
 	  bWeightNominalBCUpSrc = pars.getParameter<edm::InputTag>("bWeightNominalBCUpSrc");
@@ -591,7 +591,7 @@ public:
     bool process(const edm::EventBase& event) {
         pre_process();
         
-        branch_vars.vars_float["b_weight_nominal"] = get_collection<double>(event, bWeightNominalSrc, 0.0);
+        branch_vars.vars_float["b_weight_nominal"] = get_collection<float>(event, bWeightNominalSrc, 0.0);
         branch_vars.vars_float["pu_weight"] = get_collection<double>(event, puWeightSrc, 0.0);
         
         branch_vars.vars_float["muon_IDWeight"] = get_collection<double>(event, muonIDWeightSrc, 0.0);
