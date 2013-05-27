@@ -155,7 +155,6 @@ def SingleTopStep1(
   #Use both isolated and un-isolated electrons as patElectrons.
   #NB: no need to change process.electronMatch.src to pfElectrons,
   #    it's already gsfElectrons, which is a superset of the pfElectrons
-  process.patElectrons.pfElectronSource = cms.InputTag("pfElectrons")
 
   process.load('EGamma.EGammaAnalysisTools.electronIdMVAProducer_cfi')
   process.mvaID = cms.Sequence(process.mvaTrigV0 + process.mvaNonTrigV0)
@@ -169,14 +168,16 @@ def SingleTopStep1(
     electronSrc = cms.InputTag("selectedPatElectrons"),
     primaryVertexSource = cms.InputTag("goodOfflinePrimaryVertices")
   )
-  #process.electronClones = cms.EDProducer("ElectronShallowCloneProducer",
-  #    src = cms.InputTag("selectedPatElectrons")
-  #)
+  process.patElectronsAll = process.patElectrons.clone(
+    src=cms.InputTag("pfElectrons")
+  )
+  process.selectedPatElectronsAll = process.selectedPatElectrons.clone(
+    src=cms.InputTag("patElectronsAll")
+  )
+  process.electronsWithIDAll = process.electronsWithID.clone(
+    electronSrc = cms.InputTag("selectedPatElectronsAll")
+  )
 
-  #if not maxLeptonIso is None:
-  #    process.pfIsolatedElectrons.isolationCut = maxLeptonIso
-
-  #electron dR=0.3
   process.pfElectrons.isolationValueMapsCharged = cms.VInputTag(cms.InputTag("elPFIsoValueCharged03PFId"))
   process.pfElectrons.deltaBetaIsolationValueMap = cms.InputTag("elPFIsoValuePU03PFId")
   process.pfElectrons.isolationValueMapsNeutral = cms.VInputTag(cms.InputTag("elPFIsoValueNeutral03PFId"), cms.InputTag("elPFIsoValueGamma03PFId"))
@@ -193,7 +194,11 @@ def SingleTopStep1(
   process.pfIsolatedElectrons.deltaBetaIsolationValueMap = cms.InputTag("elPFIsoValuePU03PFId")
   process.pfIsolatedElectrons.isolationValueMapsNeutral = cms.VInputTag(cms.InputTag("elPFIsoValueNeutral03PFId"), cms.InputTag("elPFIsoValueGamma03PFId"))
 
-
+  process.electronSequence = cms.Sequence(
+    process.patElectronsAll *
+    process.seletedpatElectronsAll *
+    process.electronsWithIDAll
+  )
   #-------------------------------------------------
   # Jets
   # MET corrections as https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMetAnalysis#Type_I_0_with_PAT
@@ -330,6 +335,8 @@ def SingleTopStep1(
   process.singleTopSequence += process.preCalcSequences
   process.singleTopSequence += process.stpolMetUncertaintySequence
   process.singleTopSequence += process.muonSequence
+  process.singleTopSequence += process.electronSequence
+
   if options.isMC:
     #https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideBTagJetProbabilityCalibration?redirectedfrom=CMS.SWGuideBTagJetProbabilityCalibration#Calibration_in_53x_Data_and_MC
     process.GlobalTag.toGet = cms.VPSet(
