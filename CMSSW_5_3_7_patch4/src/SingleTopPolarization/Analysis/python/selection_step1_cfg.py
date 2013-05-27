@@ -169,7 +169,7 @@ def SingleTopStep1(
     primaryVertexSource = cms.InputTag("goodOfflinePrimaryVertices")
   )
   process.patElectronsAll = process.patElectrons.clone(
-    src=cms.InputTag("pfElectrons")
+    pfElectronSource=cms.InputTag("pfElectrons")
   )
   process.selectedPatElectronsAll = process.selectedPatElectrons.clone(
     src=cms.InputTag("patElectronsAll")
