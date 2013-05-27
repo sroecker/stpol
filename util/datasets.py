@@ -62,9 +62,10 @@ runRanges["RunABCD"] = [190456, 208686]
 Represents a generic datasets.
 """
 class DS(object):
-    def __init__(self, name, ds):
+    def __init__(self, name, ds, **kwargs):
         self.name = name
         self.ds = ds
+        self.cmdline = kwargs.get("cmdline", "")
 
     def parseTemplate(self, template, tag):
         out = template
@@ -72,6 +73,7 @@ class DS(object):
         out = out.replace("TAG", tag)
         out = out.replace("DATASET", self.ds)
         out = out.replace("WORKDIR", workdir)
+        out = out.replace("CMDLINEARGS", self.cmdline)
         return out
 
     def __str__(self):
@@ -81,8 +83,8 @@ class DS(object):
 Represents a Real Data dataset
 """
 class DS_Data(DS):
-    def __init__(self, name, ds, lumi, globalTag, dataperiod):
-        DS.__init__(self, name, ds)
+    def __init__(self, name, ds, lumi, globalTag, dataperiod, **kwargs):
+        DS.__init__(self, name, ds, **kwargs)
         self.lumi = lumi
         self.globalTag = globalTag
         self.dataperiod = dataperiod
@@ -105,9 +107,8 @@ class DS_Data(DS):
 Represents a step2 MC dataset
 """
 class DS_S2MC(DS):
-    def __init__(self, name, ds, subchannel=None):
-        self.name = name
-        self.ds = ds
+    def __init__(self, name, ds, subchannel=None, **kwargs):
+        DS.__init__(self, name, ds, **kwargs)
         if subchannel is None:
             subchannel = name
         self.subchannel = subchannel
@@ -204,8 +205,8 @@ step1_data_rereco_2013Jan = [
 ]
 
 step1_MC = [
-      DS("T_t", "/T_t-channel_TuneZ2star_8TeV-powheg-tauola/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM")
-    , DS("Tbar_t", "/Tbar_t-channel_TuneZ2star_8TeV-powheg-tauola/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM")
+      DS("T_t", "/T_t-channel_TuneZ2star_8TeV-powheg-tauola/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM", cmdline="doSkimming=False")
+    , DS("Tbar_t", "/Tbar_t-channel_TuneZ2star_8TeV-powheg-tauola/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM", cmdline="doSkimming=False")
 
     , DS("T_s", "/T_s-channel_TuneZ2star_8TeV-powheg-tauola/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM")
     , DS("Tbar_s", "/Tbar_s-channel_TuneZ2star_8TeV-powheg-tauola/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM")
@@ -250,9 +251,9 @@ step1_MC = [
     , DS("TTbar_FullLept2", "/TTJets_FullLeptMGDecays_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A-v2/AODSIM") #12M
 
     #https://cmsweb.cern.ch/das/request?view=list&limit=10&instance=cms_dbs_prod_global&input=dataset+dataset%3D%2FTToLeptons_t-channel_*AODSIM
-    , DS("TToLeptons_t-channel", "/TToLeptons_t-channel_8TeV-powheg-tauola/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM")
+    , DS("TToLeptons_t-channel", "/TToLeptons_t-channel_8TeV-powheg-tauola/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM", cmdline="doSkimming=False")
     #https://cmsweb.cern.ch/das/request?view=list&limit=10&instance=cms_dbs_prod_global&input=dataset+dataset%3D%2FTbarToLeptons_t-channel*AODSIM
-    , DS("TbarToLeptons_t-channel", "/TBarToLeptons_t-channel_8TeV-powheg-tauola/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM")
+    , DS("TbarToLeptons_t-channel", "/TBarToLeptons_t-channel_8TeV-powheg-tauola/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM", cmdline="doSkimming=False")
 
     #https://cmsweb.cern.ch/das/request?view=list&limit=10&instance=cms_dbs_prod_global&input=dataset+dataset%3D%2FW*JetsToLNu_TuneZ2Star_8TeV-madgraph%2FSummer12_DR53X-PU_S10_START53*AODSIM
     , DS("WJets_excl1", "/W1JetsToLNu_TuneZ2Star_8TeV-madgraph/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM")
