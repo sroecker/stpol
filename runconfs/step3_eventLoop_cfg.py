@@ -155,7 +155,9 @@ process.topCuts = cms.PSet(
 
 process.weights = cms.PSet(
     doWeights = cms.bool(options.isMC),
-    bWeightNominalSrc = cms.InputTag("bTagWeightProducerNJMT", "bTagWeight"),
+    doWeightSys = cms.bool(options.isMC),
+
+    bWeightNominalSrc = cms.InputTag("bTagWeightProducerNoCut", "bTagWeight"),
     puWeightSrc = cms.InputTag("puWeightProducer", "PUWeightNtrue"),
 
     muonIDWeightSrc = cms.InputTag("muonWeightsProducer", "muonIDWeight"),
@@ -163,7 +165,24 @@ process.weights = cms.PSet(
     muonTriggerWeightSrc = cms.InputTag("muonWeightsProducer", "muonTriggerWeight"),
 
     electronIDWeightSrc = cms.InputTag("electronWeightsProducer","electronIdIsoWeight"),
-    electronTriggerWeightSrc = cms.InputTag("electronWeightsProducer","electronTriggerWeight")
+    electronTriggerWeightSrc = cms.InputTag("electronWeightsProducer","electronTriggerWeight"),
+
+    bWeightNominalLUpSrc = cms.InputTag("bTagWeightProducerNoCut", "bTagWeightSystLUp"),
+    bWeightNominalLDownSrc = cms.InputTag("bTagWeightProducerNoCut", "bTagWeightSystLDown"),
+    bWeightNominalBCUpSrc = cms.InputTag("bTagWeightProducerNoCut", "bTagWeightSystBCUp"),
+    bWeightNominalBCDownSrc = cms.InputTag("bTagWeightProducerNoCut", "bTagWeightSystBCDown"),
+
+    muonIDWeightUpSrc = cms.InputTag("muonWeightsProducer", "muonIDWeightUp"),
+    muonIDWeightDownSrc = cms.InputTag("muonWeightsProducer", "muonIDWeightDown"),
+    muonIsoWeightUpSrc = cms.InputTag("muonWeightsProducer", "muonIsoWeightUp"),
+    muonIsoWeightDownSrc = cms.InputTag("muonWeightsProducer", "muonIsoWeightDown"),
+    muonTriggerWeightUpSrc = cms.InputTag("muonWeightsProducer", "muonTriggerWeightUp"),
+    muonTriggerWeightDownSrc = cms.InputTag("muonWeightsProducer", "muonTriggerWeightDpwm"),
+
+    electronIDWeightUpSrc = cms.InputTag("electronWeightsProducer","electronIdIsoWeightUp"),
+    electronIDWeightDownSrc = cms.InputTag("electronWeightsProducer","electronIdIsoWeightDown"),
+    electronTriggerWeightUpSrc = cms.InputTag("electronWeightsProducer","electronTriggerWeightUp"),
+    electronTriggerWeightDownSrc = cms.InputTag("electronWeightsProducer","electronTriggerWeightDown"),
 )
 
 process.mtMuCuts = cms.PSet(
@@ -203,7 +222,7 @@ process.HLTele = cms.PSet(
 
 process.finalVars = cms.PSet(
     cosThetaSrc = cms.InputTag("cosTheta", "cosThetaLightJet"),
-    nVerticesSrc = cms.InputTag("offlinePVCount"),
+    nVerticesSrc = cms.InputTag("goodOfflinePVCount"),
     #scaleFactorsSrc = cms.InputTag("bTagWeightProducerNJMT", "scaleFactors")
 
     #PDF stuff

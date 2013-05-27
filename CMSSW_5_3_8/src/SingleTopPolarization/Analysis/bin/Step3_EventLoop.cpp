@@ -256,7 +256,7 @@ public:
 
     branch_vars.vars_int["n_muons"] = n_muons;
     branch_vars.vars_int["n_eles"] = n_eles;
-    if(requireOneElectron && (n_eles!=1 && n_muons !=0)) return false;
+    if( requireOneElectron && ( n_eles!=1 || n_muons !=0) ) return false;
 
     branch_vars.vars_float["el_reliso"] = get_collection_n<float>(event, electronRelIsoSrc, 0);
     branch_vars.vars_float["el_mva"] = get_collection_n<float>(event, electronMvaSrc, 0);
@@ -500,8 +500,27 @@ public:
 
     edm::InputTag electronIDWeightSrc;
     edm::InputTag electronTriggerWeightSrc;
-    
+
+    edm::InputTag bWeightNominalLUpSrc;
+    edm::InputTag bWeightNominalLDownSrc;
+    edm::InputTag bWeightNominalBCUpSrc;
+    edm::InputTag bWeightNominalBCDownSrc;
+
+    edm::InputTag muonIDWeightUpSrc;
+    edm::InputTag muonIsoWeightUpSrc;
+    edm::InputTag muonTriggerWeightUpSrc;
+    edm::InputTag muonIDWeightDownSrc;
+    edm::InputTag muonIsoWeightDownSrc;
+    edm::InputTag muonTriggerWeightDownSrc;    
+
+    edm::InputTag electronIDWeightUpSrc;
+    edm::InputTag electronTriggerWeightUpSrc;
+    edm::InputTag electronIDWeightDownSrc;
+    edm::InputTag electronTriggerWeightDownSrc;
+
     bool doWeights;
+    bool doWeightSys;
+  
     void initialize_branches() {
         branch_vars.vars_float["b_weight_nominal"] = 1.0;
         branch_vars.vars_float["pu_weight"] = 1.0;
@@ -510,14 +529,35 @@ public:
         branch_vars.vars_float["muon_TriggerWeight"] = 1.0;
         branch_vars.vars_float["electron_IDWeight"] = 1.0;
         branch_vars.vars_float["electron_triggerWeight"] = 1.0;
+
+	if( doWeights && doWeightSys ) {
+	  branch_vars.vars_float["b_weight_nominal_Lup"] = 1.0;
+	  branch_vars.vars_float["b_weight_nominal_Ldown"] = 1.0;
+	  branch_vars.vars_float["b_weight_nominal_BCup"] = 1.0;
+	  branch_vars.vars_float["b_weight_nominal_BCdown"] = 1.0;
+
+	  branch_vars.vars_float["muon_IDWeight_up"] = 1.0;
+	  branch_vars.vars_float["muon_IDWeight_down"] = 1.0;
+	  branch_vars.vars_float["muon_IsoWeight_up"] = 1.0;
+	  branch_vars.vars_float["muon_IsoWeight_down"] = 1.0;
+	  branch_vars.vars_float["muon_TriggerWeight_up"] = 1.0;
+	  branch_vars.vars_float["muon_TriggerWeight_down"] = 1.0;
+
+	  branch_vars.vars_float["electron_IDWeight_up"] = 1.0;
+	  branch_vars.vars_float["electron_IDWeight_down"] = 1.0;
+	  branch_vars.vars_float["electron_triggerWeight_up"] = 1.0;
+	  branch_vars.vars_float["electron_triggerWeight_down"] = 1.0;
+	}
     }
     
     Weights(const edm::ParameterSet& pars, BranchVars& _branch_vars) :
     CutsBase(_branch_vars)
     {
-        initialize_branches();
         doWeights = pars.getParameter<bool>("doWeights");
-        
+	doWeightSys = pars.getParameter<bool>("doWeightSys");
+
+	initialize_branches();
+
         bWeightNominalSrc = pars.getParameter<edm::InputTag>("bWeightNominalSrc");
         puWeightSrc = pars.getParameter<edm::InputTag>("puWeightSrc");
         
@@ -527,12 +567,31 @@ public:
         
         electronIDWeightSrc = pars.getParameter<edm::InputTag>("electronIDWeightSrc");
         electronTriggerWeightSrc = pars.getParameter<edm::InputTag>("electronTriggerWeightSrc");
+
+        if( doWeights && doWeightSys ) {
+	  bWeightNominalLUpSrc = pars.getParameter<edm::InputTag>("bWeightNominalLUpSrc");
+	  bWeightNominalLDownSrc = pars.getParameter<edm::InputTag>("bWeightNominalLDownSrc");
+	  bWeightNominalBCUpSrc = pars.getParameter<edm::InputTag>("bWeightNominalBCUpSrc");
+	  bWeightNominalBCDownSrc = pars.getParameter<edm::InputTag>("bWeightNominalBCDownSrc");
+ 
+	  muonIDWeightUpSrc = pars.getParameter<edm::InputTag>("muonIDWeightUpSrc");
+	  muonIDWeightDownSrc = pars.getParameter<edm::InputTag>("muonIDWeightDownSrc");
+	  muonIsoWeightUpSrc = pars.getParameter<edm::InputTag>("muonIsoWeightUpSrc");
+	  muonIsoWeightDownSrc = pars.getParameter<edm::InputTag>("muonIsoWeightDownSrc");
+	  muonTriggerWeightUpSrc = pars.getParameter<edm::InputTag>("muonTriggerWeightUpSrc");
+	  muonTriggerWeightDownSrc = pars.getParameter<edm::InputTag>("muonTriggerWeightDownSrc");
+	
+	  electronIDWeightUpSrc = pars.getParameter<edm::InputTag>("electronIDWeightUpSrc");
+	  electronIDWeightDownSrc = pars.getParameter<edm::InputTag>("electronIDWeightDownSrc");
+	  electronTriggerWeightUpSrc = pars.getParameter<edm::InputTag>("electronTriggerWeightUpSrc");
+	  electronTriggerWeightDownSrc = pars.getParameter<edm::InputTag>("electronTriggerWeightDownSrc");
+	}
+	
     }
-    
     bool process(const edm::EventBase& event) {
         pre_process();
         
-        branch_vars.vars_float["b_weight_nominal"] = get_collection<double>(event, bWeightNominalSrc, 0.0);
+        branch_vars.vars_float["b_weight_nominal"] = get_collection<float>(event, bWeightNominalSrc, 0.0);
         branch_vars.vars_float["pu_weight"] = get_collection<double>(event, puWeightSrc, 0.0);
         
         branch_vars.vars_float["muon_IDWeight"] = get_collection<double>(event, muonIDWeightSrc, 0.0);
@@ -541,6 +600,25 @@ public:
         
         branch_vars.vars_float["electron_IDWeight"] = get_collection<double>(event, electronIDWeightSrc, 0.0);
         branch_vars.vars_float["electron_triggerWeight"] = get_collection<double>(event, electronTriggerWeightSrc, 0.0);
+
+	if( doWeights && doWeightSys ) {
+	  branch_vars.vars_float["b_weight_nominal_Lup"] = get_collection<float>(event, bWeightNominalLUpSrc, 0.0);
+	  branch_vars.vars_float["b_weight_nominal_Ldown"] = get_collection<float>(event, bWeightNominalLDownSrc, 0.0);
+	  branch_vars.vars_float["b_weight_nominal_BCup"] = get_collection<float>(event, bWeightNominalBCUpSrc, 0.0);
+	  branch_vars.vars_float["b_weight_nominal_BCdown"] = get_collection<float>(event, bWeightNominalBCDownSrc, 0.0);
+
+	  branch_vars.vars_float["muon_IDWeight_up"] = get_collection<double>(event, muonIDWeightUpSrc, 0.0);
+	  branch_vars.vars_float["muon_IDWeight_down"] = get_collection<double>(event, muonIDWeightDownSrc, 0.0);
+	  branch_vars.vars_float["muon_IsoWeight_up"] = get_collection<double>(event, muonIsoWeightUpSrc, 0.0);
+	  branch_vars.vars_float["muon_IsoWeight_down"] = get_collection<double>(event, muonIsoWeightDownSrc, 0.0);
+	  branch_vars.vars_float["muon_TriggerWeight_up"] = get_collection<double>(event, muonTriggerWeightUpSrc, 0.0);
+	  branch_vars.vars_float["muon_TriggerWeight_down"] = get_collection<double>(event, muonTriggerWeightDownSrc, 0.0);
+
+	  branch_vars.vars_float["electron_IDWeight_up"] = get_collection<double>(event, electronIDWeightUpSrc, 0.0);
+	  branch_vars.vars_float["electron_IDWeight_down"] = get_collection<double>(event, electronIDWeightDownSrc, 0.0);
+	  branch_vars.vars_float["electron_triggerWeight_up"] = get_collection<double>(event, electronTriggerWeightUpSrc, 0.0);	  
+	  branch_vars.vars_float["electron_triggerWeight_down"] = get_collection<double>(event, electronTriggerWeightDownSrc, 0.0);	  
+	}
 
         //Remove NaN weights
         auto not_nan = [&branch_vars] (const std::string& key) {
@@ -557,7 +635,26 @@ public:
         not_nan("muon_TriggerWeight");
 	    
         not_nan("electron_IDWeight");
-	    not_nan("electron_triggerWeight");
+	not_nan("electron_triggerWeight");
+
+	if( doWeights && doWeightSys){
+	  not_nan("b_weight_nominal_Lup");
+	  not_nan("b_weight_nominal_Ldown");
+	  not_nan("b_weight_nominal_BCup");
+	  not_nan("b_weight_nominal_BCdown");
+
+	  not_nan("muon_IDWeight_up");
+	  not_nan("muon_IDWeight_down");
+	  not_nan("muon_IsoWeight_up");
+	  not_nan("muon_IsoWeight_down");
+	  not_nan("muon_TriggerWeight_up");
+	  not_nan("muon_TriggerWeight_down");
+
+	  not_nan("electron_IDWeight_up");
+	  not_nan("electron_IDWeight_down");
+	  not_nan("electron_triggerWeight_up");
+	  not_nan("electron_triggerWeight_down");
+	}
 
         post_process();
         
@@ -859,7 +956,7 @@ int main(int argc, char* argv[])
     edm::InputTag totalPATProcessedCountSrc = lumiblock_counter_pars.getParameter<edm::InputTag>("totalPATProcessedCountSrc");
     
     BranchVars branch_vars; 
-    std::map<std::string, unsigned int> event_id_branches;
+    std::map<std::string, int> event_id_branches;
     std::map<std::string, unsigned int> count_map;
 
     std::vector<std::string> count_map_order({
@@ -892,10 +989,13 @@ int main(int argc, char* argv[])
     
     // now get each parameter
     int maxEvents_( in.getParameter<int>("maxEvents") );
+    bool make_tree ( in.getParameter<bool>("makeTree") );
     unsigned int outputEvery_( in.getParameter<unsigned int>("outputEvery") );
     
     TFileDirectory dir = fs.mkdir("trees");
-    TTree* out_tree = dir.make<TTree>("Events", "Events");
+    TTree* out_tree = 0;
+    if(make_tree)
+        out_tree = dir.make<TTree>("Events", "Events");
     TH1I* count_hist = dir.make<TH1I>("count_hist", "Event counts", count_map.size(), 0, count_map.size() - 1);
     
     TFileDirectory dir_effs = fs.mkdir("b_eff_hists");
@@ -906,36 +1006,38 @@ int main(int argc, char* argv[])
         std::cerr << "Cache directory was not writable" << std::endl;
     }
     
-    event_id_branches["event_id"] = -1;
-    event_id_branches["run_id"] = -1;
-    event_id_branches["lumi_id"] = -1;
+    event_id_branches["event_id"] = 0;
+    event_id_branches["run_id"] = 0;
+    event_id_branches["lumi_id"] = 0;
    
-    
-    //Create all the requested branches in the TTree
-    LogInfo << "Creating branches: ";
-    for (auto & elem : branch_vars.vars_float) {
-        const std::string& br_name = elem.first;
-        std::cout << br_name << ", ";
-        float* p_branch = &(elem.second);
-        out_tree->Branch(br_name.c_str(), p_branch);
+   
+    if (make_tree) {
+        //Create all the requested branches in the TTree
+        LogInfo << "Creating branches: ";
+        for (auto & elem : branch_vars.vars_float) {
+            const std::string& br_name = elem.first;
+            std::cout << br_name << ", ";
+            float* p_branch = &(elem.second);
+            out_tree->Branch(br_name.c_str(), p_branch);
+        }
+        for (auto & elem : branch_vars.vars_int) {
+            const std::string& br_name = elem.first;
+            std::cout << br_name << ", ";
+            int* p_branch = &(elem.second);
+            out_tree->Branch(br_name.c_str(), p_branch);
+        }
+        for (auto & elem : branch_vars.vars_vfloat) {
+            std::cout << elem.first << ", ";
+            out_tree->Branch(elem.first.c_str(), &(elem.second));
+        }
+        for (auto & elem : event_id_branches) {
+            const std::string& br_name = elem.first;
+            std::cout << br_name << ", ";
+            int* p_branch = &(elem.second);
+            out_tree->Branch(br_name.c_str(), p_branch);
+        }
+        std::cout << std::endl;
     }
-    for (auto & elem : branch_vars.vars_int) {
-        const std::string& br_name = elem.first;
-        std::cout << br_name << ", ";
-        int* p_branch = &(elem.second);
-        out_tree->Branch(br_name.c_str(), p_branch);
-    }
-    for (auto & elem : branch_vars.vars_vfloat) {
-        std::cout << elem.first << ", ";
-        out_tree->Branch(elem.first.c_str(), &(elem.second));
-    }
-    for (auto & elem : event_id_branches) {
-        const std::string& br_name = elem.first;
-        std::cout << br_name << ", ";
-        unsigned int* p_branch = &(elem.second);
-        out_tree->Branch(br_name.c_str(), p_branch);
-    }
-    std::cout << std::endl;
     
     // loop the events
     int ievt=0;
@@ -1006,7 +1108,8 @@ int main(int argc, char* argv[])
                 event_id_branches["run_id"] = (unsigned int)event.id().run();
                 event_id_branches["lumi_id"] = (unsigned int)event.id().luminosityBlock();
                 
-                out_tree->Fill();
+                if(make_tree) 
+                    out_tree->Fill();
             }
             
             fwlite::LuminosityBlock ls(in_file);
