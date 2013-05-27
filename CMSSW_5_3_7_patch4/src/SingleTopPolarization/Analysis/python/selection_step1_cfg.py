@@ -196,7 +196,7 @@ def SingleTopStep1(
 
   process.electronSequence = cms.Sequence(
     process.patElectronsAll *
-    process.seletedpatElectronsAll *
+    process.selectedPatElectronsAll *
     process.electronsWithIDAll
   )
   #-------------------------------------------------
