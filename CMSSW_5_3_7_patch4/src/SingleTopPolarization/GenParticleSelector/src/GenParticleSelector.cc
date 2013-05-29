@@ -178,11 +178,11 @@ GenParticleSelector::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
             for(int j2 = 0; j2 < n2; ++ j2) {
                const GenParticle* d2 = (GenParticle*)d->daughter( j2 );
                int dau2Id = d2->pdgId();
-               if(abs(dau2Id) == 13 || abs(dau2Id) == 11){  //muon or electron
+               if(abs(dau2Id) == 13 || abs(dau2Id) == 11 || abs(dau2Id) == 15){  //muon or electron or tau
                   trueLeptonPdgId = dau2Id;
                   outLeptons->push_back(*d2);                  
                }
-               else if(abs(dau2Id) == 14 || abs(dau2Id) == 12){  //neutrino
+               else if(abs(dau2Id) == 14 || abs(dau2Id) == 12 || abs(dau2Id) == 16){  //neutrino
                   outNeutrinos->push_back(*d2);                  
                }
    

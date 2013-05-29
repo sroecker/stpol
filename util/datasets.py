@@ -116,11 +116,12 @@ class DS_S2MC(DS):
         else:
             self.channel = "background"
 
-    def parseTemplate(self, template, tag, syst=""):
+    def parseTemplate(self, template, tag, ch_name, syst=""):
         out = super(DS_S2MC, self).parseTemplate(template, tag)
         out = out.replace("SUBCHAN", self.subchannel)
         out = out.replace("CHANNEL", self.channel)
         out = out.replace("SYSTEMATIC", syst)
+        out = out.replace("NAME", ch_name)
 
         return out
 
@@ -293,29 +294,29 @@ step1_MC_systematic = [
 ]
 
 step1_MC_systematic_out = [
-    DS("Tbar_t_mass166_5", "/TBarToLeptons_t-channel_mass166_5_8TeV-powheg-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
-    , DS("Tbar_t_mass178_5", "/TBarToLeptons_t-channel_mass178_5_8TeV-powheg-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
-    , DS("Tbar_t_scaledown", "/TBarToLeptons_t-channel_scaledown_8TeV-powheg-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
-    , DS("Tbar_t_scaleup", "/TBarToLeptons_t-channel_scaleup_8TeV-powheg-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
-    , DS("TTJets_mass166_5", "/TTJets_mass166_5_TuneZ2star_8TeV-madgraph-tauola/jpata-stpol_step1_05_20_a2437d6e0ca7eba657ba43c9c2371fff8f88e5ba-d6f3c092e0af235d8b18254ddb07959c/USER")
-    , DS("TTJets_mass178_5", "/TTJets_mass178_5_TuneZ2star_8TeV-madgraph-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
-    , DS("TTJets_matchingdown", "/TTJets_matchingdown_TuneZ2star_8TeV-madgraph-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
-    , DS("TTJets_matchingup", "/TTJets_matchingup_TuneZ2star_8TeV-madgraph-tauola/jpata-stpol_step1_05_20_a2437d6e0ca7eba657ba43c9c2371fff8f88e5ba-d6f3c092e0af235d8b18254ddb07959c/USER")
-    , DS("TTJets_scaledown", "/TTJets_scaledown_TuneZ2star_8TeV-madgraph-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
-    , DS("TTJets_scaleup", "/TTJets_scaleup_TuneZ2star_8TeV-madgraph-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
-    , DS("TToBENu_anomWtb-0100_t-channel", "/TToBENu_anomWtb-0100_t-channel_TuneZ2star_8TeV-comphep/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
-    , DS("TToBENu_anomWtb-unphys_t-channel", "/TToBENu_anomWtb-unphys_t-channel_TuneZ2star_8TeV-comphep/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
-    , DS("TToBMuNu_anomWtb-0100_t-channel", "/TToBMuNu_anomWtb-0100_t-channel_TuneZ2star_8TeV-comphep/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
-    , DS("TToBMuNu_anomWtb-unphys_t-channel", "/TToBMuNu_anomWtb-unphys_t-channel_TuneZ2star_8TeV-comphep/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
-    , DS("TToBTauNu_anomWtb-0100_t-channel", "/TToBTauNu_anomWtb-0100_t-channel_TuneZ2star_8TeV-comphep/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
-    , DS("TToLeptons_t-channel_mass166_5", "/TToLeptons_t-channel_mass166_5_8TeV-powheg-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
-    , DS("TToLeptons_t-channel_mass178_5", "/TToLeptons_t-channel_mass178_5_8TeV-powheg-tauola/jpata-stpol_step1_05_20_a2437d6e0ca7eba657ba43c9c2371fff8f88e5ba-d6f3c092e0af235d8b18254ddb07959c/USER")
-    , DS("TToLeptons_t-channel_scaledown", "/TToLeptons_t-channel_scaledown_8TeV-powheg-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
-    , DS("TToLeptons_t-channel_scaleup", "/TToLeptons_t-channel_scaleup_8TeV-powheg-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
-    , DS("WJetsToLNu_matchingdown", "/WJetsToLNu_matchingdown_8TeV-madgraph-tauola/jpata-stpol_step1_05_20_a2437d6e0ca7eba657ba43c9c2371fff8f88e5ba-d6f3c092e0af235d8b18254ddb07959c/USER")
-    , DS("WJetsToLNu_matchingup", "/WJetsToLNu_matchingup_8TeV-madgraph-tauola/jpata-stpol_step1_05_20_a2437d6e0ca7eba657ba43c9c2371fff8f88e5ba-d6f3c092e0af235d8b18254ddb07959c/USER")
-    , DS("WJetsToLNu_scaledown", "/WJetsToLNu_scaledown_8TeV-madgraph-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
-    , DS("WJetsToLNu_scaleup", "/WJetsToLNu_scaleup_8TeV-madgraph-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER")
+    DS_S2MC("Tbar_t_mass166_5", "/TBarToLeptons_t-channel_mass166_5_8TeV-powheg-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER", "Tbar_t")
+    , DS_S2MC("Tbar_t_mass178_5", "/TBarToLeptons_t-channel_mass178_5_8TeV-powheg-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER", "Tbar_t")
+    , DS_S2MC("Tbar_t_scaledown", "/TBarToLeptons_t-channel_scaledown_8TeV-powheg-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER", "Tbar_t")
+    , DS_S2MC("Tbar_t_scaleup", "/TBarToLeptons_t-channel_scaleup_8TeV-powheg-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER", "Tbar_t")
+    , DS_S2MC("TTJets_mass166_5", "/TTJets_mass166_5_TuneZ2star_8TeV-madgraph-tauola/jpata-stpol_step1_05_20_a2437d6e0ca7eba657ba43c9c2371fff8f88e5ba-d6f3c092e0af235d8b18254ddb07959c/USER", "TTbar")
+    , DS_S2MC("TTJets_mass178_5", "/TTJets_mass178_5_TuneZ2star_8TeV-madgraph-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER", "TTbar")
+    , DS_S2MC("TTJets_matchingdown", "/TTJets_matchingdown_TuneZ2star_8TeV-madgraph-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER", "TTbar")
+    , DS_S2MC("TTJets_matchingup", "/TTJets_matchingup_TuneZ2star_8TeV-madgraph-tauola/jpata-stpol_step1_05_20_a2437d6e0ca7eba657ba43c9c2371fff8f88e5ba-d6f3c092e0af235d8b18254ddb07959c/USER", "TTbar")
+    , DS_S2MC("TTJets_scaledown", "/TTJets_scaledown_TuneZ2star_8TeV-madgraph-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER", "TTbar")
+    , DS_S2MC("TTJets_scaleup", "/TTJets_scaleup_TuneZ2star_8TeV-madgraph-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER", "TTbar")
+    , DS_S2MC("TToBENu_anomWtb-0100_t-channel", "/TToBENu_anomWtb-0100_t-channel_TuneZ2star_8TeV-comphep/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER", "T_t")
+    , DS_S2MC("TToBENu_anomWtb-unphys_t-channel", "/TToBENu_anomWtb-unphys_t-channel_TuneZ2star_8TeV-comphep/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER", "T_t")
+    , DS_S2MC("TToBMuNu_anomWtb-0100_t-channel", "/TToBMuNu_anomWtb-0100_t-channel_TuneZ2star_8TeV-comphep/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER", "T_t")
+    , DS_S2MC("TToBMuNu_anomWtb-unphys_t-channel", "/TToBMuNu_anomWtb-unphys_t-channel_TuneZ2star_8TeV-comphep/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER", "T_t")
+    , DS_S2MC("TToBTauNu_anomWtb-0100_t-channel", "/TToBTauNu_anomWtb-0100_t-channel_TuneZ2star_8TeV-comphep/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER", "T_t")
+    , DS_S2MC("TToLeptons_t-channel_mass166_5", "/TToLeptons_t-channel_mass166_5_8TeV-powheg-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER", "T_t")
+    , DS_S2MC("TToLeptons_t-channel_mass178_5", "/TToLeptons_t-channel_mass178_5_8TeV-powheg-tauola/jpata-stpol_step1_05_20_a2437d6e0ca7eba657ba43c9c2371fff8f88e5ba-d6f3c092e0af235d8b18254ddb07959c/USER", "T_t")
+    , DS_S2MC("TToLeptons_t-channel_scaledown", "/TToLeptons_t-channel_scaledown_8TeV-powheg-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER", "T_t")
+    , DS_S2MC("TToLeptons_t-channel_scaleup", "/TToLeptons_t-channel_scaleup_8TeV-powheg-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER", "T_t")
+    , DS_S2MC("WJetsToLNu_matchingdown", "/WJetsToLNu_matchingdown_8TeV-madgraph-tauola/jpata-stpol_step1_05_20_a2437d6e0ca7eba657ba43c9c2371fff8f88e5ba-d6f3c092e0af235d8b18254ddb07959c/USER", "WJets")
+    , DS_S2MC("WJetsToLNu_matchingup", "/WJetsToLNu_matchingup_8TeV-madgraph-tauola/jpata-stpol_step1_05_20_a2437d6e0ca7eba657ba43c9c2371fff8f88e5ba-d6f3c092e0af235d8b18254ddb07959c/USER", "WJets")
+    , DS_S2MC("WJetsToLNu_scaledown", "/WJetsToLNu_scaledown_8TeV-madgraph-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER", "WJets")
+    , DS_S2MC("WJetsToLNu_scaleup", "/WJetsToLNu_scaleup_8TeV-madgraph-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER", "WJets")
 ]
 
 
@@ -541,6 +542,7 @@ possible_ds = {
     "S2_MC": step1B_out_MC_new,
     "S2_MC_noQCD": step1B_out_MC_noQCD_new,
     "S2_MC_QCD": step1B_out_MC_QCD_new,
+    "S2_MC_syst": step1_MC_systematic_out
 }
 
 if __name__=="__main__":
@@ -576,7 +578,7 @@ if __name__=="__main__":
         ofn = "{2}/crab_{0}_{1}.cfg".format(ds.name, tag, ofdir)
         of = open(ofn, "w")
         if isinstance(ds, DS_S2MC):
-            cfg = ds.parseTemplate(template, tag, systematic)
+            cfg = ds.parseTemplate(template, tag, ds.name, systematic)
         else:
             cfg = ds.parseTemplate(template, tag)
         of.write(cfg)
