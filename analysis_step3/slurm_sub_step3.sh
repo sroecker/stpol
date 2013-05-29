@@ -21,5 +21,9 @@ split $INFILE -a4 -l 50 -d
 for file in x*
 do
     echo "Submitting step3 job $CONF on file $file"
-    sbatch -x comp-d-[006,033,094] -p prio $STPOL_DIR/analysis_step3/run_step3_eventloop.sh `readlink -f $file` $OUTDIR $CONF
+    until sbatch -x comp-d-[006,033,094] -p prio $STPOL_DIR/analysis_step3/run_step3_eventloop.sh `readlink -f $file` $OUTDIR $CONF
+    do 
+        echo "ERROR!: could not submit slurm job on file $file, retrying after sleep"
+        sleep 20
+    done 
 done
