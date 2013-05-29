@@ -262,7 +262,6 @@ process.bEfficiencyCalcs = cms.PSet(
     jetFlavourSrc = cms.InputTag("goodJetsNTupleProducer", "partonFlavour"),
 )
 
-
 for k, v in process.__dict__.items():
     if isinstance(v, cms.PSet):
         print k, v
