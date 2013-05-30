@@ -113,7 +113,7 @@ class DS_S2MC(DS):
             subchannel = name
         self.subchannel = subchannel
         subch_lower = subchannel.lower()
-        if subch_lower in ["t_t", "tbar_t", "ttoleptons_t", "tbartoleptons_t"]
+        if subch_lower in ["t_t", "tbar_t", "ttoleptons_t", "tbartoleptons_t"]:
             self.channel = "signal"
         else:
             self.channel = "background"
@@ -368,6 +368,7 @@ step1B_out_MC_noQCD_new = [
     DS_S2MC("W4Jets_exclusive", "/W4JetsToLNu_TuneZ2Star_8TeV-madgraph/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "WJets"),
 
     DS_S2MC("WJets_inclusive", "/WJetsToLNu_TuneZ2Star_8TeV-madgraph-tarball/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "WJets")
+    DS_S2MC("DYJets", "/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "DYJets")
 ]
 
 step1B_out_MC_QCD_new = [
@@ -386,11 +387,6 @@ step1B_out_MC_QCD_new = [
     DS_S2MC("QCD_Pt_170_250_EMEnriched", "/QCD_Pt_170_250_EMEnriched_TuneZ2star_8TeV_pythia6/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "QCD_EMEnriched"),
     DS_S2MC("QCD_Pt_250_350_EMEnriched", "/QCD_Pt_250_350_EMEnriched_TuneZ2star_8TeV_pythia6/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "QCD_EMEnriched"),
     DS_S2MC("QCD_Pt_350_EMEnriched", "/QCD_Pt_350_EMEnriched_TuneZ2star_8TeV_pythia6/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "QCD_EMEnriched"),
-
-    DS_S2MC("DYJets", "/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "DYJets"),
-
-
-
 ]
 
 step1B_out_MC_new = step1B_out_MC_noQCD_new[:]
