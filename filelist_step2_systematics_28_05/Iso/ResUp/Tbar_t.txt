@@ -1,0 +1,3 @@
+file:/hdfs/cms/store/user/andres/stpol_step2_29_05_2013/Iso/ResUp/Tbar_t/output_1_1_orI.root
+file:/hdfs/cms/store/user/andres/stpol_step2_29_05_2013/Iso/ResUp/Tbar_t/output_2_1_E8o.root
+file:/hdfs/cms/store/user/andres/stpol_step2_29_05_2013/Iso/ResUp/Tbar_t/output_3_1_oiX.root

@@ -1,0 +1,3 @@
+file:/hdfs/cms/store/user/andres/stpol_step2_29_05_2013/Iso/ResDown/Tbar_t_ToLeptons/output_1_1_YOy.root
+file:/hdfs/cms/store/user/andres/stpol_step2_29_05_2013/Iso/ResDown/Tbar_t_ToLeptons/output_2_1_bV7.root
+file:/hdfs/cms/store/user/andres/stpol_step2_29_05_2013/Iso/ResDown/Tbar_t_ToLeptons/output_3_1_GRF.root

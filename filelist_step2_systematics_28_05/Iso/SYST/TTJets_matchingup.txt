@@ -1,0 +1,14 @@
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/Iso/SYST/TTJets_matchingup/output_10_1_XqS.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/Iso/SYST/TTJets_matchingup/output_11_1_GOV.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/Iso/SYST/TTJets_matchingup/output_12_1_ET2.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/Iso/SYST/TTJets_matchingup/output_13_1_R2n.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/Iso/SYST/TTJets_matchingup/output_14_1_Lwy.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/Iso/SYST/TTJets_matchingup/output_1_1_uvb.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/Iso/SYST/TTJets_matchingup/output_2_1_f1d.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/Iso/SYST/TTJets_matchingup/output_3_1_dz9.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/Iso/SYST/TTJets_matchingup/output_4_1_jrj.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/Iso/SYST/TTJets_matchingup/output_5_1_NH6.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/Iso/SYST/TTJets_matchingup/output_6_1_9Sb.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/Iso/SYST/TTJets_matchingup/output_7_1_VEr.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/Iso/SYST/TTJets_matchingup/output_8_1_dyA.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/Iso/SYST/TTJets_matchingup/output_9_1_2Zb.root

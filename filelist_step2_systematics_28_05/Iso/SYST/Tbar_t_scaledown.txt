@@ -1,0 +1,2 @@
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/Iso/SYST/Tbar_t_scaledown/output_1_1_WkI.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/Iso/SYST/Tbar_t_scaledown/output_2_1_LkP.root

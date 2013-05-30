@@ -1,0 +1,2 @@
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/Iso/SYST/Tbar_t_mass166_5/output_1_1_0i4.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/Iso/SYST/Tbar_t_mass166_5/output_2_1_QDQ.root

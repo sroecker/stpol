@@ -1,0 +1,11 @@
+file:/hdfs/local/stpol/andres/trees_preselection/WD_TBarToLeptons_t_presel_30_05/res/output_10_1_bGv.root
+file:/hdfs/local/stpol/andres/trees_preselection/WD_TBarToLeptons_t_presel_30_05/res/output_11_1_Maj.root
+file:/hdfs/local/stpol/andres/trees_preselection/WD_TBarToLeptons_t_presel_30_05/res/output_1_1_ceP.root
+file:/hdfs/local/stpol/andres/trees_preselection/WD_TBarToLeptons_t_presel_30_05/res/output_2_1_Z2G.root
+file:/hdfs/local/stpol/andres/trees_preselection/WD_TBarToLeptons_t_presel_30_05/res/output_3_1_FNq.root
+file:/hdfs/local/stpol/andres/trees_preselection/WD_TBarToLeptons_t_presel_30_05/res/output_4_1_cFm.root
+file:/hdfs/local/stpol/andres/trees_preselection/WD_TBarToLeptons_t_presel_30_05/res/output_5_1_3Zl.root
+file:/hdfs/local/stpol/andres/trees_preselection/WD_TBarToLeptons_t_presel_30_05/res/output_6_1_keb.root
+file:/hdfs/local/stpol/andres/trees_preselection/WD_TBarToLeptons_t_presel_30_05/res/output_7_1_fTI.root
+file:/hdfs/local/stpol/andres/trees_preselection/WD_TBarToLeptons_t_presel_30_05/res/output_8_1_VXi.root
+file:/hdfs/local/stpol/andres/trees_preselection/WD_TBarToLeptons_t_presel_30_05/res/output_9_1_ZXU.root
