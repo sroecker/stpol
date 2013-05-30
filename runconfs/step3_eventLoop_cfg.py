@@ -29,6 +29,7 @@ parser.add_option("--mtw", dest="doMtw", action="store_true", default=False)
 parser.add_option("--isMC", dest="isMC", action="store_true", default=False)
 parser.add_option("--mtop", dest="doMtop", action="store_true", default=False)
 parser.add_option("--doControlVars", dest="doControlVars", action="store_true", default=False)
+parser.add_option("--isAntiIso", dest="isAntiIso", action="store_true", default=False)
 parser.add_option("--skipTree", dest="skipTree", action="store_true", default=False)
 parser.add_option("--outputFile", dest="outputFile", type="string", default="step3.root")
 
@@ -39,6 +40,10 @@ options.nJMax = int(options.nJ.split(",")[1])
 options.nTMin = int(options.nT.split(",")[0])
 options.nTMax = int(options.nT.split(",")[1])
 
+if(options.isAntiIso and options.lepton=="mu"):
+    isoC = 0.2
+else:
+    isoC = 0.12
 
 process = cms.Process("STPOLSEL3")
 process.options = cms.untracked.PSet(wantSummary=cms.untracked.bool(True))
@@ -61,9 +66,10 @@ process.fwliteOutput = cms.PSet(
 process.muonCuts = cms.PSet(
     cutOnIso  = cms.bool(False),
     doControlVars  = cms.bool(options.doControlVars),
-    reverseIsoCut  = cms.bool(False),
+    reverseIsoCut  = cms.bool(options.isAntiIso),
     requireOneMuon  = cms.bool(options.lepton=="mu"),
-    isoCut  = cms.double(0.12),
+
+    isoCut  = cms.double(isoC),
 
     muonPtSrc  = cms.InputTag("goodSignalMuonsNTupleProducer", "Pt"),
     muonRelIsoSrc  = cms.InputTag("goodSignalMuonsNTupleProducer", "relIso"),
