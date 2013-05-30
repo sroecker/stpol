@@ -112,7 +112,8 @@ class DS_S2MC(DS):
         if subchannel is None:
             subchannel = name
         self.subchannel = subchannel
-        if subchannel == "T_t" or subchannel == "Tbar_T":
+        subch_lower = subchannel.lower()
+        if subch_lower in ["t_t", "tbar_t", "ttoleptons_t", "tbartoleptons_t"]
             self.channel = "signal"
         else:
             self.channel = "background"
