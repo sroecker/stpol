@@ -12,6 +12,12 @@ from FitConfig import FitConfig
 from util_scripts import *
 from DataLumiStorage import *
 
+try:
+    sys.path.append(os.environ["STPOL_DIR"] )
+except KeyError:
+    print "Could not find the STPOL_DIR environment variable, did you run `source setenv.sh` in the code base directory?"
+    sys.exit(1)
+
 def get_yield(var, filename, cutMT, mtMinValue, fit_result):
     infile = "fits/"+var.shortName+"_fit_"+filename+".root"
     f = TFile(infile)
@@ -37,8 +43,19 @@ def get_qcd_yield(var, cuts, cutMT, mtMinValue, dataGroup, lumis, MCGroups, syst
 
 #Run as ~andres/theta_testing/utils2/theta-auto.py get_qcd_yield.py
 if __name__=="__main__":
+#    channel = "ele"
+    channel = "mu"
+
+    print "QCD estimation in " + channel + " channel"
+    
     #Specify variable on which to fit
-    var = Variable("mt_mu", 0, 200, 20, "mtwMass", "m_{T }")    
+    if channel == "mu":
+        var = Variable("mt_mu", 0, 200, 20, "mtwMass", "m_{T }")    
+    elif channel == "ele":
+        var = Variable("met", 0, 200, 20, "MET", "MET")
+    else:
+        print "Set either 'ele' or 'mu' as channel"
+        sys.exit(1)
     
     #Do you want to get the resulting yield after a cut on the fitted variable?
     cutMT = True
@@ -49,29 +66,40 @@ if __name__=="__main__":
     #Use Default cuts for final selection. See FitConfig for details on how to change the cuts.
     cuts = FitConfig("final_selection")
     #For example:
-    cuts.setWeightMC("pu_weight")
+
+    if channel == "ele":
+        lepton_weight = "*electron_triggerWeight*electron_IDWeight"
+    if channel == "mu":
+        lepton_weight = "*muon_TriggerWeight*muonIsoWeight*muon_IDWeight"
+    
+    cuts.setWeightMC("pu_weight*b_weight_nominal")
+    
     #Recreate all necessary cuts after manual changes
     cuts.calcCuts()
 
     #Luminosities for each different set of data have to be specified.
     #Now only for iso and anti-iso. In the future additional ones for systematics.
     #See DataLumiStorage for details if needed
-    lumiABIso = 5140.
-    lumiCIso = 6451.
-    lumiDIso = 6471.
-    dataLumiIso = lumiABIso + lumiCIso + lumiDIso
-    lumiABAntiIso = 5140.
-    lumiCAntiIso = 6451.
-    lumiDAntiIso = 6471.
-    dataLumiAntiIso = lumiABAntiIso + lumiCAntiIso + lumiDAntiIso   
-    
+
+    if channel == "mu":
+        dataLumiIso = 19739
+        dataLumiAntiIso = 19739
+
+    if channel == "ele":
+        dataLumiIso = 19728
+        dataLumiAntiIso = 19728
+        
     lumis = DataLumiStorage(dataLumiIso, dataLumiAntiIso)
     
     #Different groups are defined in init_data. Select one you need or define a new one.
-    dataGroup = dgDataMuons
+    if channel == "mu":
+        dataGroup = dgDataMuons
+    if channel == "ele":
+        dataGroup = dgDataElectrons
 
     #MC Default is a set muon specific groups with inclusive t-channel for now. MC Groups are without QCD
-    MCGroups = MC_groups_noQCD_InclusiveTCh
+#    MCGroups = MC_groups_noQCD_InclusiveTCh
+    MCGroups = MC_groups_noQCD_AllExclusive
     
     #Do you want to get QCD template from MC?
     useMCforQCDTemplate = False
@@ -83,12 +111,19 @@ if __name__=="__main__":
     systematics = ["Nominal"] #Systematics to be added in the future
     #Generate path structure as base_path/iso/systematic, see util_scripts
     #If you have a different structure, change paths manually
-    base_path = "~andres/single_top/stpol/out_step3/17052013"
+
+    if channel == "mu":
+        #base_path = "~andres/single_top/stpol/out_step3/17052013"
+        base_path = "~liis/SingleTopJoosep/stpol/out_step3_05_28_19_36/mu"        
+    if channel == "ele":
+        base_path = "~liis/SingleTopJoosep/stpol/step3_trees/electron_trees/step3_ele_05_27"        
+
     paths = generate_paths(systematics, base_path)
     #For example:
     paths["iso"]["Nominal"] = base_path+"/iso/nominal/"
     paths["antiiso"]["Nominal"] = base_path+"/antiiso/nominal/"
     #Then open files    
+    print "opening data and MC files"
     openedFiles = open_all_data_files(dataGroup, MCGroups, QCDGroup, paths)
     
     #Before Running make sure you have 'templates' and 'fits' subdirectories where you're running
