@@ -43,8 +43,8 @@ def get_qcd_yield(var, cuts, cutMT, mtMinValue, dataGroup, lumis, MCGroups, syst
 
 #Run as ~andres/theta_testing/utils2/theta-auto.py get_qcd_yield.py
 if __name__=="__main__":
-#    channel = "ele"
-    channel = "mu"
+    channel = "ele"
+#    channel = "mu"
 
     print "QCD estimation in " + channel + " channel"
     
@@ -58,21 +58,33 @@ if __name__=="__main__":
         sys.exit(1)
     
     #Do you want to get the resulting yield after a cut on the fitted variable?
-    cutMT = True
+    if channel == "ele":
+        cutMT = True
+    if channel == "mu":
+        cutMT = False
+
     #If yes, specify minumum value for the variable the cut. Obviously change to MET for electrons
     #Remember that the cut should be on the edge of 2 bins, otherwise the result will be inaccurate
     mtMinValue = 50. # M_T>50
     
     #Use Default cuts for final selection. See FitConfig for details on how to change the cuts.
-    cuts = FitConfig("final_selection")
-    #For example:
 
+    fit_regions = ["final_selection", "2j0t"]
+
+    cuts = FitConfig("final_selection")
+    
     if channel == "ele":
+        cuts.setTrigger("1") #  || HLT_Ele27_WP80_v9==1 || HLT_Ele27_WP80_v8==1")
+        cuts.setIsolationCut("el_mva > 0.9 & el_reliso < 0.1")
+        cuts.setAntiIsolationCut("el_reliso > 0.1 & el_reliso < 0.5")
+        cuts.setAntiIsolationCutUp("el_reliso > 0.11 & el_reliso < 0.55") # check +-10% variation
+        cuts.setAntiIsolationCutDown("el_reliso > 0.09 & el_reliso < 0.45")
         lepton_weight = "*electron_triggerWeight*electron_IDWeight"
     if channel == "mu":
         lepton_weight = "*muon_TriggerWeight*muon_IsoWeight*muon_IDWeight"
     
     cuts.setWeightMC("pu_weight*b_weight_nominal" + lepton_weight)
+    
     
     #Recreate all necessary cuts after manual changes
     cuts.calcCuts()
@@ -116,7 +128,7 @@ if __name__=="__main__":
         #base_path = "~andres/single_top/stpol/out_step3/17052013"
         base_path = "~liis/SingleTopJoosep/stpol/out_step3_05_28_19_36/mu"        
     if channel == "ele":
-        base_path = "~liis/SingleTopJoosep/stpol/step3_trees/electron_trees/step3_ele_05_27"        
+        base_path = "~liis/SingleTopJoosep/stpol/out_step3_05_28_19_36/ele"        
 
     paths = generate_paths(systematics, base_path)
     #For example:
