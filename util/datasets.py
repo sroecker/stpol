@@ -367,7 +367,7 @@ step1B_out_MC_noQCD_new = [
     DS_S2MC("W3Jets_exclusive", "/W3JetsToLNu_TuneZ2Star_8TeV-madgraph/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "WJets"),
     DS_S2MC("W4Jets_exclusive", "/W4JetsToLNu_TuneZ2Star_8TeV-madgraph/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "WJets"),
 
-    DS_S2MC("WJets_inclusive", "/WJetsToLNu_TuneZ2Star_8TeV-madgraph-tarball/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "WJets")
+    DS_S2MC("WJets_inclusive", "/WJetsToLNu_TuneZ2Star_8TeV-madgraph-tarball/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "WJets"),
     DS_S2MC("DYJets", "/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/joosep-stpol_step1_04_19-c9249c44a215ffeb8c9ba40f59092334/USER", "DYJets")
 ]
 
