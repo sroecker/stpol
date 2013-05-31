@@ -43,8 +43,8 @@ def get_qcd_yield(var, cuts, cutMT, mtMinValue, dataGroup, lumis, MCGroups, syst
 
 #Run as ~andres/theta_testing/utils2/theta-auto.py get_qcd_yield.py
 if __name__=="__main__":
-    channel = "ele"
-#    channel = "mu"
+#    channel = "ele"
+    channel = "mu"
 
     print "QCD estimation in " + channel + " channel"
     
@@ -58,9 +58,9 @@ if __name__=="__main__":
         sys.exit(1)
     
     #Do you want to get the resulting yield after a cut on the fitted variable?
-    if channel == "ele":
-        cutMT = True
     if channel == "mu":
+        cutMT = True
+    if channel == "ele":
         cutMT = False
 
     #If yes, specify minumum value for the variable the cut. Obviously change to MET for electrons
