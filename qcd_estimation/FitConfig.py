@@ -7,14 +7,14 @@ class FitConfig():
     def __init__(self,
             name = "final_selection",    #name will go into output file names 
             trigger = "(HLT_IsoMu24_eta2p1_v11==1 || HLT_IsoMu24_eta2p1_v12==1 || HLT_IsoMu24_eta2p1_v13==1 || HLT_IsoMu24_eta2p1_v14==1 || HLT_IsoMu24_eta2p1_v15==1 || HLT_IsoMu24_eta2p1_v16==1 || HLT_IsoMu24_eta2p1_v17==1)",
-            weightMC = "b_weight_nominal*pu_weight*muon_IDWeight*muon_IsoWeight",
+            weightMC = "b_weight_nominal*pu_weight*muon_IDWeight*muon_IsoWeight*muon_TriggerWeight",
             baseCuts = "pt_lj>40 && pt_bj>40 && abs(eta_lj)>2.5 && top_mass < 220 && top_mass > 130 && n_jets == 2 && n_tags == 1 && rms_lj<0.025",
             isolationCut = "mu_iso<0.12",
             antiIsolationCut = "mu_iso>0.3 && mu_iso<0.5", 
             antiIsolationCutDown = "mu_iso>0.27 && mu_iso<0.45", 
             antiIsolationCutUp = "mu_iso>0.33 && mu_iso<0.55",
             extraAntiIsoCuts = "deltaR_lj > 0.3 && deltaR_bj > 0.3",
-            weightQCD = "pu_weight*muon_IDWeight*muon_IsoWeight" #Only needed if taking QCD template from MC            
+            weightQCD = "pu_weight*muon_IDWeight*muon_IsoWeight*muon_TriggerWeight" #Only needed if taking QCD template from MC           
         ):
         self.name = name
         self.setTrigger(trigger)

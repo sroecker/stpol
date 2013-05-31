@@ -36,10 +36,14 @@ def get_yield(var, filename, cutMT, mtMinValue, fit_result):
         return (hQCD.Integral(), hQCD.Integral()*(fit_result.qcd_uncert/fit_result.qcd))
 
 def get_qcd_yield(var, cuts, cutMT, mtMinValue, dataGroup, lumis, MCGroups, systematics, openedFiles, useMCforQCDTemplate, QCDGroup):
+    (y, fit) = get_qcd_yield(var, cuts, cutMT, mtMinValue, dataGroup, lumis, MCGroups, systematics, openedFiles, useMCforQCDTemplate, QCDGroup)
+    return y
+
+def get_qcd_yield_with_fit(var, cuts, cutMT, mtMinValue, dataGroup, lumis, MCGroups, systematics, openedFiles, useMCforQCDTemplate, QCDGroup):
     fit = Fit()    
-    make_histos_with_cuts(var, cuts, dataGroup, MCGroups, systematics, lumis, openedFiles, useMCforQCDTemplate, QCDGroup)
+    make_histos_with_cuts(var, cuts, dataGroup, MCGroups, systematics, lumis, openedFiles, fit, useMCforQCDTemplate, QCDGroup)
     fit_qcd(var, cuts.name, fit)
-    return get_yield(var, cuts.name, cutMT, mtMinValue, fit)
+    return (get_yield(var, cuts.name, cutMT, mtMinValue, fit), fit)
 
 #Run as ~andres/theta_testing/utils2/theta-auto.py get_qcd_yield.py
 if __name__=="__main__":
@@ -61,7 +65,7 @@ if __name__=="__main__":
     cutMT = True
     #If yes, specify minumum value for the variable the cut. Obviously change to MET for electrons
     #Remember that the cut should be on the edge of 2 bins, otherwise the result will be inaccurate
-    mtMinValue = 50. # M_T>50
+    mtMinValue = 50.01 # M_T>50
     
     #Use Default cuts for final selection. See FitConfig for details on how to change the cuts.
     cuts = FitConfig("final_selection")
@@ -72,7 +76,8 @@ if __name__=="__main__":
     if channel == "mu":
         lepton_weight = "*muon_TriggerWeight*muon_IsoWeight*muon_IDWeight"
     
-    cuts.setWeightMC("pu_weight*b_weight_nominal" + lepton_weight)
+    #cuts.setTrigger("1")
+    cuts.setWeightMC("pu_weight*b_weight_nominal"+lepton_weight)
     
     #Recreate all necessary cuts after manual changes
     cuts.calcCuts()
@@ -98,7 +103,7 @@ if __name__=="__main__":
         dataGroup = dgDataElectrons
 
     #MC Default is a set muon specific groups with inclusive t-channel for now. MC Groups are without QCD
-#    MCGroups = MC_groups_noQCD_InclusiveTCh
+    #MCGroups = MC_groups_noQCD_InclusiveTCh
     MCGroups = MC_groups_noQCD_AllExclusive
     
     #Do you want to get QCD template from MC?
@@ -113,15 +118,14 @@ if __name__=="__main__":
     #If you have a different structure, change paths manually
 
     if channel == "mu":
-        #base_path = "~andres/single_top/stpol/out_step3/17052013"
-        base_path = "~liis/SingleTopJoosep/stpol/out_step3_05_28_19_36/mu"        
+        base_path = "/home/andres/single_top/stpol/out_step3_05_29"
     if channel == "ele":
         base_path = "~liis/SingleTopJoosep/stpol/step3_trees/electron_trees/step3_ele_05_27"        
 
     paths = generate_paths(systematics, base_path)
     #For example:
-    paths["iso"]["Nominal"] = base_path+"/iso/nominal/"
-    paths["antiiso"]["Nominal"] = base_path+"/antiiso/nominal/"
+    paths["iso"]["Nominal"] = base_path+"/iso/Nominal/"
+    paths["antiiso"]["Nominal"] = base_path+"/antiiso/Nominal/"
     #Then open files    
     print "opening data and MC files"
     openedFiles = open_all_data_files(dataGroup, MCGroups, QCDGroup, paths)
@@ -129,7 +133,10 @@ if __name__=="__main__":
     #Before Running make sure you have 'templates' and 'fits' subdirectories where you're running
     #Root files with templates and fit results will be saved there.
     #Name from FitConfig will be used in file names    
-    (y, error) = get_qcd_yield(var, cuts, cutMT, mtMinValue, dataGroup, lumis, MCGroups, systematics, openedFiles, useMCforQCDTemplate, QCDGroup)
+    ((y, error), fit) = get_qcd_yield_with_fit(var, cuts, cutMT, mtMinValue, dataGroup, lumis, MCGroups, systematics, openedFiles, useMCforQCDTemplate, QCDGroup)
     
-    print "QCD yield with selection: %s" % cuts.name
-    print y, "+-", error
+    print "Selection: %s" % cuts.name
+    #print y, "+-", error
+    print "QCD: %.2f +- %.2f" % (fit.qcd, fit.qcd_uncert)
+    print "W+Jets: %.2f +- %.2f, ratio to template: %.2f" % (fit.wjets, fit.wjets_uncert, fit.wjets/fit.wjets_orig)
+    print "Other MC: %.2f +- %.2f, ratio to template: %.2f" % (fit.nonqcd, fit.nonqcd_uncert, fit.nonqcd/fit.nonqcd_orig)
