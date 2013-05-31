@@ -2,7 +2,7 @@ import datetime
 from theta_auto import *
 from Fit import Fit
 
-init_val = 1.3
+init_val = 1.10
 step = 0.001
 
 def get_model(infile, i=0):
@@ -31,7 +31,8 @@ def get_model(infile, i=0):
     # systematic. In this case, the same parameter will be used; shape and rate changes 
     # will be 100% correlated.
     print "Trying fit with uncertainty",init_val+i*step
-    model.add_lognormal_uncertainty('xs', math.log(init_val+i*step), 'nonqcd')    
+    model.add_lognormal_uncertainty('nonqcd_rate', math.log(init_val+i*step), 'nonqcd')
+    model.add_lognormal_uncertainty('wjets_rate', math.log(3.0), 'wjets')
     return model
 
 def fit_qcd(variable, identifier, fit):

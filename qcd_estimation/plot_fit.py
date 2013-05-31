@@ -27,8 +27,9 @@ def plot_fit(var, fitConf, hData, fit_result):
    NONQCDRATE = fit_result.nonqcd
    NONQCDRATE_UP = fit_result.nonqcd + fit_result.nonqcd_uncert
    NONQCDRATE_DOWN = fit_result.nonqcd - fit_result.nonqcd_uncert
-        
-   #print QCDRATE, QCDRATE_UP, QCDRATE_DOWN, NONQCDRATE, NONQCDRATE_UP,NONQCDRATE_DOWN
+   WJETS = fit_result.wjets
+   WJETS_UP = fit_result.wjets + fit_result.wjets_uncert
+   WJETS_DOWN = fit_result.wjets - fit_result.wjets_uncert
       
    cst = TCanvas("Histogram_"+fitConf.name,fitConf.name,10,10,1000,1000)
    
@@ -45,6 +46,20 @@ def plot_fit(var, fitConf, hData, fit_result):
    hNonQCDp.SetTitle("Non-QCD #pm 1 #sigma")
    hNonQCDm.SetLineColor(kOrange)
    hNonQCDm.SetTitle("non-QCD - 1 sigma")
+
+   hWJets = TH1D(f.Get(var.shortName+"__wjets"))
+   hWJets.SetTitle("W+Jets")   
+   hWJets.SetLineColor(kGreen+4)
+      
+   hWJetsp=TH1D(hWJets)
+   hWJetsp.Scale(WJETS_UP/WJETS)
+   hWJetsm=TH1D(hWJets)
+   hWJetsm.Scale(WJETS_DOWN/WJETS)
+      
+   hWJetsp.SetLineColor(kGreen+8)
+   hWJetsp.SetTitle("W+Jets #pm 1 #sigma")
+   hWJetsm.SetLineColor(kGreen+8)
+   hWJetsm.SetTitle("W+Jets - 1 sigma")
       
    hData.SetNameTitle(var.shortName+"__DATA", "Data")
    hData.SetMarkerStyle(20)
@@ -67,6 +82,7 @@ def plot_fit(var, fitConf, hData, fit_result):
       
    hTotal=TH1D(hNonQCD)
    hTotal.Add(hQCD)
+   hTotal.Add(hWJets)
    hTotal.SetLineColor(kBlue)
    hTotal.SetTitle("Fitted total")
    max_bin = hData.GetMaximum()*1.6
@@ -82,6 +98,9 @@ def plot_fit(var, fitConf, hData, fit_result):
    hNonQCDm.Draw("same")
    hQCDp.Draw("same")
    hQCDm.Draw("same")
+   hWJets.Draw("same")
+   hWJetsp.Draw("same")
+   hWJetsm.Draw("same")
    hTotal.Draw("same")
    #hData.SetTitle("QCD fit, "+title)
    hData.Draw("E1 same")
@@ -89,7 +108,7 @@ def plot_fit(var, fitConf, hData, fit_result):
    lumibox = lumi_textbox(19739)
 
    leg = legend(
-        [hData, hQCD, hQCDp, hNonQCD, hNonQCDp, hTotal],
+        [hData, hQCD, hQCDp, hNonQCD, hNonQCDp, hWJets, hWJetsp, hTotal],
         styles=["p", "l"],
         width=0.2
     ) 

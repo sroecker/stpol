@@ -112,9 +112,13 @@ if __name__=="__main__":
         cuts.setTrigger("1")
         cuts.calcCuts()
         ((y, error), fit) = get_qcd_yield_with_fit(var, cuts, cutMT, mtMinValue, dataGroup, lumis, MCGroups, systematics, openedFiles, useMCforQCDTemplate, QCDGroup)
-        print "QCD yield with selection: %s" % cuts.name
-        print y, "+-", error
+        print "Selection: %s" % cuts.name
+        #print y, "+-", error
+        print "QCD: %.2f +- %.2f" % (fit.qcd, fit.qcd_uncert)
+        print "W+Jets: %.2f +- %.2f, ratio to template: %.2f" % (fit.wjets, fit.wjets_uncert, fit.wjets/fit.wjets_orig)
+        print "Other MC: %.2f +- %.2f, ratio to template: %.2f" % (fit.nonqcd, fit.nonqcd_uncert, fit.nonqcd/fit.nonqcd_orig)
+   
         #clear_histos(data_group, mc_groups)
         dataHisto = dataGroup.getHistogram(var,  "Nominal", "iso", cuts.name)
         canvases.append(plot_fit(var, cuts, dataHisto, fit))
-        clear_histos(dataGroup, MCgroups)
+        clear_histos(dataGroup, MCgroups)        

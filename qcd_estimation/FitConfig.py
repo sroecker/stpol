@@ -7,8 +7,10 @@ class FitConfig():
     def __init__(self,
             name = "final_selection",    #name will go into output file names 
             trigger = "(HLT_IsoMu24_eta2p1_v11==1 || HLT_IsoMu24_eta2p1_v12==1 || HLT_IsoMu24_eta2p1_v13==1 || HLT_IsoMu24_eta2p1_v14==1 || HLT_IsoMu24_eta2p1_v15==1 || HLT_IsoMu24_eta2p1_v16==1 || HLT_IsoMu24_eta2p1_v17==1)",
-            weightMC = "b_weight_nominal*pu_weight*muon_IDWeight*muon_IsoWeight*muon_TriggerWeight",
-            baseCuts = "pt_lj>40 && pt_bj>40 && abs(eta_lj)>2.5 && top_mass < 220 && top_mass > 130 && n_jets == 2 && n_tags == 1 && rms_lj<0.025",
+          weightMC = "b_weight_nominal*pu_weight*muon_IDWeight*muon_IsoWeight*muon_TriggerWeight",
+            baseCuts = "n_jets == 2 && n_tags == 1",
+            jetCuts = "pt_lj>40 && pt_bj>40 && rms_lj<0.025",
+            finalCuts = "abs(eta_lj)>2.5 && top_mass < 220 && top_mass > 130",
             isolationCut = "mu_iso<0.12",
             antiIsolationCut = "mu_iso>0.3 && mu_iso<0.5", 
             antiIsolationCutDown = "mu_iso>0.27 && mu_iso<0.45", 
@@ -22,6 +24,8 @@ class FitConfig():
         self.setWeightQCD(weightQCD)
     
         self.setBaseCuts(baseCuts)
+        self.setJetCuts(jetCuts)
+        self.setFinalCuts(finalCuts)
         self.setIsolationCut(isolationCut)
         self.setAntiIsolationCut(antiIsolationCut)
         self.setAntiIsolationCutUp(antiIsolationCutUp)
@@ -47,6 +51,12 @@ class FitConfig():
     def setBaseCuts(self, cut):
         self._baseCuts = cut
 
+    def setJetCuts(self, cut):
+        self._jetCuts = cut
+
+    def setFinalCuts(self, cut):
+        self._finalCuts = cut
+
     def setIsolationCut(self, cut):
         self._isolationCut = cut
 
@@ -67,13 +77,13 @@ class FitConfig():
     In case you need some special configuration, you can change the values manually afterwards
     """
     def calcCuts(self):
-        isoCuts = self._trigger + "*(" + self._baseCuts + " && " + self._isolationCut +")"
+        isoCuts = self._trigger + "*(" + self._baseCuts + " && " + self._jetCuts + "&&" + self._finalCuts + "&&" + self._isolationCut +")"
         self.isoCutsMC = self._weightMC + "*(" + isoCuts +")"
         self.isoCutsData = isoCuts
 
-        antiIsoCuts = self._trigger + "*(" + self._baseCuts + " && " + self._extraAntiIsoCuts + " && " + self._antiIsolationCut +")"
-        antiIsoCutsDown = self._trigger + "*(" + self._baseCuts + " && " + self._extraAntiIsoCuts + " && " + self._antiIsolationCutDown +")"
-        antiIsoCutsUp = self._trigger + "*(" + self._baseCuts + " && " + self._extraAntiIsoCuts + " && " + self._antiIsolationCutUp +")"
+        antiIsoCuts = self._trigger + "*(" + self._baseCuts + " && " + self._jetCuts + "&&" + self._finalCuts + "&&" + self._extraAntiIsoCuts + " && " + self._antiIsolationCut +")"
+        antiIsoCutsDown = self._trigger + "*(" + self._baseCuts + " && " + self._jetCuts + "&&" + self._finalCuts + "&&" + self._extraAntiIsoCuts + " && " + self._antiIsolationCutDown +")"
+        antiIsoCutsUp = self._trigger + "*(" + self._baseCuts + " && " + self._jetCuts + "&&" + self._finalCuts + "&&" + self._extraAntiIsoCuts + " && " + self._antiIsolationCutUp +")"
         self.antiIsoCutsMC = self._weightMC + "*(" + antiIsoCuts +")"
         self.antiIsoCutsMCIsoDown = self._weightMC + "*(" + antiIsoCutsDown +")"
         self.antiIsoCutsMCIsoUp = self._weightMC + "*(" + antiIsoCutsUp +")"
