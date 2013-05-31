@@ -42,7 +42,7 @@ def plot_fit(var, fitConf, hData, fit_result):
    hNonQCDm.Scale(NONQCDRATE_DOWN/NONQCDRATE)
       
    hNonQCDp.SetLineColor(kOrange)
-   hNonQCDp.SetTitle("non-QCD + 1 sigma")
+   hNonQCDp.SetTitle("Non-QCD #pm 1 #sigma")
    hNonQCDm.SetLineColor(kOrange)
    hNonQCDm.SetTitle("non-QCD - 1 sigma")
       
@@ -61,13 +61,14 @@ def plot_fit(var, fitConf, hData, fit_result):
    hQCDm.Scale(QCDRATE_DOWN/QCDRATE)
       
    hQCDp.SetLineColor(kGreen)
-   hQCDp.SetTitle("QCD #pm 1 sigma")
+   hQCDp.SetTitle("QCD #pm 1 #sigma")
    hQCDm.SetLineColor(kGreen)
-   hQCDm.SetTitle("QCD #pm 1 sigma")
+   hQCDm.SetTitle("QCD #pm 1 #sigma")
       
    hTotal=TH1D(hNonQCD)
    hTotal.Add(hQCD)
    hTotal.SetLineColor(kBlue)
+   hTotal.SetTitle("Fitted total")
    max_bin = hData.GetMaximum()*1.6
    hData.SetAxisRange(0, max_bin, "Y")
    hData.GetXaxis().SetTitle(var.displayName)
@@ -88,8 +89,8 @@ def plot_fit(var, fitConf, hData, fit_result):
    lumibox = lumi_textbox(19739)
 
    leg = legend(
-        [hData, hQCD, hNonQCD, hNonQCDp, hQCD, hQCDp, hTotal],
-        styles=["p", "f"],
+        [hData, hQCD, hQCDp, hNonQCD, hNonQCDp, hTotal],
+        styles=["p", "l"],
         width=0.2
     ) 
 
