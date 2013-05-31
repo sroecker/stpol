@@ -70,9 +70,9 @@ if __name__=="__main__":
     if channel == "ele":
         lepton_weight = "*electron_triggerWeight*electron_IDWeight"
     if channel == "mu":
-        lepton_weight = "*muon_TriggerWeight*muonIsoWeight*muon_IDWeight"
+        lepton_weight = "*muon_TriggerWeight*muon_IsoWeight*muon_IDWeight"
     
-    cuts.setWeightMC("pu_weight*b_weight_nominal")
+    cuts.setWeightMC("pu_weight*b_weight_nominal" + lepton_weight)
     
     #Recreate all necessary cuts after manual changes
     cuts.calcCuts()
