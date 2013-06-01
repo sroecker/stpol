@@ -23,5 +23,5 @@ process.mtMuCuts.doMTCut = cms.bool(False)
 
 process.HLTmu.cutOnHLT = cms.bool(True)
 
-process.genParticles.doGenParticles = cms.bool(True)
+process.genParticles.doGenParticles = cms.bool(options.isMC)
 process.bEfficiencyCalcs.doBEffCalcs = cms.bool(False)

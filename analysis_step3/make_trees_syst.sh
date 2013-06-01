@@ -9,18 +9,10 @@ mkdir $OFDIR/iso
 mkdir $OFDIR/antiiso
 mkdir $OFDIR/iso/SYST
 
-
-$STPOL_DIR/analysis_step3/suball_syst.sh "" $OFDIR/iso/Nominal $FILELIST/iso/nominal/data/SingleMu*
-$STPOL_DIR/analysis_step3/suball_syst.sh "--isAntiIso" $OFDIR/antiiso/Nominal $FILELIST/antiiso/nominal/data/SingleMu*
-$STPOL_DIR/analysis_step3/suball_syst.sh "" $OFDIR/iso/SYST $FILELIST_SYST/Iso/SYST/*
-
-#Just in case, to avoid overload...    
-sleep 300
-
 for SYST in "Nominal" "ResUp" "ResDown" "UnclusteredEnUp" "UnclusteredEnDown"
 do
     mkdir $OFDIR/iso/$SYST
-    $STPOL_DIR/analysis_step3/suball_syst.sh "" $OFDIR/iso/$SYST $FILELIST_SYST/Iso/$SYST/*
+    $STPOL_DIR/analysis_step3/suball_syst.sh "--isMC" $OFDIR/iso/$SYST $FILELIST_SYST/Iso/$SYST/*
 
     #Just in case, to avoid overload...    
     sleep 300
@@ -30,8 +22,12 @@ done
 for SYST in "EnUp" "EnDown" "Nominal" "ResUp" "ResDown" "UnclusteredEnUp" "UnclusteredEnDown"
 do
     mkdir $OFDIR/antiiso/$SYST
-    $STPOL_DIR/analysis_step3/suball_syst.sh "--isAntiIso" $OFDIR/antiiso/$SYST $FILELIST_SYST/antiIso/$SYST/*
+    $STPOL_DIR/analysis_step3/suball_syst.sh "--isMC --isAntiIso" $OFDIR/antiiso/$SYST $FILELIST_SYST/antiIso/$SYST/*
 
     #Just in case, to avoid overload...    
     sleep 300
 done
+
+$STPOL_DIR/analysis_step3/suball_syst.sh "" $OFDIR/iso/Nominal $FILELIST/iso/nominal/data/SingleMu*
+$STPOL_DIR/analysis_step3/suball_syst.sh "--isAntiIso" $OFDIR/antiiso/Nominal $FILELIST/antiiso/nominal/data/SingleMu*
+$STPOL_DIR/analysis_step3/suball_syst.sh "--isMC" $OFDIR/iso/SYST $FILELIST_SYST/Iso/SYST/*
