@@ -47,8 +47,9 @@ def get_qcd_yield_with_fit(var, cuts, cutMT, mtMinValue, dataGroup, lumis, MCGro
 
 #Run as ~andres/theta_testing/utils2/theta-auto.py get_qcd_yield.py
 if __name__=="__main__":
-    #channel = "ele"
+    #    channel = "ele"
     channel = "mu"
+    do_systematics = True
 
     print "QCD estimation in " + channel + " channel"
     
@@ -62,14 +63,15 @@ if __name__=="__main__":
         sys.exit(1)
     
     #Do you want to get the resulting yield after a cut on the fitted variable?
-    if channel == "mu":
-        cutMT = True
-    if channel == "ele":
-        cutMT = False
-
     #If yes, specify minumum value for the variable the cut. Obviously change to MET for electrons
     #Remember that the cut should be on the edge of 2 bins, otherwise the result will be inaccurate
-    mtMinValue = 50.01 # M_T>50
+
+    if channel == "mu":
+        cutMT = True
+        mtMinValue = 50.01 # M_T>50
+    if channel == "ele":
+        cutMT = True
+        mtMinValue = 45.01 # MET>45
     
     #Use Default cuts for final selection. See FitConfig for details on how to change the cuts.
 
@@ -87,10 +89,9 @@ if __name__=="__main__":
     if channel == "mu":
         lepton_weight = "*muon_TriggerWeight*muon_IsoWeight*muon_IDWeight"
         cuts.setTrigger("1")
-    
-    #cuts.setTrigger("1")
-    #cuts.setWeightMC("pu_weight*b_weight_nominal"+lepton_weight)
-    
+
+
+    cuts.setWeightMC("pu_weight*b_weight_nominal"+lepton_weight)
     
     #Recreate all necessary cuts after manual changes
     cuts.calcCuts()
@@ -126,14 +127,19 @@ if __name__=="__main__":
     QCDGroup = None #can change to dgQCDMu, for example
 
     #Open files
-    systematics = ["Nominal", "En", "Res", "UnclusteredEn"]
+    if do_systematics:
+        systematics = ["Nominal", "En", "Res", "UnclusteredEn"]
+    else:
+        systematics = ["Nominal"]
+
     #Generate path structure as base_path/iso/systematic, see util_scripts
     #If you have a different structure, change paths manually
 
     if channel == "mu":
         base_path = "/home/andres/single_top/stpol/out_step3_05_29"
+#        base_path = "~liis/SingleTop/stpol/out_step3_05_31_18_43/mu"        
     if channel == "ele":
-        base_path = "~liis/SingleTopJoosep/stpol/out_step3_05_28_19_36/ele"        
+        base_path = "~liis/SingleTop/stpol/out_step3_05_31_18_43/ele"        
 
     paths = generate_paths(systematics, base_path)
     #For example:
