@@ -68,7 +68,6 @@ def plot_fit(var, fitConf, hData, fit_result):
    hQCD = f.Get(var.shortName+"__qcd")
    hQCD.SetNameTitle(var.shortName+"__qcd", "QCD")
    hQCD.SetLineColor(kYellow)
-   hQCD.SetLineWidth(3)      
       
    hQCDp=TH1D(hQCD)
    hQCDp.Scale(QCDRATE_UP/QCDRATE)

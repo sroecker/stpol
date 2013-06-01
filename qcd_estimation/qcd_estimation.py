@@ -32,10 +32,10 @@ def select_fits():
 
 def select_cuts():
     cuts = []
-    base = "pt_lj>40 && pt_bj>40 && abs(eta_lj)>2.5 && n_jets == 2 && n_tags == 1 && rms_lj<0.025"
-    baseCuts = " && top_mass < 220 && top_mass > 130 "
+    #base = "pt_lj>40 && pt_bj>40 && abs(eta_lj)>2.5 && n_jets == 2 && n_tags == 1 && rms_lj<0.025"
+    #baseCuts = " && top_mass < 220 && top_mass > 130 "
     cutFinal = FitConfig("2J_1T_SR")
-    cutFinal.setBaseCuts(base+baseCuts)
+    #cutFinal.setBaseCuts(base+baseCuts)
     cuts.append(cutFinal)
     return cuts
 
@@ -92,7 +92,7 @@ if __name__=="__main__":
     QCDGroup = None #can change to dgQCDMu, for example
 
     #Open files
-    systematics = ["Nominal"] #Systematics to be added in the future
+    systematics = ["Nominal", "En", "Res", "UnclusteredEn"]
     #Generate path structure as base_path/iso/systematic, see util_scripts
     #If you have a different structure, change paths manually
 
@@ -112,13 +112,15 @@ if __name__=="__main__":
         cuts.setTrigger("1")
         cuts.calcCuts()
         ((y, error), fit) = get_qcd_yield_with_fit(var, cuts, cutMT, mtMinValue, dataGroup, lumis, MCGroups, systematics, openedFiles, useMCforQCDTemplate, QCDGroup)
+        #print cuts
         print "Selection: %s" % cuts.name
-        #print y, "+-", error
-        print "QCD: %.2f +- %.2f" % (fit.qcd, fit.qcd_uncert)
+        print "QCD yield in selected region: ", y, "+-", error
+        print "Total: QCD: %.2f +- %.2f" % (fit.qcd, fit.qcd_uncert)
         print "W+Jets: %.2f +- %.2f, ratio to template: %.2f" % (fit.wjets, fit.wjets_uncert, fit.wjets/fit.wjets_orig)
         print "Other MC: %.2f +- %.2f, ratio to template: %.2f" % (fit.nonqcd, fit.nonqcd_uncert, fit.nonqcd/fit.nonqcd_orig)
+
    
         #clear_histos(data_group, mc_groups)
         dataHisto = dataGroup.getHistogram(var,  "Nominal", "iso", cuts.name)
         canvases.append(plot_fit(var, cuts, dataHisto, fit))
-        clear_histos(dataGroup, MCgroups)        
+        clear_histos(dataGroup, MCgroups)

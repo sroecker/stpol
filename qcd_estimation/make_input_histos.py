@@ -88,10 +88,10 @@ def make_histos_with_cuts(var,
       else:
          for st in syst_type:
             if st == "Up":
-               syst_string = "__"+s+"__down"
+               syst_string = "__"+s+"__plus"
             else:
-               syst_string = "__"+s+"__up"
-            stack = stacks[var.name+s+st+"iso"]            
+               syst_string = "__"+s+"__minus"
+            stack = stacks[var.name+s+st+"iso"]
             h1 = TH1D(var.shortName+"__nonqcd"+syst_string, var.shortName+"__nonqcd"+syst_string, var.bins, var.lbound, var.ubound)   
             hWJ = TH1D(var.shortName+"__wjets"+syst_string, var.shortName+"__wjets"+syst_string, var.bins, var.lbound, var.ubound)
             for h in stack.GetHists():
@@ -99,8 +99,8 @@ def make_histos_with_cuts(var,
                     hWJ.Add(h)            
                 else:
                     h1.Add(h)
-         h1.Write()
-         hWJ.Write()
+            h1.Write()
+            hWJ.Write()
    #Data
    #print dataGroup._histograms
    hData = dataGroup.getHistogram(var, "Nominal", "iso", cuts.name)

@@ -158,7 +158,7 @@ def make_histograms(var, MC_groups, data_group, open_files, syst, iso, lumis, cu
             #print "weight", weight
             mytree.Project(his_name, var.name, weight,"same")
             if group.isMC():
-               his.Scale(ds.scaleToData(lumis.getDataLumi(iso, syst)))               
+               his.Scale(ds.scaleToData(lumis.getDataLumi(iso)))               
                #print ds.scaleToData(lumis.getDataLumi(iso, syst))
             else:
                #print group, ds.preScale()
@@ -192,7 +192,7 @@ def make_histogram(var, group, title, open_files, lumis, syst="", iso="iso", wei
          #print his_name, var.name, weight
          mytree.Project(his_name, var.name, weight,"same")
          if group.isMC():
-            his.Scale(ds.scaleToData(lumis.getDataLumi(iso, syst)))
+            his.Scale(ds.scaleToData(lumis.getDataLumi(iso)))
             #print his.Integral()
          else:
             #print group, ds.preScale()

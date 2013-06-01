@@ -47,8 +47,8 @@ def get_qcd_yield_with_fit(var, cuts, cutMT, mtMinValue, dataGroup, lumis, MCGro
 
 #Run as ~andres/theta_testing/utils2/theta-auto.py get_qcd_yield.py
 if __name__=="__main__":
-#    channel = "ele"
-    channel = "mu"
+    channel = "ele"
+    #channel = "mu"
 
     print "QCD estimation in " + channel + " channel"
     
@@ -89,7 +89,7 @@ if __name__=="__main__":
         cuts.setTrigger("1")
     
     #cuts.setTrigger("1")
-    cuts.setWeightMC("pu_weight*b_weight_nominal"+lepton_weight)
+    #cuts.setWeightMC("pu_weight*b_weight_nominal"+lepton_weight)
     
     
     #Recreate all necessary cuts after manual changes
@@ -126,7 +126,7 @@ if __name__=="__main__":
     QCDGroup = None #can change to dgQCDMu, for example
 
     #Open files
-    systematics = ["Nominal"] #Systematics to be added in the future
+    systematics = ["Nominal", "En", "Res", "UnclusteredEn"]
     #Generate path structure as base_path/iso/systematic, see util_scripts
     #If you have a different structure, change paths manually
 
@@ -147,9 +147,13 @@ if __name__=="__main__":
     #Root files with templates and fit results will be saved there.
     #Name from FitConfig will be used in file names    
     ((y, error), fit) = get_qcd_yield_with_fit(var, cuts, cutMT, mtMinValue, dataGroup, lumis, MCGroups, systematics, openedFiles, useMCforQCDTemplate, QCDGroup)
-    
+    #print cuts
     print "Selection: %s" % cuts.name
-    #print y, "+-", error
-    print "QCD: %.2f +- %.2f" % (fit.qcd, fit.qcd_uncert)
+    print "QCD yield in selected region: ", y, "+-", error
+    print "Total: QCD: %.2f +- %.2f" % (fit.qcd, fit.qcd_uncert)
     print "W+Jets: %.2f +- %.2f, ratio to template: %.2f" % (fit.wjets, fit.wjets_uncert, fit.wjets/fit.wjets_orig)
     print "Other MC: %.2f +- %.2f, ratio to template: %.2f" % (fit.nonqcd, fit.nonqcd_uncert, fit.nonqcd/fit.nonqcd_orig)
+
+    #make plot
+    dataHisto = dataGroup.getHistogram(var,  "Nominal", "iso", cuts.name)
+    plot_fit(var, cuts, dataHisto, fit)

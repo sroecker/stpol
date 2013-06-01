@@ -33,8 +33,11 @@ class Dataset:
       self._files[syst+iso] = f
 
    def getFile(self, syst, iso):
-      #print self._name, syst, iso, self._files
-      return self._files[syst+iso]
+      #print self._name, syst, iso, self._files, self.isMC
+      if not self.isMC(): #for data we don't have systematics
+        return self._files["Nominal"+iso]
+      else:
+        return self._files[syst+iso]
 
    def setOriginalEventCount(self, count):
       self._originalEvents = count

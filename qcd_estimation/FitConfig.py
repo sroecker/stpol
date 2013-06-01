@@ -77,13 +77,13 @@ class FitConfig():
     In case you need some special configuration, you can change the values manually afterwards
     """
     def calcCuts(self):
-        isoCuts = self._trigger + "*(" + self._baseCuts + " && " + self._jetCuts + "&&" + self._finalCuts + "&&" + self._isolationCut +")"
+        isoCuts = self._trigger + "*(" + self._baseCuts + " && " + self._jetCuts + " && " + self._finalCuts + " && " + self._isolationCut +")"
         self.isoCutsMC = self._weightMC + "*(" + isoCuts +")"
         self.isoCutsData = isoCuts
 
-        antiIsoCuts = self._trigger + "*(" + self._baseCuts + " && " + self._jetCuts + "&&" + self._finalCuts + "&&" + self._extraAntiIsoCuts + " && " + self._antiIsolationCut +")"
-        antiIsoCutsDown = self._trigger + "*(" + self._baseCuts + " && " + self._jetCuts + "&&" + self._finalCuts + "&&" + self._extraAntiIsoCuts + " && " + self._antiIsolationCutDown +")"
-        antiIsoCutsUp = self._trigger + "*(" + self._baseCuts + " && " + self._jetCuts + "&&" + self._finalCuts + "&&" + self._extraAntiIsoCuts + " && " + self._antiIsolationCutUp +")"
+        antiIsoCuts = self._trigger + "*(" + self._baseCuts + " && " + self._jetCuts + " && " + self._finalCuts + " && " + self._extraAntiIsoCuts + " && " + self._antiIsolationCut +")"
+        antiIsoCutsDown = self._trigger + "*(" + self._baseCuts + " && " + self._jetCuts + "&&" + self._finalCuts + " && " + self._extraAntiIsoCuts + " && " + self._antiIsolationCutDown +")"
+        antiIsoCutsUp = self._trigger + "*(" + self._baseCuts + " && " + self._jetCuts + " && " + self._finalCuts + " && " + self._extraAntiIsoCuts + " && " + self._antiIsolationCutUp +")"
         self.antiIsoCutsMC = self._weightMC + "*(" + antiIsoCuts +")"
         self.antiIsoCutsMCIsoDown = self._weightMC + "*(" + antiIsoCutsDown +")"
         self.antiIsoCutsMCIsoUp = self._weightMC + "*(" + antiIsoCutsUp +")"
@@ -96,3 +96,17 @@ class FitConfig():
         self.antiIsoCutsQCDIsoUp = self._weightQCD + "*(" + antiIsoCutsUp +")"
         
 
+    def __str__(self):
+        string = "Fitconf " + self.name + "\n" 
+        string += "Iso cuts MC: " + self.isoCutsMC + "\n" 
+        string += "Iso cuts Data: " + self.isoCutsData + "\n" 
+        string += "Antiiso cuts MC: " + self.antiIsoCutsMC + "\n" 
+        string += "Antiiso cuts MC iso down: " + self.antiIsoCutsMCIsoDown + "\n" 
+        string += "Antiiso cuts MC iso up: " + self.antiIsoCutsMCIsoUp + "\n" 
+        string += "Antiiso cuts Data: " + self.antiIsoCutsData + "\n" 
+        string += "Antiiso cuts Data iso down: " + self.antiIsoCutsDataIsoDown + "\n" 
+        string += "Antiiso cuts Data iso up: " + self.antiIsoCutsDataIsoUp + "\n" 
+        string += "Antiiso cuts QCD MC: " + self.antiIsoCutsQCD + "\n" 
+        string += "Antiiso cuts QCD MC iso down: " + self.antiIsoCutsQCDIsoDown + "\n" 
+        string += "Antiiso cuts QCD MC iso down: " + self.antiIsoCutsQCDIsoUp + "\n" 
+        return string
