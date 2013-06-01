@@ -6,7 +6,7 @@ then
     exit 1
 fi
 
-for iso in "antiIso"
+for iso in "Iso" "antiIso"
 do
     for syst in `find $1/$iso -maxdepth 1 -name '*' -type d`
     do   
