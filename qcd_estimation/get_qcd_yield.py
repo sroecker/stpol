@@ -47,8 +47,8 @@ def get_qcd_yield_with_fit(var, cuts, cutMT, mtMinValue, dataGroup, lumis, MCGro
 
 #Run as ~andres/theta_testing/utils2/theta-auto.py get_qcd_yield.py
 if __name__=="__main__":
-    channel = "ele"
-    #channel = "mu"
+    #channel = "ele"
+    channel = "mu"
 
     print "QCD estimation in " + channel + " channel"
     
