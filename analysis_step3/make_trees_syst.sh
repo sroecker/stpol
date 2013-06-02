@@ -9,7 +9,7 @@ mkdir $OFDIR/iso
 mkdir $OFDIR/antiiso
 mkdir $OFDIR/iso/SYST
 
-for SYST in "Nominal" "ResUp" "ResDown" "UnclusteredEnUp" "UnclusteredEnDown"
+for SYST in "EnUp" "EnDown" "Nominal" "ResUp" "ResDown" "UnclusteredEnUp" "UnclusteredEnDown"
 do
     mkdir $OFDIR/iso/$SYST
     $STPOL_DIR/analysis_step3/suball_syst.sh "--isMC" $OFDIR/iso/$SYST $FILELIST_SYST/Iso/$SYST/*
