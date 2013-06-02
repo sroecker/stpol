@@ -154,6 +154,8 @@ if __name__=="__main__":
     print "W+Jets: %.2f +- %.2f, ratio to template: %.2f" % (fit.wjets, fit.wjets_uncert, fit.wjets/fit.wjets_orig)
     print "Other MC: %.2f +- %.2f, ratio to template: %.2f" % (fit.nonqcd, fit.nonqcd_uncert, fit.nonqcd/fit.nonqcd_orig)
 
+    print "Fit info:"
+    print fit
     #make plot
     dataHisto = dataGroup.getHistogram(var,  "Nominal", "iso", cuts.name)
     plot_fit(var, cuts, dataHisto, fit)
