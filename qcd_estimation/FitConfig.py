@@ -16,6 +16,7 @@ class FitConfig():
             antiIsolationCutDown = "mu_iso>0.27 && mu_iso<0.45", 
             antiIsolationCutUp = "mu_iso>0.33 && mu_iso<0.55",
             extraAntiIsoCuts = "deltaR_lj > 0.3 && deltaR_bj > 0.3",
+            useMCforQCDTemplate = False,    #Take QCD template from MC?
             weightQCD = "pu_weight*muon_IDWeight*muon_IsoWeight*muon_TriggerWeight" #Only needed if taking QCD template from MC           
         ):
         self.name = name
@@ -31,6 +32,7 @@ class FitConfig():
         self.setAntiIsolationCutUp(antiIsolationCutUp)
         self.setAntiIsolationCutDown(antiIsolationCutDown)
         self.setExtraAntiIsoCuts(extraAntiIsoCuts)
+        self.isMC = useMCforQCDTemplate
 
         self.calcCuts()
     

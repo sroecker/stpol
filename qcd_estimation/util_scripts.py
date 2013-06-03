@@ -13,7 +13,7 @@ def open_all_data_files(data_group, mc_groups, QCD_group, paths):
         for ds in group.getDatasets():
             for iso in paths:
                 for syst in paths[iso]:
-                   if ds.isMC() or syst=="Nominal":
+                   if (ds.isMC() and ds.getName() != "QCDMu") or syst=="Nominal":
                        f = TFile(paths[iso][syst]+ds.getFileName())
                        files[ds.getName()+"_"+iso+syst]=f
                        count_hist = f.Get("trees").Get("count_hist")

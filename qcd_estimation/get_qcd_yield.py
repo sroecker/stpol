@@ -18,21 +18,26 @@ except KeyError:
     print "Could not find the STPOL_DIR environment variable, did you run `source setenv.sh` in the code base directory?"
     sys.exit(1)
 
-def get_yield(var, filename, cutMT, mtMinValue, fit_result):
+def get_yield(var, filename, cutMT, mtMinValue, fit_result, dataGroup):
     infile = "fits/"+var.shortName+"_fit_"+filename+".root"
     f = TFile(infile)
     #QCDRATE = fit_result.qcd
     hQCD = f.Get(var.shortName+"__qcd")
+    hQCDShapeOrig = dataGroup.getHistogram(var, "Nominal", "antiiso")
+    hQCDShapeOrig.Scale(hQCD.Integral()/hQCDShapeOrig.Integral())
     #print fit_result
     if cutMT:
         bin1 = hQCD.FindBin(mtMinValue)
         bin2 = hQCD.GetNbinsX() + 1
         #print hQCD.Integral(), y.Integral()
         error = array('d',[0.])
+        err = array('d',[0.])
         y = hQCD.IntegralAndError(bin1,bin2,error)
+        print "QCD yield from original shape:", hQCDShapeOrig.IntegralAndError(bin1,bin2,err), "+-",err
         return (y, error[0])
         #return (hQCD.Integral(6,20), hQCD.Integral(6,20)*(fit_result.qcd_uncert/fit_result.qcd))
     else:
+        print "QCD yield from original shape:", hQCDShape.IntegralAndError(0,100,err), "+-",err
         return (hQCD.Integral(), hQCD.Integral()*(fit_result.qcd_uncert/fit_result.qcd))
 
 def get_qcd_yield(var, cuts, cutMT, mtMinValue, dataGroup, lumis, MCGroups, systematics, openedFiles, useMCforQCDTemplate, QCDGroup):
@@ -43,7 +48,7 @@ def get_qcd_yield_with_fit(var, cuts, cutMT, mtMinValue, dataGroup, lumis, MCGro
     fit = Fit()    
     make_histos_with_cuts(var, cuts, dataGroup, MCGroups, systematics, lumis, openedFiles, fit, useMCforQCDTemplate, QCDGroup)
     fit_qcd(var, cuts.name, fit)
-    return (get_yield(var, cuts.name, cutMT, mtMinValue, fit), fit)
+    return (get_yield(var, cuts.name, cutMT, mtMinValue, fit, dataGroup), fit)
 
 #Run as ~andres/theta_testing/utils2/theta-auto.py get_qcd_yield.py
 if __name__=="__main__":
