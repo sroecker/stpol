@@ -23,7 +23,7 @@ do
     echo "Submitting step3 job $CONF on file $file"
     until sbatch -x comp-d-[006,033,094] -p main $STPOL_DIR/analysis_step3/run_step3_eventloop.sh `readlink -f $file` $OUTDIR $CONF
     do 
-        echo "ERROR!: could not submit slurm job on file $file, retrying after sleep"
+        echo "ERROR!: could not submit slurm job on file $file, retrying after sleep..." >&2
         sleep 20
     done 
 done

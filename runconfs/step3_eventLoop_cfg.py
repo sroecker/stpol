@@ -27,6 +27,7 @@ parser.add_option("--doNTags", dest="doNTags", action="store_true", default=Fals
 parser.add_option("--nT", dest="nT", type="string", default="0,10")
 parser.add_option("--mtw", dest="doMtw", action="store_true", default=False)
 parser.add_option("--met", dest="doMet", action="store_true", default=False)
+parser.add_option("--etalj", dest="doEtaLj", action="store_true", default=False)
 parser.add_option("--isMC", dest="isMC", action="store_true", default=False)
 parser.add_option("--isWplusJets", dest="isWplusJets", action="store_true", default=False)
 parser.add_option("--mtop", dest="doMtop", action="store_true", default=False)
@@ -126,13 +127,13 @@ process.eleCuts = cms.PSet(
 process.jetCuts = cms.PSet(
     cutOnNJets = cms.bool(options.doNJets),
     applyRmsLj = cms.bool(False),
-    applyEtaLj = cms.bool(False),
+    applyEtaLj = cms.bool(options.doEtaLj),
 
     goodJetsCountSrc = cms.InputTag("goodJetCount"),
     bTagJetsCountSrc = cms.InputTag("bJetCount"),
 
     rmsMax = cms.double(0.025),
-    etaMin = cms.double(0.0),
+    etaMin = cms.double(2.5),
 
     nJetsMin = cms.int32(options.nJMin),
     nJetsMax = cms.int32(options.nJMax),
