@@ -52,9 +52,16 @@ def get_qcd_yield_with_fit(var, cuts, cutMT, mtMinValue, dataGroup, lumis, MCGro
 
 #Run as ~andres/theta_testing/utils2/theta-auto.py get_qcd_yield.py
 if __name__=="__main__":
-    #    channel = "ele"
-    channel = "mu"
+    channel = "ele"
+#    channel = "mu"
+
     do_systematics = True
+
+    if channel == "ele":
+        do_systematics = False
+
+#    cut_region = "final_selection"
+    cut_region = "2j0t_selection"
 
     print "QCD estimation in " + channel + " channel"
     
@@ -79,10 +86,11 @@ if __name__=="__main__":
         mtMinValue = 45.01 # MET>45
     
     #Use Default cuts for final selection. See FitConfig for details on how to change the cuts.
+    
+    cuts = FitConfig( cut_region )
 
-    fit_regions = ["final_selection", "2j0t"]
-
-    cuts = FitConfig("final_selection")
+    if cut_region == "2j0t_selection":
+        cuts.setBaseCuts("n_jets == 2 && n_tags == 0")
     
     if channel == "ele":
         cuts.setTrigger("1") #  || HLT_Ele27_WP80_v9==1 || HLT_Ele27_WP80_v8==1")
@@ -141,10 +149,10 @@ if __name__=="__main__":
     #If you have a different structure, change paths manually
 
     if channel == "mu":
-        base_path = "/home/andres/single_top/stpol/out_step3_05_29"
-#        base_path = "~liis/SingleTop/stpol/out_step3_05_31_18_43/mu"        
+#        base_path = "/home/andres/single_top/stpol/out_step3_05_29"
+        base_path = "~liis/SingleTopJoosep/stpol/out_step3_05_31_18_43/mu"        
     if channel == "ele":
-        base_path = "~liis/SingleTop/stpol/out_step3_05_31_18_43/ele"        
+        base_path = "~liis/SingleTopJoosep/stpol/out_step3_05_31_18_43/ele"        
 
     paths = generate_paths(systematics, base_path)
     #For example:
