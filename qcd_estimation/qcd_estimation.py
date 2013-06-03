@@ -11,32 +11,66 @@ from FitConfig import *
 from DataLumiStorage import *
 from get_qcd_yield import *
 
-def select_fits():
-   fits = []
-   #fits.append(res_2J_0T)
-   #fits.append(res_2J_1T)
-   #fits.append(res_2J_1T_SB)
-   fits.append(res_2J_1T_SR)
-   #fits.append(res_2J_1T_SR_Mu)
-   #fits.append(res_2J_0T_MC)
-   #fits.append(res_2J_1T_MC)
-   #fits.append(res_2J_1T_SR_MC)
-   #fits.append(res_2J_1T_SB_MC)
-
-   #fits.append(res_2J_1T_SR_mtwMass50)
-   #fits.append(res_2J_1T_SR_mtwMass20plus)
-   #fits.append(res_2J_1T_SR_mtwMass70)
-   """fits.append(res_2J_1T_SR_iso_0_3_plus)
-   fits.append(res_2J_1T_SR_iso_0_5_plus)"""
-   return fits
-
 def select_cuts():
     cuts = []
-    #base = "pt_lj>40 && pt_bj>40 && abs(eta_lj)>2.5 && n_jets == 2 && n_tags == 1 && rms_lj<0.025"
-    #baseCuts = " && top_mass < 220 && top_mass > 130 "
-    cutFinal = FitConfig("2J_1T_SR")
-    #cutFinal.setBaseCuts(base+baseCuts)
-    cuts.append(cutFinal)
+    cutsFinal = FitConfig("2J_1T_SR")
+    cuts.append(cutsFinal)
+
+    cutsSB = FitConfig("2J_1T_SB")
+    cutsSB.setFinalCuts("abs(eta_lj)>2.5 && (top_mass > 220 || top_mass < 130)")
+    cutsSB.calcCuts()
+    cuts.append(cutsSB)
+
+    cuts2J1T = FitConfig("2J_1T")
+    cuts2J1T.setFinalCuts("abs(eta_lj)>2.5")
+    cuts2J1T.calcCuts()
+    cuts.append(cuts2J1T)
+
+    cutsMtwMass50 = FitConfig("2J_1T_m_T_50minus")
+    cutsMtwMass50.setFinalCuts("abs(eta_lj)>2.5 && top_mass < 220 && top_mass > 130 && mt_mu < 50")
+    cutsMtwMass50.calcCuts()
+    cuts.append(cutsMtwMass50)
+
+    cutsMtwMass70 = FitConfig("2J_1T_m_T_70minus")
+    cutsMtwMass70.setFinalCuts("abs(eta_lj)>2.5 && top_mass < 220 && top_mass > 130 && mt_mu < 70")
+    cutsMtwMass70.calcCuts()
+    cuts.append(cutsMtwMass70)
+    
+    cutsMtwMass20plus = FitConfig("2J_1T_m_T_20plus")
+    cutsMtwMass20plus.setFinalCuts("abs(eta_lj)>2.5 && top_mass < 220 && top_mass > 130 && mt_mu > 20")
+    cutsMtwMass20plus.calcCuts()
+    cuts.append(cutsMtwMass20plus)
+
+    cuts_iso_0_3_plus = FitConfig("2J_1T_SR_iso_0_3_plus")
+    cuts_iso_0_3_plus.setAntiIsolationCut("mu_iso>0.3")
+    cuts_iso_0_3_plus.setAntiIsolationCutUp("mu_iso>0.33")
+    cuts_iso_0_3_plus.setAntiIsolationCutDown("mu_iso>0.27")
+    cuts_iso_0_3_plus.calcCuts()
+    cuts.append(cuts_iso_0_3_plus)
+
+    cuts_iso_0_5_plus = FitConfig("2J_1T_SR_iso_0_5_plus")
+    cuts_iso_0_5_plus.setAntiIsolationCut("mu_iso>0.5")
+    cuts_iso_0_5_plus.setAntiIsolationCutUp("mu_iso>0.55")
+    cuts_iso_0_5_plus.setAntiIsolationCutDown("mu_iso>0.45")
+    cuts_iso_0_5_plus.calcCuts()
+    cuts.append(cuts_iso_0_5_plus)
+
+    cuts_iso_0_2_to_0_5 = FitConfig("2J_1T_SR_iso_0_22_to_0_5")
+    cuts_iso_0_2_to_0_5.setAntiIsolationCut("mu_iso>0.22 && mu_iso<0.5")
+    cuts_iso_0_2_to_0_5.setAntiIsolationCutUp("mu_iso>0.242 && mu_iso<0.55")
+    cuts_iso_0_2_to_0_5.setAntiIsolationCutDown("mu_iso>0.2 && mu_iso<0.45")
+    cuts_iso_0_2_to_0_5.calcCuts()
+    cuts.append(cuts_iso_0_2_to_0_5)
+
+    """cuts2J0T = FitConfig("2J_0T_SR")
+    cuts2J0T.setBaseCuts("n_jets == 2 && n_tags == 0")
+    cuts2J0T.calcCuts()
+    cuts.append(cuts2J0T)"""
+    """cutsMC = FitConfig("2J_1T_SR_MC")
+    cutsMC.isMC = True
+    cuts.append(cutsMC)
+    """
+
     return cuts
 
 def do_fit(var,fit, systematics, open_files):
@@ -85,18 +119,15 @@ if __name__=="__main__":
     #MCGroups = MC_groups_noQCD_InclusiveTCh
     MCGroups = MC_groups_noQCD_AllExclusive
     
-    #Do you want to get QCD template from MC?
-    useMCforQCDTemplate = False
-
     #QCD MC group from init_data
-    QCDGroup = None #can change to dgQCDMu, for example
+    QCDGroup = None#dgQCDMu #can change to dgQCDMu, for example
 
     #Open files
     systematics = ["Nominal", "En", "Res", "UnclusteredEn"]
     #Generate path structure as base_path/iso/systematic, see util_scripts
     #If you have a different structure, change paths manually
 
-    base_path = "/home/andres/single_top/stpol/out_step3_05_29"
+    base_path = "/home/andres/single_top/stpol/out_step3_06_01"
     
     paths = generate_paths(systematics, base_path)
     #For example:
@@ -109,9 +140,10 @@ if __name__=="__main__":
     cutconfs = select_cuts()
     canvases = []   
     for cuts in cutconfs: 
-        cuts.setTrigger("1")
+        #cuts.setTrigger("1")
         cuts.calcCuts()
-        ((y, error), fit) = get_qcd_yield_with_fit(var, cuts, cutMT, mtMinValue, dataGroup, lumis, MCGroups, systematics, openedFiles, useMCforQCDTemplate, QCDGroup)
+        print cuts
+        ((y, error), fit) = get_qcd_yield_with_fit(var, cuts, cutMT, mtMinValue, dataGroup, lumis, MCGroups, systematics, openedFiles, cuts.isMC, QCDGroup)
         #print cuts
         print "Selection: %s" % cuts.name
         print "QCD yield in selected region: ", y, "+-", error
@@ -119,7 +151,7 @@ if __name__=="__main__":
         print "W+Jets: %.2f +- %.2f, ratio to template: %.2f" % (fit.wjets, fit.wjets_uncert, fit.wjets/fit.wjets_orig)
         print "Other MC: %.2f +- %.2f, ratio to template: %.2f" % (fit.nonqcd, fit.nonqcd_uncert, fit.nonqcd/fit.nonqcd_orig)
 
-   
+        print fit
         #clear_histos(data_group, mc_groups)
         dataHisto = dataGroup.getHistogram(var,  "Nominal", "iso", cuts.name)
         canvases.append(plot_fit(var, cuts, dataHisto, fit))
