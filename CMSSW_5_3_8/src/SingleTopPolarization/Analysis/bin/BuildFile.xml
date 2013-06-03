@@ -12,6 +12,5 @@
 <use name="lhapdf"/>
 <environment>
   <bin name="Step3_EventLoop" file="Step3_EventLoop.cpp,cuts_base.cpp,hlt_cuts.cpp,b_efficiency_calc.cc"></bin>
-   <bin name="Step3_EventLoop_presel" file="Step3_EventLoop_presel.cpp,cuts_base.cpp,hlt_cuts.cpp"></bin>
    <bin name="Step3_EventLoop_unfolding_presel" file="Step3_EventLoop_unfolding_presel.cpp,cuts_base.cpp,hlt_cuts.cpp"></bin>
 </environment>
