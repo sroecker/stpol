@@ -181,11 +181,14 @@ def MuonPath(process, conf):
             process.partonStudyCompareSequence
         )
     if conf.doDebug:
-        process.goodSignalMuAnalyzer = cms.EDAnalyzer("SimpleMuonAnalyzer", interestingCollections=cms.untracked.VInputTag("goodSignalMuons"))
-        process.muPath.insert(
-            process.muPath.index(process.goodSignalMuons)+1,
-            process.goodSignalMuAnalyzer
-        )
+        process.goodSignalMuAnalyzer = cms.EDAnalyzer("SimpleMuonAnalyzer", interestingCollections=cms.untracked.VInputTag("muonsWithIso", "goodSignalMuons"))
+        process.vetoEleAnalyzer = cms.EDAnalyzer("SimpleElectronAnalyzer", interestingCollections=cms.untracked.VInputTag("looseVetoElectrons"))
+        process.muPrintOutSequence = cms.Sequence(process.goodSignalMuAnalyzer*process.vetoEleAnalyzer)
+        #process.muPath.insert(
+        #    process.muPath.index(process.goodSignalMuons)+1,
+        #    process.goodSignalMuAnalyzer
+        #)
+        process.muPath += process.muPrintOutSequence
         process.oneIsoMuID = cms.EDAnalyzer("EventIDAnalyzer", name=cms.untracked.string("oneIsoMuID"))
         process.muPath.insert(
             process.muPath.index(process.oneIsoMu)+1,
