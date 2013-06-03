@@ -212,7 +212,10 @@ public:
 class ElectronCuts : public CutsBase {
 public:
     bool requireOneElectron;
+    bool cutOnIso;
+    bool reverseIsoCut;
     float isoCut;
+    float mvaCut;
 
     edm::InputTag eleCountSrc;
     edm::InputTag muonCountSrc;
@@ -238,7 +241,11 @@ public:
     {
         initialize_branches();
         requireOneElectron = pars.getParameter<bool>("requireOneElectron");
-        eleCountSrc = pars.getParameter<edm::InputTag>("eleCountSrc");
+	cutOnIso = pars.getParameter<bool>("cutOnIso");
+	reverseIsoCut = pars.getParameter<bool>("reverseIsoCut");
+	isoCut = (float)pars.getParameter<double>("isoCut");
+	mvaCut = (float)pars.getParameter<double>("mvaCut");
+	eleCountSrc = pars.getParameter<edm::InputTag>("eleCountSrc");
         muonCountSrc = pars.getParameter<edm::InputTag>("muonCountSrc");
         electronRelIsoSrc = pars.getParameter<edm::InputTag>("electronRelIsoSrc");
         electronMvaSrc = pars.getParameter<edm::InputTag>("electronMvaSrc");
@@ -267,6 +274,13 @@ public:
         if(decay_tree.size()>0) {
             branch_vars.vars_int["el_mother_id"] = get_parent(decay_tree, 11);
         }
+
+	bool passesElIso = true;
+	if( cutOnIso && !reverseIsoCut ){
+	  passesElIso = branch_vars.vars_float["el_reliso"] < isoCut && branch_vars.vars_float["el_mva"] > mvaCut;
+	    if( !passesElIso )
+	      return false;
+	}
 
         post_process();
         return true;
@@ -670,6 +684,7 @@ public:
     edm::InputTag metSrc;
     float minVal;
     bool doMTCut;
+    bool doMETCut;
 
     void initialize_branches() {
         branch_vars.vars_float["mt_mu"] = BranchVars::def_val;
@@ -684,6 +699,7 @@ public:
         metSrc = pars.getParameter<edm::InputTag>("metSrc");
         minVal = (float)pars.getParameter<double>("minVal");
         doMTCut = pars.getParameter<bool>("doMTCut");
+	doMETCut = pars.getParameter<bool>("doMETCut");
     }
 
     bool process(const edm::EventBase& event) {
@@ -692,6 +708,7 @@ public:
         branch_vars.vars_float["mt_mu"] = get_collection<double>(event, mtMuSrc, BranchVars::def_val);
         branch_vars.vars_float["met"] = get_collection_n<float>(event, metSrc, 0);
         if (doMTCut && branch_vars.vars_float["mt_mu"] < minVal) return false;
+	if (doMETCut && branch_vars.vars_float["met"] < minVal) return false;
 
         post_process();
         return true;

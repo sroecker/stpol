@@ -95,6 +95,12 @@ process.muonCuts = cms.PSet(
 
 process.eleCuts = cms.PSet(
     requireOneElectron = cms.bool(options.lepton=="ele"),
+
+    reverseIsoCut = cms.bool(options.isAntiIso),
+    cutOnIso = cms.bool(False),
+    isoCut = cms.double(0.1),
+    mvaCut = cms.double(0.9),
+
     eleCountSrc  = cms.InputTag("electronCount"),
     muonCountSrc = cms.InputTag("muonCount"),
     electronRelIsoSrc = cms.InputTag("goodSignalElectronsNTupleProducer","relIso"),
@@ -102,6 +108,7 @@ process.eleCuts = cms.PSet(
     electronPtSrc = cms.InputTag("goodSignalElectronsNTupleProducer", "Pt"),
     electronChargeSrc = cms.InputTag("goodSignalElectronsNTupleProducer", "Charge"),
     electronMotherPdgIdSrc = cms.InputTag("goodSignalElectronsNTupleProducer", "motherGenPdgId"),
+
     doVetoLeptonCut = cms.bool(False),
     vetoMuCountSrc = cms.InputTag("looseVetoMuCount"),
     vetoEleCountSrc = cms.InputTag("looseVetoEleCount"),
@@ -194,6 +201,7 @@ process.mtMuCuts = cms.PSet(
     mtMuSrc = cms.InputTag("muAndMETMT"),
     metSrc = cms.InputTag("patMETNTupleProducer", "Pt"),
     doMTCut = cms.bool(options.doMtw),
+    doMETCut = cms.bool(False),
     minVal = cms.double(50)
 )
 
