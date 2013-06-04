@@ -8,20 +8,20 @@ mupt_cut = 26
 #-------------Initialize histogram and plot parameters-------------
 hist_def = {
     "mt_mu": ["mt_mu", (100, 0, 200)],
-#    "met": ["met", (100, 0, 200)],
-#    "top_mass": ["top_mass", (100, 50, 300)],
-#    "eta_lj": ["eta_lj", (100, 0, 5.0)],
-#    "pt_lj": ["pt_lj",(100, 0, 200)],
+    "met": ["met", (100, 0, 200)],
+    "top_mass": ["top_mass", (100, 50, 300)],
+    "eta_lj": ["eta_lj", (100, 0, 5.0)],
+    "pt_lj": ["pt_lj",(100, 0, 200)],
     "cos_theta": ["cos_theta", (100, -1., 1.)],
-#    "mu_pt": ["mu_pt",(100, 20, 200)],
-#    "deltaR_bj": ["deltaR_bj",(100, 0, 2*3.142)],
-#    "deltaR_lj": ["deltaR_lj",(100, 0, 2*3.142)],
-#    "mu_mother_id": ["mu_mother_id",(51,-25.5,25.5)],
+    "mu_pt": ["mu_pt",(100, 20, 200)],
+    "deltaR_bj": ["deltaR_bj",(100, 0, 2*3.142)],
+    "deltaR_lj": ["deltaR_lj",(100, 0, 2*3.142)],
+    "mu_mother_id": ["mu_mother_id",(51,-25.5,25.5)],
     }
 
 hist_def_toplot = {
-    "met": ["met", (100, 0, 200)],
     "mt_mu": ["mt_mu", (100, mtW_cut, 200)],
+    "met": ["met", (100, 0, 200)],
     "top_mass": ["top_mass", (100, 50, 300)],
     "eta_lj": ["eta_lj", (100, 2.5, 5.0)],
     "pt_lj": ["pt_lj",(100, jetpt_cut, 200)],
@@ -69,7 +69,7 @@ cuts = {
     "2j1t": "("  + sel_2j1t + "&" + sel_lep + "&" + sel_mtW + "&" + ")",
     "2j1t_antiiso": "(" + sel_2j1t + "&" + sel_lep_a + "&" + sel_mtW + ")",
 
-    "3j1t": "(" + sel_3j1t + "&" + sel_lep + "&" + sel_mtW + "&" +")",
+    "3j1t": "(" + sel_3j1t + "&" + sel_lep + "&" + sel_mtW +")",
     "3j1t_antiiso": "(" + sel_3j1t + "&" + sel_lep_a + "&" + sel_mtW + ")",
     
     "3j2t": "(" + sel_3j2t + "&" + sel_lep_a + "&" + sel_mtW +  ")",
