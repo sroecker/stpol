@@ -13,18 +13,31 @@ tdrstyle.tdrstyle()
 
 import ROOT
 from plots.common.sample_style import Styling
-from plot_defs import hist_def
 from plots.common.utils import lumi_textbox
 from plots.common.legend import legend
 from plots.common.pretty_names import variable_names
 
-from file_names import dataLumi
-Lumi = sum(dataLumi.values())
+#channel = "electron_channel"
+channel = "muon_channel" 
+
+if channel == "muon_channel":
+    from plot_defs_mu import hist_def
+else:
+    from plot_defs_ele import hist_def
+
+from file_names import dataLumi_ele, dataLumi_mu
+if channel == "electron_channel":
+    Lumi = sum(dataLumi_ele.values())
+if channel == "muon_channel":
+    Lumi = sum(dataLumi_mu.values())
 
 # choose cut region
 mode1 = "final"
 #mode1 = "2j1t"
 #mode1 = "2j0t"
+#mode1 = "3j1t"
+#mode1 = "3j2t"
+#mode1 = "final_nomet_antiiso"
 
 mode1a = ""
 #mode1a = "_nomet"
@@ -34,10 +47,11 @@ mode1a = ""
 mode2 = "_lep"
 mode = mode1 + mode1a + mode2
 
-qcd_from_mc = True
+do_ratio = False
+qcd_from_mc = False
 apply_PUw = True
 apply_Elw = True
-apply_Bw = False
+apply_Bw = True
 
 weight = ""
 if  apply_PUw:
@@ -53,7 +67,7 @@ process_names.insert(1,"QCD")
 
 #--------------------open file ------------------------
 filename = mode1 + mode1a + weight + mode2 +".root"
-histograms = "Histograms/" + mode1 + mode1a + "/" + filename
+histograms = "Histograms/" + channel + "/" + mode1 + mode1a + "/" + filename
 print "Opening input file: " + histograms
 h = ROOT.TFile(histograms)
 
@@ -75,6 +89,7 @@ for hist_name in hist_def:
     mc_to_plot["signal"] = h.Get("signal/" + hist_to_plot)
         
     data = h.Get("data/" + hist_to_plot)
+
     if qcd_from_mc:
         print "Get QCD from MC"
         qcd = h.Get("qcd_mc/" + hist_to_plot)
@@ -86,9 +101,15 @@ for hist_name in hist_def:
     qcd_mode = mode1 + mode2 #omit possible "_nomet" extension as it is always used for the fit
     qcd_norm = 0
 
-    if hist_to_plot != "el_mother_id":
+    print "QCD template yield = " + str(qcd.Integral())
+    if ( qcd_from_mc == False and hist_to_plot != "el_mother_id"):
         from qcd_yields import getQCDYield
-        qcd_norm = getQCDYield( qcd, qcd_mode, True)
+
+        if channel == "electron_channel":
+            qcd_norm = getQCDYield( qcd, qcd_mode, True, "ele")
+        if channel == "muon_channel":
+            qcd_norm = getQCDYield( qcd, qcd_mode, True, "mu")
+        
         print "QCD estimated from data = " + str(qcd_norm)
 
         if qcd.Integral() != 0:
@@ -97,7 +118,7 @@ for hist_name in hist_def:
 #--------------Rebin----------------
     if hist_name == "cos_theta" or hist_name == "pt_lj" or hist_name == "eta_lj" or hist_name == "el_mva": #<--sometimes need to change rebin to 1, if plots are weird (QCD not shown)
         nrebin = 4
-    elif hist_name == "met" or hist_name == "el_pt" or hist_name == "top_mass" or hist_name == "deltaR_lj" or hist_name == "deltaR_bj":
+    elif hist_name == "met" or hist_name == "mt_mu" or hist_name == "el_pt" or hist_name == "top_mass" or hist_name == "deltaR_lj" or hist_name == "deltaR_bj":
         nrebin = 2
     else:
         nrebin =1
@@ -130,20 +151,42 @@ for hist_name in hist_def:
     h_sumMC.SetStats(False)
     h_sumMC.SetLineWidth(2)
     h_sumMC.SetMaximum(  1.3*max( h_sumMC.GetMaximum(), data.GetMaximum() ))
-    if hist_name == "el_mva":
-        h_sumMC.SetMaximum( 5*max( h_sumMC.GetMaximum(), data.GetMaximum() )) 
+    if hist_name == "cos_theta" and  ( mode1 == "3j2t" or mode1 == "3j1t"):
+        h_sumMC.SetMaximum(  1.5*max( h_sumMC.GetMaximum(), data.GetMaximum() ))
+                                       
+
+ #   if hist_name == "el_mva":
+ #       h_sumMC.SetMaximum( 5*max( h_sumMC.GetMaximum(), data.GetMaximum() )) 
 
     h_sumMC.SetLineColor(ROOT.kBlack)
     h_sumMC.SetFillStyle(0)
     h_sumMC.GetXaxis().SetTitle(variable_names[hist_name]);    
 #---------------------Draw----------------------------
-    c = ROOT.TCanvas("c","")
-    if hist_to_plot == "el_mva":
-        c.SetLogy()
-    h_sumMC.Draw("hist")
-    sum.Draw("histsame")
-    h_sumMC.Draw("histsame")
-    data.Draw("epsame")
+    if do_ratio:
+        print "Make ratio plot"
+        c = ROOT.TCanvas("c","",800,800)
+        mainC = ROOT.TPad("main","Main plot",0,0.25,1,1)
+        mainC.Draw()
+        ratioC = ROOT.TPad("ratio","ratio",0,0,1,0.24)
+        ratioC.Draw()
+
+        hRange = hist_def[hist_name][1]
+        ratio_hist = "h_" + hist_name
+        r = ROOT.TH1D(ratio_hist, "", hRange[0], hRange[1], hRange[2])
+
+        u1 = ROOT.TH1D(r)
+        u1.Reset()
+
+        u1.Draw("lsame")
+        
+    else:
+        c = ROOT.TCanvas("c","")
+#        if hist_to_plot == "el_mva":
+#            c.SetLogy()
+        h_sumMC.Draw("hist")
+        sum.Draw("histsame")
+        h_sumMC.Draw("histsame")
+        data.Draw("epsame")
 #--------------- lumi box and legend-----------------
     if hist_name == "cos_theta" or hist_name == "el_mva":
         legend_pos = "top-left"
@@ -168,35 +211,58 @@ for hist_name in hist_def:
         pos = legend_pos
         )
 
-    outfilename = "Plots/" + mode1 + mode1a + "/" + hist_to_plot + mode2 + weight + ".pdf"
+    outfilename = "Plots/" + channel + "/" + mode1 + mode1a + "/" + hist_to_plot + mode2 + weight + ".pdf"
     c.SaveAs(outfilename)
     c.Close()
 
-    #----------------Print signal PDG ID information------------------
-    if hist_to_plot == "el_mother_id":
+    #----------------Signal PDG ID information------------------
+#    nr_W = 0
+#    nr_tau = 0
+    if hist_to_plot == "el_mother_id" or hist_to_plot == "mu_mother_id":
         nr_W = mc_to_plot["signal"].GetBinContent(2) + mc_to_plot["signal"].GetBinContent(50)
         nr_tau = mc_to_plot["signal"].GetBinContent(11) + mc_to_plot["signal"].GetBinContent(41)
-        print "---------------------------------------"
-        print "Electron mother pdgID in signal sample"
-        print "nr of prompt electrons from W: " +  str(nr_W )
-        print "nr of electrons from tau decays: " + str( nr_tau )
-        print "Total: " + str( nr_W + nr_tau)
-        print "---------------------------------------"
- #------------------------------print cut flow--------------------------
-print("CUT FLOW:")
-print("----------------------")
-for key in mc_to_plot:
-    print key + ": " + str( mc_to_plot[key].Integral() ) + " +- " + str( mc_to_plot[key].Integral()/(mc_to_plot[key].GetEntries()**0.5) )
+        print "nr tau- = " + str(mc_to_plot["signal"].GetBinContent(41))
+        print "nr tau+ = " + str(mc_to_plot["signal"].GetBinContent(11))
 
-print("QCD: " + str(qcd.Integral()) + " +- " + str( qcd.Integral()/(qcd.GetEntries()**0.5) ) )
-print("----------------------")
-print("sum MC: " + str(h_sumMC.Integral()) )
-print("Data: " + str(data.Integral()) + " +- " + str( data.Integral()**0.5 ) )
-print("----------------------")
-print 
+ #------------------------------print cut flow--------------------------
+
+    if hist_to_plot == "cos_theta":
+        print("CUT FLOW:")
+        print("----------------------")
+        err = {}
+        for key in mc_to_plot:
+            try:
+                err[key] = mc_to_plot[key].Integral()/(mc_to_plot[key].GetEntries()**0.5) 
+            except ZeroDivisionError:
+                err[key] = 0.0
+            print key + ": " + str( mc_to_plot[key].Integral() ) + " +- " + str(err[key])
+            
+        try:
+            err_qcd = qcd.Integral()/(qcd.GetEntries()**0.5)     
+        except ZeroDivisionError:
+            err_qcd = 0.0
+            
+        print("QCD: " + str(qcd.Integral()) + " +- " + str( err_qcd ))
+
+        err_tot2 = 0
+        for e in err.values():
+            err_tot2 = err_tot2 + e**2
+        err_tot = (err_tot2 + err_qcd**2)**0.5
+
+        print("----------------------")
+        print("sum MC: " + str(h_sumMC.Integral()) + "+-" + str(err_tot) )
+        print("Data: " + str(data.Integral()) + " +- " + str( data.Integral()**0.5 ) )
+        print("----------------------")
+        print 
+        
 print "Electron mother pdgID in signal sample"
 print("----------------------")
-print "nr of prompt electrons from W: " +  str(nr_W ) + " (" + str(nr_W/mc_to_plot["signal"].Integral()*100) + "%)"
-print "nr of electrons from tau decays: " + str( nr_tau ) + " (" + str(nr_tau/mc_to_plot["signal"].Integral()*100) + "%)"
-print "Other decays: " + str( mc_to_plot["signal"].Integral() - (nr_W + nr_tau) ) + " (" + str( (mc_to_plot["signal"].Integral() - (nr_W + nr_tau) )/mc_to_plot["signal"].Integral()*100) + "%)"
+
+try:
+    print "nr of prompt electrons from W: " +  str(nr_W ) + " (" + str(nr_W/mc_to_plot["signal"].Integral()*100) + "%)"
+    print "nr of electrons from tau decays: " + str( nr_tau ) + " (" + str(nr_tau/mc_to_plot["signal"].Integral()*100) + "%)"
+    print "Other decays: " + str( mc_to_plot["signal"].Integral() - (nr_W + nr_tau) ) + " (" + str( (mc_to_plot["signal"].Integral() - (nr_W + nr_tau) )/mc_to_plot["signal"].Integral()*100) + "%)"
+except NameError:
+    print "Not Available"
+
 print "---------------------------------------"
