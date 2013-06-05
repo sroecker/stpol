@@ -1,7 +1,8 @@
 #!/bin/bash
 echo "$0: $@"
 
-CONFSCRIPT="$STPOL_DIR/runconfs/step3_eventLoop_syst_mu_cfg.py $1"
+CONFSCRIPT="$STPOL_DIR/runconfs/step3_eventLoop_syst_cfg.py $1"
+
 OFDIR=`readlink -f $2`
 INFILES="${*:3}"
 if [ -z "$OFDIR" ]

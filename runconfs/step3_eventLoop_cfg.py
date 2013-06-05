@@ -33,6 +33,7 @@ parser.add_option("--mtop", dest="doMtop", action="store_true", default=False)
 parser.add_option("--doControlVars", dest="doControlVars", action="store_true", default=False)
 parser.add_option("--isAntiIso", dest="isAntiIso", action="store_true", default=False)
 parser.add_option("--skipTree", dest="skipTree", action="store_true", default=False)
+parser.add_option("--doFinal", dest="doFinal", action="store_true", default=False)
 parser.add_option("--outputFile", dest="outputFile", type="string", default="step3.root")
 
 options, args = parser.parse_args()
@@ -41,6 +42,8 @@ options.nJMin = int(options.nJ.split(",")[0])
 options.nJMax = int(options.nJ.split(",")[1])
 options.nTMin = int(options.nT.split(",")[0])
 options.nTMax = int(options.nT.split(",")[1])
+
+#options.doFinal = True
 
 if(options.isAntiIso and options.lepton=="mu"):
     isoC = 0.2
@@ -206,8 +209,8 @@ process.weights = cms.PSet(
 process.mtMuCuts = cms.PSet(
     mtMuSrc = cms.InputTag("muAndMETMT"),
     metSrc = cms.InputTag("patMETNTupleProducer", "Pt"),
-    doMTCut = cms.bool( options.doMtw and not options.isWplusJets ),
-    doMETCut = cms.bool( options.doMet and not options.isWplusJets ),
+    doMTCut = cms.bool( options.doFinal and options.lepton=="mu" and not options.isWplusJets ),
+    doMETCut = cms.bool( options.doFinal and options.lepton=="ele" and not options.isWplusJets ),
     minValMtw = cms.double(50),
     minValMet = cms.double(45)
     )
