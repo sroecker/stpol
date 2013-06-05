@@ -28,6 +28,7 @@ parser.add_option("--nT", dest="nT", type="string", default="0,10")
 parser.add_option("--mtw", dest="doMtw", action="store_true", default=False)
 parser.add_option("--met", dest="doMet", action="store_true", default=False)
 parser.add_option("--isMC", dest="isMC", action="store_true", default=False)
+parser.add_option("--isWplusJets", dest="isWplusJets", action="store_true", default=False)
 parser.add_option("--mtop", dest="doMtop", action="store_true", default=False)
 parser.add_option("--doControlVars", dest="doControlVars", action="store_true", default=False)
 parser.add_option("--isAntiIso", dest="isAntiIso", action="store_true", default=False)
@@ -53,7 +54,7 @@ process.options = cms.untracked.PSet(wantSummary=cms.untracked.bool(True))
 
 process.fwliteInput = cms.PSet(
     fileNames   = cms.vstring(input_files),
-    maxEvents   = cms.int32(-1),
+    maxEvents   = cms.int32(50000),
     outputEvery = cms.uint32(10000),
     makeTree = cms.bool(not options.skipTree)
 )
