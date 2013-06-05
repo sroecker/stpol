@@ -43,6 +43,7 @@ options.nTMax = int(options.nT.split(",")[1])
 
 if(options.isAntiIso and options.lepton=="mu"):
     isoC = 0.2
+    isoCHigh = 0.9
 else:
     isoC = 0.12
 
@@ -71,6 +72,7 @@ process.muonCuts = cms.PSet(
     requireOneMuon  = cms.bool(options.lepton=="mu"),
 
     isoCut  = cms.double(isoC),
+    isoCutHigh  = cms.double(isoCHigh),
 
     muonPtSrc  = cms.InputTag("goodSignalMuonsNTupleProducer", "Pt"),
     muonRelIsoSrc  = cms.InputTag("goodSignalMuonsNTupleProducer", "relIso"),

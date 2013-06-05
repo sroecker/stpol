@@ -97,6 +97,7 @@ public:
     bool doControlVars;
 
     float isoCut;
+    float isoCutHigh;
     edm::InputTag muonPtSrc;
     edm::InputTag muonRelIsoSrc;
     edm::InputTag muonCountSrc;
@@ -145,6 +146,7 @@ public:
         cutOnIso = pars.getParameter<bool>("cutOnIso");
         reverseIsoCut = pars.getParameter<bool>("reverseIsoCut");
         isoCut = (float)pars.getParameter<double>("isoCut");
+        isoCutHigh = (float)pars.getParameter<double>("isoCutHigh");
 
         muonPtSrc = pars.getParameter<edm::InputTag>("muonPtSrc");
         muonRelIsoSrc = pars.getParameter<edm::InputTag>("muonRelIsoSrc");
@@ -200,7 +202,7 @@ public:
             if(!reverseIsoCut)
                 passesMuIso = branch_vars.vars_float["mu_iso"] < isoCut;
             else
-                passesMuIso = branch_vars.vars_float["mu_iso"] > isoCut;
+                passesMuIso = branch_vars.vars_float["mu_iso"] > isoCut && branch_vars.vars_float["mu_iso"] < isoCutHigh;
         }
         if(cutOnIso && !passesMuIso) return false;
 
