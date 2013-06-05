@@ -26,6 +26,7 @@ parser.add_option("--nJ", dest="nJ", type="string", default="0,10")
 parser.add_option("--doNTags", dest="doNTags", action="store_true", default=False)
 parser.add_option("--nT", dest="nT", type="string", default="0,10")
 parser.add_option("--mtw", dest="doMtw", action="store_true", default=False)
+parser.add_option("--met", dest="doMet", action="store_true", default=False)
 parser.add_option("--isMC", dest="isMC", action="store_true", default=False)
 parser.add_option("--mtop", dest="doMtop", action="store_true", default=False)
 parser.add_option("--doControlVars", dest="doControlVars", action="store_true", default=False)
@@ -201,10 +202,12 @@ process.weights = cms.PSet(
 process.mtMuCuts = cms.PSet(
     mtMuSrc = cms.InputTag("muAndMETMT"),
     metSrc = cms.InputTag("patMETNTupleProducer", "Pt"),
-    doMTCut = cms.bool(options.doMtw),
-    doMETCut = cms.bool(False),
-    minVal = cms.double(50)
-)
+    doMTCut = cms.bool( options.doMtw and not options.isWplusJets ),
+    doMETCut = cms.bool( options.doMet and not options.isWplusJets ),
+    minValMtw = cms.double(50),
+    minValMet = cms.double(45)
+    )
+
 
 #The versions should be specified explicitly at the moment
 process.HLTmu = cms.PSet(

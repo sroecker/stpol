@@ -701,7 +701,8 @@ class MTMuCuts : public CutsBase {
 public:
     edm::InputTag mtMuSrc;
     edm::InputTag metSrc;
-    float minVal;
+    float minValMtw;
+    float minValMet;
     bool doMTCut;
     bool doMETCut;
 
@@ -716,7 +717,8 @@ public:
         initialize_branches();
         mtMuSrc = pars.getParameter<edm::InputTag>("mtMuSrc");
         metSrc = pars.getParameter<edm::InputTag>("metSrc");
-        minVal = (float)pars.getParameter<double>("minVal");
+        minValMtw = (float)pars.getParameter<double>("minValMtw");
+        minValMet = (float)pars.getParameter<double>("minValMet");
         doMTCut = pars.getParameter<bool>("doMTCut");
 	doMETCut = pars.getParameter<bool>("doMETCut");
     }
@@ -726,8 +728,8 @@ public:
 
         branch_vars.vars_float["mt_mu"] = get_collection<double>(event, mtMuSrc, BranchVars::def_val);
         branch_vars.vars_float["met"] = get_collection_n<float>(event, metSrc, 0);
-        if (doMTCut && branch_vars.vars_float["mt_mu"] < minVal) return false;
-	if (doMETCut && branch_vars.vars_float["met"] < minVal) return false;
+        if (doMTCut && branch_vars.vars_float["mt_mu"] < minValMtw) return false;
+	if (doMETCut && branch_vars.vars_float["met"] < minValMet) return false;
 
         post_process();
         return true;
