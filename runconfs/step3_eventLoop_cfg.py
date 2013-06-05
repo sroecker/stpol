@@ -207,7 +207,7 @@ process.HLTmu = cms.PSet(
         "HLT_IsoMu24_eta2p1_v14",
         "HLT_IsoMu24_eta2p1_v15",
         "HLT_IsoMu24_eta2p1_v17",
-        "HLT_IsoMu24_eta2p1_v16"
+        "HLT_IsoMu24_eta2p1_v16",
     ]),
     doCutOnHLT = cms.bool(options.lepton=="mu"),
     saveHLTVars = cms.bool(options.doControlVars)
