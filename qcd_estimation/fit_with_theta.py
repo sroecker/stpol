@@ -3,7 +3,8 @@ from theta_auto import *
 from Fit import Fit
 
 init_val = 1.30
-step = 0.001
+init_val_wjets = 3.0
+step = 0.0001
 
 def get_model(infile, i=0):
     # Read in and build the model automatically from the histograms in the root file. 
@@ -32,7 +33,7 @@ def get_model(infile, i=0):
     # will be 100% correlated.
     print "Trying fit with uncertainty",init_val+i*step
     model.add_lognormal_uncertainty('nonqcd_rate', math.log(init_val+i*step), 'nonqcd')
-    model.add_lognormal_uncertainty('wjets_rate', math.log(3.0), 'wjets')
+    model.add_lognormal_uncertainty('wjets_rate', math.log(init_val_wjets+i*step), 'wjets')
     return model
 
 def fit_qcd(variable, identifier, fit):
@@ -45,7 +46,7 @@ def fit_qcd(variable, identifier, fit):
    outfile = outdir+variable.shortName+"_fit_"+identifier+".root"
    results_file.write("# "+identifier+"...")
    
-   for i in range(0,100):
+   for i in range(0,10000):
       try:
          model = get_model(infile, i)  
          result = mle(model, "data", 1, ks=True, chi2=True)

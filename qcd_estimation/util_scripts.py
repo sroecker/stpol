@@ -19,7 +19,8 @@ def open_all_data_files(data_group, mc_groups, QCD_group, paths):
                        count_hist = f.Get("trees").Get("count_hist")
                        if not count_hist:
                           raise TObjectOpenException("Failed to open count histogram")
-                       ds.setOriginalEventCount(count_hist.GetBinContent(1))
+                       ds.setOriginalEventCount(count_hist.GetBinContent(1), iso, syst)
+                       #print paths[iso][syst]+ds.getFileName(), count_hist.GetBinContent(1)
                        ds.addFile(syst, iso, files[ds.getName()+"_"+iso+syst])
                        #print "after adding ",ds._files
     return files

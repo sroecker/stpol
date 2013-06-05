@@ -167,3 +167,102 @@ def make_histos_with_cuts(var,
    
    outfile.Write()   
    outfile.Close()
+
+
+
+def make_histos_for_final_fit(var,
+        cuts,
+        dataGroup,
+        MCGroups,
+        systematics,
+        lumis, 
+        openedFiles,
+        fit,
+        qcd_yield,
+        QCDGroup = dgQCDMu):
+
+   syst_type = ["Up", "Down"]
+
+   stacks =  {}
+   #Iso region
+   for s in systematics:
+      if s == "Nominal":
+         stack = make_stack(var, cuts.name, MCGroups, dataGroup, openedFiles, s, "iso", lumis, cuts.isoCutsMC, cuts.isoCutsData, "", cuts.name)
+         stacks[var.name+s+"iso"] = stack
+         print stack
+         for h in stack.GetHists():
+            print h.GetName(),h.GetTitle()
+         
+      else:
+         for st in syst_type:
+            stack = make_stack(var, cuts.name, MCGroups, dataGroup, openedFiles, s+st, "iso", lumis, cuts.isoCutsMC, cuts.isoCutsData, "", cuts.name)
+            stacks[var.name+s+st+"iso"] = stack
+
+   #Anti-iso region
+   for s in systematics:
+      if s == "Nominal":
+         make_histogram(var, dataGroup, cuts.name, openedFiles, lumis, s, "antiiso", cuts.antiIsoCutsData)
+
+         stack = make_stack(var, cuts.name+s, MCGroups, dataGroup, openedFiles, s, "antiiso", lumis, cuts.antiIsoCutsMC, cuts.antiIsoCutsData, "", cuts.name)
+         stacks[var.name+s+"antiiso"] = stack
+         #Iso down
+         stack = make_stack(var, cuts.name+s+"iso down", MCGroups, dataGroup, openedFiles, s, "antiiso", lumis,  
+                        cuts.antiIsoCutsMCIsoDown, cuts.antiIsoCutsDataIsoDown, "", "_iso_down_"+cuts.name)
+         stacks[var.name+s+"antiiso"+"_iso_down"] = stack
+
+         #Iso Up
+         stack = make_stack(var, cuts.name+s+"iso up", MCGroups, dataGroup, openedFiles, s, "antiiso", lumis, 
+                        cuts.antiIsoCutsMCIsoUp, cuts.antiIsoCutsDataIsoUp, "", "_iso_up_"+cuts.name)
+         stacks[var.name+s+"antiiso"+"_iso_up"] = stack   
+     
+   #Write out stuff 
+   outfile = TFile("templates/"+var.shortName+"_templates_final_fit.root", "recreate")
+   outfile.cd()
+           
+   #non-QCD
+   for s in systematics:
+      if s == "Nominal":
+         stack = stacks[var.name+s+"iso"]
+         fit.orig = {}
+         for h in stack.GetHists():
+            h.SetName(var.shortName+"__"+h.GetTitle().replace("+", "").replace(" #bar{t}","tbar"))
+            h.Write()
+            fit.orig[h.GetTitle()] = h.Integral()
+      else:
+         for st in syst_type:
+            if st == "Up":
+               syst_string = "__"+s+"__plus"
+            else:
+               syst_string = "__"+s+"__minus"
+            stack = stacks[var.name+s+st+"iso"]              
+            for h in stack.GetHists():
+                h.SetName(var.shortName+"__"+h.GetTitle().replace("+", "").replace(" #bar{t}","tbar")+syst_string)
+                h.Write()   
+    
+   #Data
+   #print dataGroup._histograms
+   hData = dataGroup.getHistogram(var, "Nominal", "iso", cuts.name)
+   hData.SetName(var.shortName+"__DATA")
+   print "data integral", hData.Integral()
+   hData.Write()
+         
+   hQCD = dataGroup.getHistogram(var, "Nominal", "antiiso")
+   hQCD.SetName(var.shortName+"__qcd")
+   hQCDisoUp = dataGroup.getHistogram(var, "Nominal", "antiiso", "_iso_up_"+cuts.name)
+   hQCDisoDown = dataGroup.getHistogram(var, "Nominal", "antiiso", "_iso_down_"+cuts.name)
+               
+   #Subtract MC-s from QCD data template
+   stack = stacks[var.name+"Nominalantiiso"]
+   for h in stack.GetHists():
+      hQCD.Add(h,-1)
+                    
+   #Scale template to a large are (then fitted multiplier will be small, which theta likes
+   if hQCD.Integral() > 0:
+      hQCD.Scale(qcd_yield/hQCD.Integral())
+   
+   print "QCD integral", hQCD.Integral()   
+   hQCD.Write()
+   
+   outfile.Write()   
+   outfile.Close()
+

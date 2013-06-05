@@ -6,6 +6,7 @@ class Dataset:
       self._xs = xs
       self._prescale = prescale
       self._files = {}
+      self._originalEvents = {}
 
    def GetFillStyle(self):
       if MC:
@@ -20,10 +21,11 @@ class Dataset:
    def isMC(self):
       return self._MC
 
-   def scaleToData(self, dataLumi):
+   def scaleToData(self, dataLumi, syst, iso):
       expected_events = self._xs * dataLumi
-      total_events = self.getOriginalEventCount()      
+      total_events = self.getOriginalEventCount(iso, syst)      
       scale_factor = float(expected_events)/float(total_events)      
+      #print "scale: ",self._name,self._file_name,self._xs, dataLumi, self.getOriginalEventCount(iso, syst), scale_factor
       return scale_factor
 
    def preScale(self):
@@ -39,8 +41,8 @@ class Dataset:
       else:
         return self._files[syst+iso]
 
-   def setOriginalEventCount(self, count):
-      self._originalEvents = count
+   def setOriginalEventCount(self, count, iso, syst):
+      self._originalEvents[iso+syst] = count
 
-   def getOriginalEventCount(self):
-      return self._originalEvents
+   def getOriginalEventCount(self, iso, syst):
+      return self._originalEvents[iso+syst] 
