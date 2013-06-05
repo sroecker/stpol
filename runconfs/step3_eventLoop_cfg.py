@@ -168,6 +168,7 @@ process.topCuts = cms.PSet(
 process.weights = cms.PSet(
     doWeights = cms.bool(options.isMC),
     doWeightSys = cms.bool(options.isMC),
+    leptonChannel = cms.string(options.lepton),
 
     bWeightNominalSrc = cms.InputTag("bTagWeightProducerNoCut", "bTagWeight"),
     puWeightSrc = cms.InputTag("puWeightProducer", "PUWeightNtrue"),
