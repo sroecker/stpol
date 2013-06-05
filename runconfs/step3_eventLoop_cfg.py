@@ -46,6 +46,7 @@ if(options.isAntiIso and options.lepton=="mu"):
     isoCHigh = 0.9
 else:
     isoC = 0.12
+    isoCHigh = 0.12
 
 process = cms.Process("STPOLSEL3")
 process.options = cms.untracked.PSet(wantSummary=cms.untracked.bool(True))
