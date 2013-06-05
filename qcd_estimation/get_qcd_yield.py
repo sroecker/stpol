@@ -24,6 +24,7 @@ def get_yield(var, filename, cutMT, mtMinValue, fit_result, dataGroup):
     #QCDRATE = fit_result.qcd
     hQCD = f.Get(var.shortName+"__qcd")
     hQCDShapeOrig = dataGroup.getHistogram(var, "Nominal", "antiiso")
+    print "QCD scale factor:", hQCD.Integral()/hQCDShapeOrig.Integral()
     hQCDShapeOrig.Scale(hQCD.Integral()/hQCDShapeOrig.Integral())
     #print fit_result
     if cutMT:
@@ -52,16 +53,17 @@ def get_qcd_yield_with_fit(var, cuts, cutMT, mtMinValue, dataGroup, lumis, MCGro
 
 #Run as ~andres/theta_testing/utils2/theta-auto.py get_qcd_yield.py
 if __name__=="__main__":
-    channel = "ele"
-#    channel = "mu"
+    #channel = "ele"
+    channel = "mu"
 
     do_systematics = True
 
     if channel == "ele":
         do_systematics = False
 
-#    cut_region = "final_selection"
-    cut_region = "2j0t_selection"
+    #cut_region = "final_selection_without_eta_cut"
+    cut_region = "final_selection"
+#    cut_region = "2j0t_selection"
 
     print "QCD estimation in " + channel + " channel"
     
@@ -102,13 +104,12 @@ if __name__=="__main__":
     if channel == "mu":
         lepton_weight = "*muon_TriggerWeight*muon_IsoWeight*muon_IDWeight"
         cuts.setTrigger("1")
-
-
-    cuts.setWeightMC("pu_weight*b_weight_nominal"+lepton_weight)
     
+    cuts.setWeightMC("pu_weight*b_weight_nominal"+lepton_weight)
+    if cut_region = "final_selection_without_eta_cut":
+        cuts.setFinalCuts("top_mass < 220 && top_mass > 130")
     #Recreate all necessary cuts after manual changes
     cuts.calcCuts()
-
     #Luminosities for each different set of data have to be specified.
     #Now only for iso and anti-iso. In the future additional ones for systematics.
     #See DataLumiStorage for details if needed
@@ -149,8 +150,8 @@ if __name__=="__main__":
     #If you have a different structure, change paths manually
 
     if channel == "mu":
-#        base_path = "/home/andres/single_top/stpol/out_step3_05_29"
-        base_path = "~liis/SingleTopJoosep/stpol/out_step3_05_31_18_43/mu"        
+        base_path = "/home/andres/single_top/stpol/out_step3_06_01"
+        #base_path = "~liis/SingleTopJoosep/stpol/out_step3_05_31_18_43/mu"        
     if channel == "ele":
         base_path = "~liis/SingleTopJoosep/stpol/out_step3_05_31_18_43/ele"        
 

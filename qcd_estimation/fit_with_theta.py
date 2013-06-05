@@ -2,7 +2,7 @@ import datetime
 from theta_auto import *
 from Fit import Fit
 
-init_val = 1.30
+init_val = 1.1
 init_val_wjets = 3.0
 step = 0.0001
 
