@@ -212,7 +212,10 @@ public:
 class ElectronCuts : public CutsBase {
 public:
     bool requireOneElectron;
+    bool cutOnIso;
+    bool reverseIsoCut;
     float isoCut;
+    float mvaCut;
 
     edm::InputTag eleCountSrc;
     edm::InputTag muonCountSrc;
@@ -238,7 +241,11 @@ public:
     {
         initialize_branches();
         requireOneElectron = pars.getParameter<bool>("requireOneElectron");
-        eleCountSrc = pars.getParameter<edm::InputTag>("eleCountSrc");
+	cutOnIso = pars.getParameter<bool>("cutOnIso");
+	reverseIsoCut = pars.getParameter<bool>("reverseIsoCut");
+	isoCut = (float)pars.getParameter<double>("isoCut");
+	mvaCut = (float)pars.getParameter<double>("mvaCut");
+	eleCountSrc = pars.getParameter<edm::InputTag>("eleCountSrc");
         muonCountSrc = pars.getParameter<edm::InputTag>("muonCountSrc");
         electronRelIsoSrc = pars.getParameter<edm::InputTag>("electronRelIsoSrc");
         electronMvaSrc = pars.getParameter<edm::InputTag>("electronMvaSrc");
@@ -267,6 +274,13 @@ public:
         if(decay_tree.size()>0) {
             branch_vars.vars_int["el_mother_id"] = get_parent(decay_tree, 11);
         }
+
+	bool passesElIso = true;
+	if( cutOnIso && !reverseIsoCut ){
+	  passesElIso = branch_vars.vars_float["el_reliso"] < isoCut && branch_vars.vars_float["el_mva"] > mvaCut;
+	    if( !passesElIso )
+	      return false;
+	}
 
         post_process();
         return true;
@@ -520,6 +534,9 @@ public:
 
     bool doWeights;
     bool doWeightSys;
+    string leptonChannel;
+    float el_weight; 
+    float mu_weight; 
 
     void initialize_branches() {
         if (doWeights) {
@@ -530,6 +547,7 @@ public:
             branch_vars.vars_float["muon_TriggerWeight"] = 1.0;
             branch_vars.vars_float["electron_IDWeight"] = 1.0;
             branch_vars.vars_float["electron_triggerWeight"] = 1.0;
+	    branch_vars.vars_float["SF_total"] = 1.0;
         }
         if( doWeights && doWeightSys ) {
             branch_vars.vars_float["b_weight_nominal_Lup"] = 1.0;
@@ -556,6 +574,7 @@ public:
     {
         doWeights = pars.getParameter<bool>("doWeights");
         doWeightSys = pars.getParameter<bool>("doWeightSys");
+	leptonChannel = pars.getParameter<string>("leptonChannel");
 
         initialize_branches();
 
@@ -592,16 +611,28 @@ public:
     bool process(const edm::EventBase& event) {
         pre_process();
         if(doWeights) {
-            branch_vars.vars_float["b_weight_nominal"] = get_collection<float>(event, bWeightNominalSrc, 0.0);
-            branch_vars.vars_float["pu_weight"] = get_collection<double>(event, puWeightSrc, 0.0);
+	  branch_vars.vars_float["b_weight_nominal"] = get_collection<float>(event, bWeightNominalSrc, 0.0);
+	  branch_vars.vars_float["pu_weight"] = get_collection<double>(event, puWeightSrc, 0.0);
+	  
+	  branch_vars.vars_float["muon_IDWeight"] = get_collection<double>(event, muonIDWeightSrc, 0.0);
+	  branch_vars.vars_float["muon_IsoWeight"] = get_collection<double>(event, muonIsoWeightSrc, 0.0);
+	  branch_vars.vars_float["muon_TriggerWeight"] = get_collection<double>(event, muonTriggerWeightSrc, 0.0);
+	  
+	  branch_vars.vars_float["electron_IDWeight"] = get_collection<double>(event, electronIDWeightSrc, 0.0);
+	  branch_vars.vars_float["electron_triggerWeight"] = get_collection<double>(event, electronTriggerWeightSrc, 0.0);
+	  
+	  mu_weight = branch_vars.vars_float["muon_IDWeight"]*branch_vars.vars_float["muon_IsoWeight"]*branch_vars.vars_float["muon_TriggerWeight"];
+	  el_weight = branch_vars.vars_float["electron_IDWeight"]*branch_vars.vars_float["electron_triggerWeight"];
 
-            branch_vars.vars_float["muon_IDWeight"] = get_collection<double>(event, muonIDWeightSrc, 0.0);
-            branch_vars.vars_float["muon_IsoWeight"] = get_collection<double>(event, muonIsoWeightSrc, 0.0);
-            branch_vars.vars_float["muon_TriggerWeight"] = get_collection<double>(event, muonTriggerWeightSrc, 0.0);
-
-            branch_vars.vars_float["electron_IDWeight"] = get_collection<double>(event, electronIDWeightSrc, 0.0);
-            branch_vars.vars_float["electron_triggerWeight"] = get_collection<double>(event, electronTriggerWeightSrc, 0.0);
-        }
+	  if( leptonChannel == "mu")
+	    branch_vars.vars_float["SF_total"] = branch_vars.vars_float["b_weight_nominal"]*branch_vars.vars_float["pu_weight"]*mu_weight;
+	  else if( leptonChannel == "ele")
+	    branch_vars.vars_float["SF_total"] = branch_vars.vars_float["b_weight_nominal"]*branch_vars.vars_float["pu_weight"]*el_weight;
+	  else{
+	    branch_vars.vars_float["SF_total"] = 0;
+	    std::cout<<"total SF set to 0, choose 'el' or 'mu' as leptonChannel"<<std::endl;
+	  }
+	}
         if( doWeights && doWeightSys ) {
             branch_vars.vars_float["b_weight_nominal_Lup"] = get_collection<float>(event, bWeightNominalLUpSrc, 0.0);
             branch_vars.vars_float["b_weight_nominal_Ldown"] = get_collection<float>(event, bWeightNominalLDownSrc, 0.0);
@@ -638,6 +669,8 @@ public:
 
             not_nan("electron_IDWeight");
             not_nan("electron_triggerWeight");
+
+	    not_nan("SF_total");
         }
         if( doWeights && doWeightSys) {
             not_nan("b_weight_nominal_Lup");
@@ -670,6 +703,7 @@ public:
     edm::InputTag metSrc;
     float minVal;
     bool doMTCut;
+    bool doMETCut;
 
     void initialize_branches() {
         branch_vars.vars_float["mt_mu"] = BranchVars::def_val;
@@ -684,6 +718,7 @@ public:
         metSrc = pars.getParameter<edm::InputTag>("metSrc");
         minVal = (float)pars.getParameter<double>("minVal");
         doMTCut = pars.getParameter<bool>("doMTCut");
+	doMETCut = pars.getParameter<bool>("doMETCut");
     }
 
     bool process(const edm::EventBase& event) {
@@ -692,6 +727,7 @@ public:
         branch_vars.vars_float["mt_mu"] = get_collection<double>(event, mtMuSrc, BranchVars::def_val);
         branch_vars.vars_float["met"] = get_collection_n<float>(event, metSrc, 0);
         if (doMTCut && branch_vars.vars_float["mt_mu"] < minVal) return false;
+	if (doMETCut && branch_vars.vars_float["met"] < minVal) return false;
 
         post_process();
         return true;
