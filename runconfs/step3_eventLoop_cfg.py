@@ -65,7 +65,7 @@ process.fwliteOutput = cms.PSet(
 )
 
 process.muonCuts = cms.PSet(
-    cutOnIso  = cms.bool(False),
+    cutOnIso  = cms.bool(options.lepton=="mu"),
     doControlVars  = cms.bool(options.doControlVars),
     reverseIsoCut  = cms.bool(options.isAntiIso),
     requireOneMuon  = cms.bool(options.lepton=="mu"),
@@ -98,7 +98,7 @@ process.eleCuts = cms.PSet(
     requireOneElectron = cms.bool(options.lepton=="ele"),
 
     reverseIsoCut = cms.bool(options.isAntiIso),
-    cutOnIso = cms.bool(False),
+    cutOnIso = cms.bool(options.lepton=="ele"),
     isoCut = cms.double(0.1),
     mvaCut = cms.double(0.9),
 
