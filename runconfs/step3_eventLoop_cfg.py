@@ -54,7 +54,7 @@ process.options = cms.untracked.PSet(wantSummary=cms.untracked.bool(True))
 
 process.fwliteInput = cms.PSet(
     fileNames   = cms.vstring(input_files),
-    maxEvents   = cms.int32(50000),
+    maxEvents   = cms.int32(-1),
     outputEvery = cms.uint32(10000),
     makeTree = cms.bool(not options.skipTree)
 )

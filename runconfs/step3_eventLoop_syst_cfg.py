@@ -23,5 +23,5 @@ process.genParticles.doGenParticles = cms.bool(options.isMC)
 process.bEfficiencyCalcs.doBEffCalcs = cms.bool(False)
 
 if(options.lepton=="mu"):
-    process.muonCuts.isoCut = cms.float(0.3)
-    process.muonCuts.isoCutHigh = cms.float(0.5)
+    process.muonCuts.isoCut = cms.double(0.3)
+    process.muonCuts.isoCutHigh = cms.double(0.5)
