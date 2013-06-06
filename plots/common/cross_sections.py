@@ -51,8 +51,12 @@ xs = {
 	, "QCD_Pt_350_BCtoE": 811.0*0.0295
 }
 
-lumi = {
-    "ele" = 19728,
-    "mu" = 19739
+lumi_iso = {
+    "ele": 19728,
+    "mu": 19739
     }
 
+lumi_antiiso = {
+    "ele": 19728,
+    "mu": 19739
+    }
