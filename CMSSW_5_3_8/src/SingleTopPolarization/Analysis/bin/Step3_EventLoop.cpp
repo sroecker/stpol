@@ -118,6 +118,8 @@ public:
     virtual void initialize_branches() {
         branch_vars.vars_float["mu_pt"] = BranchVars::def_val;
         branch_vars.vars_float["mu_iso"] = BranchVars::def_val;
+	branch_vars.vars_int["mu_charge"] = BranchVars::def_val_int;
+	branch_vars.vars_int["mu_mother_id"] = BranchVars::def_val_int;
 
         branch_vars.vars_int["n_muons"] = BranchVars::def_val;
         branch_vars.vars_int["n_eles"] = BranchVars::def_val;
@@ -126,13 +128,11 @@ public:
             branch_vars.vars_float["mu_db"] = BranchVars::def_val;
             branch_vars.vars_float["mu_dz"] = BranchVars::def_val;
             branch_vars.vars_float["mu_chi2"] = BranchVars::def_val;
-            branch_vars.vars_int["mu_charge"] = BranchVars::def_val_int;
+
             branch_vars.vars_int["mu_gtrack"] = BranchVars::def_val_int;
             branch_vars.vars_int["mu_itrack"] = BranchVars::def_val_int;
             branch_vars.vars_int["mu_layers"] = BranchVars::def_val_int;
             branch_vars.vars_int["mu_stations"] = BranchVars::def_val_int;
-
-            branch_vars.vars_int["mu_mother_id"] = BranchVars::def_val_int;
         }
     }
 
@@ -151,18 +151,18 @@ public:
         muonPtSrc = pars.getParameter<edm::InputTag>("muonPtSrc");
         muonRelIsoSrc = pars.getParameter<edm::InputTag>("muonRelIsoSrc");
 
+	muonDecayTreeSrc = pars.getParameter<edm::InputTag>("muonDecayTreeSrc");
+	muonChargeSrc = pars.getParameter<edm::InputTag>("muonChargeSrc");
+
         if(doControlVars) {
             muonDbSrc = pars.getParameter<edm::InputTag>("muonDbSrc");
             muonDzSrc = pars.getParameter<edm::InputTag>("muonDzSrc");
             muonNormChi2Src = pars.getParameter<edm::InputTag>("muonNormChi2Src");
-            muonChargeSrc = pars.getParameter<edm::InputTag>("muonChargeSrc");
 
             muonGTrackHitsSrc = pars.getParameter<edm::InputTag>("muonGTrackHitsSrc");
             muonITrackHitsSrc = pars.getParameter<edm::InputTag>("muonITrackHitsSrc");
             muonLayersSrc = pars.getParameter<edm::InputTag>("muonLayersSrc");
             muonStationsSrc = pars.getParameter<edm::InputTag>("muonStationsSrc");
-
-            muonDecayTreeSrc = pars.getParameter<edm::InputTag>("muonDecayTreeSrc");
         }
 
         muonCountSrc = pars.getParameter<edm::InputTag>("muonCountSrc");
@@ -180,21 +180,22 @@ public:
 
         branch_vars.vars_float["mu_pt"] = get_collection_n<float>(event, muonPtSrc, 0);
         branch_vars.vars_float["mu_iso"] = get_collection_n<float>(event, muonRelIsoSrc, 0);
+	branch_vars.vars_int["mu_charge"] = (int)get_collection_n<float>(event, muonChargeSrc, 0);
+
+	std::string decay_tree = get_collection<std::string>(event, muonDecayTreeSrc, default_str);
+	if(decay_tree.size()>0) {
+	  branch_vars.vars_int["mu_mother_id"] = get_parent(decay_tree, 13);
+	}
 
         if(doControlVars) {
             branch_vars.vars_float["mu_db"] = get_collection_n<float>(event, muonDbSrc, 0);
             branch_vars.vars_float["mu_dz"] = get_collection_n<float>(event, muonDzSrc, 0);
             branch_vars.vars_float["mu_chi2"] = get_collection_n<float>(event, muonNormChi2Src, 0);
-            branch_vars.vars_int["mu_charge"] = (int)get_collection_n<float>(event, muonChargeSrc, 0);
+         
             branch_vars.vars_int["mu_gtrack"] = (int)get_collection_n<float>(event, muonGTrackHitsSrc, 0);
             branch_vars.vars_int["mu_itrack"] = (int)get_collection_n<float>(event, muonITrackHitsSrc, 0);
             branch_vars.vars_int["mu_layers"] = (int)get_collection_n<float>(event, muonLayersSrc, 0);
             branch_vars.vars_int["mu_stations"] = (int)get_collection_n<float>(event, muonStationsSrc, 0);
-
-            std::string decay_tree = get_collection<std::string>(event, muonDecayTreeSrc, default_str);
-            if(decay_tree.size()>0) {
-                branch_vars.vars_int["mu_mother_id"] = get_parent(decay_tree, 13);
-            }
         }
 
         bool passesMuIso = true;
