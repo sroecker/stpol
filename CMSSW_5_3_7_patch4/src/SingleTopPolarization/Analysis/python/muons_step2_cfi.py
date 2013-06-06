@@ -153,11 +153,11 @@ def MuonPath(process, conf):
         process.goodSignalMuons *
         process.muonCount *
         process.looseVetoMuons *
+        process.looseVetoElectrons *
         process.oneIsoMu *
         process.singleIsoMu *
 
         #process.looseMuVetoMu *
-        process.looseVetoElectrons *
         #process.looseEleVetoMu *
 
         #Do general jet cleaning, PU-jet cleaning and select 2 good jets
@@ -184,11 +184,10 @@ def MuonPath(process, conf):
         process.goodSignalMuAnalyzer = cms.EDAnalyzer("SimpleMuonAnalyzer", interestingCollections=cms.untracked.VInputTag("muonsWithIso", "goodSignalMuons"))
         process.vetoEleAnalyzer = cms.EDAnalyzer("SimpleElectronAnalyzer", interestingCollections=cms.untracked.VInputTag("looseVetoElectrons"))
         process.muPrintOutSequence = cms.Sequence(process.goodSignalMuAnalyzer*process.vetoEleAnalyzer)
-        #process.muPath.insert(
-        #    process.muPath.index(process.goodSignalMuons)+1,
-        #    process.goodSignalMuAnalyzer
-        #)
-        process.muPath += process.muPrintOutSequence
+        process.muPath.insert(
+            process.muPath.index(process.oneIsoMu),
+            process.muPrintOutSequence
+        )
         process.oneIsoMuID = cms.EDAnalyzer("EventIDAnalyzer", name=cms.untracked.string("oneIsoMuID"))
         process.muPath.insert(
             process.muPath.index(process.oneIsoMu)+1,
