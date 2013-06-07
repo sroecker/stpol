@@ -32,6 +32,7 @@
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 
 #include "DataFormats/PatCandidates/interface/Jet.h"
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace edm;
 using namespace std;
@@ -119,6 +120,7 @@ GenParticleSelector::~GenParticleSelector()
 void
 GenParticleSelector::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
+   LogDebug("") << "GenParticleSelector";
    count_siblings = 0;
    which_sibling = 0;
    s1_mother1 = s1_mother2 = s2_mother1 = s2_mother2 = 0;
