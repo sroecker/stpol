@@ -206,7 +206,7 @@ def MuonPath(process, conf):
             process.muonWeightsProducer
         )
 
-    if conf.isMC:
+    if conf.isMC and not conf.isSherpa:
         process.decayTreeProducerMu = cms.EDProducer(
             'GenParticleDecayTreeProducer<pat::Muon>',
             src=cms.untracked.InputTag("singleIsoMu")
