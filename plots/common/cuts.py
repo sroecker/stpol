@@ -31,5 +31,9 @@ class Cuts:
     def n_tags(n):
         return Cut("n_tags == %d" % int(n))
 
-Cuts.final = Cuts.rms_lj*Cuts.mt_mu*Cuts.n_jets(2)*Cuts.n_tags(1)*Cuts.eta_lj*Cuts.top_mass_sig
-Cuts.mu = Cuts.hlt_isomu*Cuts.one_muon*Cuts.lepton_veto
+    @staticmethod
+    def final(n, m):
+        return Cuts.rms_lj*Cuts.mt_mu*Cuts.n_jets(n)*Cuts.n_tags(m)*Cuts.eta_lj*Cuts.top_mass_sig
+
+#Cuts.final = lambda n,m: Cuts.rms_lj*Cuts.mt_mu*Cuts.n_jets(n)*Cuts.n_tags(m)*Cuts.eta_lj*Cuts.top_mass_sig
+Cuts.mu = Cuts.one_muon*Cuts.lepton_veto

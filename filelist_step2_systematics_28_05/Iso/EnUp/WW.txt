@@ -1,0 +1,8 @@
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/Iso/EnUp/WW/output_1_1_gJi.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/Iso/EnUp/WW/output_2_1_Y3E.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/Iso/EnUp/WW/output_3_1_POh.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/Iso/EnUp/WW/output_4_1_7z6.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/Iso/EnUp/WW/output_5_1_nsp.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/Iso/EnUp/WW/output_6_1_kft.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/Iso/EnUp/WW/output_7_1_JQu.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/Iso/EnUp/WW/output_8_1_1uy.root

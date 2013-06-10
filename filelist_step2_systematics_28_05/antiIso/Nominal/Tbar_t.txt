@@ -1,0 +1,3 @@
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/antiIso/Nominal/Tbar_t/output_1_1_cXI.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/antiIso/Nominal/Tbar_t/output_2_1_cHS.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/antiIso/Nominal/Tbar_t/output_3_1_W3X.root

@@ -1,0 +1,8 @@
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/Iso/UnclusteredEnDown/WZ/output_1_1_ZJb.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/Iso/UnclusteredEnDown/WZ/output_2_1_JeM.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/Iso/UnclusteredEnDown/WZ/output_3_1_Did.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/Iso/UnclusteredEnDown/WZ/output_4_1_Wp3.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/Iso/UnclusteredEnDown/WZ/output_5_1_Lss.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/Iso/UnclusteredEnDown/WZ/output_6_1_ndw.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/Iso/UnclusteredEnDown/WZ/output_7_1_1Sm.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/Iso/UnclusteredEnDown/WZ/output_8_1_3RD.root

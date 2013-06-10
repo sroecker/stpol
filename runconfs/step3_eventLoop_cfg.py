@@ -26,10 +26,15 @@ parser.add_option("--nJ", dest="nJ", type="string", default="0,10")
 parser.add_option("--doNTags", dest="doNTags", action="store_true", default=False)
 parser.add_option("--nT", dest="nT", type="string", default="0,10")
 parser.add_option("--mtw", dest="doMtw", action="store_true", default=False)
+parser.add_option("--met", dest="doMet", action="store_true", default=False)
+parser.add_option("--etalj", dest="doEtaLj", action="store_true", default=False)
 parser.add_option("--isMC", dest="isMC", action="store_true", default=False)
+parser.add_option("--isWplusJets", dest="isWplusJets", action="store_true", default=False)
 parser.add_option("--mtop", dest="doMtop", action="store_true", default=False)
 parser.add_option("--doControlVars", dest="doControlVars", action="store_true", default=False)
+parser.add_option("--isAntiIso", dest="isAntiIso", action="store_true", default=False)
 parser.add_option("--skipTree", dest="skipTree", action="store_true", default=False)
+parser.add_option("--doFinal", dest="doFinal", action="store_true", default=False)
 parser.add_option("--outputFile", dest="outputFile", type="string", default="step3.root")
 
 options, args = parser.parse_args()
@@ -39,6 +44,14 @@ options.nJMax = int(options.nJ.split(",")[1])
 options.nTMin = int(options.nT.split(",")[0])
 options.nTMax = int(options.nT.split(",")[1])
 
+#options.doFinal = True
+
+if(options.isAntiIso and options.lepton=="mu"):
+    isoC = 0.2
+    isoCHigh = 0.9
+else:
+    isoC = 0.12
+    isoCHigh = 0.12
 
 process = cms.Process("STPOLSEL3")
 process.options = cms.untracked.PSet(wantSummary=cms.untracked.bool(True))
@@ -59,11 +72,13 @@ process.fwliteOutput = cms.PSet(
 )
 
 process.muonCuts = cms.PSet(
-    cutOnIso  = cms.bool(False),
+    cutOnIso  = cms.bool(options.lepton=="mu"),
     doControlVars  = cms.bool(options.doControlVars),
-    reverseIsoCut  = cms.bool(False),
+    reverseIsoCut  = cms.bool(options.isAntiIso),
     requireOneMuon  = cms.bool(options.lepton=="mu"),
-    isoCut  = cms.double(0.12),
+
+    isoCut  = cms.double(isoC),
+    isoCutHigh  = cms.double(isoCHigh),
 
     muonPtSrc  = cms.InputTag("goodSignalMuonsNTupleProducer", "Pt"),
     muonRelIsoSrc  = cms.InputTag("goodSignalMuonsNTupleProducer", "relIso"),
@@ -85,11 +100,16 @@ process.muonCuts = cms.PSet(
     muonLayersSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "trackhitPatterntrackerLayersWithMeasurement"),
     muonMotherPdgIdSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "motherGenPdgId"),
     muonDecayTreeSrc = cms.InputTag("decayTreeProducerMu"),
-
 )
 
 process.eleCuts = cms.PSet(
     requireOneElectron = cms.bool(options.lepton=="ele"),
+
+    reverseIsoCut = cms.bool(options.isAntiIso),
+    cutOnIso = cms.bool(options.lepton=="ele"),
+    isoCut = cms.double(0.1),
+    mvaCut = cms.double(0.9),
+
     eleCountSrc  = cms.InputTag("electronCount"),
     muonCountSrc = cms.InputTag("muonCount"),
     electronRelIsoSrc = cms.InputTag("goodSignalElectronsNTupleProducer","relIso"),
@@ -97,6 +117,7 @@ process.eleCuts = cms.PSet(
     electronPtSrc = cms.InputTag("goodSignalElectronsNTupleProducer", "Pt"),
     electronChargeSrc = cms.InputTag("goodSignalElectronsNTupleProducer", "Charge"),
     electronMotherPdgIdSrc = cms.InputTag("goodSignalElectronsNTupleProducer", "motherGenPdgId"),
+
     doVetoLeptonCut = cms.bool(False),
     vetoMuCountSrc = cms.InputTag("looseVetoMuCount"),
     vetoEleCountSrc = cms.InputTag("looseVetoEleCount"),
@@ -106,13 +127,13 @@ process.eleCuts = cms.PSet(
 process.jetCuts = cms.PSet(
     cutOnNJets = cms.bool(options.doNJets),
     applyRmsLj = cms.bool(False),
-    applyEtaLj = cms.bool(False),
+    applyEtaLj = cms.bool(options.doEtaLj),
 
     goodJetsCountSrc = cms.InputTag("goodJetCount"),
     bTagJetsCountSrc = cms.InputTag("bJetCount"),
 
     rmsMax = cms.double(0.025),
-    etaMin = cms.double(0.0),
+    etaMin = cms.double(2.5),
 
     nJetsMin = cms.int32(options.nJMin),
     nJetsMax = cms.int32(options.nJMax),
@@ -155,7 +176,10 @@ process.topCuts = cms.PSet(
 
 process.weights = cms.PSet(
     doWeights = cms.bool(options.isMC),
-    bWeightNominalSrc = cms.InputTag("bTagWeightProducerNJMT", "bTagWeight"),
+    doWeightSys = cms.bool(options.isMC),
+    leptonChannel = cms.string(options.lepton),
+
+    bWeightNominalSrc = cms.InputTag("bTagWeightProducerNoCut", "bTagWeight"),
     puWeightSrc = cms.InputTag("puWeightProducer", "PUWeightNtrue"),
 
     muonIDWeightSrc = cms.InputTag("muonWeightsProducer", "muonIDWeight"),
@@ -163,15 +187,35 @@ process.weights = cms.PSet(
     muonTriggerWeightSrc = cms.InputTag("muonWeightsProducer", "muonTriggerWeight"),
 
     electronIDWeightSrc = cms.InputTag("electronWeightsProducer","electronIdIsoWeight"),
-    electronTriggerWeightSrc = cms.InputTag("electronWeightsProducer","electronTriggerWeight")
+    electronTriggerWeightSrc = cms.InputTag("electronWeightsProducer","electronTriggerWeight"),
+
+    bWeightNominalLUpSrc = cms.InputTag("bTagWeightProducerNoCut", "bTagWeightSystLUp"),
+    bWeightNominalLDownSrc = cms.InputTag("bTagWeightProducerNoCut", "bTagWeightSystLDown"),
+    bWeightNominalBCUpSrc = cms.InputTag("bTagWeightProducerNoCut", "bTagWeightSystBCUp"),
+    bWeightNominalBCDownSrc = cms.InputTag("bTagWeightProducerNoCut", "bTagWeightSystBCDown"),
+
+    muonIDWeightUpSrc = cms.InputTag("muonWeightsProducer", "muonIDWeightUp"),
+    muonIDWeightDownSrc = cms.InputTag("muonWeightsProducer", "muonIDWeightDown"),
+    muonIsoWeightUpSrc = cms.InputTag("muonWeightsProducer", "muonIsoWeightUp"),
+    muonIsoWeightDownSrc = cms.InputTag("muonWeightsProducer", "muonIsoWeightDown"),
+    muonTriggerWeightUpSrc = cms.InputTag("muonWeightsProducer", "muonTriggerWeightUp"),
+    muonTriggerWeightDownSrc = cms.InputTag("muonWeightsProducer", "muonTriggerWeightDown"),
+
+    electronIDWeightUpSrc = cms.InputTag("electronWeightsProducer","electronIdIsoWeightUp"),
+    electronIDWeightDownSrc = cms.InputTag("electronWeightsProducer","electronIdIsoWeightDown"),
+    electronTriggerWeightUpSrc = cms.InputTag("electronWeightsProducer","electronTriggerWeightUp"),
+    electronTriggerWeightDownSrc = cms.InputTag("electronWeightsProducer","electronTriggerWeightDown"),
 )
 
 process.mtMuCuts = cms.PSet(
     mtMuSrc = cms.InputTag("muAndMETMT"),
     metSrc = cms.InputTag("patMETNTupleProducer", "Pt"),
-    doMTCut = cms.bool(options.doMtw),
-    minVal = cms.double(50)
-)
+    doMTCut = cms.bool( options.doFinal and options.lepton=="mu" and not options.isWplusJets ),
+    doMETCut = cms.bool( options.doFinal and options.lepton=="ele" and not options.isWplusJets ),
+    minValMtw = cms.double(50),
+    minValMet = cms.double(45)
+    )
+
 
 #The versions should be specified explicitly at the moment
 process.HLTmu = cms.PSet(
@@ -183,10 +227,10 @@ process.HLTmu = cms.PSet(
         "HLT_IsoMu24_eta2p1_v14",
         "HLT_IsoMu24_eta2p1_v15",
         "HLT_IsoMu24_eta2p1_v17",
-        "HLT_IsoMu24_eta2p1_v16"
+        "HLT_IsoMu24_eta2p1_v16",
     ]),
-    doCutOnHLT = cms.bool(False),
-    saveHLTVars = cms.bool(False)
+    doCutOnHLT = cms.bool(options.lepton=="mu"),
+    saveHLTVars = cms.bool(options.doControlVars)
 )
 
 process.HLTele = cms.PSet(
@@ -197,13 +241,13 @@ process.HLTele = cms.PSet(
         "HLT_Ele27_WP80_v10",
         "HLT_Ele27_WP80_v11",
         ]),
-    doCutOnHLT = cms.bool(False),
-    saveHLTVars = cms.bool(False)
+    doCutOnHLT = cms.bool(options.lepton=="ele"),
+    saveHLTVars = cms.bool(options.doControlVars)
 )
 
 process.finalVars = cms.PSet(
     cosThetaSrc = cms.InputTag("cosTheta", "cosThetaLightJet"),
-    nVerticesSrc = cms.InputTag("offlinePVCount"),
+    nVerticesSrc = cms.InputTag("goodOfflinePVCount"),
     #scaleFactorsSrc = cms.InputTag("bTagWeightProducerNJMT", "scaleFactors")
 
     #PDF stuff
@@ -237,12 +281,12 @@ process.genParticles = cms.PSet(
 )
 
 process.bEfficiencyCalcs = cms.PSet(
+    doBEffCalcs = cms.bool(options.isMC),
     jetPtSrc = cms.InputTag("goodJetsNTupleProducer", "Pt"),
     jetEtaSrc = cms.InputTag("goodJetsNTupleProducer", "Eta"),
     jetBDiscriminatorSrc = cms.InputTag("goodJetsNTupleProducer", "bDiscriminatorTCHP"),
     jetFlavourSrc = cms.InputTag("goodJetsNTupleProducer", "partonFlavour"),
 )
-
 
 for k, v in process.__dict__.items():
     if isinstance(v, cms.PSet):

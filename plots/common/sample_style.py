@@ -12,6 +12,12 @@ class Styling:
         hist.SetFillStyle(1001)
 
     @staticmethod
+    def mc_style_nofill(hist, sample_name):
+        color = sample_colors[sample_name]
+        hist.SetLineColor(color)
+        hist.SetLineWidth(2)        
+
+    @staticmethod
     def data_style(hist):
         hist.SetMarkerStyle(20)
         hist.SetMarkerColor(ROOT.kBlack)
@@ -21,17 +27,17 @@ class ColorStyleGen:
     col_index = 0
     style_index = 0
 
-    colors = [ROOT.kRed, ROOT.kBlue, ROOT.kGreen, ROOT.kMagenta, ROOT.kYellow, ROOT.kBlack]
+    colors = [ROOT.kRed, ROOT.kBlue, ROOT.kGreen, ROOT.kMagenta, ROOT.kYellow, ROOT.kBlack, ROOT.kCyan, ROOT.kOrange]
     styles = [1001]#, 3005, 3006]
 
     def __init__(self):
-        self.colstyles = itertools.product(self.colors, self.styles)
+        self.colstyles = itertools.product(self.styles, self.colors)
 
     def next(self):
         return self.colstyles.next()
 
     def style_next(self, hist):
-        (color, style) = self.next()
+        (style, color) = self.next()
         hist.SetFillColor(ROOT.kWhite)
         hist.SetLineColor(color)
         hist.SetMarkerStyle(0)

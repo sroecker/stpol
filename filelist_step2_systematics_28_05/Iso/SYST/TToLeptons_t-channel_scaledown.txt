@@ -1,0 +1,3 @@
+file:/hdfs/cms/store/user/andres/stpol_step2_31_05_2013/Iso/SYST/TToLeptons_t-channel_scaledown/output_1_1_b6u.root
+file:/hdfs/cms/store/user/andres/stpol_step2_31_05_2013/Iso/SYST/TToLeptons_t-channel_scaledown/output_2_1_GGr.root
+file:/hdfs/cms/store/user/andres/stpol_step2_31_05_2013/Iso/SYST/TToLeptons_t-channel_scaledown/output_3_1_KIz.root

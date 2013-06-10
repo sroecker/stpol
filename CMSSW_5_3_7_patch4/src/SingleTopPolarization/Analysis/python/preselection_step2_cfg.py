@@ -6,12 +6,11 @@ from SingleTopPolarization.Analysis.config_step2_cfg import Config
 
 from FWCore.ParameterSet.VarParsing import VarParsing
 import SingleTopPolarization.Analysis.pileUpDistributions as pileUpDistributions
-
+import sys
 
 def SingleTopStep2Preselection():
     Config.doMuon = False
     Config.doElectron = False
-	
     #Whether to filter the HLT
     Config.filterHLT = False
 
@@ -55,19 +54,17 @@ def SingleTopStep2Preselection():
                   "destination pile-up distribution"
         )
         options.parseArguments()
-
+        
         Config.channel = Config.Channel.signal
         Config.srcPUDistribution = pileUpDistributions.distributions[options.srcPUDistribution]
         Config.destPUDistribution = pileUpDistributions.distributions[options.destPUDistribution]
         
+    
         Config.subChannel = options.subChannel
         Config.doDebug = options.doDebug
         Config.isMC = True
         Config.isCompHep = options.compHep
-
-    if Config.isMC:
-        logging.info("Changing jet source from %s to smearedPatJetsWithOwnRef" % Config.Jets.source)
-        Config.Jets.source = "smearedPatJetsWithOwnRef"
+        Config.dataRun = "RunABCD"        
 
     print "Configuration"
     print Config._toStr()
@@ -111,6 +108,15 @@ def SingleTopStep2Preselection():
         cacheSize = cms.untracked.uint32(10*1024*1024),
     )
 
+    process.decayTreeProducerMu = cms.EDProducer(
+        'GenParticleDecayTreeProducer',
+        src=cms.InputTag(Config.Muons.source)
+    )
+
+    process.decayTreeProducerEle = cms.EDProducer(
+        'GenParticleDecayTreeProducer',
+        src=cms.untracked.InputTag(Config.Electrons.source)
+    )
 
     def treeCollection(collection_, maxElems_, varlist):
         varVPSet = cms.untracked.VPSet()
@@ -189,11 +195,55 @@ def SingleTopStep2Preselection():
     process.trueLightJetNTupleProducer = process.recoTopNTupleProducer.clone(
         src=cms.InputTag("genParticleSelector", "trueLightJet", "STPOLSEL2"),
     )
+    
+    process.trueMuonsNTupleProducer = cms.EDProducer(
+        "CandViewNtpProducer2",
+        src = cms.InputTag(Config.Muons.source),
+        lazyParser = cms.untracked.bool(True),
+        prefix = cms.untracked.string(""),
+        #eventInfo = cms.untracked.bool(True),
+        variables = ntupleCollection(
+            [
+                ["Pt", "pt"],
+                ["Eta", "eta"],
+                ["Phi", "phi"],
+                #["relIso", "userFloat('%s')" % Config.Muons.relIsoType],
+                ["Charge", "charge"],
+                ["genPdgId", "? genParticlesSize() > 0 ? genParticle(0).pdgId() : 0"],
+                ["motherGenPdgId", "? genParticlesSize() > 0 ? genParticle(0).mother(0).pdgId() : 0"],                
+            ]
+      )
+    )
+
+    process.puWeightProducer = cms.EDProducer('PUWeightProducer'
+            , maxVertices = cms.uint32(50)
+            , srcDistribution = cms.vdouble(Config.srcPUDistribution)
+            , destDistribution = cms.vdouble(Config.destPUDistribution)
+        )
+
+    process.muonWeightsProducer = cms.EDProducer("MuonEfficiencyProducer",
+        src=cms.InputTag("genParticleSelector", "trueLepton", "STPOLSEL2"),
+        dataRun=cms.string(Config.dataRun)
+    )
+
+    process.electronWeightsProducer = cms.EDProducer("ElectronEfficiencyProducer",
+        src = cms.InputTag("genParticleSelector", "trueLepton", "STPOLSEL2")
+    )
+
+    process.elePathPreCount = cms.EDProducer("EventCountProducer")
+    process.muPathPreCount = cms.EDProducer("EventCountProducer")
+
     process.treeSequenceNew = cms.Sequence(
+        process.muPathPreCount *
+        process.elePathPreCount *
         process.trueTopNTupleProducer *
         process.trueNuNTupleProducer *
         process.trueLeptonNTupleProducer *
-        process.trueLightJetNTupleProducer
+        process.trueLightJetNTupleProducer *
+        process.trueMuonsNTupleProducer *
+        process.puWeightProducer #*
+        #process.muonWeightsProducer *
+        #process.electronWeightsProducer
     )
 
     if Config.isCompHep:
@@ -222,6 +272,8 @@ def SingleTopStep2Preselection():
             outputCommands=cms.untracked.vstring(
                 #'drop *',
                 'drop *',
+                'keep edmMergeableCounter_*__*',
+                'keep edmTriggerResults_TriggerResults__*',
                 'keep floats_trueTopNTupleProducer_*_STPOLSEL2',
                 'keep floats_trueNuNTupleProducer_*_STPOLSEL2',
                 'keep floats_trueLeptonNTupleProducer_*_STPOLSEL2',
@@ -242,6 +294,7 @@ def SingleTopStep2Preselection():
                 #'keep *_bTagWeightProducerNJMT_*_STPOLSEL2',
                 'keep int_*__STPOLSEL2',
                 'keep int_*_*_STPOLSEL2',
+                'keep String_*_*_*', #the decay trees
                 #'keep *_pdfInfo1_*_STPOLSEL2',
                 #'keep *_pdfInfo2_*_STPOLSEL2',
                 #'keep *_pdfInfo3_*_STPOLSEL2',

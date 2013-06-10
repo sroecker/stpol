@@ -62,6 +62,9 @@ class Config(C):
     #If using comphep-generated input
     isCompHep = False
 
+    #If using sherpa-generated input
+    isSherpa = False
+
     #Which systematic to use
     systematic = None
 
@@ -78,7 +81,7 @@ class Config(C):
         ptCut = 40
         etaCut = 4.5
         doLightJetRMSClean = False
-        source = "selectedPatJets"
+        source = "patJetsWithOwnRefNotOverlappingWithLeptonsForMEtUncertainty"
         #source = "selectedPatJetsForMETtype1p2CorrEnDown"
 
         class BTagDiscriminant:
@@ -129,7 +132,7 @@ class Config(C):
     class Electrons(Leptons):
         pt = "ecalDrivenMomentum.Pt()"
         mvaCut = 0.1
-        mvaCutAntiIso = 0.9
+        mvaCutAntiIso = 1.1
         cutOnMVA = True
         cutOnIso = True
         cutWWlnuj = False

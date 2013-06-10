@@ -61,11 +61,12 @@ process.options = cms.untracked.PSet(wantSummary=cms.untracked.bool(True))
 process.fwliteInput = cms.PSet(
     fileNames   = cms.vstring(input_files),
     maxEvents   = cms.int32(-1),
-    outputEvery = cms.uint32(10000000),
+    outputEvery = cms.uint32(100000),
 )
 print "Input files: %s" % input_files
 print "Output file: %s" %  outfile
 
+doControlVars = True
 process.fwliteOutput = cms.PSet(
     fileName  = cms.string(outfile),
 )
@@ -75,7 +76,7 @@ process.muonCuts = cms.PSet(
     doControlVars  = cms.bool(False),
     reverseIsoCut  = cms.bool(isAntiIso),
     requireOneMuon  = cms.bool(True),
-	isoCut  = cms.double(isoC),
+    isoCut  = cms.double(isoC),
     muonPtSrc  = cms.InputTag("goodSignalMuonsNTupleProducer", "Pt"),
     muonRelIsoSrc  = cms.InputTag("goodSignalMuonsNTupleProducer", "relIso"),
     muonCountSrc  = cms.InputTag("muonCount"),
@@ -83,9 +84,31 @@ process.muonCuts = cms.PSet(
     doVetoLeptonCut = cms.bool(True),
     vetoMuCountSrc = cms.InputTag("looseVetoMuCount"),
     vetoEleCountSrc = cms.InputTag("looseVetoEleCount"),
+
+    muonDbSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "db"),
+    muonDzSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "dz"),
+    muonNormChi2Src = cms.InputTag("goodSignalMuonsNTupleProducer", "normChi2"),
+    muonChargeSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "Charge"),
+
+    muonGTrackHitsSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "globalTrackhitPatternnumberOfValidMuonHits"),
+    muonITrackHitsSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "innerTrackhitPatternnumberOfValidPixelHits"),
+    muonStationsSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "numberOfMatchedStations"),
+    muonLayersSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "trackhitPatterntrackerLayersWithMeasurement"),
+    muonMotherPdgIdSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "motherGenPdgId"),
 )
 
 process.eleCuts = cms.PSet(
+    requireOneElectron = cms.bool(False),
+    eleCountSrc  = cms.InputTag("electronCount"),
+    muonCountSrc = cms.InputTag("muonCount"),
+    electronRelIsoSrc = cms.InputTag("goodSignalElectronsNTupleProducer","relIso"),
+    electronMvaSrc = cms.InputTag("goodSignalElectronsNTupleProducer","mvaID"),
+    electronPtSrc = cms.InputTag("goodSignalElectronsNTupleProducer", "Pt"),
+    electronChargeSrc = cms.InputTag("goodSignalElectronsNTupleProducer", "Charge"),
+    electronMotherPdgIdSrc = cms.InputTag("goodSignalElectronsNTupleProducer", "motherGenPdgId"),
+    doVetoLeptonCut = cms.bool(True),
+    vetoMuCountSrc = cms.InputTag("looseVetoMuCount"),
+    vetoEleCountSrc = cms.InputTag("looseVetoEleCount"),
 )
 
 process.jetCuts = cms.PSet(
@@ -114,12 +137,7 @@ process.jetCuts = cms.PSet(
     lightJetBdiscrSrc = cms.InputTag("lowestBTagJetNTupleProducer", "bDiscriminatorTCHP"),
     lightJetPtSrc = cms.InputTag("lowestBTagJetNTupleProducer", "Pt"),
     lightJetRmsSrc = cms.InputTag("lowestBTagJetNTupleProducer", "rms"),
-
-    bJetEtaSrc = cms.InputTag("highestBTagJetNTupleProducer", "Eta"),
-    bJetBdiscrSrc = cms.InputTag("highestBTagJetNTupleProducer", "bDiscriminatorTCHP"),
-    bJetPtSrc = cms.InputTag("highestBTagJetNTupleProducer", "Pt"),
-
-	lightJetDeltaRSrc = cms.InputTag("lowestBTagJetNTupleProducer", "deltaR"),
+    lightJetDeltaRSrc = cms.InputTag("lowestBTagJetNTupleProducer", "deltaR"),
     
 )
 
@@ -150,7 +168,11 @@ process.weights = cms.PSet(
     bWeightNominalSrc = cms.InputTag("bTagWeightProducerNJMT", "bTagWeight"),
     puWeightSrc = cms.InputTag("puWeightProducer", "PUWeightNtrue"),
     muonIDWeightSrc = cms.InputTag("muonWeightsProducer", "muonIDWeight"),
-    muonIsoWeightSrc = cms.InputTag("muonWeightsProducer", "muonIsoWeight")
+    muonIsoWeightSrc = cms.InputTag("muonWeightsProducer", "muonIsoWeight"),
+    muonTriggerWeightSrc = cms.InputTag("muonWeightsProducer", "muonTriggerWeight"),
+
+    electronIDWeightSrc = cms.InputTag("electronWeightsProducer","electronIdIsoWeight"),
+    electronTriggerWeightSrc = cms.InputTag("electronWeightsProducer","electronTriggerWeight")
 )
 
 process.mtMuCuts = cms.PSet(
@@ -176,6 +198,16 @@ process.HLT = cms.PSet(
        doCutOnHLT = cms.bool(False)
 )
 
+process.HLTele = cms.PSet(
+    hltSrc = cms.InputTag("TriggerResults", "", "HLT"),
+    hltNames = cms.vstring([
+        "HLT_Ele27_WP80_v8",
+        "HLT_Ele27_WP80_v9",
+        "HLT_Ele27_WP80_v10",
+        "HLT_Ele27_WP80_v11",
+        ]),
+    doCutOnHLT = cms.bool(False)
+)
 
 
 process.finalVars = cms.PSet(
