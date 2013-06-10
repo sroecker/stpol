@@ -16,22 +16,22 @@ def make_stack(var, stackName, MC_groups, data_group, open_files, syst, iso, lum
    if qcd is not None:
       #print "QCD"
       qcd.SetFillColor(dgQCD.getColor())
-      qcd.SetLineColor(dgQCD.getColor())
+      #qcd.SetLineColor(dgQCD.getColor())
       stack.Add(qcd)
    #stack.GetHists().GetSize()
    for group in reversed(MC_groups):
       his = TH1D(group.getHistogram(var, syst, iso, extra))
       his.SetFillColor(group.getColor())
-      his.SetLineWidth(1)
+      #his.SetLineWidth(1)
       stack.Add(his)
    return stack
 
 def draw_stack(var, stack, MC_groups, data_group, syst="", iso="iso", name="", maxY=10000, save=True):
    cst = TCanvas("Histogram_"+var.shortName,"_"+var.shortName,10,10,1800,1000)
-   gROOT.SetStyle("Plain")
-   gStyle.SetOptStat(1000000000)
-   cst.SetLeftMargin(1)
-   cst.SetRightMargin(0.2)
+   #gROOT.SetStyle("Plain")
+   #gStyle.SetOptStat(1000000000)
+   #cst.SetLeftMargin(1)
+   #cst.SetRightMargin(0.2)
            
    stack_data = data_group.getHistogram(var, syst, iso)
    #stack_data.Draw("E1 same")
@@ -68,8 +68,8 @@ def draw_stack(var, stack, MC_groups, data_group, syst="", iso="iso", name="", m
 
 
    cst.Update()
-   cst.SaveAs("plots/stack_"+var.name+"_"+name+"_"+syst+"_"+iso+".png")
-   cst.SaveAs("plots/stack_"+var.name+"_"+name+"_"+syst+"_"+iso+".pdf")
+   cst.SaveAs("plots/stack_"+var.shortName+"_"+name+"_"+syst+"_"+iso+".png")
+   cst.SaveAs("plots/stack_"+var.shortName+"_"+name+"_"+syst+"_"+iso+".pdf")
    return cst
 
 def draw_final(var, stack, MC_groups, data_group, syst="", iso="iso", name="", maxY=10000, save=True, qcd=None):
@@ -120,8 +120,8 @@ def draw_final(var, stack, MC_groups, data_group, syst="", iso="iso", name="", m
    leg.Draw()
    stack.GetHists().GetSize()
    cst.Update()
-   cst.SaveAs("plots/final_plot_"+var.name+".png")
-   cst.SaveAs("plots/final_plot_"+var.name+".pdf")
+   cst.SaveAs("plots/final_plot_"+var.shortName+".png")
+   cst.SaveAs("plots/final_plot_"+var.shortName+".pdf")
    return cst
 
 
@@ -133,16 +133,17 @@ def make_histograms(var, MC_groups, data_group, open_files, syst, iso, lumis, cu
       all_groups.append(data_group)
    for group in all_groups:
       name = group.getName()
-      #print name,var.name,syst,iso,extra
-      histo_name = name+"_"+var.name+"_"+syst+"_"+iso+"_"+extra
+      #print name,var.shortName,syst,iso,extra
       #print "name",histo_name
+      histo_name = name+"_"+var.shortName+"_"+syst+"_"+iso+"_"+extra
+      group.setTitle(name)
       h = TH1D(histo_name, group.getTitle(), var.bins, var.lbound, var.ubound)
       h.Sumw2()
-      h.SetLineColor(group.getColor())
-      h.SetLineWidth(2)
+      #h.SetLineColor(group.getColor())
+      #h.SetLineWidth(2)
       for ds in group.getDatasets():
          if(True):#ds.hasBranch(branch) or ds.isMC()): #data???
-            his_name = "histo"+"_"+ds.getName()+"_"+var.name+"_"+syst+iso+"_"+extra
+            his_name = "histo"+"_"+ds.getName()+"_"+var.shortName+"_"+syst+iso+"_"+extra
             his = TH1D(his_name, his_name, var.bins, var.lbound, var.ubound)
             his.Sumw2()
             f = ds.getFile(syst, iso)
@@ -158,14 +159,14 @@ def make_histograms(var, MC_groups, data_group, open_files, syst, iso, lumis, cu
             #print "weight", weight
             mytree.Project(his_name, var.name, weight,"same")
             if group.isMC():
-               his.Scale(ds.scaleToData(lumis.getDataLumi(iso, syst)))               
+               his.Scale(ds.scaleToData(lumis.getDataLumi(iso), syst, iso))               
                #print ds.scaleToData(lumis.getDataLumi(iso, syst))
             else:
                #print group, ds.preScale()
                his.Scale(ds.preScale())
             h.Add(his)
       error = array('d',[0.])
-      print group.getName(), var.name, syst, iso, h.GetEntries(), h.IntegralAndError(0,100,error), "+-", error[0]
+      print group.getName(), group.getTitle(), var.shortName, syst, iso, h.GetEntries(), h.IntegralAndError(0,100,error), "+-", error[0]
       #print(str(h.Integral()) + " +- " + str( h.Integral()/(h.GetEntries()**0.5) ) )
       group.addHistogram(h, var, syst, iso, extra)
       if group.isMC():
@@ -177,22 +178,23 @@ def make_histograms(var, MC_groups, data_group, open_files, syst, iso, lumis, cu
 def make_histogram(var, group, title, open_files, lumis, syst="", iso="iso", weight="1", extra=""):
    name = group.getName()
    #print "histo", title, syst, iso, extra, " ___ ", weight
-   histo_name = name+"_"+var.name+"_"+syst+"_"+extra
+   histo_name = name+"_"+var.shortName+"_"+syst+"_"+extra
    h = TH1D(histo_name, title, var.bins, var.lbound, var.ubound)
    h.Sumw2()
-   h.SetLineColor(group.getColor())
-   h.SetLineWidth(2)   
+   #h.SetLineColor(group.getColor())
+   #h.SetLineWidth(2)   
    for ds in group.getDatasets():
-         his_name = "histo"+"_"+ds.getName()+"_"+var.name+"_"+syst+iso+extra
+         his_name = "histo"+"_"+ds.getName()+"_"+var.shortName+"_"+syst+iso+extra
          his = TH1D(his_name, his_name, var.bins, var.lbound, var.ubound)
          his.Sumw2()
          f = ds.getFile(syst, iso)
          tdir = f.Get("trees")
          mytree = tdir.Get("Events")
-         #print his_name, var.name, weight
+         print his_name, var.shortName, weight
          mytree.Project(his_name, var.name, weight,"same")
          if group.isMC():
-            his.Scale(ds.scaleToData(lumis.getDataLumi(iso, syst)))
+            #print ds.scaleToData(lumis.getDataLumi(iso))
+            his.Scale(ds.scaleToData(lumis.getDataLumi(iso)), syst, iso)
             #print his.Integral()
          else:
             #print group, ds.preScale()

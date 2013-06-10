@@ -153,11 +153,11 @@ def MuonPath(process, conf):
         process.goodSignalMuons *
         process.muonCount *
         process.looseVetoMuons *
+        process.looseVetoElectrons *
         process.oneIsoMu *
         process.singleIsoMu *
 
         #process.looseMuVetoMu *
-        process.looseVetoElectrons *
         #process.looseEleVetoMu *
 
         #Do general jet cleaning, PU-jet cleaning and select 2 good jets
@@ -181,10 +181,12 @@ def MuonPath(process, conf):
             process.partonStudyCompareSequence
         )
     if conf.doDebug:
-        process.goodSignalMuAnalyzer = cms.EDAnalyzer("SimpleMuonAnalyzer", interestingCollections=cms.untracked.VInputTag("goodSignalMuons"))
+        process.goodSignalMuAnalyzer = cms.EDAnalyzer("SimpleMuonAnalyzer", interestingCollections=cms.untracked.VInputTag("muonsWithIso", "goodSignalMuons"))
+        process.vetoEleAnalyzer = cms.EDAnalyzer("SimpleElectronAnalyzer", interestingCollections=cms.untracked.VInputTag("looseVetoElectrons"))
+        process.muPrintOutSequence = cms.Sequence(process.goodSignalMuAnalyzer*process.vetoEleAnalyzer)
         process.muPath.insert(
-            process.muPath.index(process.goodSignalMuons)+1,
-            process.goodSignalMuAnalyzer
+            process.muPath.index(process.oneIsoMu),
+            process.muPrintOutSequence
         )
         process.oneIsoMuID = cms.EDAnalyzer("EventIDAnalyzer", name=cms.untracked.string("oneIsoMuID"))
         process.muPath.insert(
@@ -204,7 +206,7 @@ def MuonPath(process, conf):
             process.muonWeightsProducer
         )
 
-    if conf.isMC:
+    if conf.isMC and not conf.isSherpa:
         process.decayTreeProducerMu = cms.EDProducer(
             'GenParticleDecayTreeProducer<pat::Muon>',
             src=cms.untracked.InputTag("singleIsoMu")

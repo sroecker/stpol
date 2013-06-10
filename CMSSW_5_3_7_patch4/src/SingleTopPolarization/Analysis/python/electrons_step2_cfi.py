@@ -251,7 +251,7 @@ def ElectronPath(process, conf):
             )
 
     #Produce the electron parentage decay tree string
-    if conf.isMC:
+    if conf.isMC and not conf.isSherpa:
         process.decayTreeProducerEle = cms.EDProducer(
             'GenParticleDecayTreeProducer<pat::Electron>',
             src=cms.untracked.InputTag("singleIsoEle")

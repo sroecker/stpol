@@ -1,0 +1,6 @@
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/antiIso/EnDown/T_t/output_1_1_mA2.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/antiIso/EnDown/T_t/output_2_1_jIU.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/antiIso/EnDown/T_t/output_3_1_5jL.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/antiIso/EnDown/T_t/output_4_1_rV4.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/antiIso/EnDown/T_t/output_5_1_FKI.root
+file:/hdfs/cms/store/user/andres/stpol_step2_28_05_2013/antiIso/EnDown/T_t/output_6_1_WYz.root

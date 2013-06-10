@@ -1,0 +1,3 @@
+file:/hdfs/cms/store/user/andres/stpol_step2_29_05_2013/Iso/Nominal/Tbar_t_ToLeptons/output_1_1_CUf.root
+file:/hdfs/cms/store/user/andres/stpol_step2_29_05_2013/Iso/Nominal/Tbar_t_ToLeptons/output_2_1_dCs.root
+file:/hdfs/cms/store/user/andres/stpol_step2_29_05_2013/Iso/Nominal/Tbar_t_ToLeptons/output_3_1_TRG.root

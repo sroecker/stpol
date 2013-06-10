@@ -1,4 +1,4 @@
-WJets_lo_nnlo_scale_factor = 36257.2/30400.0
+WJets_lo_nnlo_scale_factor = 37509/30400.0
 
 xs = {
 
@@ -12,7 +12,7 @@ xs = {
 	, "T_tW": 11.1
 	, "Tbar_tW": 11.1
 	, "TTJets_MassiveBinDECAY": 234 #inclusive
-	, "WJets_inclusive": 36257.2 #30400.0 LO
+	, "WJets_inclusive": 37509 #30400.0 LO
 
 	#FIXME: ttbar branching ratio
 	, "TTJets_SemiLept": (0.676*0.326*2) * 234.0
@@ -30,7 +30,7 @@ xs = {
 
 	, "DYJets": 3503.71
 	, "WW": 54.838
-	, "WZ": 32.3161
+	, "WZ": 33.21
 	, "ZZ": 8.059
 	, "QCDMu": 134680
 
@@ -51,3 +51,12 @@ xs = {
 	, "QCD_Pt_350_BCtoE": 811.0*0.0295
 }
 
+lumi_iso = {
+    "ele": 19728,
+    "mu": 19739
+    }
+
+lumi_antiiso = {
+    "ele": 19728,
+    "mu": 19739
+    }

@@ -1,6 +1,5 @@
 import ROOT, os, sys
-from file_names import dataFiles, mcFiles, dataLumi
-from plot_defs import hist_def,cuts
+from file_names import dataFiles_ele, dataFiles_mu, mcFiles, dataLumi_ele, dataLumi_mu
 
 try:
     sys.path.append(os.environ["STPOL_DIR"] )
@@ -10,8 +9,17 @@ except KeyError:
 
 from plots.common.cross_sections import xs
 
+#channel = "electron_channel"
+channel = "muon_channel"
+
+if channel == "muon_channel":
+    from plot_defs_mu import hist_def, cuts
+else:
+    from plot_defs_ele import hist_def, cuts
+
 cutstring = "final"
 #cutstring = "final_nomet"
+#cutstring = "final_nomet_antiiso"
 
 #cutstring = "2j1t"
 #cutstring = "2j1t_nomet"
@@ -19,27 +27,50 @@ cutstring = "final"
 #cutstring = "2j0t"
 #cutstring = "2j0t_nomet"
 
-cutstring_qcd_template = cutstring + "_antiiso"
+#cutstring = "3j2t"
+#cutstring = "3j1t"
+
+if cutstring == "final_nomet_antiiso":
+    cutstring_qcd_template = cutstring
+else:
+    cutstring_qcd_template = cutstring + "_antiiso"
+
 
 apply_PUw = True
 apply_Elw = True
-apply_Bw = False
+apply_Bw = True
 
 mode = "_lep"     # leptonic samples of signal and ttbar
 #mode = "_incl"    # inclusive samples of signal and ttbar
 
-#infilePath = "/home/liis/data/Step3_output_0105/"
-
-#infilePathMC = "/home/liis/SingleTopJoosep/stpol/step3_trees/step3_mc_05_10/"
-infilePathMC = "/home/liis/SingleTopJoosep/stpol/step3_trees/step3_mc_05_17/"
-infilePathData = "/home/liis/SingleTopJoosep/stpol/step3_trees/step3_data_05_10/"
+if channel == "electron_channel":
+    infilePathMC = "~liis/SingleTopJoosep/stpol/out_step3_05_31_18_43/ele/iso/Nominal/"
+    infilePathData = "~liis/SingleTopJoosep/stpol/out_step3_05_31_18_43/ele/iso/Nominal/"
+#    infilePathMC = "~liis/SingleTopJoosep/stpol/out_step3_05_31_18_43/ele/antiiso/Nominal/"
+#    infilePathData = "~liis/SingleTopJoosep/stpol/out_step3_05_31_18_43/ele/antiiso/Nominal/"
+elif channel == "muon_channel":
+    infilePathMC = "~liis/SingleTopJoosep/stpol/out_step3_05_31_18_43/mu/iso/Nominal/"
+    infilePathData = "~liis/SingleTopJoosep/stpol/out_step3_05_31_18_43/mu/iso/Nominal/"
+#    infilePathMC = "~liis/SingleTopJoosep/stpol/out_step3_05_31_18_43/mu/antiiso/Nominal/"
+#    infilePathData = "~liis/SingleTopJoosep/stpol/out_step3_05_31_18_43/mu/antiiso/Nominal/"
+else:
+    print "Specify either electron_channel or muon_channel"
+    sys.exit(1)
 
 #----------------------------get files---------------------
-#Lumi = sum(dataLumi.values())
-Lumi = 19400
+if channel == "electron_channel":
+    Lumi = sum(dataLumi_ele.values())
+if channel == "muon_channel":
+    Lumi = sum(dataLumi_mu.values())
 
 files_data = {}
 print("Loading files")
+
+if channel == "electron_channel":
+    dataFiles = dataFiles_ele
+if channel == "muon_channel":
+    dataFiles = dataFiles_mu
+
 for key in dataFiles:
     filename = dataFiles[key]
     infile = infilePathData + filename
@@ -50,6 +81,10 @@ file_data_anti = ROOT.TFile( infilePathData + "qcd_temp.root")
 
 files_mc = {}
 for key in mcFiles:
+    if channel == "muon_channel" and (key[-5:] == "BCtoE" or key[-10:] == "EMEnriched"):
+        continue
+    if channel == "electron_channel" and key == "QCDMu":
+        continue
     filename = mcFiles[key]
     infile = infilePathMC + filename
     print "Opening file: " + infile
@@ -82,8 +117,12 @@ if apply_Bw:
     w_btag = "b_weight_nominal"
 
 if apply_Elw:
-    w_eltr = "electron_triggerWeight"    
-    w_eliso = "electron_IDWeight"
+    if channel == "muon_channel":
+        w_eltr = "muon_TriggerWeight"
+        w_eliso = "muon_IsoWeight*muon_IDWeight"
+    else:
+        w_eltr = "electron_triggerWeight"    
+        w_eliso = "electron_IDWeight"
 
 histos = {}
 hist_final = {}
@@ -109,7 +148,7 @@ for hist_name in hist_def:
             trees_data[key].Draw( "abs(" + histToPlot + ")" + ">>+" + histName_data, cut, "goff") #">>+histName" -- sum all histograms to histData, goff = "graphics off"
         else:
             trees_data[key].Draw( histToPlot + ">>+" + histName_data, cut, "goff") #">>+histName" -- sum all histograms to histData, goff = "graphics off"
-            
+           
     if( hist_name == "eta_lj"):
         trees_data_anti.Draw( "abs(" + histToPlot + ")" + ">>" + histName_data_anti, cut_qcd_template, "goff")
     else:
@@ -120,6 +159,8 @@ for hist_name in hist_def:
 
     print("Loading MC histograms")
     for process in trees_mc:
+        if channel == "electron_channel" and ():
+            continue
         N = files_mc[process].Get("trees").Get("count_hist").GetBinContent(1) #total number of analyzed MC events
         w = Lumi*xs[process]/N
         print("Loading:" + process + " with xs = " + str(xs[process])+ " and MC ev. weight = " + str(w))
@@ -139,17 +180,13 @@ for hist_name in hist_def:
     if mode == "_incl":
         hist_final[hist_name]["signal"] = histos[hist_name]["T_t"].Clone("signal")
         hist_final[hist_name]["signal"].Add(histos[hist_name]["Tbar_t"])
-
-#        hist_final[hist_name]["ttjets"] = histos[hist_name]["TTJets_MassiveBinDECAY"].Clone("ttjets")
     elif mode == "_lep":
         hist_final[hist_name]["signal"] = histos[hist_name]["T_t_ToLeptons"].Clone("signal")
         hist_final[hist_name]["signal"].Add(histos[hist_name]["Tbar_t_ToLeptons"])
-
-#        hist_final[hist_name]["ttjets"] = histos[hist_name]["TTJets_SemiLept"].Clone("ttjets")
-#        hist_final[hist_name]["ttjets"].Add(histos[hist_name]["TTJets_FullLept"])
     else:
-        print "error"
-
+        print "Insert either _incl or _lep as mode"
+        sys.exit(1)
+        
     hist_final[hist_name]["ttjets"] = histos[hist_name]["TTJets_SemiLept"].Clone("ttjets")
     hist_final[hist_name]["ttjets"].Add(histos[hist_name]["TTJets_FullLept"])
 
@@ -168,23 +205,28 @@ for hist_name in hist_def:
     hist_final[hist_name]["tW"] = histos[hist_name]["T_tW"].Clone("tW")
     hist_final[hist_name]["tW"].Add(histos[hist_name]["Tbar_tW"])
 
-#    hist_final[hist_name]["gjets"] = histos[hist_name]["GJets2"].Clone("gjets")
-#    hist_final[hist_name]["gjets"].Add(histos[hist_name]["GJets1"])
+    hist_final[hist_name]["gjets"] = histos[hist_name]["GJets2"].Clone("gjets")
+    hist_final[hist_name]["gjets"].Add(histos[hist_name]["GJets1"])
 
     hist_final[hist_name]["zjets"] = histos[hist_name]["DYJets"].Clone("zjets")
 
-    hist_final[hist_name]["qcd_mc"] = histos[hist_name]["QCD_Pt_20_30_BCtoE"].Clone("qcd_mc")
-    hist_final[hist_name]["qcd_mc"].Add(histos[hist_name]["QCD_Pt_30_80_BCtoE"])
-    hist_final[hist_name]["qcd_mc"].Add(histos[hist_name]["QCD_Pt_80_170_BCtoE"])
-    hist_final[hist_name]["qcd_mc"].Add(histos[hist_name]["QCD_Pt_170_250_BCtoE"])
-    hist_final[hist_name]["qcd_mc"].Add(histos[hist_name]["QCD_Pt_250_350_BCtoE"])
-    hist_final[hist_name]["qcd_mc"].Add(histos[hist_name]["QCD_Pt_350_BCtoE"])
-    hist_final[hist_name]["qcd_mc"].Add(histos[hist_name]["QCD_Pt_20_30_EMEnriched"])
-    hist_final[hist_name]["qcd_mc"].Add(histos[hist_name]["QCD_Pt_30_80_EMEnriched"])
-    hist_final[hist_name]["qcd_mc"].Add(histos[hist_name]["QCD_Pt_80_170_EMEnriched"])
-    hist_final[hist_name]["qcd_mc"].Add(histos[hist_name]["QCD_Pt_170_250_EMEnriched"])
-    hist_final[hist_name]["qcd_mc"].Add(histos[hist_name]["QCD_Pt_250_350_EMEnriched"])
-    hist_final[hist_name]["qcd_mc"].Add(histos[hist_name]["QCD_Pt_350_EMEnriched"])
+    if channel == "electron_channel":
+        hist_final[hist_name]["qcd_mc"] = histos[hist_name]["QCD_Pt_20_30_BCtoE"].Clone("qcd_mc")
+        hist_final[hist_name]["qcd_mc"].Add(histos[hist_name]["QCD_Pt_30_80_BCtoE"])
+        hist_final[hist_name]["qcd_mc"].Add(histos[hist_name]["QCD_Pt_80_170_BCtoE"])
+        hist_final[hist_name]["qcd_mc"].Add(histos[hist_name]["QCD_Pt_170_250_BCtoE"])
+        hist_final[hist_name]["qcd_mc"].Add(histos[hist_name]["QCD_Pt_250_350_BCtoE"])
+        hist_final[hist_name]["qcd_mc"].Add(histos[hist_name]["QCD_Pt_350_BCtoE"])
+        hist_final[hist_name]["qcd_mc"].Add(histos[hist_name]["QCD_Pt_20_30_EMEnriched"])
+        hist_final[hist_name]["qcd_mc"].Add(histos[hist_name]["QCD_Pt_30_80_EMEnriched"])
+        hist_final[hist_name]["qcd_mc"].Add(histos[hist_name]["QCD_Pt_80_170_EMEnriched"])
+        hist_final[hist_name]["qcd_mc"].Add(histos[hist_name]["QCD_Pt_170_250_EMEnriched"])
+        hist_final[hist_name]["qcd_mc"].Add(histos[hist_name]["QCD_Pt_250_350_EMEnriched"])
+        hist_final[hist_name]["qcd_mc"].Add(histos[hist_name]["QCD_Pt_350_EMEnriched"])
+
+    if channel == "muon_channel":
+        hist_final[hist_name]["qcd_mc"] = histos[hist_name]["QCDMu"].Clone("qcd_mc")
+
 #-----------------save histograms for plotting---------------
 weightstring = ""
 if w_PU != "1":
@@ -195,8 +237,9 @@ if w_eliso != "1":
     weightstring = weightstring + "_Elw"
 if w_eltr != "1":
     weightstring = weightstring + "_ElTrw"
+outfilepath = "Histograms/" + channel + "/" + cutstring  + "/"
 
-outfile = "Histograms/" + cutstring + "/" + cutstring + weightstring + mode + ".root"
+outfile = outfilepath + cutstring + weightstring + mode + ".root"
 p = ROOT.TFile(outfile,"recreate")
 print "writing output to file: " + outfile
 
@@ -212,18 +255,22 @@ for hist_name in hist_final:
 p.Close()
 
 #---------------------save qcd templates----------------
-#if cutstring == "2j1t_nomet" or cutstring == "2j0t_nomet" or cutstring == "final_nomet_lep":
-outfile = "Histograms/" + cutstring  + "/" + cutstring + weightstring + mode + "_templates.root"
+if channel == "electron_channel":
+    fit_var = "met"
+if channel == "muon_channel":
+    fit_var = "mt_mu"
+
+outfile = outfilepath + cutstring + weightstring + mode + "_templates.root"
 t = ROOT.TFile(outfile,"recreate")
 print "writing templates for qcd-fit: " + outfile
 
-met__ewk = hist_final["met"]["signal"].Clone("met__ewk")
-for key in hist_final["met"]:
+met__ewk = hist_final[fit_var]["signal"].Clone("met__ewk")
+for key in hist_final[fit_var]:
     if key != "signal" and key != "data" and key != "data_anti" and key != "QCD":
-        met__ewk.Add(hist_final["met"][key])
+        met__ewk.Add(hist_final[fit_var][key])
         
-met__DATA = hist_final["met"]["data"].Clone("met__DATA") #apply the appropriate naming scheme for theta_auto input
-met__qcd = hist_final["met"]["data_anti"].Clone("met__qcd")
+met__DATA = hist_final[fit_var]["data"].Clone("met__DATA") #apply the appropriate naming scheme for theta_auto input
+met__qcd = hist_final[fit_var]["data_anti"].Clone("met__qcd")
       
 met__DATA.Write()
 met__ewk.Write()

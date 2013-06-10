@@ -12,6 +12,12 @@ class Styling:
         hist.SetFillStyle(1001)
 
     @staticmethod
+    def mc_style_nofill(hist, sample_name):
+        color = sample_colors[sample_name]
+        hist.SetLineColor(color)
+        hist.SetLineWidth(2)        
+
+    @staticmethod
     def data_style(hist):
         hist.SetMarkerStyle(20)
         hist.SetMarkerColor(ROOT.kBlack)

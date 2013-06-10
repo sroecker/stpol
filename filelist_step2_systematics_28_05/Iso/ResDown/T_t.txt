@@ -1,0 +1,6 @@
+file:/hdfs/cms/store/user/andres/stpol_step2_29_05_2013/Iso/ResDown/T_t/output_1_1_48h.root
+file:/hdfs/cms/store/user/andres/stpol_step2_29_05_2013/Iso/ResDown/T_t/output_2_1_Bww.root
+file:/hdfs/cms/store/user/andres/stpol_step2_29_05_2013/Iso/ResDown/T_t/output_3_1_i26.root
+file:/hdfs/cms/store/user/andres/stpol_step2_29_05_2013/Iso/ResDown/T_t/output_4_1_WQt.root
+file:/hdfs/cms/store/user/andres/stpol_step2_29_05_2013/Iso/ResDown/T_t/output_5_1_ArM.root
+file:/hdfs/cms/store/user/andres/stpol_step2_29_05_2013/Iso/ResDown/T_t/output_6_1_3aV.root

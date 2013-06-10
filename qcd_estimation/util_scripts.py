@@ -13,24 +13,32 @@ def open_all_data_files(data_group, mc_groups, QCD_group, paths):
         for ds in group.getDatasets():
             for iso in paths:
                 for syst in paths[iso]:
-                   f = TFile(paths[iso][syst]+ds.getFileName())
-                   files[ds.getName()+"_"+iso+syst]=f
-                   count_hist = f.Get("trees").Get("count_hist")
-                   if not count_hist:
-                      raise TObjectOpenException("Failed to open count histogram")
-                   ds.setOriginalEventCount(count_hist.GetBinContent(1))
-                   ds.addFile(syst, iso, files[ds.getName()+"_"+iso+syst])
-                   #print "after adding ",ds._files
+                   if (ds.isMC() and ds.getName() != "QCDMu") or syst=="Nominal":
+                       f = TFile(paths[iso][syst]+ds.getFileName())
+                       files[ds.getName()+"_"+iso+syst]=f
+                       count_hist = f.Get("trees").Get("count_hist")
+                       if not count_hist:
+                          raise TObjectOpenException("Failed to open count histogram")
+                       ds.setOriginalEventCount(count_hist.GetBinContent(1), iso, syst)
+                       #print paths[iso][syst]+ds.getFileName(), count_hist.GetBinContent(1)
+                       ds.addFile(syst, iso, files[ds.getName()+"_"+iso+syst])
+                       #print "after adding ",ds._files
     return files
 
 def generate_paths(systematics, base_path):
     isos = ["iso", "antiiso"]
+    syst_type = ["Up", "Down"]
     paths = {}
     for iso in isos:
         paths[iso] = {}
         for syst in systematics:
-            path = base_path + "/" + iso + "/" + syst
-            paths[iso][syst] = path
+            if syst == "Nominal":
+                path = base_path + "/" + iso + "/" + syst + "/"
+                paths[iso][syst] = path
+            else:            
+                for st in syst_type:
+                    path = base_path + "/" + iso + "/" + syst + st + "/"
+                    paths[iso][syst+st] = path
     return paths
 
 def clear_histos(data_group, mc_groups):

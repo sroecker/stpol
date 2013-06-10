@@ -1,0 +1,5 @@
+file:/hdfs/cms/store/user/andres/stpol_step2_29_05_2013/Iso/Nominal/T_t_ToLeptons/output_2_1_azk.root
+file:/hdfs/cms/store/user/andres/stpol_step2_29_05_2013/Iso/Nominal/T_t_ToLeptons/output_3_1_nFU.root
+file:/hdfs/cms/store/user/andres/stpol_step2_29_05_2013/Iso/Nominal/T_t_ToLeptons/output_4_1_go3.root
+file:/hdfs/cms/store/user/andres/stpol_step2_29_05_2013/Iso/Nominal/T_t_ToLeptons/output_5_1_mAZ.root
+file:/hdfs/cms/store/user/andres/stpol_step2_29_05_2013/Iso/Nominal/T_t_ToLeptons/output_6_1_PLB.root

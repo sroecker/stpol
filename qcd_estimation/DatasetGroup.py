@@ -31,6 +31,9 @@ class DatasetGroup:
    def getTitle(self):
       return self._title   
 
+   def setTitle(self, title):
+      self._title = title  
+
    def getDatasets(self):
       return self._datasets
 

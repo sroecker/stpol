@@ -78,11 +78,19 @@ dgZJets = DatasetGroup("Z+Jets", kBlue-1)
 dZJets = Dataset("DYJets", "DYJets.root", 3503.71)
 dgZJets.add(dZJets)
 
+#dgDataMuons = DatasetGroup("Data", kBlack, False)
+#dSingleMuAB = Dataset("dataMuAB", "SingleMuAB.root", MC=False)
+#dSingleMuC = Dataset("dataMuC", "SingleMuC.root", MC=False)
+#dSingleMuD = Dataset("dataMuD", "SingleMuD.root", MC=False)
+#dgDataMuons.add([dSingleMuAB, dSingleMuC, dSingleMuD])
+
 dgDataMuons = DatasetGroup("Data", kBlack, False)
-dSingleMuAB = Dataset("dataMuAB", "SingleMuAB.root", MC=False)
-dSingleMuC = Dataset("dataMuC", "SingleMuC.root", MC=False)
-dSingleMuD = Dataset("dataMuD", "SingleMuD.root", MC=False)
-dgDataMuons.add([dSingleMuAB, dSingleMuC, dSingleMuD])
+dDataMuons = Dataset("DataMu", "SingleMu.root", MC=False)
+dgDataMuons.add(dDataMuons)
+
+dgDataElectrons = DatasetGroup("Data", kBlack, False)
+dDataElectrons = Dataset("DataEle","SingleEle.root", MC=False)
+dgDataElectrons.add(dDataElectrons)
 
 #Define sets of dataset groups for muons
 #For electrons, just do it the same way while defining dataset groups above as needed
