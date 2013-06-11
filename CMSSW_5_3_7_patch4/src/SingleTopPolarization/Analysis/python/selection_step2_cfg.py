@@ -72,6 +72,11 @@ def SingleTopStep2():
                   VarParsing.varType.bool,
                   "Use CompHep-specific processing")
 
+        options.register ('sherpa', False,
+                  VarParsing.multiplicity.singleton,
+                  VarParsing.varType.bool,
+                  "Use sherpa-specific processing")
+
         options.register ('systematic', "",
                   VarParsing.multiplicity.singleton,
                   VarParsing.varType.string,
@@ -107,6 +112,7 @@ def SingleTopStep2():
         Config.doDebug = options.doDebug
         Config.isMC = options.isMC
         Config.isCompHep = options.compHep
+        Config.isSherpa = options.sherpa
         Config.systematic = options.systematic
         Config.dataRun = options.dataRun
         print "Systematic! ",Config.systematic
@@ -828,7 +834,8 @@ def SingleTopStep2():
     # Flavour analyzer
     #-----------------------------------------------
 
-    if Config.isMC and Config.subChannel=="WJets":
+    Config.doWJetsFlavour = Config.isMC and Config.subChannel.lower() == "wjets" and not Config.isSherpa
+    if Config.doWJetsFlavour:
         process.flavourAnalyzer = cms.EDProducer('FlavourAnalyzer',
             genParticles = cms.InputTag('genParticles'),
             generator = cms.InputTag('generator'),
@@ -917,7 +924,7 @@ def SingleTopStep2():
         process.treeSequenceNew
     )
 
-    if Config.isMC and Config.subChannel=="WJets":
+    if Config.doWJetsFlavour:
         process.treePath += process.flavourAnalyzer
 
 

@@ -34,6 +34,7 @@
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "FWCore/Utilities/interface/InputTag.h"
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 
 //
@@ -78,9 +79,10 @@ GenParticleDecayTreeProducer<T>::~GenParticleDecayTreeProducer()
 std::string recurseDecayTree(const reco::Candidate& part) {
     std::stringstream ss;
     ss << "(" << part.pdgId() << ":" << part.status();
+    LogDebug("recurseDecayTree") << "particle " << part.pdgId() << " nMothers=" << part.numberOfMothers();
     for(unsigned int i=0; i<part.numberOfMothers(); i++) {
         const reco::Candidate* pMother = part.mother(i);
-        if (pMother==0) continue;
+        if (pMother==0 || pMother == &part) continue;
         const reco::Candidate& mother = (const reco::Candidate&)(*pMother);
         ss << ", ";
         ss << recurseDecayTree(mother);
@@ -94,7 +96,7 @@ void
 GenParticleDecayTreeProducer<T>::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
    using namespace edm;
-
+   LogDebug("") << "GenParticleDecayTreeProducer produce";
    //Need to open reco::Candidate as this is the most general form
    Handle<View<reco::Candidate> > particles;
    iEvent.getByLabel(src, particles);

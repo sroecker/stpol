@@ -11,7 +11,7 @@ from plots.common.cuts import Cuts, Cut
 from plots.common.utils import merge_cmds, merge_hists, get_hist_int_err
 
 lumi_total=12210
-sample_dir = "data/out_step3_05_11_23_10/iso/mc/"
+sample_dir = "data/out_step3_05_30_08_20"
 
 samples = []
 samples.append(Sample.fromFile(sample_dir + "/TTJets_MassiveBinDECAY.root"))
@@ -55,14 +55,16 @@ def mc_amount(cut, weight, lumi=12210, ref=None):
 
 if __name__=="__main__":
     #cut = Cuts.mu * Cuts.n_jets(2) * Cuts.mt_mu * Cuts.top_mass_sig * Cuts.eta_lj * Cuts.n_tags(1)
-    cut = Cuts.mu * Cuts.final
+    cut = Cuts.mu * Cuts.final(2,1)
 
     cutsref = [
         ("1mu", Cuts.mu, (5879691, 268238, 50236)),
         ("2J", Cuts.mu*Cuts.n_jets(2), (972069, 75674, 22387)),
         ("met", Cuts.mu*Cuts.n_jets(2)*Cut("met>45"), (404707, 46185, 11052)),
+        ("0T", Cuts.mu*Cuts.n_jets(2)*Cut("met>45")*Cuts.n_tags(0), (-1, -1, -1)),
+        ("rmslj_0T", Cuts.mu*Cuts.n_jets(2)*Cut("met>45")*Cuts.n_tags(0)*Cuts.rms_lj, (-1, -1, -1)),
         ("1T", Cuts.mu*Cuts.n_jets(2)*Cut("met>45")*Cuts.n_tags(1), (6197, 17505, 4173)),
-        ("rmslj", Cuts.mu*Cuts.n_jets(2)*Cut("met>45")*Cuts.n_tags(1)*Cuts.rms_lj, (5095, 14197, 3664)),
+        ("rmslj_1T", Cuts.mu*Cuts.n_jets(2)*Cut("met>45")*Cuts.n_tags(1)*Cuts.rms_lj, (5095, 14197, 3664)),
     ]
 
     for (name, cut, (refW, refTT, refT)) in cutsref:
