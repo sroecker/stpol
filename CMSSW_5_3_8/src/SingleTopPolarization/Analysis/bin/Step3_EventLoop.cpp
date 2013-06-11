@@ -99,6 +99,7 @@ public:
     float isoCut;
     float isoCutHigh;
     edm::InputTag muonPtSrc;
+    edm::InputTag muonEtaSrc;
     edm::InputTag muonRelIsoSrc;
     edm::InputTag muonCountSrc;
     edm::InputTag eleCountSrc;
@@ -117,9 +118,10 @@ public:
 
     virtual void initialize_branches() {
         branch_vars.vars_float["mu_pt"] = BranchVars::def_val;
+        branch_vars.vars_float["mu_eta"] = BranchVars::def_val;
         branch_vars.vars_float["mu_iso"] = BranchVars::def_val;
-	branch_vars.vars_int["mu_charge"] = BranchVars::def_val_int;
-	branch_vars.vars_int["mu_mother_id"] = BranchVars::def_val_int;
+	    branch_vars.vars_int["mu_charge"] = BranchVars::def_val_int;
+	    branch_vars.vars_int["mu_mother_id"] = BranchVars::def_val_int;
 
         branch_vars.vars_int["n_muons"] = BranchVars::def_val;
         branch_vars.vars_int["n_eles"] = BranchVars::def_val;
@@ -149,10 +151,11 @@ public:
         isoCutHigh = (float)pars.getParameter<double>("isoCutHigh");
 
         muonPtSrc = pars.getParameter<edm::InputTag>("muonPtSrc");
+        muonEtaSrc = pars.getParameter<edm::InputTag>("muonEtaSrc");
         muonRelIsoSrc = pars.getParameter<edm::InputTag>("muonRelIsoSrc");
 
-	muonDecayTreeSrc = pars.getParameter<edm::InputTag>("muonDecayTreeSrc");
-	muonChargeSrc = pars.getParameter<edm::InputTag>("muonChargeSrc");
+	    muonDecayTreeSrc = pars.getParameter<edm::InputTag>("muonDecayTreeSrc");
+	    muonChargeSrc = pars.getParameter<edm::InputTag>("muonChargeSrc");
 
         if(doControlVars) {
             muonDbSrc = pars.getParameter<edm::InputTag>("muonDbSrc");
@@ -179,8 +182,9 @@ public:
         if(requireOneMuon && (n_muons!=1 || n_eles !=0)) return false;
 
         branch_vars.vars_float["mu_pt"] = get_collection_n<float>(event, muonPtSrc, 0);
+        branch_vars.vars_float["mu_eta"] = get_collection_n<float>(event, muonEtaSrc, 0);
         branch_vars.vars_float["mu_iso"] = get_collection_n<float>(event, muonRelIsoSrc, 0);
-	branch_vars.vars_int["mu_charge"] = (int)get_collection_n<float>(event, muonChargeSrc, 0);
+	    branch_vars.vars_int["mu_charge"] = (int)get_collection_n<float>(event, muonChargeSrc, 0);
 
 	std::string decay_tree = get_collection<std::string>(event, muonDecayTreeSrc, default_str);
 	if(decay_tree.size()>0) {
