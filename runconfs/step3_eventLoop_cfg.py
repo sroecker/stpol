@@ -81,6 +81,7 @@ process.muonCuts = cms.PSet(
     isoCutHigh  = cms.double(isoCHigh),
 
     muonPtSrc  = cms.InputTag("goodSignalMuonsNTupleProducer", "Pt"),
+    muonEtaSrc  = cms.InputTag("goodSignalMuonsNTupleProducer", "Eta"),
     muonRelIsoSrc  = cms.InputTag("goodSignalMuonsNTupleProducer", "relIso"),
     muonCountSrc  = cms.InputTag("muonCount"),
     eleCountSrc  = cms.InputTag("electronCount"),
