@@ -146,7 +146,7 @@ MuonIDProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
         
         x = TMath::QuietNaN();
         if(muon.globalTrack().isAvailable()) {
-            x = muon.globalTrack()->hitPattern().trackerLayersWithMeasurement();
+            x = muon.globalTrack()->hitPattern().numberOfValidMuonHits();
         }
         else {
             edm::LogError("muon track") << "muon does not have globalTrack()";

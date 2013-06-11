@@ -943,6 +943,7 @@ def SingleTopStep2():
                 #'drop *',
                 'drop *',
                 'keep edmMergeableCounter_*__*',
+                'keep *_generator__*',
                 'keep edmTriggerResults_TriggerResults__*',
                 'keep *_flavourAnalyzer_*_STPOLSEL2',
                 'keep floats_patMETNTupleProducer_*_STPOLSEL2',

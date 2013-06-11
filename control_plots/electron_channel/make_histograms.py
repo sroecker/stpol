@@ -239,6 +239,10 @@ if w_eltr != "1":
     weightstring = weightstring + "_ElTrw"
 outfilepath = "Histograms/" + channel + "/" + cutstring  + "/"
 
+# If the path doesn't exist, make it...
+if not os.path.exists(outfilepath):
+    os.makedirs(outfilepath)
+
 outfile = outfilepath + cutstring + weightstring + mode + ".root"
 p = ROOT.TFile(outfile,"recreate")
 print "writing output to file: " + outfile
