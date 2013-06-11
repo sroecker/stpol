@@ -193,6 +193,8 @@ def SingleTopStep2():
     #process.muonClones = cms.EDProducer("MuonShallowCloneProducer",
     #    src = cms.InputTag(Config.Muons.source)
     #)
+    if Config.Muons.reverseIsoCut:
+        Config.Muons.source = "muonsWithIDAll"
     process.skimmedMuons = cms.EDFilter("PtMinCandViewCloneSelector",
       src=cms.InputTag(Config.Muons.source), ptMin=cms.double(20)
     )
@@ -942,6 +944,7 @@ def SingleTopStep2():
             outputCommands=cms.untracked.vstring(
                 #'drop *',
                 'drop *',
+                'keep *_generator_*_SIM',
                 'keep edmMergeableCounter_*__*',
                 'keep edmTriggerResults_TriggerResults__*',
                 'keep *_flavourAnalyzer_*_STPOLSEL2',
