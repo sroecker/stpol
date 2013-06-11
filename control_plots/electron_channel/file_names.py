@@ -27,20 +27,20 @@ mcFiles = {
     "GJets1": "GJets1.root",
     "GJets2": "GJets2.root",
     
-#    "QCD_Pt_20_30_BCtoE": "QCD_Pt_20_30_BCtoE.root",
-#    "QCD_Pt_30_80_BCtoE": "QCD_Pt_30_80_BCtoE.root",
-#    "QCD_Pt_80_170_BCtoE": "QCD_Pt_80_170_BCtoE.root",
-#    "QCD_Pt_170_250_BCtoE": "QCD_Pt_170_250_BCtoE.root",
-#    "QCD_Pt_250_350_BCtoE":"QCD_Pt_250_350_BCtoE.root",
-#    "QCD_Pt_350_BCtoE": "QCD_Pt_350_BCtoE.root",
+    "QCD_Pt_20_30_BCtoE": "QCD_Pt_20_30_BCtoE.root",
+    "QCD_Pt_30_80_BCtoE": "QCD_Pt_30_80_BCtoE.root",
+    "QCD_Pt_80_170_BCtoE": "QCD_Pt_80_170_BCtoE.root",
+    "QCD_Pt_170_250_BCtoE": "QCD_Pt_170_250_BCtoE.root",
+    "QCD_Pt_250_350_BCtoE":"QCD_Pt_250_350_BCtoE.root",
+    "QCD_Pt_350_BCtoE": "QCD_Pt_350_BCtoE.root",
     
-#    "QCD_Pt_20_30_EMEnriched": "QCD_Pt_20_30_EMEnriched.root",
-#    "QCD_Pt_30_80_EMEnriched": "QCD_Pt_30_80_EMEnriched.root",
-#    "QCD_Pt_80_170_EMEnriched": "QCD_Pt_80_170_EMEnriched.root",
-#    "QCD_Pt_170_250_EMEnriched": "QCD_Pt_170_250_EMEnriched.root",
-#    "QCD_Pt_250_350_EMEnriched": "QCD_Pt_250_350_EMEnriched.root",
-#    "QCD_Pt_350_EMEnriched": "QCD_Pt_350_EMEnriched.root",
-#    "QCDMu": "QCDMu.root"
+    "QCD_Pt_20_30_EMEnriched": "QCD_Pt_20_30_EMEnriched.root",
+    "QCD_Pt_30_80_EMEnriched": "QCD_Pt_30_80_EMEnriched.root",
+    "QCD_Pt_80_170_EMEnriched": "QCD_Pt_80_170_EMEnriched.root",
+    "QCD_Pt_170_250_EMEnriched": "QCD_Pt_170_250_EMEnriched.root",
+    "QCD_Pt_250_350_EMEnriched": "QCD_Pt_250_350_EMEnriched.root",
+    "QCD_Pt_350_EMEnriched": "QCD_Pt_350_EMEnriched.root",
+    "QCDMu": "QCDMu.root"
     
     }
 
