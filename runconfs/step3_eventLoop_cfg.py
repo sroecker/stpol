@@ -44,7 +44,6 @@ options.nJMax = int(options.nJ.split(",")[1])
 options.nTMin = int(options.nT.split(",")[0])
 options.nTMax = int(options.nT.split(",")[1])
 
-#options.doFinal = True
 
 if(options.isAntiIso and options.lepton=="mu"):
     isoC = 0.2
@@ -211,8 +210,8 @@ process.weights = cms.PSet(
 process.mtMuCuts = cms.PSet(
     mtMuSrc = cms.InputTag("muAndMETMT"),
     metSrc = cms.InputTag("patMETNTupleProducer", "Pt"),
-    doMTCut = cms.bool( options.doFinal and options.lepton=="mu" and not options.isWplusJets ),
-    doMETCut = cms.bool( options.doFinal and options.lepton=="ele" and not options.isWplusJets ),
+    doMTCut = cms.bool( options.doMtw ),
+    doMETCut = cms.bool( options.doMet ),
     minValMtw = cms.double(50),
     minValMet = cms.double(45)
     )
@@ -278,7 +277,7 @@ process.genParticles = cms.PSet(
     trueCosThetaSrc = cms.InputTag("cosThetaProducerTrueAll", "cosThetaLightJet"),
     trueLeptonPdgIdSrc = cms.InputTag("genParticleSelector", "trueLeptonPdgId"),
     wJetsClassificationSrc = cms.InputTag("flavourAnalyzer", "simpleClass"),
-	requireGenMuon  = cms.bool(False)
+    requireGenMuon  = cms.bool(False)
 )
 
 process.bEfficiencyCalcs = cms.PSet(
