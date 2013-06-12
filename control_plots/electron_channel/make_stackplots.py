@@ -212,6 +212,8 @@ for hist_name in hist_def:
         )
 
     outfilename = "Plots/" + channel + "/" + mode1 + mode1a + "/" + hist_to_plot + mode2 + weight + ".pdf"
+    if not os.path.exists(os.path.dirname(outfilename)):
+        os.makedirs(os.path.dirname(outfilename))
     c.SaveAs(outfilename)
     c.Close()
 
