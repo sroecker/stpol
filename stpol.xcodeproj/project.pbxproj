@@ -8,7 +8,6 @@
 
 /* Begin PBXFileReference section */
 		A70C271916AFC97600495932 /* calibrations_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = calibrations_cfg.py; sourceTree = "<group>"; };
-		A70C271A16AFCBF500495932 /* calculateBTaggingEffs.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = calculateBTaggingEffs.py; sourceTree = "<group>"; };
 		A70C271E16AFD8FC00495932 /* step2_newCmdLine_cfg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = step2_newCmdLine_cfg.py; sourceTree = "<group>"; };
 		A70C272916AFF53E00495932 /* crab_Data_step1.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = crab_Data_step1.cfg; path = crabs/crab_Data_step1.cfg; sourceTree = "<group>"; };
 		A70C272A16AFF53E00495932 /* crab_MC_step1.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = crab_MC_step1.cfg; path = crabs/crab_MC_step1.cfg; sourceTree = "<group>"; };
@@ -56,7 +55,6 @@
 		A71F5D7B1701D8A200AB8E33 /* cross_sections.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = cross_sections.py; sourceTree = "<group>"; };
 		A71F5D7C1701D8A200AB8E33 /* make_plots.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = make_plots.py; sourceTree = "<group>"; };
 		A71F5D7D1701D8A200AB8E33 /* project_histos.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = project_histos.py; sourceTree = "<group>"; };
-		A726619E16FD7ACB003D5534 /* pickle_to_root_example.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = pickle_to_root_example.py; path = misc/pickle_to_root_example.py; sourceTree = "<group>"; };
 		A73D461D16A83DFB00703EF6 /* babysit2.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = babysit2.sh; sourceTree = "<group>"; };
 		A73D461E16A83DFB00703EF6 /* bcmsRun */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = bcmsRun; sourceTree = "<group>"; };
 		A73D461F16A83DFB00703EF6 /* datasets.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = datasets.py; sourceTree = "<group>"; };
@@ -77,6 +75,23 @@
 		A76785891734068C00C77D80 /* utils.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = utils.py; sourceTree = "<group>"; };
 		A767858B173406BB00C77D80 /* muon_channel.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = muon_channel.py; sourceTree = "<group>"; };
 		A767858E1734400E00C77D80 /* mu_quality_vars.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = mu_quality_vars.py; sourceTree = "<group>"; };
+		A767FCAD1769C4ED004A6D7A /* b_efficiency_calc.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = b_efficiency_calc.cc; sourceTree = "<group>"; };
+		A767FCAE1769C4ED004A6D7A /* b_efficiency_calc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = b_efficiency_calc.h; sourceTree = "<group>"; };
+		A767FCAF1769C4ED004A6D7A /* BuildFile.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = BuildFile.xml; sourceTree = "<group>"; };
+		A767FCB01769C4ED004A6D7A /* cuts_base.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cuts_base.cpp; sourceTree = "<group>"; };
+		A767FCB11769C4ED004A6D7A /* cuts_base.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cuts_base.h; sourceTree = "<group>"; };
+		A767FCB21769C4ED004A6D7A /* hlt_cuts.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hlt_cuts.cpp; sourceTree = "<group>"; };
+		A767FCB31769C4ED004A6D7A /* hlt_cuts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hlt_cuts.h; sourceTree = "<group>"; };
+		A767FCB41769C4ED004A6D7A /* Step3_EventLoop.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Step3_EventLoop.cpp; sourceTree = "<group>"; };
+		A767FCB51769C4ED004A6D7A /* Step3_EventLoop_unfolding_presel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Step3_EventLoop_unfolding_presel.cpp; sourceTree = "<group>"; };
+		A767FCBB1769C70E004A6D7A /* file_names.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = file_names.py; sourceTree = "<group>"; };
+		A767FCBC1769C70E004A6D7A /* make_histograms.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = make_histograms.py; sourceTree = "<group>"; };
+		A767FCBD1769C70E004A6D7A /* make_stackplots.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = make_stackplots.py; sourceTree = "<group>"; };
+		A767FCBE1769C70E004A6D7A /* plot_defs.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = plot_defs.py; sourceTree = "<group>"; };
+		A767FCBF1769C70E004A6D7A /* plot_defs_ele.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = plot_defs_ele.py; sourceTree = "<group>"; };
+		A767FCC01769C70E004A6D7A /* plot_defs_mu.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = plot_defs_mu.py; sourceTree = "<group>"; };
+		A767FCC11769C70E004A6D7A /* qcd_yields.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = qcd_yields.py; sourceTree = "<group>"; };
+		A767FCC21769C70E004A6D7A /* tdrstyle.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = tdrstyle.py; sourceTree = "<group>"; };
 		A768B07B16E4A42A0076ADB3 /* crab_Data_step2_antiIso.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = crab_Data_step2_antiIso.cfg; path = crabs/crab_Data_step2_antiIso.cfg; sourceTree = "<group>"; };
 		A768B07C16E4A42A0076ADB3 /* crab_Data_step2_Iso.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = crab_Data_step2_Iso.cfg; path = crabs/crab_Data_step2_Iso.cfg; sourceTree = "<group>"; };
 		A768B07D16E4A42A0076ADB3 /* crab_MC_step1_glideInRemote.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = crab_MC_step1_glideInRemote.cfg; path = crabs/crab_MC_step1_glideInRemote.cfg; sourceTree = "<group>"; };
@@ -204,26 +219,6 @@
 		A76CF9E616A6B2BE00DC8250 /* transfermatrixcreator_cfi.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = transfermatrixcreator_cfi.py; sourceTree = "<group>"; };
 		A76CF9E816A6B2BE00DC8250 /* TransferMatrixCreator.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TransferMatrixCreator.cc; sourceTree = "<group>"; };
 		A76CF9E916A6B2BE00DC8250 /* transfermatrixcreator_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = transfermatrixcreator_cfg.py; sourceTree = "<group>"; };
-		A76CFA1816A6B2F000DC8250 /* analysis.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = analysis.py; sourceTree = "<group>"; };
-		A76CFA1A16A6B2F000DC8250 /* anfw.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; lineEnding = 0; path = anfw.py; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.python; };
-		A76CFA1C16A6B2F000DC8250 /* binContent.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = binContent.py; sourceTree = "<group>"; };
-		A76CFA1D16A6B2F000DC8250 /* bTaggingSensitivity.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = bTaggingSensitivity.py; sourceTree = "<group>"; };
-		A76CFA1F16A6B2F000DC8250 /* cosTheta_phaseSpaceBias.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = cosTheta_phaseSpaceBias.py; sourceTree = "<group>"; };
-		A76CFA2016A6B2F000DC8250 /* costheta_recobias.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = costheta_recobias.py; sourceTree = "<group>"; };
-		A76CFA2116A6B2F000DC8250 /* cosTheta_solBias.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = cosTheta_solBias.py; sourceTree = "<group>"; };
-		A76CFA2216A6B2F000DC8250 /* cosThetaResol.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = cosThetaResol.py; sourceTree = "<group>"; };
-		A76CFA2316A6B2F000DC8250 /* cross_sections.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = cross_sections.py; sourceTree = "<group>"; };
-		A76CFA2516A6B2F000DC8250 /* cutflow.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = cutflow.py; sourceTree = "<group>"; };
-		A76CFA2616A6B2F000DC8250 /* ecalEff.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = ecalEff.py; sourceTree = "<group>"; };
-		A76CFA2716A6B2F000DC8250 /* etaCut_bias.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = etaCut_bias.py; sourceTree = "<group>"; };
-		A76CFA2816A6B2F000DC8250 /* etajCut.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = etajCut.py; sourceTree = "<group>"; };
-		A76CFA2916A6B2F000DC8250 /* finalPlots.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = finalPlots.py; sourceTree = "<group>"; };
-		A76CFA2F16A6B2F000DC8250 /* misreco.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = misreco.py; sourceTree = "<group>"; };
-		A76CFA3016A6B2F000DC8250 /* mtwComparison.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = mtwComparison.py; sourceTree = "<group>"; };
-		A76CFA3516A6B2F000DC8250 /* reco_correlations.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = reco_correlations.py; sourceTree = "<group>"; };
-		A76CFA3916A6B2F000DC8250 /* transferMatrix.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = transferMatrix.py; sourceTree = "<group>"; };
-		A76CFA3A16A6B2F000DC8250 /* unfolding.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = unfolding.py; sourceTree = "<group>"; };
-		A76CFA3B16A6B2F000DC8250 /* weightedComparison.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = weightedComparison.py; sourceTree = "<group>"; };
 		A76CFA4916A6C5A200DC8250 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.simpleColoring; };
 		A76CFA4A16A6C5A200DC8250 /* setup.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = setup.sh; sourceTree = "<group>"; };
 		A76CFA4D16A6C62200DC8250 /* step1_cfg.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = step1_cfg.py; sourceTree = "<group>"; };
@@ -254,11 +249,6 @@
 		A796BCD4172A8EC300693672 /* tabulate.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = tabulate.py; sourceTree = "<group>"; };
 		A7A913A31709BDB4002832E3 /* b_eff_calcs.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = b_eff_calcs.py; sourceTree = "<group>"; };
 		A7AE61F716FAD1BF0001FFB7 /* step3_eventLoop_cfg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = step3_eventLoop_cfg.py; sourceTree = "<group>"; };
-		A7AE61F816FB89A50001FFB7 /* BuildFile.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = BuildFile.xml; path = CMSSW_5_3_8/src/SingleTopPolarization/Analysis/bin/BuildFile.xml; sourceTree = "<group>"; };
-		A7AE61F916FB89A50001FFB7 /* Step3_EventLoop.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Step3_EventLoop.cpp; path = CMSSW_5_3_8/src/SingleTopPolarization/Analysis/bin/Step3_EventLoop.cpp; sourceTree = "<group>"; };
-		A7AE61FA16FB8A2D0001FFB7 /* step1_newCmdLine_cfg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = step1_newCmdLine_cfg.py; path = runconfs/step1_newCmdLine_cfg.py; sourceTree = "<group>"; };
-		A7BB7EC316CA77F900B9DD28 /* fastSimValidationPlots.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = fastSimValidationPlots.py; sourceTree = "<group>"; };
-		A7D8670216C8E77C00514DDD /* plots.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = plots.py; sourceTree = "<group>"; };
 		A7D9917917058A3E00CEF269 /* cutflow_test.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = cutflow_test.py; sourceTree = "<group>"; };
 		A7DC5ED5171E94E300AFD6B8 /* final_plot.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = final_plot.py; sourceTree = "<group>"; };
 		A7EAECBF16D266CB004D032C /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
@@ -466,21 +456,83 @@
 		A767858A173406BB00C77D80 /* control_plots */ = {
 			isa = PBXGroup;
 			children = (
+				A767FCBA1769C70E004A6D7A /* electron_channel */,
 				A767858B173406BB00C77D80 /* muon_channel.py */,
 			);
 			path = control_plots;
 			sourceTree = "<group>";
 		};
+		A767FCAC1769C4ED004A6D7A /* bin */ = {
+			isa = PBXGroup;
+			children = (
+				A767FCAD1769C4ED004A6D7A /* b_efficiency_calc.cc */,
+				A767FCAE1769C4ED004A6D7A /* b_efficiency_calc.h */,
+				A767FCAF1769C4ED004A6D7A /* BuildFile.xml */,
+				A767FCB01769C4ED004A6D7A /* cuts_base.cpp */,
+				A767FCB11769C4ED004A6D7A /* cuts_base.h */,
+				A767FCB21769C4ED004A6D7A /* hlt_cuts.cpp */,
+				A767FCB31769C4ED004A6D7A /* hlt_cuts.h */,
+				A767FCB41769C4ED004A6D7A /* Step3_EventLoop.cpp */,
+				A767FCB51769C4ED004A6D7A /* Step3_EventLoop_unfolding_presel.cpp */,
+			);
+			name = bin;
+			sourceTree = "<group>";
+		};
+		A767FCB61769C4F4004A6D7A /* CMSSW_5_3_8 */ = {
+			isa = PBXGroup;
+			children = (
+				A767FCB71769C500004A6D7A /* src */,
+			);
+			name = CMSSW_5_3_8;
+			path = CMSSW_5_3_8/src/SingleTopPolarization/Analysis/bin;
+			sourceTree = "<group>";
+		};
+		A767FCB71769C500004A6D7A /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A767FCB81769C505004A6D7A /* SingleTopPolarization */,
+			);
+			name = src;
+			sourceTree = "<group>";
+		};
+		A767FCB81769C505004A6D7A /* SingleTopPolarization */ = {
+			isa = PBXGroup;
+			children = (
+				A767FCB91769C50F004A6D7A /* Analysis */,
+			);
+			name = SingleTopPolarization;
+			sourceTree = "<group>";
+		};
+		A767FCB91769C50F004A6D7A /* Analysis */ = {
+			isa = PBXGroup;
+			children = (
+				A767FCAC1769C4ED004A6D7A /* bin */,
+			);
+			name = Analysis;
+			sourceTree = "<group>";
+		};
+		A767FCBA1769C70E004A6D7A /* electron_channel */ = {
+			isa = PBXGroup;
+			children = (
+				A767FCBB1769C70E004A6D7A /* file_names.py */,
+				A767FCBC1769C70E004A6D7A /* make_histograms.py */,
+				A767FCBD1769C70E004A6D7A /* make_stackplots.py */,
+				A767FCBE1769C70E004A6D7A /* plot_defs.py */,
+				A767FCBF1769C70E004A6D7A /* plot_defs_ele.py */,
+				A767FCC01769C70E004A6D7A /* plot_defs_mu.py */,
+				A767FCC11769C70E004A6D7A /* qcd_yields.py */,
+				A767FCC21769C70E004A6D7A /* tdrstyle.py */,
+			);
+			path = electron_channel;
+			sourceTree = "<group>";
+		};
 		A76CF91716A6B29200DC8250 = {
 			isa = PBXGroup;
 			children = (
+				A767FCB61769C4F4004A6D7A /* CMSSW_5_3_8 */,
 				A767858A173406BB00C77D80 /* control_plots */,
 				A71F5D781701D8A200AB8E33 /* plots */,
 				A71F5D451700E3F100AB8E33 /* newplots */,
-				A726619E16FD7ACB003D5534 /* pickle_to_root_example.py */,
-				A7AE61F816FB89A50001FFB7 /* BuildFile.xml */,
-				A7AE61F916FB89A50001FFB7 /* Step3_EventLoop.cpp */,
-				A7AE61FA16FB8A2D0001FFB7 /* step1_newCmdLine_cfg.py */,
 				A7EAECBE16D266CB004D032C /* newplots */,
 				A70C272C16AFF54400495932 /* crabs */,
 				A73D461C16A83DFB00703EF6 /* util */,
@@ -488,7 +540,6 @@
 				A76CFA8516A6C81B00DC8250 /* runconfs */,
 				A76CFA4916A6C5A200DC8250 /* README.md */,
 				A76CFA4A16A6C5A200DC8250 /* setup.sh */,
-				A76CFA1716A6B2F000DC8250 /* analysis_step2 */,
 				A76CF92316A6B2BE00DC8250 /* CMSSW_5_3_7_patch4 */,
 			);
 			sourceTree = "<group>";
@@ -1234,36 +1285,6 @@
 				A76CF9E816A6B2BE00DC8250 /* TransferMatrixCreator.cc */,
 			);
 			path = src;
-			sourceTree = "<group>";
-		};
-		A76CFA1716A6B2F000DC8250 /* analysis_step2 */ = {
-			isa = PBXGroup;
-			children = (
-				A70C271A16AFCBF500495932 /* calculateBTaggingEffs.py */,
-				A76CFA1816A6B2F000DC8250 /* analysis.py */,
-				A76CFA1A16A6B2F000DC8250 /* anfw.py */,
-				A7D8670216C8E77C00514DDD /* plots.py */,
-				A7BB7EC316CA77F900B9DD28 /* fastSimValidationPlots.py */,
-				A76CFA1C16A6B2F000DC8250 /* binContent.py */,
-				A76CFA1D16A6B2F000DC8250 /* bTaggingSensitivity.py */,
-				A76CFA1F16A6B2F000DC8250 /* cosTheta_phaseSpaceBias.py */,
-				A76CFA2016A6B2F000DC8250 /* costheta_recobias.py */,
-				A76CFA2116A6B2F000DC8250 /* cosTheta_solBias.py */,
-				A76CFA2216A6B2F000DC8250 /* cosThetaResol.py */,
-				A76CFA2316A6B2F000DC8250 /* cross_sections.py */,
-				A76CFA2516A6B2F000DC8250 /* cutflow.py */,
-				A76CFA2616A6B2F000DC8250 /* ecalEff.py */,
-				A76CFA2716A6B2F000DC8250 /* etaCut_bias.py */,
-				A76CFA2816A6B2F000DC8250 /* etajCut.py */,
-				A76CFA2916A6B2F000DC8250 /* finalPlots.py */,
-				A76CFA2F16A6B2F000DC8250 /* misreco.py */,
-				A76CFA3016A6B2F000DC8250 /* mtwComparison.py */,
-				A76CFA3516A6B2F000DC8250 /* reco_correlations.py */,
-				A76CFA3916A6B2F000DC8250 /* transferMatrix.py */,
-				A76CFA3A16A6B2F000DC8250 /* unfolding.py */,
-				A76CFA3B16A6B2F000DC8250 /* weightedComparison.py */,
-			);
-			path = analysis_step2;
 			sourceTree = "<group>";
 		};
 		A76CFA4C16A6C62200DC8250 /* runconfs */ = {
