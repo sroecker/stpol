@@ -41,11 +41,6 @@
 
 #include "FWCore/Utilities/interface/InputTag.h"
 
-
-//
-// class declaration
-//
-
 class MuonIDProducer : public edm::EDProducer {
 public:
     explicit MuonIDProducer(const edm::ParameterSet&);
@@ -63,29 +58,17 @@ private:
     virtual void beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
     virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
     
-    edm::InputTag muonSource;
-    edm::InputTag primaryVertexSource;
+    const edm::InputTag muonSource;
+    const edm::InputTag primaryVertexSource;
     
     // ----------member data ---------------------------
 };
 
-//
-// constants, enums and typedefs
-//
-
-
-//
-// static data member definitions
-//
-
-//
-// constructors and destructor
-//
-MuonIDProducer::MuonIDProducer(const edm::ParameterSet& iConfig)
+MuonIDProducer::MuonIDProducer(const edm::ParameterSet& iConfig) :
+muonSource(iConfig.getParameter<edm::InputTag>("muonSrc")),
+primaryVertexSource(iConfig.getParameter<edm::InputTag>("primaryVertexSource"))
 {
-    muonSource = iConfig.getParameter<edm::InputTag>("muonSrc");
-    primaryVertexSource = iConfig.getParameter<edm::InputTag>("primaryVertexSource");
-    produces<std::vector<pat::Muon> >();
+    produces<std::vector<pat::Muon>>();
 }
 
 
@@ -93,7 +76,6 @@ MuonIDProducer::~MuonIDProducer()
 {
 }
 
-// ------------ method called to produce the data  ------------
 void
 MuonIDProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
