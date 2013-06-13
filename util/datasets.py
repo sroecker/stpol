@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python2.
 """
 This file collects the various datasets used for the stpol analysis and creates
 crab.cfg files from these datasets based on a template.
@@ -118,11 +118,10 @@ class DS_S2MC(DS):
         else:
             self.channel = "background"
 
-    def parseTemplate(self, template, tag, ch_name, syst=""):
+    def parseTemplate(self, template, tag, ch_name):
         out = super(DS_S2MC, self).parseTemplate(template, tag)
         out = out.replace("SUBCHAN", self.subchannel)
         out = out.replace("CHANNEL", self.channel)
-        out = out.replace("SYSTEMATIC", syst)
         out = out.replace("NAME", ch_name)
 
         return out
@@ -319,8 +318,19 @@ step1_MC_systematic_out = [
     , DS_S2MC("WJetsToLNu_matchingup", "/WJetsToLNu_matchingup_8TeV-madgraph-tauola/jpata-stpol_step1_05_20_a2437d6e0ca7eba657ba43c9c2371fff8f88e5ba-d6f3c092e0af235d8b18254ddb07959c/USER", "WJets")
     , DS_S2MC("WJetsToLNu_scaledown", "/WJetsToLNu_scaledown_8TeV-madgraph-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER", "WJets")
     , DS_S2MC("WJetsToLNu_scaleup", "/WJetsToLNu_scaleup_8TeV-madgraph-tauola/jpata-stpol_step1_05_10-dbc13e99c2b8251c2992382f53978821/USER", "WJets")
+
 ]
 
+
+step2_sherpa_WJets = [
+      DS_S2MC("WJets_sherpa_nominal", "/WJets_0p1_1p2_2p10_3p20_4p20_5p20_CT10_8TeV-sherpa/joosep-stpol_step1_misc_05_31-d6f3c092e0af235d8b18254ddb07959c/USER", "WJets", cmdline="sherpa=True")
+    , DS_S2MC("WJets_sherpa_EnUp", "/WJets_0p1_1p2_2p10_3p20_4p20_5p20_CT10_8TeV-sherpa/joosep-stpol_step1_misc_05_31-d6f3c092e0af235d8b18254ddb07959c/USER", "WJets", cmdline="sherpa=True systematic=EnUp")
+    , DS_S2MC("WJets_sherpa_EnDown", "/WJets_0p1_1p2_2p10_3p20_4p20_5p20_CT10_8TeV-sherpa/joosep-stpol_step1_misc_05_31-d6f3c092e0af235d8b18254ddb07959c/USER", "WJets", cmdline="sherpa=True systematic=EnDown")
+    , DS_S2MC("WJets_sherpa_ResUp", "/WJets_0p1_1p2_2p10_3p20_4p20_5p20_CT10_8TeV-sherpa/joosep-stpol_step1_misc_05_31-d6f3c092e0af235d8b18254ddb07959c/USER", "WJets", cmdline="sherpa=True systematic=ResUp")
+    , DS_S2MC("WJets_sherpa_ResDown", "/WJets_0p1_1p2_2p10_3p20_4p20_5p20_CT10_8TeV-sherpa/joosep-stpol_step1_misc_05_31-d6f3c092e0af235d8b18254ddb07959c/USER", "WJets", cmdline="sherpa=True systematic=ResDown")
+    , DS_S2MC("WJets_sherpa_UnclusteredEnUp", "/WJets_0p1_1p2_2p10_3p20_4p20_5p20_CT10_8TeV-sherpa/joosep-stpol_step1_misc_05_31-d6f3c092e0af235d8b18254ddb07959c/USER", "WJets", cmdline="sherpa=True systematic=UnclusteredEnUp")
+    , DS_S2MC("WJets_sherpa_UnclusteredEnDown", "/WJets_0p1_1p2_2p10_3p20_4p20_5p20_CT10_8TeV-sherpa/joosep-stpol_step1_misc_05_31-d6f3c092e0af235d8b18254ddb07959c/USER", "WJets", cmdline="sherpa=True systematic=UnclusteredEnDown")
+]
 
 step1_FSIM_Valid = [
     DS("TTJets_FSIM_Valid_FastSim", "/TTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola/Summer12-START53_V7C_FSIM-v1/AODSIM"),
@@ -541,7 +551,9 @@ possible_ds = {
     "S2_MC": step1B_out_MC_new,
     "S2_MC_noQCD": step1B_out_MC_noQCD_new,
     "S2_MC_QCD": step1B_out_MC_QCD_new,
-    "S2_MC_syst": step1_MC_systematic_out
+    "S2_MC_syst": step1_MC_systematic_out,
+
+    "S2_MC_WJets_sherpa": step2_sherpa_WJets
 }
 
 if __name__=="__main__":
@@ -577,7 +589,9 @@ if __name__=="__main__":
         ofn = "{2}/crab_{0}_{1}.cfg".format(ds.name, tag, ofdir)
         of = open(ofn, "w")
         if isinstance(ds, DS_S2MC):
-            cfg = ds.parseTemplate(template, tag, ds.name, systematic)
+            if len(systematic)>0:
+                ds.cmdline += "systematic=%s" % systematic
+            cfg = ds.parseTemplate(template, tag, ds.name)
         else:
             cfg = ds.parseTemplate(template, tag)
         of.write(cfg)

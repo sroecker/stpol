@@ -62,6 +62,9 @@ class Config(C):
     #If using comphep-generated input
     isCompHep = False
 
+    #If using sherpa-generated input
+    isSherpa = False
+
     #Which systematic to use
     systematic = None
 

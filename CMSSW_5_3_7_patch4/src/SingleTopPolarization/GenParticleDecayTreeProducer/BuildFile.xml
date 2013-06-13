@@ -5,4 +5,5 @@
 <use name="DataFormats/RecoCandidate"/>
 <use name="DataFormats/PatCandidates"/>
 <use name="FWCore/Utilities"/>
+<use name="FWCore/MessageLogger"/>
 <flags EDM_PLUGIN="1"/>

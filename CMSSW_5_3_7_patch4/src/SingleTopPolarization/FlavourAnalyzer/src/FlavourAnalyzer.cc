@@ -11,6 +11,7 @@
 #include <SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h>
 #include <FWCore/Utilities/interface/EDMException.h>
 #include <FWCore/Framework/interface/MakerMacros.h>
+#include <FWCore/MessageLogger/interface/MessageLogger.h>
 
 #include <cmath>
 #include <vector>
@@ -149,6 +150,7 @@ void FlavourAnalyzer::endJob()
 
 void FlavourAnalyzer::produce(edm::Event &event, const edm::EventSetup &eventSetup)
 {
+    LogDebug("") << "Starting flavour analyzer";
     // Get the generator particles collection from the event
     Handle<View<GenParticle> > genParticles;
     event.getByLabel(genParticlesSrc, genParticles);
