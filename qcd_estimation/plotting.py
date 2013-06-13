@@ -7,11 +7,11 @@ from Variable import *
 from ROOT import *
 from array import array
 
-def make_stack(var, stackName, MC_groups, data_group, open_files, syst, iso, lumis, cutsMC, cutsData, cutsQCD, extra = "", qcd=None):
+def make_stack(var, stackName, MC_groups, data_group, open_files, syst, iso, lumis, cutsMC, cutsData, cutsQCD, extra = "", qcd=None, absolute=False):
    print "making stack "+iso + " "+syst + " "+extra
    #print "MC", cutsMC
    #print "data", cutsData
-   make_histograms(var, MC_groups, data_group, open_files, syst, iso, lumis, cutsMC, cutsData, cutsQCD,extra)
+   make_histograms(var, MC_groups, data_group, open_files, syst, iso, lumis, cutsMC, cutsData, cutsQCD,extra, absolute)
    stack = THStack("Stack"+var.shortName+syst+iso, stackName)
    if qcd is not None:
       #print "QCD"
@@ -125,7 +125,7 @@ def draw_final(var, stack, MC_groups, data_group, syst="", iso="iso", name="", m
    return cst
 
 
-def make_histograms(var, MC_groups, data_group, open_files, syst, iso, lumis, cutsMC, cutsData, cutsQCD, extra = ""):
+def make_histograms(var, MC_groups, data_group, open_files, syst, iso, lumis, cutsMC, cutsData, cutsQCD, extra = "", absolute=False):
    all_groups = []
    all_groups.extend(MC_groups)
    total = TH1D("total", "total", var.bins, var.lbound, var.ubound)
@@ -157,7 +157,10 @@ def make_histograms(var, MC_groups, data_group, open_files, syst, iso, lumis, cu
             else:
                weight = cutsData
             #print "weight", weight
-            mytree.Project(his_name, var.name, weight,"same")
+            if absolute:
+               mytree.Project(his_name, "abs("+var.name+")", weight,"same")
+            else:
+               mytree.Project(his_name, var.name, weight,"same")
             if group.isMC():
                his.Scale(ds.scaleToData(lumis.getDataLumi(iso), syst, iso))               
                #print ds.scaleToData(lumis.getDataLumi(iso, syst))
@@ -175,7 +178,7 @@ def make_histograms(var, MC_groups, data_group, open_files, syst, iso, lumis, cu
    print "total MC",total.IntegralAndError(0,100,error)," +- ", error[0]
 
 
-def make_histogram(var, group, title, open_files, lumis, syst="", iso="iso", weight="1", extra=""):
+def make_histogram(var, group, title, open_files, lumis, syst="", iso="iso", weight="1", extra="", absolute=False):
    name = group.getName()
    #print "histo", title, syst, iso, extra, " ___ ", weight
    histo_name = name+"_"+var.shortName+"_"+syst+"_"+extra
@@ -190,8 +193,11 @@ def make_histogram(var, group, title, open_files, lumis, syst="", iso="iso", wei
          f = ds.getFile(syst, iso)
          tdir = f.Get("trees")
          mytree = tdir.Get("Events")
-         print his_name, var.shortName, weight
-         mytree.Project(his_name, var.name, weight,"same")
+         #print his_name, var.shortName, weight
+         if absolute:
+             mytree.Project(his_name, "abs("+var.name+")", weight,"same")
+         else:
+             mytree.Project(his_name, var.name, weight,"same")
          if group.isMC():
             #print ds.scaleToData(lumis.getDataLumi(iso))
             his.Scale(ds.scaleToData(lumis.getDataLumi(iso)), syst, iso)

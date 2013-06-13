@@ -44,7 +44,7 @@ dTbarChExc = Dataset("t-channel_toLeptons_Tbar", "Tbar_t_ToLeptons.root", 30.7*0
 dgTChInclusive.add([dTCh, dTbarCh])
 dgTChExclusive.add([dTChExc, dTbarChExc])
 
-dgTWCh = DatasetGroup("tW-channel", kOrange)
+dgTWCh = DatasetGroup("tW-channel", kYellow+3)
 dTWCh = Dataset("tW-channel", "T_tW.root", 11.1)
 dTbarWCh = Dataset("tW-channel_Tbar", "Tbar_tW.root", 11.1)
 dgTWCh.add([dTWCh, dTbarWCh])
@@ -54,8 +54,8 @@ dSCh = Dataset("s-channel", "T_s.root", 3.79)
 dSbarCh = Dataset("s-channel_Tbar", "Tbar_s.root", 1.76)
 dgSCh.add([dSCh,dSbarCh])
 
-dgTTBarExclusive = DatasetGroup("t #bar{t}", kOrange-3)
-dgTTBarInclusive = DatasetGroup("t #bar{t}", kOrange-3)
+dgTTBarExclusive = DatasetGroup("t #bar{t}", kOrange)
+dgTTBarInclusive = DatasetGroup("t #bar{t}", kOrange)
 dTTBar = Dataset("TTJets", "TTJets_MassiveBinDECAY.root", 234.)
 dTTBarFullLept = Dataset("TTJetsFullLept", "TTJets_FullLept.root", (0.326**2) * 234, 4246444 + 12119013)
 dTTBarSemiLept = Dataset("TTJetsSemiLept", "TTJets_SemiLept.root", (0.676*0.326*2) * 234, 11229902 + 25424818)
@@ -63,8 +63,8 @@ dgTTBarInclusive.add([dTTBar])
 dgTTBarExclusive.add([dTTBarFullLept, dTTBarSemiLept])
 
 WJets_lo_nnlo_scale_factor = 37509/30400.0
-dgWJets = DatasetGroup("W+Jets", kGreen+4)
-dgWJetsExclusive = DatasetGroup("W+Jets", kGreen+4)
+dgWJets = DatasetGroup("W+Jets", kGreen)
+dgWJetsExclusive = DatasetGroup("W+Jets", kGreen)
 dWJets = Dataset("WJets", "WJets", "WJets_inclusive", 37509)
 dW1Jets = Dataset("W+1Jets", "W1Jets_exclusive.root", 5400.0 * WJets_lo_nnlo_scale_factor)
 dW2Jets = Dataset("W+2Jets", "W2Jets_exclusive.root", 1750.0 * WJets_lo_nnlo_scale_factor)
@@ -74,7 +74,7 @@ dgWJets.add([dWJets])
 dgWJetsExclusive.add([dW1Jets, dW2Jets, dW3Jets, dW4Jets])
 
 
-dgZJets = DatasetGroup("Z+Jets", kBlue-1)
+dgZJets = DatasetGroup("Z+Jets", kViolet)
 dZJets = Dataset("DYJets", "DYJets.root", 3503.71)
 dgZJets.add(dZJets)
 
