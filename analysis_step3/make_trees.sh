@@ -18,6 +18,3 @@ $STPOL_DIR/analysis_step3/suball.sh "--lepton=ele" $OFDIR/ele/iso/nominal $FLDIR
 $STPOL_DIR/analysis_step3/suball.sh "--lepton=ele" $OFDIR/ele/antiiso/nominal $FLDIR/antiiso/nominal/data/*
 $STPOL_DIR/analysis_step3/suball.sh "--lepton=ele --doControlVars --isMC" $OFDIR/ele/iso/nominal $FLDIR/iso/nominal/mc/*
 $STPOL_DIR/analysis_step3/suball.sh "--lepton=ele --doControlVars --isMC" $OFDIR/ele/antiiso/nominal $FLDIR/antiiso/nominal/mc/*
-
-
-
