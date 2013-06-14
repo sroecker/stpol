@@ -545,7 +545,7 @@ public:
     
     bool doWeights;
     bool doWeightSys;
-    string leptonChannel;
+    const string leptonChannel; // needed for calculating the total scale factor (depending on the channel)
     float el_weight;
     float mu_weight;
     
@@ -581,11 +581,15 @@ public:
     }
     
     Weights(const edm::ParameterSet& pars, BranchVars& _branch_vars) :
-    CutsBase(_branch_vars)
+    CutsBase(_branch_vars), 
+    leptonChannel(pars.getParameter<string>("leptonChannel")) //better to ust const string and initialize here (faster)
     {
+        if (leptonChannel != "mu" && leptonChannel != "ele") { 
+            std::cerr << "Lepton channel must be 'mu' or 'ele'" << std::endl;
+            throw 1;
+        }
         doWeights = pars.getParameter<bool>("doWeights");
         doWeightSys = pars.getParameter<bool>("doWeightSys");
-        leptonChannel = pars.getParameter<string>("leptonChannel");
         
         initialize_branches();
         
@@ -635,13 +639,11 @@ public:
             mu_weight = branch_vars.vars_float["muon_IDWeight"]*branch_vars.vars_float["muon_IsoWeight"]*branch_vars.vars_float["muon_TriggerWeight"];
             el_weight = branch_vars.vars_float["electron_IDWeight"]*branch_vars.vars_float["electron_triggerWeight"];
             
-            if( leptonChannel == "mu")
+            if( leptonChannel == "mu") {
                 branch_vars.vars_float["SF_total"] = branch_vars.vars_float["b_weight_nominal"]*branch_vars.vars_float["pu_weight"]*mu_weight;
-            else if( leptonChannel == "ele")
+            } 
+            else if( leptonChannel == "ele") {
                 branch_vars.vars_float["SF_total"] = branch_vars.vars_float["b_weight_nominal"]*branch_vars.vars_float["pu_weight"]*el_weight;
-            else{
-                branch_vars.vars_float["SF_total"] = 0;
-                std::cout<<"total SF set to 0, choose 'el' or 'mu' as leptonChannel"<<std::endl;
             }
         }
         if( doWeights && doWeightSys ) {
