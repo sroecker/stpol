@@ -20,6 +20,8 @@ for line in sys.stdin.readlines():
 
 parser = optparse.OptionParser()
 #parser.add_option("--outfile", dest="outfile", type="string")
+parser.add_option("--doLepton", dest="doLepton", action="store_true", default=False)
+parser.add_option("--doHLT", dest="doHLT", action="store_true", default=False)
 parser.add_option("--lepton", dest="lepton", type="string", default="mu")
 parser.add_option("--doNJets", dest="doNJets", action="store_true", default=False)
 parser.add_option("--nJ", dest="nJ", type="string", default="0,10")
@@ -29,7 +31,6 @@ parser.add_option("--mtw", dest="doMtw", action="store_true", default=False)
 parser.add_option("--met", dest="doMet", action="store_true", default=False)
 parser.add_option("--etalj", dest="doEtaLj", action="store_true", default=False)
 parser.add_option("--isMC", dest="isMC", action="store_true", default=False)
-parser.add_option("--isWplusJets", dest="isWplusJets", action="store_true", default=False)
 parser.add_option("--mtop", dest="doMtop", action="store_true", default=False)
 parser.add_option("--doControlVars", dest="doControlVars", action="store_true", default=False)
 parser.add_option("--isAntiIso", dest="isAntiIso", action="store_true", default=False)
@@ -71,10 +72,10 @@ process.fwliteOutput = cms.PSet(
 )
 
 process.muonCuts = cms.PSet(
-    cutOnIso  = cms.bool(options.lepton=="mu"),
+    requireOneMuon  = cms.bool(options.doLepton and options.lepton=="mu"),
     doControlVars  = cms.bool(options.doControlVars),
     reverseIsoCut  = cms.bool(options.isAntiIso),
-    requireOneMuon  = cms.bool(options.lepton=="mu"),
+    cutOnIso  = cms.bool(False),
 
     isoCut  = cms.double(isoC),
     isoCutHigh  = cms.double(isoCHigh),
@@ -103,10 +104,9 @@ process.muonCuts = cms.PSet(
 )
 
 process.eleCuts = cms.PSet(
-    requireOneElectron = cms.bool(options.lepton=="ele"),
-
+    requireOneElectron = cms.bool(options.doLepton and options.lepton=="ele"),
     reverseIsoCut = cms.bool(options.isAntiIso),
-    cutOnIso = cms.bool(options.lepton=="ele"),
+    cutOnIso = cms.bool(False),
     isoCut = cms.double(0.1),
     mvaCut = cms.double(0.9),
 
@@ -146,10 +146,6 @@ process.jetCuts = cms.PSet(
     lightJetPtSrc = cms.InputTag("lowestBTagJetNTupleProducer", "Pt"),
     lightJetRmsSrc = cms.InputTag("lowestBTagJetNTupleProducer", "rms"),
     lightJetDeltaRSrc = cms.InputTag("lowestBTagJetNTupleProducer", "deltaR"),
-
-    #bJetEtaSrc = cms.InputTag("highestBTagJetNTupleProducer", "Eta"),
-    #bJetBdiscrSrc = cms.InputTag("highestBTagJetNTupleProducer", "bDiscriminatorTCHP"),
-    #bJetPtSrc = cms.InputTag("highestBTagJetNTupleProducer", "Pt"),
 )
 
 process.bTagCuts = cms.PSet(
@@ -216,31 +212,6 @@ process.mtMuCuts = cms.PSet(
     minValMet = cms.double(45)
     )
 
-process.evtShapeVars = cms.PSet(
-    doEvtShapeVars = cms.bool(True),
-    leptonChannel = cms.string(options.lepton),
-      
-    muPtSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "Pt"),
-    muEtaSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "Eta"),
-    muPhiSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "Phi"),
-
-    elPtSrc = cms.InputTag("goodSignalElectronsNTupleProducer", "Pt"),
-    elEtaSrc = cms.InputTag("goodSignalElectronsNTupleProducer", "Eta"),
-    elPhiSrc = cms.InputTag("goodSignalElectronsNTupleProducer", "Phi"),
-    
-    bjPtSrc = cms.InputTag("highestBTagJetNTupleProducer", "Pt"),
-    bjEtaSrc = cms.InputTag("highestBTagJetNTupleProducer", "Eta"),
-    bjPhiSrc = cms.InputTag("highestBTagJetNTupleProducer", "Phi"),
-
-    ljPtSrc = cms.InputTag("lowestBTagJetNTupleProducer", "Pt"),
-    ljEtaSrc = cms.InputTag("lowestBTagJetNTupleProducer", "Eta"),
-    ljPhiSrc = cms.InputTag("lowestBTagJetNTupleProducer", "Phi"),
-
-    nuPtSrc = cms.InputTag("recoNuNTupleProducer", "Pt"),
-    nuEtaSrc = cms.InputTag("recoNuNTupleProducer", "Eta"),
-    nuPhiSrc = cms.InputTag("recoNuNTupleProducer", "Phi"),
-    )
-
 
 #The versions should be specified explicitly at the moment
 process.HLTmu = cms.PSet(
@@ -254,7 +225,7 @@ process.HLTmu = cms.PSet(
         "HLT_IsoMu24_eta2p1_v17",
         "HLT_IsoMu24_eta2p1_v16",
     ]),
-    doCutOnHLT = cms.bool(options.lepton=="mu"),
+    doCutOnHLT = cms.bool(options.doHLT and options.lepton=="mu"),
     saveHLTVars = cms.bool(options.doControlVars)
 )
 
@@ -266,7 +237,7 @@ process.HLTele = cms.PSet(
         "HLT_Ele27_WP80_v10",
         "HLT_Ele27_WP80_v11",
         ]),
-    doCutOnHLT = cms.bool(options.lepton=="ele"),
+    doCutOnHLT = cms.bool(options.doHLT and options.lepton=="ele"),
     saveHLTVars = cms.bool(options.doControlVars)
 )
 
