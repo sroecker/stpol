@@ -67,7 +67,7 @@ def make_histos_with_cuts(var,
    #Write out stuff 
    outfile = TFile("templates/"+var.shortName+"_templates_"+cuts.name+".root", "recreate")
    outfile.cd()
-           
+   fit.orig = {}      
    #non-QCD
    for s in systematics:
       if s == "Nominal":
@@ -134,7 +134,8 @@ def make_histos_with_cuts(var,
       hQCD.SetName(var.shortName+"__qcd")
       hQCDisoUp = dataGroup.getHistogram(var, "Nominal", "antiiso", "_iso_up_"+cuts.name)
       hQCDisoDown = dataGroup.getHistogram(var, "Nominal", "antiiso", "_iso_down_"+cuts.name)
-               
+      
+      fit.orig["qcd_no_mc_sub"] = hQCD.Integral(6,20)      
       #Subtract MC-s from QCD data template
       stack = stacks[var.name+"Nominalantiiso"]
       for h in stack.GetHists():
@@ -150,7 +151,9 @@ def make_histos_with_cuts(var,
            
       #Scale template to a large are (then fitted multiplier will be small, which theta likes
       if hQCD.Integral() > 0:
-         print "ORIG QCD integral", hQCD.Integral()
+         print "ORIG QCD integral", hQCD.Integral(),hQCD.Integral(6,20)
+         fit.orig["qcd"] = hQCD.Integral()
+         
          hQCD.Scale(QCD_FACTOR/hQCD.Integral())
       if hQCDisoUp.Integral() > 0:
          hQCDisoUp.Scale(QCD_FACTOR/hQCDisoUp.Integral())

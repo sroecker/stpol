@@ -11,6 +11,7 @@ from plot_fit import plot_fit
 from FitConfig import FitConfig
 from util_scripts import *
 from DataLumiStorage import *
+from plots.common.cross_sections import lumi_iso, lumi_antiiso
 
 try:
     sys.path.append(os.environ["STPOL_DIR"] )
@@ -24,7 +25,7 @@ def get_yield(var, filename, cutMT, mtMinValue, fit_result, dataGroup):
     #QCDRATE = fit_result.qcd
     hQCD = f.Get(var.shortName+"__qcd")
     hQCDShapeOrig = dataGroup.getHistogram(var, "Nominal", "antiiso")
-    print "QCD scale factor:", hQCD.Integral()/hQCDShapeOrig.Integral()
+    print "QCD scale factor:", hQCD.Integral()/hQCDShapeOrig.Integral(), hQCD.Integral(), hQCDShapeOrig.Integral()
     hQCDShapeOrig.Scale(hQCD.Integral()/hQCDShapeOrig.Integral())
     #print fit_result
     if cutMT:
@@ -34,11 +35,11 @@ def get_yield(var, filename, cutMT, mtMinValue, fit_result, dataGroup):
         error = array('d',[0.])
         err = array('d',[0.])
         y = hQCD.IntegralAndError(bin1,bin2,error)
-        print "QCD yield from original shape:", hQCDShapeOrig.IntegralAndError(bin1,bin2,err), "+-",err
+        print "QCD yield from original shape:", hQCDShapeOrig.IntegralAndError(bin1,bin2,err), "+-",err, " - use only in fit regions not covering whole mT/MET"
         return (y, error[0])
         #return (hQCD.Integral(6,20), hQCD.Integral(6,20)*(fit_result.qcd_uncert/fit_result.qcd))
     else:
-        print "QCD yield from original shape:", hQCDShape.IntegralAndError(0,100,err), "+-",err
+        print "QCD yield from original shape:", hQCDShape.IntegralAndError(0,100,err), "+-",err, " - use only in fit regions not covering whole mT/MET"
         return (hQCD.Integral(), hQCD.Integral()*(fit_result.qcd_uncert/fit_result.qcd))
 
 def get_qcd_yield(var, cuts, cutMT, mtMinValue, dataGroup, lumis, MCGroups, systematics, openedFiles, useMCforQCDTemplate, QCDGroup):
@@ -49,21 +50,17 @@ def get_qcd_yield_with_fit(var, cuts, cutMT, mtMinValue, dataGroup, lumis, MCGro
     fit = Fit()    
     make_histos_with_cuts(var, cuts, dataGroup, MCGroups, systematics, lumis, openedFiles, fit, useMCforQCDTemplate, QCDGroup)
     fit_qcd(var, cuts.name, fit)
+    dataHisto = dataGroup.getHistogram(var,  "Nominal", "iso", cuts.name)
+    fit.var = var
+    fit.dataHisto = dataHisto
     return (get_yield(var, cuts.name, cutMT, mtMinValue, fit, dataGroup), fit)
 
-#Run as ~andres/theta_testing/utils2/theta-auto.py get_qcd_yield.py
-if __name__=="__main__":
-    #channel = "ele"
-    channel = "mu"
 
+def get_qcd_yield_with_selection(cuts, channel = "mu"):
     do_systematics = True
 
     if channel == "ele":
         do_systematics = False
-
-    #cut_region = "final_selection_without_eta_cut"
-    cut_region = "final_selection"
-#    cut_region = "2j0t_selection"
 
     print "QCD estimation in " + channel + " channel"
     
@@ -89,10 +86,6 @@ if __name__=="__main__":
     
     #Use Default cuts for final selection. See FitConfig for details on how to change the cuts.
     
-    cuts = FitConfig( cut_region )
-
-    if cut_region == "2j0t_selection":
-        cuts.setBaseCuts("n_jets == 2 && n_tags == 0")
     
     if channel == "ele":
         cuts.setTrigger("1") #  || HLT_Ele27_WP80_v9==1 || HLT_Ele27_WP80_v8==1")
@@ -103,11 +96,9 @@ if __name__=="__main__":
         lepton_weight = "*electron_triggerWeight*electron_IDWeight"
     if channel == "mu":
         lepton_weight = "*muon_TriggerWeight*muon_IsoWeight*muon_IDWeight"
-        cuts.setTrigger("1")
+        #cuts.setTrigger("1")
     
     cuts.setWeightMC("pu_weight*b_weight_nominal"+lepton_weight)
-    if cut_region = "final_selection_without_eta_cut":
-        cuts.setFinalCuts("top_mass < 220 && top_mass > 130")
     #Recreate all necessary cuts after manual changes
     cuts.calcCuts()
     #Luminosities for each different set of data have to be specified.
@@ -115,12 +106,12 @@ if __name__=="__main__":
     #See DataLumiStorage for details if needed
 
     if channel == "mu":
-        dataLumiIso = 19739
-        dataLumiAntiIso = 19739
+        dataLumiIso = lumi_iso["mu"]
+        dataLumiAntiIso = lumi_antiiso["mu"]
 
     if channel == "ele":
-        dataLumiIso = 19728
-        dataLumiAntiIso = 19728
+        dataLumiIso = lumi_iso["ele"]
+        dataLumiAntiIso = lumi_antiso["ele"]
         
     lumis = DataLumiStorage(dataLumiIso, dataLumiAntiIso)
     
@@ -165,17 +156,33 @@ if __name__=="__main__":
     
     #Before Running make sure you have 'templates' and 'fits' subdirectories where you're running
     #Root files with templates and fit results will be saved there.
-    #Name from FitConfig will be used in file names    
-    ((y, error), fit) = get_qcd_yield_with_fit(var, cuts, cutMT, mtMinValue, dataGroup, lumis, MCGroups, systematics, openedFiles, useMCforQCDTemplate, QCDGroup)
+    #Name from FitConfig will be used in file names 
+           
+    return get_qcd_yield_with_fit(var, cuts, cutMT, mtMinValue, dataGroup, lumis, MCGroups, systematics, openedFiles, useMCforQCDTemplate, QCDGroup)
+
+#Run as /scratch/mario/theta/utils2/theta-auto.py get_qcd_yield.py - only works in phys!
+if __name__=="__main__":
+    lepton = "mu"
+    #lepton = "ele"
+    
+    cuts_final = FitConfig( "final_selection" )
+    cuts_2j0t = FitConfig( "2j0t_selection" )
+    cuts_2j0t.setBaseCuts("n_jets == 2 && n_tags == 0")
+    cuts_final_without_eta = FitConfig( "final_selection_without_eta_cut" )
+    cuts_final_without_eta.setFinalCuts("top_mass < 220 && top_mass > 130")
+        
+    #cuts = cuts_final
+    cuts = cuts_final_without_eta
+    #cuts = cuts_2j0t
+    ((y, error), fit) = get_qcd_yield_with_selection(cuts, lepton)
     #print cuts
     print "Selection: %s" % cuts.name
-    print "QCD yield in selected region: ", y, "+-", error
-    print "Total: QCD: %.2f +- %.2f" % (fit.qcd, fit.qcd_uncert)
+    print "QCD yield in selected region: %.2f +- %.2f, ratio to template from ONLY data %.3f" % (y, error, y/fit.orig["qcd_no_mc_sub"])
+    print "Total: QCD: %.2f +- %.2f, ratio to template from data %.3f" % (fit.qcd, fit.qcd_uncert, fit.qcd/fit.orig["qcd"])
     print "W+Jets: %.2f +- %.2f, ratio to template: %.2f" % (fit.wjets, fit.wjets_uncert, fit.wjets/fit.wjets_orig)
     print "Other MC: %.2f +- %.2f, ratio to template: %.2f" % (fit.nonqcd, fit.nonqcd_uncert, fit.nonqcd/fit.nonqcd_orig)
 
     print "Fit info:"
     print fit
     #make plot
-    dataHisto = dataGroup.getHistogram(var,  "Nominal", "iso", cuts.name)
-    plot_fit(var, cuts, dataHisto, fit)
+    plot_fit(fit.var, cuts, fit.dataHisto, fit)
