@@ -4,9 +4,9 @@ import time
 import numpy
 
 file_list = [
-"sync/inclusive/step1_noSkim.root"
+#"sync/inclusive/step1_noSkim.root"
 #"sync/pickevents.root"
-#"/hdfs/cms/store/mc/Summer12_DR53X/T_t-channel_TuneZ2star_8TeV-powheg-tauola/AODSIM/PU_S10_START53_V7A-v1/0000/0059C6F3-7CDC-E111-B4CB-001A92811726.root"
+"/hdfs/cms/store/mc/Summer12_DR53X/T_t-channel_TuneZ2star_8TeV-powheg-tauola/AODSIM/PU_S10_START53_V7A-v1/0000/0059C6F3-7CDC-E111-B4CB-001A92811726.root"
 ]
 
 events = Events(
@@ -22,9 +22,6 @@ patMuL = ("muonsWithIDAll")
 
 recoMuH = Handle('std::vector<reco::Muon>')
 recoMuL = ("muons")
-
-vertexH = Handle('std::vector<reco::Vertex>')
-vertexL = ("goodOfflinePrimaryVertices")
 
 nEv = 0
 t0 = time.time()
