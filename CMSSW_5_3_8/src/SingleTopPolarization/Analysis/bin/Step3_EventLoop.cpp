@@ -979,6 +979,9 @@ public:
     nu_eta = get_collection_n<float>(event, nuEtaSrc, 0);
     nu_phi = get_collection_n<float>(event, nuPhiSrc, 0);
 
+    if(bj_pt != bj_pt || lj_pt != lj_pt || lep_pt != lep_pt || nu_pt != nu_pt) //evt shape vars not calculated in case of nan values
+      return true;
+
     TVector3 lep, bj, lj, nu;
     lep.SetPtEtaPhi(lep_pt, lep_eta, lep_phi);
     bj.SetPtEtaPhi(bj_pt, bj_eta, bj_phi);
