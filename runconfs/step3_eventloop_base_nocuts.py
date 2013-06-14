@@ -1,6 +1,8 @@
 #Note - this is a generic example file. Rather than changing it, make your own based on it, using the cuts you need.
 #You can also import this file to avoid copying all the necessary parameters by doing
 #from runconfs.step3_eventLoop_cfg import *
+#NOTE!!!!
+#Don't change the cut behaviour in this file without notice. It's imported by other files and sets reasonable defaults. See the old file step3_eventLoop_cfg.py for an example on how to override stuff.
 
 import FWCore.ParameterSet.Config as cms
 import sys
@@ -35,7 +37,7 @@ parser.add_option("--mtop", dest="doMtop", action="store_true", default=False)
 parser.add_option("--doControlVars", dest="doControlVars", action="store_true", default=False)
 parser.add_option("--isAntiIso", dest="isAntiIso", action="store_true", default=False)
 parser.add_option("--skipTree", dest="skipTree", action="store_true", default=False)
-parser.add_option("--doFinal", dest="doFinal", action="store_true", default=False)
+#parser.add_option("--doFinal", dest="doFinal", action="store_true", default=False)
 parser.add_option("--outputFile", dest="outputFile", type="string", default="step3.root")
 
 options, args = parser.parse_args()
@@ -210,6 +212,31 @@ process.mtMuCuts = cms.PSet(
     doMETCut = cms.bool( options.doMet ),
     minValMtw = cms.double(50),
     minValMet = cms.double(45)
+    )
+
+process.evtShapeVars = cms.PSet(
+    doEvtShapeVars = cms.bool(True),
+    leptonChannel = cms.string(options.lepton),
+
+    muPtSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "Pt"),
+    muEtaSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "Eta"),
+    muPhiSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "Phi"),
+
+    elPtSrc = cms.InputTag("goodSignalElectronsNTupleProducer", "Pt"),
+    elEtaSrc = cms.InputTag("goodSignalElectronsNTupleProducer", "Eta"),
+    elPhiSrc = cms.InputTag("goodSignalElectronsNTupleProducer", "Phi"),
+
+    bjPtSrc = cms.InputTag("highestBTagJetNTupleProducer", "Pt"),
+    bjEtaSrc = cms.InputTag("highestBTagJetNTupleProducer", "Eta"),
+    bjPhiSrc = cms.InputTag("highestBTagJetNTupleProducer", "Phi"),
+
+    ljPtSrc = cms.InputTag("lowestBTagJetNTupleProducer", "Pt"),
+    ljEtaSrc = cms.InputTag("lowestBTagJetNTupleProducer", "Eta"),
+    ljPhiSrc = cms.InputTag("lowestBTagJetNTupleProducer", "Phi"),
+
+    nuPtSrc = cms.InputTag("recoNuNTupleProducer", "Pt"),
+    nuEtaSrc = cms.InputTag("recoNuNTupleProducer", "Eta"),
+    nuPhiSrc = cms.InputTag("recoNuNTupleProducer", "Phi"),
     )
 
 
