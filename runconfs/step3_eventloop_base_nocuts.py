@@ -253,7 +253,7 @@ process.HLTmu = cms.PSet(
         "HLT_IsoMu24_eta2p1_v16",
     ]),
     doCutOnHLT = cms.bool(options.doHLT and options.lepton=="mu"),
-    saveHLTVars = cms.bool(options.doControlVars)
+    saveHLTVars = cms.bool(options.doControlVars or not options.doHLT)
 )
 
 process.HLTele = cms.PSet(
@@ -265,7 +265,7 @@ process.HLTele = cms.PSet(
         "HLT_Ele27_WP80_v11",
         ]),
     doCutOnHLT = cms.bool(options.doHLT and options.lepton=="ele"),
-    saveHLTVars = cms.bool(options.doControlVars)
+    saveHLTVars = cms.bool(options.doControlVars or not options.doHLT)
 )
 
 process.finalVars = cms.PSet(
