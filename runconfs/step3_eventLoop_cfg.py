@@ -216,6 +216,31 @@ process.mtMuCuts = cms.PSet(
     minValMet = cms.double(45)
     )
 
+process.evtShapeVars = cms.PSet(
+    doEvtShapeVars = cms.bool(True),
+    leptonChannel = cms.string(options.lepton),
+      
+    muPtSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "Pt"),
+    muEtaSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "Eta"),
+    muPhiSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "Phi"),
+
+    elPtSrc = cms.InputTag("goodSignalElectronsNTupleProducer", "Pt"),
+    elEtaSrc = cms.InputTag("goodSignalElectronsNTupleProducer", "Eta"),
+    elPhiSrc = cms.InputTag("goodSignalElectronsNTupleProducer", "Phi"),
+    
+    bjPtSrc = cms.InputTag("highestBTagJetNTupleProducer", "Pt"),
+    bjEtaSrc = cms.InputTag("highestBTagJetNTupleProducer", "Eta"),
+    bjPhiSrc = cms.InputTag("highestBTagJetNTupleProducer", "Phi"),
+
+    ljPtSrc = cms.InputTag("lowestBTagJetNTupleProducer", "Pt"),
+    ljEtaSrc = cms.InputTag("lowestBTagJetNTupleProducer", "Eta"),
+    ljPhiSrc = cms.InputTag("lowestBTagJetNTupleProducer", "Phi"),
+
+    nuPtSrc = cms.InputTag("recoNuNTupleProducer", "Pt"),
+    nuEtaSrc = cms.InputTag("recoNuNTupleProducer", "Eta"),
+    nuPhiSrc = cms.InputTag("recoNuNTupleProducer", "Phi"),
+    )
+
 
 #The versions should be specified explicitly at the moment
 process.HLTmu = cms.PSet(
