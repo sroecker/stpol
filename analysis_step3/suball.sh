@@ -18,6 +18,7 @@ do
     fullpath=$(readlink -f $infile)
     filename=$(basename $infile)
     channel="${filename%.*}"
+    mkdir $OFDIR/$channel
     echo $SUBSCRIPT "$fullpath" "$OFDIR/$channel" "$CONFSCRIPT" > $OFDIR/$channel/job 
     $SUBSCRIPT "$fullpath" "$OFDIR/$channel" "$CONFSCRIPT" 
 done
