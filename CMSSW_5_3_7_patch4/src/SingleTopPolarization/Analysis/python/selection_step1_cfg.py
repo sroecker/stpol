@@ -109,7 +109,7 @@ def SingleTopStep1(
   # Muons
   #-------------------------------------------------
 
-  process.selectedPatMuons.cut = "pt>20 && abs(eta)<3.0"
+  process.selectedPatMuons.cut = "pt>10 && abs(eta)<3.0"
   process.pfIsolatedMuons.doDeltaBetaCorrections = cms.bool(True)
   process.patMuons.pfMuonSource = cms.InputTag("pfIsolatedMuons")
   process.muonMatch.src = cms.InputTag("pfIsolatedMuons")
@@ -160,21 +160,12 @@ def SingleTopStep1(
   process.patElectrons.electronIDSources.mvaTrigV0 = cms.InputTag("mvaTrigV0")
   process.patElectrons.electronIDSources.mvaNonTrigV0 = cms.InputTag("mvaNonTrigV0")
   process.patPF2PATSequence.replace(process.patElectrons, process.mvaID * process.patElectrons)
-  process.selectedPatElectrons.cut = "pt>25 && abs(eta)<3.0"
+  process.selectedPatElectrons.cut = "pt>20 && abs(eta)<3.0"
 
   process.electronsWithID = cms.EDProducer(
     'ElectronIDProducer',
     electronSrc = cms.InputTag("selectedPatElectrons"),
     primaryVertexSource = cms.InputTag("goodOfflinePrimaryVertices")
-  )
-  process.patElectronsAll = process.patElectrons.clone(
-    pfElectronSource=cms.InputTag("pfElectrons")
-  )
-  process.selectedPatElectronsAll = process.selectedPatElectrons.clone(
-    src=cms.InputTag("patElectronsAll")
-  )
-  process.electronsWithIDAll = process.electronsWithID.clone(
-    electronSrc = cms.InputTag("selectedPatElectronsAll")
   )
 
   process.pfElectrons.isolationValueMapsCharged = cms.VInputTag(cms.InputTag("elPFIsoValueCharged03PFId"))
@@ -192,6 +183,16 @@ def SingleTopStep1(
   process.pfIsolatedElectrons.isolationValueMapsCharged = cms.VInputTag(cms.InputTag("elPFIsoValueCharged03PFId"))
   process.pfIsolatedElectrons.deltaBetaIsolationValueMap = cms.InputTag("elPFIsoValuePU03PFId")
   process.pfIsolatedElectrons.isolationValueMapsNeutral = cms.VInputTag(cms.InputTag("elPFIsoValueNeutral03PFId"), cms.InputTag("elPFIsoValueGamma03PFId"))
+
+  process.patElectronsAll = process.patElectrons.clone(
+    pfElectronSource=cms.InputTag("pfElectrons")
+  )
+  process.selectedPatElectronsAll = process.selectedPatElectrons.clone(
+    src=cms.InputTag("patElectronsAll")
+  )
+  process.electronsWithIDAll = process.electronsWithID.clone(
+    electronSrc = cms.InputTag("selectedPatElectronsAll")
+  )
 
   process.electronSequence = cms.Sequence(
     process.patElectronsAll *
