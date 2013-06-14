@@ -111,6 +111,7 @@ def SingleTopStep1(
 
   process.selectedPatMuons.cut = "pt>10 && abs(eta)<3.0"
   process.pfIsolatedMuons.doDeltaBetaCorrections = cms.bool(True)
+  process.pfIsolatedMuons.isolationCut = 0.2
   process.patMuons.pfMuonSource = cms.InputTag("pfIsolatedMuons")
   process.muonMatch.src = cms.InputTag("pfIsolatedMuons")
 
@@ -161,6 +162,7 @@ def SingleTopStep1(
   process.patElectrons.electronIDSources.mvaNonTrigV0 = cms.InputTag("mvaNonTrigV0")
   process.patPF2PATSequence.replace(process.patElectrons, process.mvaID * process.patElectrons)
   process.selectedPatElectrons.cut = "pt>20 && abs(eta)<3.0"
+  process.pfIsolatedElectrons.isolationCut = 0.2
 
   process.electronsWithID = cms.EDProducer(
     'ElectronIDProducer',
@@ -261,6 +263,7 @@ def SingleTopStep1(
           'keep *_jetClones__*',
 
           # Muons
+          'keep *_muons__*', #reco muons
           'keep patMuons_muonsWithID__*',
           'keep patMuons_muonsWithIDAll__*',
           'keep *_muonClones__*',
