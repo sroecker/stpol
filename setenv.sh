@@ -20,7 +20,9 @@ PYTHONPATH=$PYTHONPATH:$STPOL_DIR/:$STPOL_DIR/plots/:$STPOL_DIR/local/lib/python
 
 #Add QCD estimation stuff
 PYTHONPATH=$PYTHONPATH:$STPOL_DIR/qcd_estimation/
-PYTHONPATH=$PYTHONPATH:"/home/andres/theta_testing/utils2/theta_auto"
+PYTHONPATH=$PYTHONPATH:"/scratch/mario/theta/utils2/theta_auto"
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/scratch/mario/boost_1_53_0/lib
 
 cd ${SCRIPT_DIR}/$CMSSW_DIR
 source /cvmfs/cms.cern.ch/cmsset_default.sh

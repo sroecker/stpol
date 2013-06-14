@@ -67,7 +67,7 @@ def make_histos_with_cuts(var,
    #Write out stuff 
    outfile = TFile("templates/"+var.shortName+"_templates_"+cuts.name+".root", "recreate")
    outfile.cd()
-           
+   fit.orig = {}      
    #non-QCD
    for s in systematics:
       if s == "Nominal":
@@ -134,7 +134,8 @@ def make_histos_with_cuts(var,
       hQCD.SetName(var.shortName+"__qcd")
       hQCDisoUp = dataGroup.getHistogram(var, "Nominal", "antiiso", "_iso_up_"+cuts.name)
       hQCDisoDown = dataGroup.getHistogram(var, "Nominal", "antiiso", "_iso_down_"+cuts.name)
-               
+      
+      fit.orig["qcd_no_mc_sub"] = hQCD.Integral(6,20)      
       #Subtract MC-s from QCD data template
       stack = stacks[var.name+"Nominalantiiso"]
       for h in stack.GetHists():
@@ -150,6 +151,9 @@ def make_histos_with_cuts(var,
            
       #Scale template to a large are (then fitted multiplier will be small, which theta likes
       if hQCD.Integral() > 0:
+         print "ORIG QCD integral", hQCD.Integral(),hQCD.Integral(6,20)
+         fit.orig["qcd"] = hQCD.Integral()
+         
          hQCD.Scale(QCD_FACTOR/hQCD.Integral())
       if hQCDisoUp.Integral() > 0:
          hQCDisoUp.Scale(QCD_FACTOR/hQCDisoUp.Integral())
@@ -187,7 +191,7 @@ def make_histos_for_final_fit(var,
    #Iso region
    for s in systematics:
       if s == "Nominal":
-         stack = make_stack(var, cuts.name, MCGroups, dataGroup, openedFiles, s, "iso", lumis, cuts.isoCutsMC, cuts.isoCutsData, "", cuts.name)
+         stack = make_stack(var, cuts.name, MCGroups, dataGroup, openedFiles, s, "iso", lumis, cuts.isoCutsMC, cuts.isoCutsData, "", cuts.name, None, True)
          stacks[var.name+s+"iso"] = stack
          print stack
          for h in stack.GetHists():
@@ -195,24 +199,24 @@ def make_histos_for_final_fit(var,
          
       else:
          for st in syst_type:
-            stack = make_stack(var, cuts.name, MCGroups, dataGroup, openedFiles, s+st, "iso", lumis, cuts.isoCutsMC, cuts.isoCutsData, "", cuts.name)
+            stack = make_stack(var, cuts.name, MCGroups, dataGroup, openedFiles, s+st, "iso", lumis, cuts.isoCutsMC, cuts.isoCutsData, "", cuts.name, None, True)
             stacks[var.name+s+st+"iso"] = stack
 
    #Anti-iso region
    for s in systematics:
       if s == "Nominal":
-         make_histogram(var, dataGroup, cuts.name, openedFiles, lumis, s, "antiiso", cuts.antiIsoCutsData)
+         make_histogram(var, dataGroup, cuts.name, openedFiles, lumis, s, "antiiso", cuts.antiIsoCutsData, "",True)
 
-         stack = make_stack(var, cuts.name+s, MCGroups, dataGroup, openedFiles, s, "antiiso", lumis, cuts.antiIsoCutsMC, cuts.antiIsoCutsData, "", cuts.name)
+         stack = make_stack(var, cuts.name+s, MCGroups, dataGroup, openedFiles, s, "antiiso", lumis, cuts.antiIsoCutsMC, cuts.antiIsoCutsData, "", cuts.name, None, True)
          stacks[var.name+s+"antiiso"] = stack
          #Iso down
          stack = make_stack(var, cuts.name+s+"iso down", MCGroups, dataGroup, openedFiles, s, "antiiso", lumis,  
-                        cuts.antiIsoCutsMCIsoDown, cuts.antiIsoCutsDataIsoDown, "", "_iso_down_"+cuts.name)
+                        cuts.antiIsoCutsMCIsoDown, cuts.antiIsoCutsDataIsoDown, "", "_iso_down_"+cuts.name, None, True)
          stacks[var.name+s+"antiiso"+"_iso_down"] = stack
 
          #Iso Up
          stack = make_stack(var, cuts.name+s+"iso up", MCGroups, dataGroup, openedFiles, s, "antiiso", lumis, 
-                        cuts.antiIsoCutsMCIsoUp, cuts.antiIsoCutsDataIsoUp, "", "_iso_up_"+cuts.name)
+                        cuts.antiIsoCutsMCIsoUp, cuts.antiIsoCutsDataIsoUp, "", "_iso_up_"+cuts.name, None, True)
          stacks[var.name+s+"antiiso"+"_iso_up"] = stack   
      
    #Write out stuff 
@@ -227,7 +231,7 @@ def make_histos_for_final_fit(var,
          for h in stack.GetHists():
             h.SetName(var.shortName+"__"+h.GetTitle().replace("+", "").replace(" #bar{t}","tbar"))
             h.Write()
-            fit.orig[h.GetTitle()] = h.Integral()
+            fit.orig[h.GetTitle().replace("+", "").replace(" #bar{t}","tbar")] = h.Integral()
       else:
          for st in syst_type:
             if st == "Up":

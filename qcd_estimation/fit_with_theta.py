@@ -2,7 +2,7 @@ import datetime
 from theta_auto import *
 from Fit import Fit
 
-init_val = 1.1
+init_val = 1.2
 init_val_wjets = 3.0
 step = 0.0001
 
@@ -46,7 +46,7 @@ def fit_qcd(variable, identifier, fit):
    outfile = outdir+variable.shortName+"_fit_"+identifier+".root"
    results_file.write("# "+identifier+"...")
    
-   for i in range(0,10000):
+   for i in range(0,1000):
       try:
          model = get_model(infile, i)  
          result = mle(model, "data", 1, ks=True, chi2=True)

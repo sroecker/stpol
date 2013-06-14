@@ -52,6 +52,14 @@ sample_colors_separate = {
 
     'SingleMu': ROOT.kBlack,
     'SingleEle': ROOT.kBlack,
+    
+    'EnDown' : ROOT.kGreen,
+    'EnUp' : ROOT.kBlue,
+    'ResDown' : ROOT.kBlue,
+    'ResUp' : ROOT.kCyan,
+    'UnclusteredEnDown' : ROOT.kRed,
+    'UnclusteredEnUp' : ROOT.kOrange,
+    'Nominal': ROOT.kBlack
 }
 
 
@@ -106,5 +114,5 @@ sample_colors_same = {
     'QCD_Pt_350_BCtoE': ROOT.kGray,
 
     'SingleMu': ROOT.kBlack,
-    'SingleEle': ROOT.kBlack,
+    'SingleEle': ROOT.kBlack
 }

@@ -1,5 +1,5 @@
 import FWCore.ParameterSet.Config as cms
-from runconfs.step3_eventLoop_cfg import *
+from runconfs.step3_eventloop_base_nocuts import *
 
 process.fwliteInput.maxEvents = cms.int32(-1)
 
@@ -19,3 +19,5 @@ process.HLTmu.doCutOnHLT = False
 
 process.HLTele.saveHLTVars = True
 process.HLTele.doCutOnHLT = False
+
+print_process(process)
