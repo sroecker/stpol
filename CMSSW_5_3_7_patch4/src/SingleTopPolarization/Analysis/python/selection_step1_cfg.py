@@ -110,7 +110,7 @@ def SingleTopStep1(
   #-------------------------------------------------
 
   process.selectedPatMuons.cut = "pt>10 && abs(eta)<3.0"
-  process.pfIsolatedMuons.doDeltaBetaCorrections = cms.bool(True)
+  process.pfIsolatedMuons.doDeltaBetaCorrection = True
   process.pfIsolatedMuons.isolationCut = 0.2
   process.patMuons.pfMuonSource = cms.InputTag("pfIsolatedMuons")
   process.muonMatch.src = cms.InputTag("pfIsolatedMuons")
