@@ -6,7 +6,7 @@ import numpy
 file_list = [
 #"sync/inclusive/step1_noSkim.root"
 #"sync/pickevents.root"
-"sync/step1_noSkim.root"
+"sync/inclusive/step1_noSkim.root"
 #"/hdfs/cms/store/mc/Summer12_DR53X/T_t-channel_TuneZ2star_8TeV-powheg-tauola/AODSIM/PU_S10_START53_V7A-v1/0000/0059C6F3-7CDC-E111-B4CB-001A92811726.root"
 ]
 
@@ -34,7 +34,7 @@ def analyze_pat_muon(handle, label):
        nMu = 0
        for mu in muons:
            print label,nMu
-           print "pt =",mu.pt()," eta =", mu.eta()
+           print "pt =",mu.pt()," eta =", mu.eta(), " pfIso05 =",mu.pfIsolationR04()
            try:
                print "globaltrack hits =", mu.userFloat("globalTrack_hitPattern_numberOfValidMuonHits"), mu.globalTrack().hitPattern().numberOfValidMuonHits()
            except:
