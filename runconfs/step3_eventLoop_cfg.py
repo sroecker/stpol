@@ -6,8 +6,8 @@ if options.lepton=="mu":
     if options.doHLT:
         process.HLTMu.doCutOnHLT = True
 elif options.lepton=="ele":
-    process.electronCuts.cutOnIso = True
-    process.electronCuts.requireOneElectron = True
+    process.eleCuts.cutOnIso = True
+    process.eleCuts.requireOneElectron = True
     if options.doHLT:
         process.HLTEle.doCutOnHLT = True
 
