@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "$0: $@"
 
-CONFSCRIPT="$STPOL_DIR/runconfs/step3_eventLoop_cfg.py $1"
+CONFSCRIPT="$STPOL_DIR/runconfs/step3_eventLoop_preSelection_cfg.py $1"
 OFDIR=`readlink -f $2`
 INFILES="${*:3}"
 if [ -z "$OFDIR" ]
@@ -18,7 +18,5 @@ do
     fullpath=$(readlink -f $infile)
     filename=$(basename $infile)
     channel="${filename%.*}"
-    mkdir $OFDIR/$channel
-    echo $SUBSCRIPT "$fullpath" "$OFDIR/$channel" "$CONFSCRIPT" > $OFDIR/$channel/job 
     $SUBSCRIPT "$fullpath" "$OFDIR/$channel" "$CONFSCRIPT" 
 done
