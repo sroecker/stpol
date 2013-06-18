@@ -572,10 +572,10 @@ public:
     }
     
     Weights(const edm::ParameterSet& pars, BranchVars& _branch_vars) :
-    CutsBase(_branch_vars), 
+    CutsBase(_branch_vars),
     leptonChannel(pars.getParameter<string>("leptonChannel")) //better to ust const string and initialize here (faster)
     {
-        if (leptonChannel != "mu" && leptonChannel != "ele") { 
+        if (leptonChannel != "mu" && leptonChannel != "ele") {
             std::cerr << "Lepton channel must be 'mu' or 'ele'" << std::endl;
             throw 1;
         }
@@ -617,16 +617,16 @@ public:
     bool process(const edm::EventBase& event) {
         pre_process();
         if(doWeights) {
-        
-          edm::Handle<GenEventInfoProduct>                  genEventInfo;
-	 	  edm::InputTag genWeightSrc1("generator");
-	      event.getByLabel(genWeightSrc1, genEventInfo);
-	      if (genEventInfo.isValid())
-	      {
-	         branch_vars.vars_float["gen_weight"] = genEventInfo->weight();   
-	      }
-	      else branch_vars.vars_float["gen_weight"] =1.;
-        
+            
+            edm::Handle<GenEventInfoProduct>                  genEventInfo;
+            edm::InputTag genWeightSrc1("generator");
+            event.getByLabel(genWeightSrc1, genEventInfo);
+            if (genEventInfo.isValid())
+            {
+                branch_vars.vars_float["gen_weight"] = genEventInfo->weight();
+            }
+            else branch_vars.vars_float["gen_weight"] =1.;
+            
             branch_vars.vars_float["b_weight_nominal"] = get_collection<float>(event, bWeightNominalSrc, 0.0);
             branch_vars.vars_float["pu_weight"] = get_collection<double>(event, puWeightSrc, 0.0);
             
@@ -642,7 +642,7 @@ public:
             
             if( leptonChannel == "mu") {
                 branch_vars.vars_float["SF_total"] = branch_vars.vars_float["b_weight_nominal"]*branch_vars.vars_float["pu_weight"]*mu_weight;
-            } 
+            }
             else if( leptonChannel == "ele") {
                 branch_vars.vars_float["SF_total"] = branch_vars.vars_float["b_weight_nominal"]*branch_vars.vars_float["pu_weight"]*el_weight;
             }
@@ -1150,10 +1150,10 @@ int main(int argc, char* argv[])
                 
                 bool passes_top_cuts = top_cuts.process(event);
                 if(!passes_top_cuts) continue;
-
-		misc_vars.process(event);
+                
+                misc_vars.process(event);
                 if(evt_shape_vars.doEvtShapeVars) evt_shape_vars.process(event);
-		if(weights.doWeights) weights.process(event);
+                if(weights.doWeights) weights.process(event);
                 
                 bool passes_gen_cuts = true;
                 if (gen_particles.doGenParticles) {
@@ -1226,6 +1226,6 @@ int main(int argc, char* argv[])
     int mb_total = bytes_read/(1024*1024);
     LogInfo << "processing speed = " << speed << " events/sec" << std::endl;
     LogInfo << "read " << mb_total << " Mb in total, average speed " << (double)mb_total / time << " Mb/s" << std::endl;
-
+    
     return 0;
 }
