@@ -6,10 +6,10 @@ class Cut:
         cut_str = '('+self.cut_str+') && ('+other.cut_str+')'
         return Cut(cut_str)
     def __repr__(self):
-        return "<Cut(%s)>" % self.cut_str
+        return "<Cut(%s)>" % '('+self.cut_str+')'
 
     def __str__(self):
-        return self.cut_str
+        return '('+self.cut_str+')'
 
 class Cuts:
     hlt_isomu = Cut("HLT_IsoMu24_eta2p1_v11 == 1 || HLT_IsoMu24_eta2p1_v12 == 1 || HLT_IsoMu24_eta2p1_v13 == 1 || HLT_IsoMu24_eta2p1_v14 == 1 || HLT_IsoMu24_eta2p1_v15 == 1 || HLT_IsoMu24_eta2p1_v16 == 1  || HLT_IsoMu24_eta2p1_v17 == 1")

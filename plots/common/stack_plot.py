@@ -1,10 +1,11 @@
 import ROOT
-
+from plots.common.sample_style import Styling
 #Need to import ordereddict from python 2.7
 try:
     from collections import OrderedDict as dict
 except ImportError:
         from odict import OrderedDict as dict
+
 
 def plot_hists_stacked(canv, hist_groups, **kwargs):
     """
