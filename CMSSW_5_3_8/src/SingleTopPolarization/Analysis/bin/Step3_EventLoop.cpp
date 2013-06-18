@@ -13,6 +13,7 @@
 #include "DataFormats/Common/interface/Handle.h"
 #include "FWCore/FWLite/interface/AutoLibraryLoader.h"
 
+#include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 #include "DataFormats/MuonReco/interface/Muon.h"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "FWCore/ParameterSet/interface/ProcessDesc.h"
@@ -553,6 +554,7 @@ public:
         if (doWeights) {
             branch_vars.vars_float["b_weight_nominal"] = 1.0;
             branch_vars.vars_float["pu_weight"] = 1.0;
+            branch_vars.vars_float["gen_weight"] = 1.0;
             branch_vars.vars_float["muon_IDWeight"] = 1.0;
             branch_vars.vars_float["muon_IsoWeight"] = 1.0;
             branch_vars.vars_float["muon_TriggerWeight"] = 1.0;
@@ -626,6 +628,16 @@ public:
     bool process(const edm::EventBase& event) {
         pre_process();
         if(doWeights) {
+        
+          edm::Handle<GenEventInfoProduct>                  genEventInfo;
+	 	  edm::InputTag genWeightSrc1("generator");
+	      event.getByLabel(genWeightSrc1, genEventInfo);
+	      if (genEventInfo.isValid())
+	      {
+	         branch_vars.vars_float["gen_weight"] = genEventInfo->weight();   
+	      }
+	      else branch_vars.vars_float["gen_weight"] =1.;
+        
             branch_vars.vars_float["b_weight_nominal"] = get_collection<float>(event, bWeightNominalSrc, 0.0);
             branch_vars.vars_float["pu_weight"] = get_collection<double>(event, puWeightSrc, 0.0);
             
@@ -675,6 +687,7 @@ public:
             
             not_nan("b_weight_nominal");
             not_nan("pu_weight");
+            not_nan("gen_weight");
             
             not_nan("muon_IDWeight");
             not_nan("muon_IsoWeight");
