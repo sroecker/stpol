@@ -215,7 +215,7 @@ process.mtMuCuts = cms.PSet(
     )
 
 process.evtShapeVars = cms.PSet(
-    doEvtShapeVars = cms.bool(True),
+    doEvtShapeVars = cms.bool(options.doControlVars),
     leptonChannel = cms.string(options.lepton),
 
     muPtSrc = cms.InputTag("goodSignalMuonsNTupleProducer", "Pt"),
@@ -315,3 +315,6 @@ def print_process(p):
     for k, v in p.__dict__.items():
         if isinstance(v, cms.PSet):
             print k, v
+
+if __name__=="__main__":
+    print_process(process)
