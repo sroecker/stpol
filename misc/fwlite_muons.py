@@ -40,6 +40,11 @@ def analyze_pat_muon(handle, label):
            except:
                print "invalid track"
            print "dz =",mu.userFloat("dz")
+           a=mu.chargedHadronIso()
+           b=mu.pfIsolationR04().sumChargedHadronPt
+           print "chHad pt =",a,b
+           if abs(a-b)>0.0001:
+               print "Error: isolations differ"
            nMu += 1
 
 
