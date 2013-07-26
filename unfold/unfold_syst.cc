@@ -215,7 +215,6 @@ void unfold_syst(TString syst, TH1F *hrec, TH2F *hgenrec, TH1F *heff, TH1F *hgen
 	unfold.SetInput(hrec);
 	
 	// set bias dist
-	// FIXME strange results since bias has peaks at zero
 	unfold.SetBias(hgen);
 
 	// subtract backgrounds
@@ -424,6 +423,7 @@ int main()
 	TH1F *hrec = (TH1F*)f2->Get(var_y+"__DATA");
 
 	vector<TString> systematics;
+	/*
 	systematics.push_back("en__down");
 	systematics.push_back("en__up");
 	systematics.push_back("mass__down");
@@ -436,6 +436,25 @@ int main()
 	systematics.push_back("top_scale__up");
 	systematics.push_back("unclusen__down");
 	systematics.push_back("unclusen__up");
+	*/
+	systematics.push_back("muonID__up");
+	systematics.push_back("muonID__down");
+	systematics.push_back("muonIso__up");
+	systematics.push_back("muonIso__down");
+	systematics.push_back("muonTrigger__up");
+	systematics.push_back("muonTrigger__down");
+	systematics.push_back("pileup__up");
+	systematics.push_back("pileup__down");
+	systematics.push_back("btaggingBC__up");
+	systematics.push_back("btaggingBC__down");
+	systematics.push_back("btaggingL__up");
+	systematics.push_back("btaggingL__down");
+	systematics.push_back("ttbar_scale__up");
+	systematics.push_back("ttbar_scale__down");
+	systematics.push_back("wjets_shape__up");
+	systematics.push_back("wjets_shape__down");
+	systematics.push_back("wjets_flat__up");
+	systematics.push_back("wjets_flat__down");
 
         for(vector<TString>::iterator it = systematics.begin(); it != systematics.end(); it++) {
 		// systematic reconstructed, subtracted, matrix, efficiency, bias

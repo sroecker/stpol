@@ -32,7 +32,7 @@ Double_t calc_asymmetry_syst(TString syst)
 	Double_t asy_gen = asymmetry(hgen_presel);
 	Double_t asy_unf = hasy->GetMean();
 
-	cout << endl << asy_gen << " " << asy_unf << endl;
+	//cout << endl << asy_gen << " " << asy_unf << endl;
 
 	Double_t diff = asy_gen - asy_unf;
 	//Double_t uncertainty = diff/asy_gen;
@@ -45,6 +45,7 @@ Double_t calc_asymmetry_syst(TString syst)
 int main()
 {	
 	vector<TString> systematics;
+	/*
 	systematics.push_back("en__down");
 	systematics.push_back("en__up");
 	systematics.push_back("mass__down");
@@ -57,6 +58,27 @@ int main()
 	systematics.push_back("top_scale__up");
 	systematics.push_back("unclusen__down");
 	systematics.push_back("unclusen__up");
+	*/
+	systematics.push_back("muonID__up");
+	systematics.push_back("muonID__down");
+	systematics.push_back("muonIso__up");
+	systematics.push_back("muonIso__down");
+	systematics.push_back("muonTrigger__up");
+	systematics.push_back("muonTrigger__down");
+	systematics.push_back("pileup__up");
+	systematics.push_back("pileup__down");
+	systematics.push_back("btaggingBC__up");
+	systematics.push_back("btaggingBC__down");
+	systematics.push_back("btaggingL__up");
+	systematics.push_back("btaggingL__down");
+	systematics.push_back("ttbar_scale__up");
+	systematics.push_back("ttbar_scale__down");
+	systematics.push_back("wjets_shape__up");
+	systematics.push_back("wjets_shape__down");
+	systematics.push_back("wjets_flat__up");
+	systematics.push_back("wjets_flat__down");
+
+
 
 	Double_t uncertainty = 0;
 
@@ -65,7 +87,8 @@ int main()
 		uncertainty += TMath::Power(calc_asymmetry_syst(*it),2);
 	}
 	cout << "========================" << endl;
-	cout << "relative total uncertainty: " << TMath::Sqrt(uncertainty) << endl;
+	//cout << "relative total uncertainty: " << TMath::Sqrt(uncertainty) << endl;
+	cout << "total uncertainty: " << TMath::Sqrt(uncertainty) << endl;
 
 	return 0;
 }

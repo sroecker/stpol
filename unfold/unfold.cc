@@ -76,8 +76,8 @@ void unfold(TH1F *hrec, TH2F *hgenrec, TH1F *heff, TH1F *hgen, TFile *f)
 
 	TFile *fo = new TFile("histos/unfolded.root","RECREATE");
 	
-	//bool subtractData = true;
-	bool subtractData = false;
+	bool subtractData = true;
+	//bool subtractData = false;
 
 	// Background subtraction
 	vector<TString> names;
@@ -209,7 +209,6 @@ void unfold(TH1F *hrec, TH2F *hgenrec, TH1F *heff, TH1F *hgen, TFile *f)
 		Float_t bin_eff = heff->GetBinContent(i);
 		hgen_produced->SetBinContent(i,hgen->GetBinContent(i)/bin_eff);
 		Float_t nonsel = hgen_produced->GetBinContent(i)*(1-bin_eff);
-		cout << nonsel << endl;
 		hgenrec->SetBinContent(i,0,nonsel);
 	}
 	
@@ -239,7 +238,6 @@ void unfold(TH1F *hrec, TH2F *hgenrec, TH1F *heff, TH1F *hgen, TFile *f)
 		{
 			// FIXME
 			unfold.SubtractBackground(eigenhistos[i],names[i+1],1.0, eigenerrors[i]);
-			// FIXME renomieren
 			//unfold.SubtractBackground(bkghistos[i],names[i+1],1.0, uncs[i+1]);
 		}
 	}
@@ -303,9 +301,9 @@ void unfold(TH1F *hrec, TH2F *hgenrec, TH1F *heff, TH1F *hgen, TFile *f)
 		hpseudo->Reset();
 		if(subtractData) {
 			for(int i = 0; i < nbkgs ; i++) {
-				//TH1F *heigen = (TH1F*)eigenhistos[i];
+				TH1F *heigen = (TH1F*)eigenhistos[i];
 				// FIXME
-				TH1F *heigen = (TH1F*)bkghistos[i];
+				//TH1F *heigen = (TH1F*)bkghistos[i];
 				TH1F *hclone = (TH1F*)heigen->Clone();
 				
 				//Float_t bla = random.Gaus(heigen->Integral(),eigenerrors[i]*heigen->Integral());
@@ -410,13 +408,10 @@ int main()
 {	
 	// load histograms
 	TFile *f = new TFile("histos/rebinned.root");
-	//TFile *f = new TFile("histos/rebinned_test2.root");
 	//TFile *f_comp = new TFile("histos/rebinned_comphep.root");
 	//TFile *f2 = new TFile("histos/data.root");
-	TFile *f2 = new TFile("histos/pseudo_data.root");
-	// FIXME
+	TFile *f2 = new TFile("histos/pseudo_data.root"); // FIXME
 	TFile *feff = new TFile("histos/efficiency.root");
-	//TFile *feff = new TFile("histos/efficiency_test2.root");
 	//TFile *feff_comp = new TFile("histos/efficiency_comphep.root");
 	
 	//TH2F *hgenrec = (TH2F*)f_comp->Get("matrix");
@@ -426,9 +421,9 @@ int main()
 	TH1F *hgen = (TH1F*)f->Get(var_x+"_rebin");
 
 	// Test for not subtracting background
-	TH1F *hrec = (TH1F*)f->Get(var_y+"_rebin");
+	//TH1F *hrec = (TH1F*)f->Get(var_y+"_rebin");
 	// DATA
-	//TH1F *hrec = (TH1F*)f2->Get(var_y+"__DATA");
+	TH1F *hrec = (TH1F*)f2->Get(var_y+"__DATA");
 
 	// reconstructed, subtracted, matrix, efficiency, bias
 	unfold(hrec,hgenrec,heff,hgen,f2);

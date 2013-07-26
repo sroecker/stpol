@@ -17,13 +17,12 @@ void calc_asymmetry()
 	//TFile *f4 = new TFile("histos/pseudo_data.root");
 	//TFile *f5 = new TFile("histos/data.root");
 	TFile *f3 = new TFile("histos/efficiency.root");
-	TFile *f6 = new TFile("histos/efficiency_comphep.root");
-	//TFile *f6 = new TFile("histos/efficiency_test.root");
+	//TFile *f6 = new TFile("histos/efficiency_comphep.root");
 
 	TH1F *hunf = (TH1F*)f1->Get("unfolded");
 	TH2F *herr = (TH2F*)f1->Get("error");
 	TH1F *hgen_presel = (TH1F*)f3->Get("hgen_presel");
-	TH1F *hgen_presel2 = (TH1F*)f6->Get("hgen_presel");
+	//TH1F *hgen_presel2 = (TH1F*)f6->Get("hgen_presel");
 	TH1F *hgen_presel_rebin = (TH1F*)f3->Get("hgen_presel_rebin");
 	TH1F *hgen = (TH1F*)f3->Get("hgen");
 	TH1F *hrec = (TH1F*)f3->Get("hrec");
@@ -43,8 +42,8 @@ void calc_asymmetry()
 
 	cout << "generated (before selection)" << endl;
 	cout << asymmetry(hgen_presel) << endl;
-	cout << "generated comphep (before selection)" << endl;
-	cout << asymmetry(hgen_presel2) << endl;
+	//cout << "generated comphep (before selection)" << endl;
+	//cout << asymmetry(hgen_presel2) << endl;
 	cout << "generated (before selection, rebinned)" << endl;
 	cout << asymmetry(hgen_presel_rebin) << endl;
 	cout << "generated (after selection)" << endl;
