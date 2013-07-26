@@ -57,15 +57,15 @@ void plotfit()
         leg->AddEntry(hsignal,"t-channel","f");
 
 	Int_t nbkgs = names.size()-1;
-	for(int i = 0; i < nbkgs ; i++) {
-		TString name = names.at(i+1);
+	for(int j = 0; j < nbkgs ; j++) {
+		TString name = names.at(j+1);
 		TH1F *histo = (TH1F*)f->Get(var_y+"__"+name);
 	
 		// Scale histos
-		histo->Scale(scales[i+1]);
+		histo->Scale(scales[j+1]);
 
 		histo->SetLineColor(kBlack);
-		histo->SetFillColor((i+1)*10);
+		histo->SetFillColor((j+1)*10);
 
         	leg->AddEntry(histo,name,"f");
 		hstack->Add(histo);

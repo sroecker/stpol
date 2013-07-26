@@ -1,6 +1,7 @@
 signal = 'tchan'
 
 def histofilter(s):
+    #if '__plus' in s or '__minus' in s:
     if '__up' in s or '__down' in s:
         return False
     return True
@@ -22,7 +23,8 @@ def add_normal_uncertainty(model, u_name, rel_uncertainty, procname, obsname='*'
 
 
 def get_model():
-    model = build_model_from_rootfile('histos/lqeta.root', include_mc_uncertainties = False, histogram_filter = histofilter)
+    #model = build_model_from_rootfile('histos/lqeta.root', include_mc_uncertainties = False, histogram_filter = histofilter)
+    model = build_model_from_rootfile('histos/andres3.root', include_mc_uncertainties = False, histogram_filter = histofilter)
     model.fill_histogram_zerobins()
     model.set_signal_processes(signal)
     return model
@@ -40,9 +42,9 @@ options = Options()
 
 # maximum likelihood estimate
 # FIXME pseudo data
-#result = mle(model, input = 'toys-asimov:1.0', n=1, with_covariance = True)
+result = mle(model, input = 'toys-asimov:1.0', n=1, with_covariance = True)
 # data
-result = mle(model, input = 'data', n=1, with_covariance = True, options=options)
+#result = mle(model, input = 'data', n=1, with_covariance = True, options=options)
 
 fitresults = {}
 for process in result[signal]:
@@ -63,7 +65,6 @@ n = len(pars)
 #print pars
 
 cov = result[signal]['__cov'][0]
-#print cov
 
 # write out covariance matrix
 import ROOT

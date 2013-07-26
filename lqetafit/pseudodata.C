@@ -14,7 +14,7 @@ void read_fitres(vector<TString> &names, vector<Float_t> &scales, vector<Float_t
         Float_t scale, unc;
         
         ifstream ifs;
-        ifs.open("results.txt");
+        ifs.open("results/nominal.txt");
         if(!ifs.good()) {
                 cout << "Could not open fit results file!" << endl;
                 exit(1);
