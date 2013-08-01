@@ -10,13 +10,13 @@
 
 using namespace std;
 
+
 void calc_asymmetry()
 {
 	TFile *f1 = new TFile("histos/unfolded.root");
-	// FIXME
 	//TFile *f4 = new TFile("histos/pseudo_data.root");
 	//TFile *f5 = new TFile("histos/data.root");
-	TFile *f3 = new TFile("histos/efficiency.root");
+	TFile *f3 = new TFile("histos/"+sample+"/efficiency.root");
 	//TFile *f6 = new TFile("histos/efficiency_comphep.root");
 
 	TH1F *hunf = (TH1F*)f1->Get("unfolded");

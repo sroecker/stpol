@@ -93,12 +93,13 @@ void unfold_syst(TString syst, TH1F *hrec, TH2F *hgenrec, TH1F *heff, TH1F *hgen
 
 	// Order of fit results must be the same as in covariance matrix:
 	// first entry beta_signal, rest alphabetic
-	read_fitres("syst_"+syst,names,scales,uncs);
+	//read_fitres("syst_"+syst,names,scales,uncs); // FIXME
+	read_fitres("nominal",names,scales,uncs);
 	
 	nbkgs = names.size()-1;
 
 	hsignal = (TH1F*)f->Get(var_y+"__tchan");
-	hsignal->Scale(scales[0]);
+	//hsignal->Scale(scales[0]);
 
 	// Read in background histograms
 	for(int i = 0; i < nbkgs ; i++) {
@@ -106,7 +107,7 @@ void unfold_syst(TString syst, TH1F *hrec, TH2F *hgenrec, TH1F *heff, TH1F *hgen
 		TH1F *histo = (TH1F*)f->Get(var_y+"__"+name);
 		
 		// Scale histos
-		histo->Scale(scales[i+1]);
+		//histo->Scale(scales[i+1]);
 		preds.push_back(histo->Integral());
 		
 		sum_nonrot += histo->Integral();
@@ -155,7 +156,6 @@ void unfold_syst(TString syst, TH1F *hrec, TH2F *hgenrec, TH1F *heff, TH1F *hgen
 			eigenvectors[i][j] *= scale_vector[j];
 		}
 	}
-	
 
 	Float_t sum_rot = 0;
 	// Rotate backgrounds
@@ -181,7 +181,8 @@ void unfold_syst(TString syst, TH1F *hrec, TH2F *hgenrec, TH1F *heff, TH1F *hgen
 	//cout << "background events rotated: " << sum_rot << endl;
 
 	// Number of expected events
-	Float_t expected = (hrec->Integral() - sum_nonrot);
+	//Float_t expected = (hrec->Integral() - sum_nonrot);
+	Float_t expected = hsignal->Integral();
 
 	// Scale generated and migration matrix to expected
 	hgen->Scale(expected/hgen->Integral()); // for bias
@@ -201,33 +202,30 @@ void unfold_syst(TString syst, TH1F *hrec, TH2F *hgenrec, TH1F *heff, TH1F *hgen
 	Float_t overflow = hgenrec->Integral(1,bin_x,0,0);
 	Float_t sel_eff = hgenrec->Integral(1,bin_x,1,bin_y)/overflow;
 
-	cout << "data events: " << hrec->Integral() << endl;
+	//cout << "data events: " << hrec->Integral() << endl;
 	cout << "expected signal events: " << expected << endl;
 	cout << "matrix integral " << hgenrec->Integral() << endl;
 	cout << "Unfolding: " + varname << endl;
 		
 	// Prepare unfolding
-	// FIXME
-	//TUnfoldSys unfold(hgenrec,TUnfold::kHistMapOutputHoriz,TUnfold::kRegModeCurvature);
-	TUnfoldSys unfold(hgenrec,TUnfold::kHistMapOutputHoriz,TUnfold::kRegModeNone);
+	TUnfoldSys unfold(hgenrec,TUnfold::kHistMapOutputHoriz,TUnfold::kRegModeCurvature);
+	//TUnfoldSys unfold(hgenrec,TUnfold::kHistMapOutputHoriz,TUnfold::kRegModeNone);
 
 	// set input distribution
 	unfold.SetInput(hrec);
 	
 	// set bias dist
-	unfold.SetBias(hgen);
+	//unfold.SetBias(hgen);
 
 	// subtract backgrounds
 	for(int i = 0; i < nbkgs; i++)
 	{
-		// FIXME
 		unfold.SubtractBackground(eigenhistos[i],names[i+1],1.0, eigenerrors[i]);
-		// FIXME renomieren
-		//unfold.SubtractBackground(bkghistos[i],names[i+1],1.0, uncs[i+1]);
+		//unfold.SubtractBackground(bkghistos[i],names[i+1],1.0, uncs[i+1]); // FIXME
 	}
 
 	// find minimal global correlation
-	minimizeRhoAverage(&unfold, hrec, 1000, -6, 0);
+	minimizeRhoAverage(&unfold, hrec, 1000, -6, 0); // FIXME
 
 	Float_t tau = unfold.GetTau();
 	cout << "tau: " << tau << endl;
@@ -288,8 +286,6 @@ void unfold_syst(TString syst, TH1F *hrec, TH2F *hgenrec, TH1F *heff, TH1F *hgen
 		if(histo == NULL) {
 			cout << "did not suceed: " << name << endl;
 			histo = (TH1F*)f->Get(var_y+"__"+name);
-			// FIXME Scale histos?
-			//histo->Scale(scales[i+1]);
 		}
 		
 		pehistos.push_back((TH1F*)histo);
@@ -318,13 +314,11 @@ void unfold_syst(TString syst, TH1F *hrec, TH2F *hgenrec, TH1F *heff, TH1F *hgen
 			
 			int n = random.Poisson(bla);
 
-			/*
 			for(int ibin = 1; ibin <= bin_y; ibin++) {
 				Float_t val = hclone->GetBinContent(ibin);
 				Float_t err = hclone->GetBinError(ibin);
 				hclone->SetBinContent(ibin, random.Gaus(val, err));
 			}
-			*/
 
 			for(int j = 0; j < n; j++) {
 				hpseudo->Fill(hclone->GetRandom());
@@ -409,48 +403,45 @@ void unfold_syst(TString syst, TH1F *hrec, TH2F *hgenrec, TH1F *heff, TH1F *hgen
 }
 
 int main()
-{	
+{
+
 	// load histograms
-	TFile *f = new TFile("histos/rebinned.root");
-	//TFile *f2 = new TFile("histos/pseudo_data2.root");
-	TFile *f2 = new TFile("histos/data.root");
-	TFile *feff = new TFile("histos/efficiency.root");
+	TFile *f = new TFile("histos/"+sample+"/rebinned.root");
+	TFile *f2 = new TFile("histos/"+sample+"/data.root");
+	TFile *f3 = new TFile("histos/"+sample+"/pseudo_data.root");
+	TFile *feff = new TFile("histos/"+sample+"/efficiency.root");
 	//
 	TH1F *heff = (TH1F*)feff->Get("efficiency");
 	TH2F *hgenrec = (TH2F*)f->Get("matrix");
 	TH1F *hgen = (TH1F*)f->Get(var_x+"_rebin");
 	// DATA
-	TH1F *hrec = (TH1F*)f2->Get(var_y+"__DATA");
+	//TH1F *hrec = (TH1F*)f2->Get(var_y+"__DATA");
+	TH1F *hrec = (TH1F*)f3->Get(var_y+"__DATA"); // FIXME use pseudo data
 
 	vector<TString> systematics;
-	/*
-	systematics.push_back("en__down");
-	systematics.push_back("en__up");
-	systematics.push_back("mass__down");
-	systematics.push_back("mass__up");
-	systematics.push_back("matching__down");
-	systematics.push_back("matching__up");
-	systematics.push_back("tchan_scale__down");
-	systematics.push_back("tchan_scale__up");
-	systematics.push_back("top_scale__down");
-	systematics.push_back("top_scale__up");
-	systematics.push_back("unclusen__down");
-	systematics.push_back("unclusen__up");
-	*/
-	systematics.push_back("muonID__up");
-	systematics.push_back("muonID__down");
-	systematics.push_back("muonIso__up");
-	systematics.push_back("muonIso__down");
-	systematics.push_back("muonTrigger__up");
-	systematics.push_back("muonTrigger__down");
-	systematics.push_back("pileup__up");
-	systematics.push_back("pileup__down");
+	systematics.push_back("En__up");
+	systematics.push_back("En__down");
+	systematics.push_back("UnclusteredEn__up");
+	systematics.push_back("UnclusteredEn__down");
+	systematics.push_back("Res__up");
+	systematics.push_back("Res__down");
+
+	systematics.push_back("leptonID__up");
+	systematics.push_back("leptonID__down");
+	systematics.push_back("leptonIso__up");
+	systematics.push_back("leptonIso__down");
+	systematics.push_back("leptonTrigger__up");
+	systematics.push_back("leptonTrigger__down");
+	//systematics.push_back("pileup__up");
+	//systematics.push_back("pileup__down");
 	systematics.push_back("btaggingBC__up");
 	systematics.push_back("btaggingBC__down");
 	systematics.push_back("btaggingL__up");
 	systematics.push_back("btaggingL__down");
 	systematics.push_back("ttbar_scale__up");
 	systematics.push_back("ttbar_scale__down");
+	systematics.push_back("ttbar_matching__up");
+	systematics.push_back("ttbar_matching__down");
 	systematics.push_back("wjets_shape__up");
 	systematics.push_back("wjets_shape__down");
 	systematics.push_back("wjets_flat__up");

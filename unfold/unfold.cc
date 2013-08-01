@@ -20,6 +20,7 @@ const double scaleBias = 1.0;
 
 // Number of pseudo experiments
 #define NPSEUDO 50000
+//#define NPSEUDO 1000
 
 TUnfoldSys* myUnfold1d_TUnfoldGlobalPointerForTMinuit;
 TH1F* myUnfold1d_hdataGlobalPointerForTMinuit;
@@ -222,31 +223,29 @@ void unfold(TH1F *hrec, TH2F *hgenrec, TH1F *heff, TH1F *hgen, TFile *f)
 	cout << "Unfolding: " + varname << endl;
 		
 	// Prepare unfolding
-	// FIXME
-	//TUnfoldSys unfold(hgenrec,TUnfold::kHistMapOutputHoriz,TUnfold::kRegModeCurvature);
-	TUnfoldSys unfold(hgenrec,TUnfold::kHistMapOutputHoriz,TUnfold::kRegModeNone);
+	TUnfoldSys unfold(hgenrec,TUnfold::kHistMapOutputHoriz,TUnfold::kRegModeCurvature);
+	//TUnfoldSys unfold(hgenrec,TUnfold::kHistMapOutputHoriz,TUnfold::kRegModeNone); // FIXME For tests
 
 	// set input distribution
 	unfold.SetInput(hrec);
 	
 	// set bias dist
-	unfold.SetBias(hgen);
+	//unfold.SetBias(hgen);
 
 	// subtract backgrounds
 	if(subtractData) {
 		for(int i = 0; i < nbkgs; i++)
 		{
-			// FIXME
 			unfold.SubtractBackground(eigenhistos[i],names[i+1],1.0, eigenerrors[i]);
-			//unfold.SubtractBackground(bkghistos[i],names[i+1],1.0, uncs[i+1]);
+			//unfold.SubtractBackground(bkghistos[i],names[i+1],1.0, uncs[i+1]); // FIXME Test subtracting nominal histos
 		}
 	}
 
 
-	// find minimal global correlation
-	minimizeRhoAverage(&unfold, hrec, 1000, -6, 0);
-
+	// find minimal global correlation // FIXME
+	minimizeRhoAverage(&unfold, hrec, 1000, -5, 0);
 	Float_t tau = unfold.GetTau();
+
 	cout << "tau: " << tau << endl;
 
 	Float_t corr;
@@ -269,7 +268,6 @@ void unfold(TH1F *hrec, TH2F *hgenrec, TH1F *heff, TH1F *hgen, TFile *f)
 	unfold.GetEmatrix(hematrix);
 	// Add migration matrix stat. error
 	//unfold.GetEmatrixSysUncorr(hematrix, 0, false); 
-
 
 	// pseudo experiments
 	TH1F *hPull[bin_x];
@@ -302,22 +300,19 @@ void unfold(TH1F *hrec, TH2F *hgenrec, TH1F *heff, TH1F *hgen, TFile *f)
 		if(subtractData) {
 			for(int i = 0; i < nbkgs ; i++) {
 				TH1F *heigen = (TH1F*)eigenhistos[i];
-				// FIXME
-				//TH1F *heigen = (TH1F*)bkghistos[i];
+				//TH1F *heigen = (TH1F*)bkghistos[i]; // FIXME Test dicing nominal
 				TH1F *hclone = (TH1F*)heigen->Clone();
 				
-				//Float_t bla = random.Gaus(heigen->Integral(),eigenerrors[i]*heigen->Integral());
-				Float_t bla = random.Gaus(heigen->Integral(),uncs[i+1]*heigen->Integral());
+				Float_t bla = random.Gaus(heigen->Integral(),eigenerrors[i]*heigen->Integral());
+				//Float_t bla = random.Gaus(heigen->Integral(),uncs[i+1]*heigen->Integral()); // FIXME test dicing nominal
 				
 				int n = random.Poisson(bla);
 				
-				/*
 				for(int ibin = 1; ibin <= bin_y; ibin++) {
 					Float_t val = hclone->GetBinContent(ibin);
 					Float_t err = hclone->GetBinError(ibin);
 					hclone->SetBinContent(ibin, random.Gaus(val, err));
 				}
-				*/
 
 				for(int j = 0; j < n; j++) {
 					hpseudo->Fill(hclone->GetRandom());
@@ -337,9 +332,17 @@ void unfold(TH1F *hrec, TH2F *hgenrec, TH1F *heff, TH1F *hgen, TFile *f)
 			delete hclone;
 		} else {
 			int n = random.Poisson(hrec->Integral());
-			for(int j = 0; j < n; j++) {
-				hpseudo->Fill(hrec->GetRandom());
+			TH1F *hclone = (TH1F*)hrec->Clone();
+			for(int ibin = 1; ibin <= bin_y; ibin++) {
+					Float_t val = hclone->GetBinContent(ibin);
+					Float_t err = hclone->GetBinError(ibin);
+					hclone->SetBinContent(ibin, random.Gaus(val, err));
 			}
+
+			for(int j = 0; j < n; j++) {
+				hpseudo->Fill(hclone->GetRandom());
+			}
+			delete hclone;
 		}
 		
 		unfold.SetInput(hpseudo);
@@ -407,21 +410,18 @@ void unfold(TH1F *hrec, TH2F *hgenrec, TH1F *heff, TH1F *hgen, TFile *f)
 int main()
 {	
 	// load histograms
-	TFile *f = new TFile("histos/rebinned.root");
-	//TFile *f_comp = new TFile("histos/rebinned_comphep.root");
-	//TFile *f2 = new TFile("histos/data.root");
-	TFile *f2 = new TFile("histos/pseudo_data.root"); // FIXME
-	TFile *feff = new TFile("histos/efficiency.root");
-	//TFile *feff_comp = new TFile("histos/efficiency_comphep.root");
+	TFile *f = new TFile("histos/"+sample+"/rebinned.root");
+	//TFile *f2 = new TFile("histos/"+sample+"/data.root");
+	TFile *f2 = new TFile("histos/"+sample+"/pseudo_data.root");
+	TFile *feff = new TFile("histos/"+sample+"/efficiency.root");
 	
-	//TH2F *hgenrec = (TH2F*)f_comp->Get("matrix");
-	//TH1F *heff = (TH1F*)feff_comp->Get("efficiency");
 	TH1F *heff = (TH1F*)feff->Get("efficiency");
 	TH2F *hgenrec = (TH2F*)f->Get("matrix");
 	TH1F *hgen = (TH1F*)f->Get(var_x+"_rebin");
 
-	// Test for not subtracting background
+	// FIXME Test for not subtracting background
 	//TH1F *hrec = (TH1F*)f->Get(var_y+"_rebin");
+	
 	// DATA
 	TH1F *hrec = (TH1F*)f2->Get(var_y+"__DATA");
 

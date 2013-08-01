@@ -7,8 +7,8 @@
 
 void pseudodata()
 {
-	TFile *f = new TFile("histos/data.root");
-	TFile *fo = new TFile("histos/pseudo_data.root","RECREATE");
+	TFile *f = new TFile("histos/"+sample+"/data.root");
+	TFile *fo = new TFile("histos/"+sample+"/pseudo_data.root","RECREATE");
 	fo->cd();
 	
 	vector<TString> names;

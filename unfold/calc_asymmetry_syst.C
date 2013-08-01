@@ -13,7 +13,7 @@ using namespace std;
 Double_t calc_asymmetry_syst(TString syst)
 {
 	TFile *f1 = new TFile("histos/unfolded_syst_"+syst+".root");
-	TFile *f3 = new TFile("histos/efficiency.root");
+	TFile *f3 = new TFile("histos/"+sample+"/efficiency.root");
 
 	TH1F *hunf = (TH1F*)f1->Get("unfolded");
 	TH1F *hgen_presel = (TH1F*)f3->Get("hgen_presel");
@@ -38,6 +38,7 @@ Double_t calc_asymmetry_syst(TString syst)
 	//Double_t uncertainty = diff/asy_gen;
 	Double_t uncertainty = diff;
 	cout << uncertainty << endl;
+	//cout << hStatErr->GetMean() << endl;
 
 	return uncertainty;
 }
@@ -45,40 +46,33 @@ Double_t calc_asymmetry_syst(TString syst)
 int main()
 {	
 	vector<TString> systematics;
-	/*
-	systematics.push_back("en__down");
-	systematics.push_back("en__up");
-	systematics.push_back("mass__down");
-	systematics.push_back("mass__up");
-	systematics.push_back("matching__down");
-	systematics.push_back("matching__up");
-	systematics.push_back("tchan_scale__down");
-	systematics.push_back("tchan_scale__up");
-	systematics.push_back("top_scale__down");
-	systematics.push_back("top_scale__up");
-	systematics.push_back("unclusen__down");
-	systematics.push_back("unclusen__up");
-	*/
-	systematics.push_back("muonID__up");
-	systematics.push_back("muonID__down");
-	systematics.push_back("muonIso__up");
-	systematics.push_back("muonIso__down");
-	systematics.push_back("muonTrigger__up");
-	systematics.push_back("muonTrigger__down");
-	systematics.push_back("pileup__up");
-	systematics.push_back("pileup__down");
+	systematics.push_back("En__up");
+	systematics.push_back("En__down");
+	systematics.push_back("UnclusteredEn__up");
+	systematics.push_back("UnclusteredEn__down");
+	systematics.push_back("Res__up");
+	systematics.push_back("Res__down");
+
+	systematics.push_back("leptonID__up");
+	systematics.push_back("leptonID__down");
+	systematics.push_back("leptonIso__up");
+	systematics.push_back("leptonIso__down");
+	systematics.push_back("leptonTrigger__up");
+	systematics.push_back("leptonTrigger__down");
+	//systematics.push_back("pileup__up");
+	//systematics.push_back("pileup__down");
 	systematics.push_back("btaggingBC__up");
 	systematics.push_back("btaggingBC__down");
 	systematics.push_back("btaggingL__up");
 	systematics.push_back("btaggingL__down");
 	systematics.push_back("ttbar_scale__up");
 	systematics.push_back("ttbar_scale__down");
+	systematics.push_back("ttbar_matching__up");
+	systematics.push_back("ttbar_matching__down");
 	systematics.push_back("wjets_shape__up");
 	systematics.push_back("wjets_shape__down");
 	systematics.push_back("wjets_flat__up");
 	systematics.push_back("wjets_flat__down");
-
-
 
 	Double_t uncertainty = 0;
 

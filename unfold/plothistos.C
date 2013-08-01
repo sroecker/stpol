@@ -40,8 +40,8 @@ plot_unfolded()
 {
 	TCanvas *cunf = new TCanvas("unfolded","unfolded",800,600);
 	TFile *f1 = new TFile("histos/unfolded.root");
-	TFile *f2 = new TFile("histos/rebinned.root");
-	TFile *feff = new TFile("histos/efficiency.root");
+	TFile *f2 = new TFile("histos/"+sample+"/rebinned.root");
+	TFile *feff = new TFile("histos/"+sample+"/efficiency.root");
 
 	TH1D *hunf = (TH1D*)f1->Get("unfolded");
 	//TH1D *hgen_presel_rebin = (TH1D*)f2->Get(var_x+"_rebin");
@@ -87,7 +87,7 @@ plot_unfolded()
 plot_shape()
 {	
 	TCanvas *ceff = new TCanvas("ceff","efficiency",800,600);
-	TFile *f = new TFile("histos/efficiency.root");
+	TFile *f = new TFile("histos/"+sample+"/efficiency.root");
 	TH1D *hgen_presel = (TH1D*)f->Get("hgen_presel");
 	TH1D *hgen = (TH1D*)f->Get("hgen");
 	TH1D *hrec = (TH1D*)f->Get("hrec");
@@ -339,7 +339,7 @@ plot_correlation()
 plot_efficiency()
 {
 	TCanvas *ceff= new TCanvas("ceff","Efficiency",800,600);
-	TFile *feff = new TFile("histos/efficiency.root");
+	TFile *feff = new TFile("histos/"+sample+"/efficiency.root");
 	TH1D *heff = (TH1D*)feff->Get("efficiency");
 	heff->SetStats(0);
 	heff->SetTitle("");
@@ -355,7 +355,7 @@ plot_efficiency()
 plot_matrix()
 {
 	TCanvas *cmat = new TCanvas("cmat","matrix",800,600);
-	TFile *f = new TFile("histos/rebinned.root");
+	TFile *f = new TFile("histos/"+sample+"/rebinned.root");
 	TH2D *hmat = (TH2D*)f->Get("matrix");
 
 	Int_t nbinsx = hmat->GetNbinsX();
