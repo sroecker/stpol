@@ -119,7 +119,8 @@ void unfold_syst(TString syst, TH1F *hrec, TH2F *hgenrec, TH1F *heff, TH1F *hgen
 	// Decorrelate background templates
 	// Read in covariance matrix
 	// use systematic covariance matrix
-	TFile *fcov = new TFile("fitresults/cov_syst_"+syst+".root");
+	//TFile *fcov = new TFile("fitresults/cov_syst_"+syst+".root");
+	TFile *fcov = new TFile("cov.root"); // FIXME
 	TH2D *hcov = (TH2D*)fcov->Get("covariance");
 	
 	TMatrixD covmatrix(nbkgs,nbkgs);
@@ -281,11 +282,17 @@ void unfold_syst(TString syst, TH1F *hrec, TH2F *hgenrec, TH1F *heff, TH1F *hgen
 	for(int i = 0; i < nbkgs ; i++) {
 		TString name = names.at(i+1);
 		TH1F *histo = NULL;
+		TH1F *nominal_histo = NULL;
 		// Try to read in systematic sample
 		histo = (TH1F*)f->Get(var_y+"__"+name+"__"+syst);
+		nominal_histo = (TH1F*)f->Get(var_y+"__"+name);
 		if(histo == NULL) {
 			cout << "did not suceed: " << name << endl;
-			histo = (TH1F*)f->Get(var_y+"__"+name);
+			//histo = (TH1F*)f->Get(var_y+"__"+name);
+			histo = nominal_histo;
+		} else {
+			// FIXME Shape only, scale systematic sample to nominal
+			histo->Scale(nominal_histo->Integral()/histo->Integral());
 		}
 		
 		pehistos.push_back((TH1F*)histo);

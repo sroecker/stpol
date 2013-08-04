@@ -23,13 +23,12 @@ void plotfit()
 	THStack *hstack = new THStack("hstack","stack plot");
 
 	// FIXME
-	TFile *f = new TFile("histos/data.root");
-	//TFile *f = new TFile("histos/pseudo_data.root");
+	TFile *f = new TFile("histos/"+sample+"/data.root");
 
 	TH1F *hdata = (TH1F*)f->Get(var_y+"__DATA");
 
 	hsignal = (TH1F*)f->Get(var_y+"__tchan");
-//	hsignal->Scale(scales[0]);
+	hsignal->Scale(scales[0]);
 	hsignal->SetLineColor(kBlack);
 	hsignal->SetFillColor(kRed);
 	hstack->Add(hsignal);
@@ -40,7 +39,7 @@ void plotfit()
 		TH1F *histo = (TH1F*)f->Get(var_y+"__"+name);
 				
 		// Scale histos
-//		histo->Scale(scales[i+1]);
+		histo->Scale(scales[i+1]);
 		histo->SetLineColor(kBlack);
 		histo->SetFillColor((i+1)*10);
 		histos.push_back(histo);
