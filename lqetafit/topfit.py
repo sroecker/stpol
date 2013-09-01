@@ -23,8 +23,10 @@ def add_normal_uncertainty(model, u_name, rel_uncertainty, procname, obsname='*'
 
 
 def get_model():
-    #model = build_model_from_rootfile('histos/lqeta.root', include_mc_uncertainties = False, histogram_filter = histofilter)
-    model = build_model_from_rootfile('histos/andres3.root', include_mc_uncertainties = False, histogram_filter = histofilter)
+    #model = build_model_from_rootfile('histos/no_metphi/mu__mva_BDT_with_top_mass_eta_lj_C_mu_pt_mt_mu_met_mass_bj_pt_bj_mass_lj.root', include_mc_uncertainties = False, histogram_filter = histofilter)
+    #model = build_model_from_rootfile('histos/no_metphi/mu__mva_BDT_with_top_mass_eta_lj_C_mu_pt_mt_mu_met_mass_bj_pt_bj_mass_lj__comphep.root', include_mc_uncertainties = False, histogram_filter = histofilter)
+    model = build_model_from_rootfile('histos/no_metphi/ele__mva_BDT_with_top_mass_C_eta_lj_el_pt_mt_el_pt_bj_mass_bj_met_mass_lj.root', include_mc_uncertainties = False, histogram_filter = histofilter)
+    #model = build_model_from_rootfile('histos/no_metphi/ele__mva_BDT_with_top_mass_C_eta_lj_el_pt_mt_el_pt_bj_mass_bj_met_mass_lj__comphep.root', include_mc_uncertainties = False, histogram_filter = histofilter)
     model.fill_histogram_zerobins()
     model.set_signal_processes(signal)
     return model
@@ -37,14 +39,14 @@ print sorted(model.processes)
 execfile('uncertainties.py')
 
 options = Options()
-#options.set("minimizer","strategy","newton_vanilla")
+options.set("minimizer","strategy","newton_vanilla")
 #options.set("minimizer","strategy","tminuit")
 
 # maximum likelihood estimate
 # FIXME pseudo data
-result = mle(model, input = 'toys-asimov:1.0', n=1, with_covariance = True)
+#result = mle(model, input = 'toys-asimov:1.0', n=1, with_covariance = True, options=options)
 # data
-#result = mle(model, input = 'data', n=1, with_covariance = True, options=options)
+result = mle(model, input = 'data', n=1, with_covariance = True, options=options)
 
 fitresults = {}
 for process in result[signal]:

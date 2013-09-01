@@ -20,7 +20,9 @@ void plotfit()
 	vector<TH1F*> histos;
 	TH1F *hsignal;
 
-	TString var_y = "eta_lj";
+	//TString var_y = "eta_lj";
+	//TString var_y = "mva_BDT"; // FIXME
+	TString var_y = "mva_BDT_with_top_mass_eta_lj_C_mu_pt_mt_mu_met_mass_bj_pt_bj_mass_lj";
 	TString name;
 	Float_t scale, unc;
 
@@ -40,10 +42,11 @@ void plotfit()
 	
 	TCanvas *c = new TCanvas("c","canvas",1024,768);
 	THStack *hstack = new THStack("hstack","stack plot");
-	// FIXME
-	TFile *f = new TFile("histos/andres3.root");
-	//TFile *f = new TFile("histos/lqeta.root");
-	//TFile *f = new TFile("histos/pseudo_data.root");
+	TFile *f = new TFile("histos/mu_mva_BDT_with_top_mass_eta_lj_C_mu_pt_mt_mu_met_mass_bj_pt_bj_mass_lj/lqeta.root");
+	//TFile *f = new TFile("histos/mu_mva_BDT/lqeta.root");
+	//TFile *f = new TFile("histos/ele_mva_BDT/lqeta.root");
+	//TFile *f = new TFile("histos/mu_eta_lj/lqeta.root");
+	//TFile *f = new TFile("histos/ele_eta_lj/lqeta.root");
 	hsignal = (TH1F*)f->Get(var_y+"__tchan");
 	hsignal->Scale(scales[0]);
 	hsignal->SetLineColor(kBlack);
