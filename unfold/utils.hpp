@@ -14,18 +14,19 @@ void read_fitres(TString fresult, vector<TString> &names, vector<Float_t> &scale
         TString name;
         Float_t scale, unc;
         
-	cout << "reading fit results: " << fresult << endl;
+	//cout << "reading fit results: " << fresult << endl;
 
         ifstream ifs;
         ifs.open("fitresults/"+fresult+".txt");
         if(!ifs.good()) {
-                cout << "Could not open fit results file!" << endl;
+                cout << "Could not open fit results file! " << fresult << endl;
                 exit(1);
         }
         while (ifs >> name >> scale >> unc) {
                 names.push_back(name);
                 scales.push_back(scale);
                 uncs.push_back(unc);
+		cout << name << " " << scale << " " << unc << endl;
         } 
         ifs.close();
         

@@ -59,8 +59,8 @@ int main()
 	systematics.push_back("leptonIso__down");
 	systematics.push_back("leptonTrigger__up");
 	systematics.push_back("leptonTrigger__down");
-	//systematics.push_back("pileup__up");
-	//systematics.push_back("pileup__down");
+	systematics.push_back("pileup__up");
+	systematics.push_back("pileup__down");
 	systematics.push_back("btaggingBC__up");
 	systematics.push_back("btaggingBC__down");
 	systematics.push_back("btaggingL__up");

@@ -60,12 +60,12 @@ void minimizeRhoAverage(TUnfoldSys *unfold, TH1F *hdata, int nsteps, double log1
   
 }
 
-void unfold(TH1F *hrec, TH2F *hgenrec, TH1F *heff, TH1F *hgen, TFile *f)
+Double_t unfold(TString asym, TH1F *hrec, TH2F *hgenrec, TH1F *heff, TH1F *hgen, TFile *f)
 {
 	// only show errors
-	// gErrorIgnoreLevel = kError;
+	gErrorIgnoreLevel = kError;
 
-	cout << "using TUnfold " << TUnfold_VERSION << endl;
+	//cout << "using TUnfold " << TUnfold_VERSION << endl;
 	
 	// dummy canvas
 	TCanvas *c1 = new TCanvas("canvas","canvas");
@@ -75,13 +75,13 @@ void unfold(TH1F *hrec, TH2F *hgenrec, TH1F *heff, TH1F *hgen, TFile *f)
 
 	TH1::SetDefaultSumw2(true);
 
-	TFile *fo = new TFile("histos/unfolded.root","RECREATE");
+	TFile *fo = new TFile("histos/unfolded_"+asym+".root","RECREATE");
 	
 	bool subtractData = true;
 	//bool subtractData = false;
 
-	bool do_pseudo = false; // FIXME
-	//bool do_pseudo = true; // FIXME
+	//bool do_pseudo = false; // FIXME
+	bool do_pseudo = true; // FIXME
 
 	// Background subtraction
 	vector<TString> names;
@@ -111,7 +111,6 @@ void unfold(TH1F *hrec, TH2F *hgenrec, TH1F *heff, TH1F *hgen, TFile *f)
 		// Read in background histograms
 		for(int i = 0; i < nbkgs ; i++) {
 			TString name = names.at(i+1);
-			//if(name == "wzjets") name = "wzjets__wjets_FSIM_nominal"; // FIXME wzjets scale / matching
 			TH1F *histo = (TH1F*)f->Get(var_y+"__"+name);
 			
 			// Scale histos
@@ -122,7 +121,7 @@ void unfold(TH1F *hrec, TH2F *hgenrec, TH1F *heff, TH1F *hgen, TFile *f)
 			bkghistos.push_back((TH1F*)histo);
 
 		}
-		cout << "background events: " << sum_nonrot << endl;
+		//cout << "background events: " << sum_nonrot << endl;
 
 		// Decorrelate background templates
 		// Read in covariance matrix
@@ -218,13 +217,13 @@ void unfold(TH1F *hrec, TH2F *hgenrec, TH1F *heff, TH1F *hgen, TFile *f)
 	}
 	
 	// Calculate selection efficiency
-	Float_t overflow = hgenrec->Integral(1,bin_x,0,0);
-	Float_t sel_eff = hgenrec->Integral(1,bin_x,1,bin_y)/overflow;
+//	Float_t overflow = hgenrec->Integral(1,bin_x,0,0);
+//	Float_t sel_eff = hgenrec->Integral(1,bin_x,1,bin_y)/overflow;
 
-	cout << "data events: " << hrec->Integral() << endl;
-	cout << "expected signal events: " << expected << endl;
-	cout << "matrix integral " << hgenrec->Integral() << endl;
-	cout << "Unfolding: " + varname << endl;
+//	cout << "data events: " << hrec->Integral() << endl;
+//	cout << "expected signal events: " << expected << endl;
+//	cout << "matrix integral " << hgenrec->Integral() << endl;
+//	cout << "Unfolding: " + varname << endl;
 		
 	// Prepare unfolding
 	TUnfoldSys unfold(hgenrec,TUnfold::kHistMapOutputHoriz,TUnfold::kRegModeCurvature);
@@ -247,8 +246,8 @@ void unfold(TH1F *hrec, TH2F *hgenrec, TH1F *heff, TH1F *hgen, TFile *f)
 
 
 	// find minimal global correlation // FIXME
-	//minimizeRhoAverage(&unfold, hrec, 1000, -5, 0); // mu
-	minimizeRhoAverage(&unfold, hrec, 1000, -6, 0); // ele
+	minimizeRhoAverage(&unfold, hrec, 1000, -5, 0); // mu
+	//minimizeRhoAverage(&unfold, hrec, 1000, -6, 0); // ele
 	Float_t tau = unfold.GetTau();
 
 	cout << "tau: " << tau << endl;
@@ -263,8 +262,8 @@ void unfold(TH1F *hrec, TH2F *hgenrec, TH1F *heff, TH1F *hgen, TFile *f)
 	TH1F *hurec = new TH1F("unfolded","unfolded",bin_x,var_min,var_max);
 	unfold.GetOutput(hurec);
 
-	cout << "selection eff: " << sel_eff << endl;
-	cout << "reconstructed: " << expected << " unfolded: " << hurec->Integral() << endl;
+	//cout << "selection eff: " << sel_eff << endl;
+	//cout << "reconstructed: " << expected << " unfolded: " << hurec->Integral() << endl;
 
 	// rho, error matrix
 	TH2D *hrhoij = new TH2D("correlation","correlation",bin_x,1,bin_x,bin_x,1,bin_x);
@@ -272,7 +271,13 @@ void unfold(TH1F *hrec, TH2F *hgenrec, TH1F *heff, TH1F *hgen, TFile *f)
 	TH2D *hematrix = new TH2D("error","error",bin_x,1,bin_x,bin_x,1,bin_x);
 	unfold.GetEmatrix(hematrix);
 	// Add migration matrix stat. error
-	unfold.GetEmatrixSysUncorr(hematrix, 0, false);  // FIXME remove for mig mag statistics
+	unfold.GetEmatrixSysUncorr(hematrix, 0, false); 
+
+	//Double_t asy = asymmetry(hurec);
+
+	//cout << "unfolded asymmetry: " << asy << endl;
+
+	//return asy;
 
 	// pseudo experiments
 	TH1F *hPull[bin_x];
@@ -297,7 +302,8 @@ void unfold(TH1F *hrec, TH2F *hgenrec, TH1F *heff, TH1F *hgen, TFile *f)
 	if (do_pseudo) {
 	cout << "Dicing " << NPSEUDO << " pseudo events..." << endl;
 	Float_t genasy = asymmetry(hgen_produced);
-	cout << "Generated asymmetry: " << genasy << endl;
+	//cout << "Generated asymmetry: " << genasy << endl;
+	//TH1F *hpseudo = new TH1F("pseudo","pseudo", bin_y, list_y);
 	TH1F *hpseudo = new TH1F("pseudo","pseudo", bin_y, var_min, var_max);
 	for(Int_t p=1; p<=NPSEUDO; p++) {
 		
@@ -371,7 +377,7 @@ void unfold(TH1F *hrec, TH2F *hgenrec, TH1F *heff, TH1F *hgen, TFile *f)
 		Float_t asy = asymmetry(hupseudo);
 		hasy.Fill(asy);
 		Float_t asy_diff = genasy - asy;
-		hasy_bias.Fill(asy_diff);
+		hasy_bias.Fill(asy_diff/genasy);
 		Float_t perror = error_unfold(hperr,hupseudo);
 		hStatErr.Fill(perror);
 		hasy_pull.Fill(asy_diff/perror);
@@ -385,10 +391,11 @@ void unfold(TH1F *hrec, TH2F *hgenrec, TH1F *heff, TH1F *hgen, TFile *f)
 		}
 		delete hperr;
 		delete hupseudo;
-		//delete hupseudo_rebin;
 	}
 	// end pseudo
 	} 
+	
+	cout << "Unfolded asymmetry: " << hasy.GetMean() << endl;
 
 	// write results
 	hurec->Write();
@@ -411,27 +418,114 @@ void unfold(TH1F *hrec, TH2F *hgenrec, TH1F *heff, TH1F *hgen, TFile *f)
 
 	fo->Close();
 
+	return hasy.GetMean();
+}
+
+void pseudodata(TString nominal)
+{
+	TFile *f = new TFile("histos/"+nominal+"/data.root");
+	TFile *f1 = new TFile("histos/"+sample+"/rebinned_nominal.root");
+	TFile *fo = new TFile("histos/"+sample+"/pseudo_data.root","RECREATE");
+	fo->cd();
+	
+	vector<TString> names;
+	vector<Float_t> scales;
+	vector<Float_t> uncs;
+	vector<TH1F*> histos;
+
+	read_fitres("nominal",names,scales,uncs);
+	Int_t nbkgs = names.size()-1;
+	
+	TH1::SetDefaultSumw2(true);
+	//TH1F *hsignal = (TH1F*)f->Get(var_y+"__tchan");
+	TH1F *hin = (TH1F*)f1->Get("hrec");
+	TH1F *hsignal = (TH1F*)hin->Clone(var_y+"__tchan");
+	//hsignal->Scale(scales[0]);
+	// Artificially enhance signal fraction
+	// FIXME
+	//hsignal->Scale(2);
+	hsignal->Write();
+	TH1F *added = (TH1F*)hsignal->Clone(var_y+"__DATA");
+	
+	// Read in background histograms
+	for(int i = 0; i < nbkgs ; i++) {
+		TString name = names.at(i+1);
+		TH1F *histo = (TH1F*)f->Get(var_y+"__"+name);
+				
+		// Scale histos
+		//histo->Scale(scales[i+1]);
+		added->Add(histo);
+		histo->Write();
+	}
+
+	//cout << added->Integral() << endl;
+	fo->cd();
+	added->Write();
+	fo->Close();
 }
 
 int main()
-{	
-	// load histograms
-	TFile *f = new TFile("histos/"+sample+"/rebinned_nominal.root");
-	TFile *f2 = new TFile("histos/"+sample+"/data.root");
-	//TFile *f2 = new TFile("histos/"+sample+"/pseudo_data.root");
-	
-	TH1F *heff = (TH1F*)f->Get("efficiency");
-	TH2F *hgenrec = (TH2F*)f->Get("matrix");
-	//TH1F *hgen = (TH1F*)f->Get(var_x+"_rebin");
-	TH1F *hgen = (TH1F*)f->Get("hgen");
+{ 
+	/*
+	TString nominal = "no_metphi/mu__cos_theta__mva_0_06__no_metphi";
+	vector<TString> samples;
+	samples.push_back("no_metphi/mu__cos_theta__mva_0_06__asymm_0.2__no_metphi");
+	samples.push_back("no_metphi/mu__cos_theta__mva_0_06__asymm_0.25__no_metphi");
+	samples.push_back("no_metphi/mu__cos_theta__mva_0_06__asymm_0.3__no_metphi");
+	samples.push_back("no_metphi/mu__cos_theta__mva_0_06__asymm_0.35__no_metphi");
+	samples.push_back("no_metphi/mu__cos_theta__mva_0_06__asymm_0.4__no_metphi");
+	samples.push_back("no_metphi/mu__cos_theta__mva_0_06__asymm_0.45__no_metphi");
+	samples.push_back("no_metphi/mu__cos_theta__mva_0_06__asymm_0.5__no_metphi");
+	*/
 
-	// FIXME Test for not subtracting background
-	//TH1F *hrec = (TH1F*)f->Get(var_y+"_rebin");
-	//TH1F *hrec = (TH1F*)f->Get("hrec");
-	
-	// DATA
-	TH1F *hrec = (TH1F*)f2->Get(var_y+"__DATA");
+	TString nominal = "no_metphi/ele__cos_theta__mva_0_13__no_metphi";
+	vector<TString> samples;
+	samples.push_back("no_metphi/ele__cos_theta__mva_0_13__asymm_0.2__no_metphi");
+	samples.push_back("no_metphi/ele__cos_theta__mva_0_13__asymm_0.25__no_metphi");
+	samples.push_back("no_metphi/ele__cos_theta__mva_0_13__asymm_0.3__no_metphi");
+	samples.push_back("no_metphi/ele__cos_theta__mva_0_13__asymm_0.35__no_metphi");
+	samples.push_back("no_metphi/ele__cos_theta__mva_0_13__asymm_0.4__no_metphi");
+	samples.push_back("no_metphi/ele__cos_theta__mva_0_13__asymm_0.45__no_metphi");
+	samples.push_back("no_metphi/ele__cos_theta__mva_0_13__asymm_0.5__no_metphi");
 
-	// reconstructed, subtracted, matrix, efficiency, bias
-	unfold(hrec,hgenrec,heff,hgen,f2);
+	Int_t asym_count = 20;
+
+        ofstream ofs;
+        ofs.open("lincheck.txt");
+
+	for(vector<TString>::iterator it = samples.begin(); it != samples.end(); it++) {
+		sample = (*it);
+		cout << sample << endl;
+
+		TString asym = "asym_";
+		asym += asym_count;
+		
+		pseudodata(nominal);
+
+		// load histograms
+		TFile *f2 = new TFile("histos/"+sample+"/pseudo_data.root");
+		TH1F *hrec = (TH1F*)f2->Get(var_y+"__DATA");
+		
+		TFile *f = new TFile("histos/"+nominal+"/rebinned_nominal.root");
+		TH1F *heff = (TH1F*)f->Get("efficiency");
+		TH2F *hgenrec = (TH2F*)f->Get("matrix");
+		TH1F *hgen = (TH1F*)f->Get("hgen");
+		
+		TFile *f1 = new TFile("histos/"+sample+"/rebinned_nominal.root");
+		TH1F *hgen_presel = (TH1F*)f1->Get("hgen_presel");
+		Double_t genasy = asymmetry(hgen_presel);
+		
+		Double_t unfasy = unfold(asym,hrec,hgenrec,heff,hgen,f2);
+
+		cout << asym_count << " " << genasy << " " << unfasy << endl;
+		ofs << genasy << " " << unfasy << endl;
+
+	
+		f->Close();
+	
+		asym_count += 5;
+	}
+
+	ofs.close();
+	
 }

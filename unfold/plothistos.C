@@ -40,25 +40,33 @@ plot_unfolded()
 {
 	TCanvas *cunf = new TCanvas("unfolded","unfolded",800,600);
 	TFile *f1 = new TFile("histos/unfolded.root");
-	TFile *f2 = new TFile("histos/"+sample+"/rebinned.root");
-	TFile *feff = new TFile("histos/"+sample+"/efficiency.root");
+	//TFile *f2 = new TFile("histos/"+sample+"/rebinned.root");
+	TFile *f2 = new TFile("histos/"+sample+"/rebinned_nominal.root");
 
 	TH1D *hunf = (TH1D*)f1->Get("unfolded");
 	//TH1D *hgen_presel_rebin = (TH1D*)f2->Get(var_x+"_rebin");
-	TH1D *hgen_presel_rebin = (TH1D*)feff->Get("hgen_presel_rebin");
+//	TH1D *hgen_presel_rebin = (TH1D*)feff->Get("hgen_presel_rebin");
+	//TH1D *hgen_presel_rebin = (TH1D*)f2->Get("hgen_presel");
+	TH1D *hgen_rebin_width = (TH1D*)f2->Get("hgen_presel");
 
-	hgen_presel_rebin->Scale(hunf->Integral()/hgen_presel_rebin->Integral());
+	//hgen_presel_rebin->Scale(hunf->Integral()/hgen_presel_rebin->Integral());
+	//hgen_rebin_width->Scale(hunf_rebin_width->Integral()/hgen_rebin_width->Integral());
 
 	// unfolded and generated in bins of generated divided by bin width
-	TH1D *hunf_rebin_width = new TH1D(var_y+"_unf",var_y+"_unf",bin_x,list_x);
-	TH1D *hgen_rebin_width = new TH1D(var_x+"_rebin_width",var_x+"_rebin_width",bin_x,list_x);
+	//TH1D *hunf_rebin_width = new TH1D(var_y+"_unf",var_y+"_unf",bin_x,list_x);
+	//TH1D *hgen_rebin_width = new TH1D(var_x+"_rebin_width",var_x+"_rebin_width",bin_x,list_x);
+	TH1D *hunf_rebin_width = new TH1D(var_y+"_unf",var_y+"_unf",bin_x,var_min,var_max);
 	
 	for(Int_t i = 1; i <= bin_x; i++) {
-		hunf_rebin_width->SetBinContent(i,hunf->GetBinContent(i)/(list_x[i]-list_x[i-1]));
+//		hunf_rebin_width->SetBinContent(i,hunf->GetBinContent(i)/(list_x[i]-list_x[i-1]));
+		hunf_rebin_width->SetBinContent(i,hunf->GetBinContent(i));
 		hunf_rebin_width->SetBinError(i,hunf->GetBinError(i));
-		hgen_rebin_width->SetBinContent(i,hgen_presel_rebin->GetBinContent(i)/(list_x[i]-list_x[i-1]));
-		hgen_rebin_width->SetBinError(i,hgen_presel_rebin->GetBinError(i));
+		//hgen_rebin_width->SetBinContent(i,hgen_presel_rebin->GetBinContent(i)/(list_x[i]-list_x[i-1]));
+		//hgen_rebin_width->SetBinError(i,hgen_presel_rebin->GetBinError(i));
 	}
+	
+	//hgen_rebin_width->Scale(1.0/hgen_rebin_width->Integral());
+	//hunf_rebin_width->Scale(1.0/hunf_rebin_width->Integral());
 
 	// color
         hunf_rebin_width->SetLineColor(kRed+1);
@@ -66,7 +74,7 @@ plot_unfolded()
 
 	hgen_rebin_width->SetStats(0);
 	hgen_rebin_width->SetTitle("");
-	hgen_rebin_width->SetMaximum(hunf_rebin_width->GetMaximum()*1.1);
+	hgen_rebin_width->SetMaximum(hgen_rebin_width->GetMaximum()*1.2);
 	hgen_rebin_width->SetMinimum(0);
 	hgen_rebin_width->GetXaxis()->SetTitle(varname);
 	hgen_rebin_width->GetYaxis()->SetTitle("Events");
@@ -87,7 +95,8 @@ plot_unfolded()
 plot_shape()
 {	
 	TCanvas *ceff = new TCanvas("ceff","efficiency",800,600);
-	TFile *f = new TFile("histos/"+sample+"/efficiency.root");
+	//TFile *f = new TFile("histos/"+sample+"/rebinned.root");
+	TFile *f = new TFile("histos/"+sample+"/rebinned_nominal.root");
 	TH1D *hgen_presel = (TH1D*)f->Get("hgen_presel");
 	TH1D *hgen = (TH1D*)f->Get("hgen");
 	TH1D *hrec = (TH1D*)f->Get("hrec");
@@ -98,8 +107,8 @@ plot_shape()
 	hrec->Scale(1/hrec->Integral());
 	
 	// rebin
-	hgen_presel->Rebin(2);
-	hgen->Rebin(2);
+	//hgen_presel->Rebin(2);
+	//hgen->Rebin(2);
 	hrec->Rebin(2);
 
 	// color
@@ -339,12 +348,13 @@ plot_correlation()
 plot_efficiency()
 {
 	TCanvas *ceff= new TCanvas("ceff","Efficiency",800,600);
-	TFile *feff = new TFile("histos/"+sample+"/efficiency.root");
+	//TFile *feff = new TFile("histos/"+sample+"/rebinned.root");
+	TFile *feff = new TFile("histos/"+sample+"/rebinned_nominal.root");
 	TH1D *heff = (TH1D*)feff->Get("efficiency");
 	heff->SetStats(0);
 	heff->SetTitle("");
-	heff->GetXaxis()->SetTitle("Selection efficiency");
-	heff->GetYaxis()->SetTitle("Percentage");
+	heff->GetXaxis()->SetTitle(varname);
+	heff->GetYaxis()->SetTitle("Selection efficiency");
 
 	heff->Draw("HIST E");
 	ceff->Print("plots/efficiency.pdf");
@@ -355,7 +365,8 @@ plot_efficiency()
 plot_matrix()
 {
 	TCanvas *cmat = new TCanvas("cmat","matrix",800,600);
-	TFile *f = new TFile("histos/"+sample+"/rebinned.root");
+	//TFile *f = new TFile("histos/"+sample+"/rebinned.root");
+	TFile *f = new TFile("histos/"+sample+"/rebinned_nominal.root");
 	TH2D *hmat = (TH2D*)f->Get("matrix");
 
 	Int_t nbinsx = hmat->GetNbinsX();
@@ -421,7 +432,7 @@ plot_pseudo()
 
 	// pull
 	TCanvas *c1 = new TCanvas("cpull","pull",800,600);
-	c1->Divide(4,2);
+	c1->Divide(3,2);
 	c1->cd();
 	for(Int_t i = 1; i <= bin_x; i++) {
 		TString pulname = "pull_";
@@ -456,7 +467,7 @@ plot_pseudo()
 	
 	// reldiff
 	TCanvas *c2 = new TCanvas("crel","relative difference",800,600);
-	c2->Divide(4,2);
+	c2->Divide(3,2);
 	c2->cd();
 	for(Int_t i = 1; i <= bin_x; i++) {
 		TString relname = "reldiff_";
